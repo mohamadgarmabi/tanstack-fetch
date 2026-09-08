@@ -33,6 +33,9 @@ const useSse = <T>(path: string, options: UseSseOptions<T> = {}): UseSseResult<T
   const optionsRef = useRef(options)
   optionsRef.current = options
 
+  const paramsKey = JSON.stringify(options.params ?? null)
+  const queryKey = JSON.stringify(options.query ?? null)
+
   useEffect(() => {
     if (options.enabled === false) {
       return
@@ -40,9 +43,9 @@ const useSse = <T>(path: string, options: UseSseOptions<T> = {}): UseSseResult<T
 
     setError(undefined)
     const subscription = api.sse<T>(path, {
-      params: options.params,
-      query: options.query,
-      lastEventId: options.lastEventId,
+      params: optionsRef.current.params,
+      query: optionsRef.current.query,
+      lastEventId: optionsRef.current.lastEventId,
       onOpen: () => setIsConnected(true),
       onMessage: (message, nextEvent) => {
         setData(message)
@@ -69,7 +72,7 @@ const useSse = <T>(path: string, options: UseSseOptions<T> = {}): UseSseResult<T
       closeRef.current = null
       setIsConnected(false)
     }
-  }, [api, path, options.enabled, options.lastEventId, options.params, options.query])
+  }, [api, path, options.enabled, options.lastEventId, paramsKey, queryKey])
 
   return {
     data,

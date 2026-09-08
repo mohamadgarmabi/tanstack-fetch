@@ -560,10 +560,12 @@ const api = createFetch({
   plugins: ['sse-resume'],
 })
 
-for await (const event of api.sse<OrderEvent>('/orders/stream')) {
-  // ping / heartbeat never yield
-  console.log(event.id, event.data)
-}
+api.sse<OrderEvent>('/orders/stream', {
+  onMessage: (data) => {
+    // ping / heartbeat never reach here
+    console.log(data)
+  },
+})
 ```
 
 ---
@@ -696,7 +698,40 @@ export const UsersClient = () => {
 
 ## SSE
 
-Uses `fetch` streams (not `EventSource`) — Authorization and SSR work.
+Uses `fetch` streams (not `EventSource`) — Authorization, cookies, and SSR work.
+
+### Simple — `onMessage`
+
+```ts
+const stream = api.sse<OrderEvent>('/orders/stream', {
+  onMessage: (data) => {
+    console.log(data) // just the payload
+  },
+  onError: (error) => console.error(error),
+})
+
+// later
+stream.close()
+```
+
+### React — `useSse`
+
+```tsx
+import { useSse } from 'tanstack-fetch/react'
+
+const OrdersLive = () => {
+  const { data, isConnected, error } = useSse<OrderEvent>('/orders/stream')
+
+  if (error) return <p>Stream failed</p>
+  return (
+    <p>
+      {isConnected ? 'Live' : 'Connecting…'} {data?.status}
+    </p>
+  )
+}
+```
+
+### Advanced — `for await`
 
 ```ts
 for await (const event of api.sse<OrderEvent>('/orders/stream', { signal })) {
@@ -771,7 +806,8 @@ import {
 | --- | --- |
 | `get/post/put/patch/delete` | Typed HTTP → `Promise<T>` |
 | `request(method, path, opts?)` | Generic verb |
-| `sse(path, opts?)` | Async iterable |
+| `sse(path, { onMessage })` | Simple stream — returns `{ close }` |
+| `sse(path)` | Advanced — `for await` iterable |
 | `use` / `eject` | Interceptors |
 
 ## License

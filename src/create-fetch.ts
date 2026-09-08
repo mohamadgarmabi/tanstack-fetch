@@ -2,7 +2,7 @@ import { createConfigInterceptors } from './plugins/config-interceptors'
 import { pluginFactories } from './plugins'
 import { createFetchError } from './fetch-error'
 import { sendRequest } from './request'
-import { sendSse } from './sse'
+import { createSseApi } from './sse-listen'
 import type {
   CreateFetchOptions,
   FetchClient,
@@ -74,6 +74,8 @@ const createFetch = (options: CreateFetchOptions = {}): FetchClient => {
     return bound as FetchClient['get']
   }
 
+  const sse = createSseApi({ client: clientOptions, interceptors })
+
   return {
     use,
     eject,
@@ -83,8 +85,7 @@ const createFetch = (options: CreateFetchOptions = {}): FetchClient => {
     put: bindMethod('PUT'),
     patch: bindMethod('PATCH'),
     delete: bindMethod('DELETE'),
-    sse: (path, requestOptions) =>
-      sendSse({ path, requestOptions, client: clientOptions, interceptors }),
+    sse,
   }
 }
 
