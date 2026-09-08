@@ -10,7 +10,7 @@ import type {
 import type { AuthConfig, StatusHandler, StatusHandlers } from './config.type'
 import type { HttpInterceptor } from './interceptor.type'
 import type { FetchErrorInfo, FetchResult } from './result.type'
-import type { SseEvent } from './sse.type'
+import type { SseEvent, SseHandlers, SseSubscription } from './sse.type'
 
 type RequestInterceptorConfig = {
   use?: HttpInterceptor[]
@@ -79,6 +79,11 @@ type FetchRequest = {
   ): Promise<FetchResult<T, E>>
 }
 
+type SseCallOptions<T = unknown> = RequestOptions &
+  SseHandlers<T> & {
+    lastEventId?: string
+  }
+
 type FetchClient = {
   use: (
     name: string,
@@ -92,7 +97,18 @@ type FetchClient = {
   put: FetchMethod
   patch: FetchMethod
   delete: FetchMethod
-  sse: <T>(path: string, options?: RequestOptions) => AsyncIterable<SseEvent<T>>
+  /**
+   * Simple: pass `onMessage` / `onEvent` → returns `{ close }`.
+   * Advanced: no handlers → `AsyncIterable` for `for await`.
+   */
+  sse: {
+    <T>(
+      path: string,
+      options: SseCallOptions<T> &
+        ({ onMessage: SseHandlers<T>['onMessage'] } | { onEvent: SseHandlers<T>['onEvent'] }),
+    ): SseSubscription
+    <T>(path: string, options?: SseCallOptions<T>): AsyncIterable<SseEvent<T>>
+  }
 }
 
 /** @deprecated Use CreateFetchOptions */
@@ -112,4 +128,5 @@ export type {
   ResultOptions,
   FetchMethod,
   FetchRequest,
+  SseCallOptions,
 }

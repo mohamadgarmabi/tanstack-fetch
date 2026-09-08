@@ -4,6 +4,7 @@ import type {
   FetchClient,
   HttpClient,
   RequestOptions,
+  SseCallOptions,
 } from './client.type'
 import type {
   ClientSource,
@@ -36,7 +37,7 @@ import type {
   HttpResult,
   OkResult,
 } from './result.type'
-import type { SseEvent, SseOptions } from './sse.type'
+import type { SseEvent, SseHandlers, SseSubscription } from './sse.type'
 
 export type {
   CreateFetchOptions,
@@ -44,6 +45,7 @@ export type {
   FetchClient,
   HttpClient,
   RequestOptions,
+  SseCallOptions,
   ClientSource,
   HttpMethod,
   IncomingHeaders,
@@ -68,5 +70,6 @@ export type {
   HttpResult,
   OkResult,
   SseEvent,
-  SseOptions,
+  SseHandlers,
+  SseSubscription,
 }
