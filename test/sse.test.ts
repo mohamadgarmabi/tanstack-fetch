@@ -38,6 +38,28 @@ describe('tanstack-fetch sse', () => {
     )
   })
 
+  it('supports simple onMessage callback API', async () => {
+    const fetchImpl = vi.fn().mockResolvedValue(
+      new Response(sseStream(['event: tick\ndata: {"n":1}\n\n']), {
+        status: 200,
+        headers: { 'content-type': 'text/event-stream' },
+      }),
+    )
+    const http = createTestClient(fetchImpl, { plugins: ['sse-resume'] })
+    const messages: Array<{ n: number }> = []
+
+    await new Promise<void>((resolve, reject) => {
+      const subscription = http.sse<{ n: number }>('/events', {
+        onMessage: (data) => messages.push(data),
+        onClose: () => resolve(),
+        onError: reject,
+      })
+      expect(typeof subscription.close).toBe('function')
+    })
+
+    expect(messages).toEqual([{ n: 1 }])
+  })
+
   it('sets last-event-id through the sse-resume interceptor on reconnect context', async () => {
     const fetchImpl = vi.fn().mockResolvedValue(
       new Response(sseStream(['id: 42\nevent: tick\ndata: {"n":1}\n\n']), {
