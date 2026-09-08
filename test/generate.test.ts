@@ -70,7 +70,7 @@ const spec: OpenApiSpec = {
   },
 }
 
-describe('typed-ssr-http generate', () => {
+describe('ssrfetch generate', () => {
   it('requires spec and out flags', () => {
     expect(() => parseArgs(['generate'])).toThrow('--spec')
     const args = parseArgs(['generate', '--spec', './openapi.json', '--out', './src/api'])
@@ -78,7 +78,7 @@ describe('typed-ssr-http generate', () => {
   })
 
   it('writes typed client files from OpenAPI', async () => {
-    const out = await mkdtemp(join(tmpdir(), 'typed-ssr-http-'))
+    const out = await mkdtemp(join(tmpdir(), 'ssrfetch-'))
     await generateClient(spec, out)
     const types = await readFile(join(out, 'types.ts'), 'utf8')
     const client = await readFile(join(out, 'client.ts'), 'utf8')

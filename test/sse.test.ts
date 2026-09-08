@@ -11,7 +11,7 @@ const sseStream = (chunks: string[]) => {
   })
 }
 
-describe('typed-ssr-http sse', () => {
+describe('ssrfetch sse', () => {
   it('parses events and drops heartbeats with sse-resume', async () => {
     const fetchImpl = vi
       .fn()

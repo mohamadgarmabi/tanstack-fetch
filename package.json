@@ -1,5 +1,5 @@
 {
-  "name": "typed-ssr-http",
+  "name": "ssrfetch",
   "version": "1.0.0",
   "description": "Typed fetch client for React and Next.js with SSR, SSE, named interceptors, and OpenAPI codegen.",
   "license": "MIT",
@@ -10,12 +10,12 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/mohamadgarmabi/typed-ssr-http.git"
+    "url": "git+https://github.com/mohamadgarmabi/ssrfetch.git"
   },
   "bugs": {
-    "url": "https://github.com/mohamadgarmabi/typed-ssr-http/issues"
+    "url": "https://github.com/mohamadgarmabi/ssrfetch/issues"
   },
-  "homepage": "https://github.com/mohamadgarmabi/typed-ssr-http#readme",
+  "homepage": "https://github.com/mohamadgarmabi/ssrfetch#readme",
   "keywords": [
     "fetch",
     "http",
@@ -34,7 +34,7 @@
   "module": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "bin": {
-    "typed-ssr-http": "./dist/cli.js"
+    "ssrfetch": "./dist/cli.js"
   },
   "exports": {
     ".": {

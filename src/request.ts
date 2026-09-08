@@ -49,7 +49,7 @@ const sendRequest = async <T, E = HttpError>(args: SendRequestArgs): Promise<Htt
   const interceptors = resolveInterceptors(args.interceptors, args.requestOptions?.interceptors)
   const fetchImpl = args.client.fetch ?? globalThis.fetch
   if (!fetchImpl) {
-    throw new Error('typed-ssr-http: fetch is not available')
+    throw new Error('ssrfetch: fetch is not available')
   }
 
   let attempt = 0
@@ -65,7 +65,7 @@ const sendRequest = async <T, E = HttpError>(args: SendRequestArgs): Promise<Htt
     }
   }
 
-  throw new Error('typed-ssr-http: exceeded retry budget')
+  throw new Error('ssrfetch: exceeded retry budget')
 }
 
 const runAttempt = async <T, E>(input: {
