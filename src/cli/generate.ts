@@ -70,8 +70,8 @@ const generateClientFile = (spec: OpenApiSpec, operations: CollectedOperation[])
   const typesImport =
     schemaNames.length > 0 ? `import type { ${schemaNames.join(', ')} } from './types'\n` : ''
 
-  return `import { createClient } from 'typed-ssr-http'
-import type { CreateClientOptions, RequestOptions } from 'typed-ssr-http'
+  return `import { createClient } from 'ssrfetch'
+import type { CreateClientOptions, RequestOptions } from 'ssrfetch'
 ${typesImport}
 const createApi = (options: CreateClientOptions = {}) => {
   const http = createClient(options)

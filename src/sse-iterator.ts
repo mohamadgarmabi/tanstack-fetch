@@ -36,7 +36,7 @@ const createSseIterator = <T>(args: SendSseArgs): AsyncIterator<SseEvent<T>> => 
 
   const openStream = async (): Promise<boolean> => {
     if (!fetchImpl) {
-      throw new Error('typed-ssr-http: fetch is not available')
+      throw new Error('ssrfetch: fetch is not available')
     }
     let context = await createSseContext(args, attempt, lastEventId)
     const before = await runHook(interceptors, (item) => item.onRequest, context)

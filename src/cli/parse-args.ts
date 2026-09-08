@@ -12,7 +12,7 @@ const parseArgs = (argv: string[]): CliArgs => {
     return { command: 'help' }
   }
   if (command !== 'generate') {
-    throw new Error(`typed-ssr-http: unknown command "${command}"`)
+    throw new Error(`ssrfetch: unknown command "${command}"`)
   }
 
   const flags = new Map<string, string>()
@@ -24,7 +24,7 @@ const parseArgs = (argv: string[]): CliArgs => {
     const key = token.slice(2)
     const value = rest[index + 1]
     if (!value || value.startsWith('--')) {
-      throw new Error(`typed-ssr-http: missing value for --${key}`)
+      throw new Error(`ssrfetch: missing value for --${key}`)
     }
     flags.set(key, value)
     index += 1
@@ -33,16 +33,16 @@ const parseArgs = (argv: string[]): CliArgs => {
   const spec = flags.get('spec')
   const out = flags.get('out')
   if (!spec || !out) {
-    throw new Error('typed-ssr-http: generate requires --spec and --out')
+    throw new Error('ssrfetch: generate requires --spec and --out')
   }
 
   return { command: 'generate', spec, out }
 }
 
-const helpText = `typed-ssr-http
+const helpText = `ssrfetch
 
 Usage:
-  typed-ssr-http generate --spec ./openapi.json --out ./src/api
+  ssrfetch generate --spec ./openapi.json --out ./src/api
 
 Flags:
   --spec   OpenAPI/Swagger JSON or YAML file

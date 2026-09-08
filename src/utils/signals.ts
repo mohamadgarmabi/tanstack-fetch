@@ -28,7 +28,7 @@ const createTimeoutSignal = (timeoutMs: number | undefined) => {
   }
   const controller = new AbortController()
   const timer = setTimeout(
-    () => controller.abort(new Error('typed-ssr-http: request timed out')),
+    () => controller.abort(new Error('ssrfetch: request timed out')),
     timeoutMs,
   )
   controller.signal.addEventListener('abort', () => clearTimeout(timer), { once: true })

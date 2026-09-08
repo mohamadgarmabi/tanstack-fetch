@@ -10,7 +10,7 @@ const runCli = async (argv = process.argv.slice(2)) => {
   }
   const spec = await loadSpec(args.spec)
   await generateClient(spec, args.out)
-  console.log(`typed-ssr-http: generated client in ${args.out}`)
+  console.log(`ssrfetch: generated client in ${args.out}`)
 }
 
 runCli().catch((error: unknown) => {

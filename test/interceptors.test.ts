@@ -1,7 +1,7 @@
 import { describe, expect, it, vi } from 'vitest'
 import { createTestClient, jsonResponse } from './helpers'
 
-describe('typed-ssr-http interceptors', () => {
+describe('ssrfetch interceptors', () => {
   it('lets seniors add a named auth interceptor', async () => {
     const fetchImpl = vi.fn().mockResolvedValue(jsonResponse({ body: { ok: true } }))
     const http = createTestClient(fetchImpl)
