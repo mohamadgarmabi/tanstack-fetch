@@ -16,7 +16,13 @@
     "verbatimModuleSyntax": true,
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
-    "types": ["node"]
+    "types": ["node"],
+    "paths": {
+      "tanstack-fetch": ["./src/index.ts"],
+      "tanstack-fetch/sse": ["./src/sse/index.ts"],
+      "tanstack-fetch/plugins": ["./src/plugins-entry.ts"],
+      "tanstack-fetch/react": ["./src/react/index.ts"]
+    }
   },
   "include": ["src", "test", "example", "vitest.config.ts"]
 }
