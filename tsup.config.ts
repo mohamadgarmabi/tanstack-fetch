@@ -1,24 +1,18 @@
 import { defineConfig } from 'tsup'
 
-const shared = {
-  format: ['esm', 'cjs'] as const,
-  dts: true,
-  sourcemap: true,
-  target: 'es2022' as const,
-  treeshake: true,
-  external: ['react', 'react/jsx-runtime'],
-}
-
 const config = defineConfig([
   {
-    ...shared,
-    entry: ['src/index.ts'],
+    entry: {
+      index: 'src/index.ts',
+      react: 'src/react/index.ts',
+    },
+    format: ['esm', 'cjs'],
+    dts: true,
+    sourcemap: true,
     clean: true,
-  },
-  {
-    ...shared,
-    entry: { react: 'src/react/index.ts' },
-    clean: false,
+    target: 'es2022',
+    treeshake: true,
+    external: ['react', 'react/jsx-runtime'],
   },
   {
     entry: { cli: 'src/cli/index.ts' },

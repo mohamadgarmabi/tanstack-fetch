@@ -14,6 +14,148 @@ Node 18+ (native `fetch`).
 
 ---
 
+## Two ways to configure
+
+### 1) Simple path — `baseUrl`, token, status handlers
+
+Most apps only need this: set API URL, attach a token, and decide what happens on **401 / 403 / 404 / 5xx**.
+
+```ts
+import { createFetch } from 'tanstack-fetch'
+
+export const api = createFetch({
+  baseUrl: import.meta.env.VITE_API_URL,
+  getToken: () => localStorage.getItem('access_token'),
+
+  onUnauthorized: () => {
+    localStorage.removeItem('access_token')
+    window.location.href = '/login' // 401
+  },
+  onForbidden: () => {
+    console.warn('No permission') // 403
+  },
+  onNotFound: ({ error }) => {
+    console.warn('Missing resource', error.message) // 404
+  },
+  onServerError: ({ status }) => {
+    console.error('Server error', status) // 500–599
+  },
+})
+```
+
+Handlers run **before** the error is thrown (so TanStack Query still gets `isError` / `FetchError`).
+
+| Option | When |
+| --- | --- |
+| `getToken` / `auth` | Every request — sets `Authorization: Bearer …` |
+| `onUnauthorized` | HTTP **401** |
+| `onForbidden` | HTTP **403** |
+| `onNotFound` | HTTP **404** |
+| `onServerError` | HTTP **5xx** |
+| `onStatus` | Advanced map (exact code, `4xx`, `5xx`, `default`) |
+
+```ts
+createFetch({
+  baseUrl: 'https://api.example.com',
+  auth: {
+    getToken: async () => (await cookies()).get('token')?.value,
+    header: 'authorization',
+    scheme: 'Bearer', // use '' for a raw token / API key
+  },
+  onStatus: {
+    401: () => redirect('/login'),
+    403: () => toast.error('Forbidden'),
+    404: () => toast.error('Not found'),
+    500: () => toast.error('Server error'),
+    '5xx': ({ status }) => console.error('upstream', status),
+    default: ({ status }) => console.warn('unhandled', status),
+  },
+})
+```
+
+### 2) Advanced path — plugins + custom interceptors
+
+Full control: plugins, named interceptors, per-request eject, match filters.
+
+```ts
+import { createFetch } from 'tanstack-fetch'
+
+export const api = createFetch({
+  baseUrl: 'https://api.example.com',
+  plugins: ['trace', 'ssr-forward', 'retry-idempotent', 'sse-resume'],
+  getToken: () => getAccessToken(),
+  onUnauthorized: () => logout(),
+  interceptors: [
+    {
+      name: 'locale',
+      order: 25,
+      onRequest: (context) => {
+        context.request.headers.set('accept-language', 'fa')
+        return { action: 'continue', context }
+      },
+    },
+  ],
+})
+
+api.use('audit', {
+  onResponse: (context) => {
+    console.log(context.response?.status, context.request.url.pathname)
+    return { action: 'continue', context }
+  },
+})
+```
+
+### React `FetchProvider` (optional)
+
+Same config, shared via context — like wrapping your app once.
+
+```tsx
+import { FetchProvider, useFetch } from 'tanstack-fetch/react'
+import { useQuery } from '@tanstack/react-query'
+import { isFetchError } from 'tanstack-fetch'
+
+const App = () => (
+  <FetchProvider
+    baseUrl={import.meta.env.VITE_API_URL}
+    getToken={() => localStorage.getItem('access_token')}
+    onUnauthorized={() => {
+      localStorage.removeItem('access_token')
+      window.location.href = '/login'
+    }}
+    onForbidden={() => console.warn('403')}
+    onNotFound={() => console.warn('404')}
+    onServerError={({ status }) => console.error('5xx', status)}
+    plugins={['trace', 'retry-idempotent']}
+  >
+    <UsersPage />
+  </FetchProvider>
+)
+
+const UsersPage = () => {
+  const api = useFetch()
+  const { data, error, isPending } = useQuery({
+    queryKey: ['users'],
+    queryFn: ({ signal }) => api.get<User[]>('/users', { signal }),
+  })
+
+  if (isPending) return <p>Loading…</p>
+  if (isFetchError(error)) return <p>{error.status}: {error.message}</p>
+  return <ul>{data.map((u) => <li key={u.id}>{u.name}</li>)}</ul>
+}
+```
+
+Or pass an existing client:
+
+```tsx
+const api = createFetch({ baseUrl: '…', getToken: … })
+
+<FetchProvider client={api}>
+  <App />
+</FetchProvider>
+```
+
+---
+
 ## Why this API matches TanStack Query
 
 | TanStack Query needs | `tanstack-fetch` does |
