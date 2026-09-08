@@ -12,13 +12,19 @@ type ErrResult<E> = {
   headers: Headers
 }
 
-type HttpResult<T, E = HttpError> = OkResult<T> | ErrResult<E>
+type FetchResult<T, E = FetchErrorInfo> = OkResult<T> | ErrResult<E>
 
-type HttpError = {
+type FetchErrorInfo = {
   status: number
   code: string
   message: string
   body: unknown
 }
 
-export type { OkResult, ErrResult, HttpResult, HttpError }
+/** @deprecated Use FetchResult */
+type HttpResult<T, E = FetchErrorInfo> = FetchResult<T, E>
+
+/** @deprecated Use FetchErrorInfo */
+type HttpError = FetchErrorInfo
+
+export type { OkResult, ErrResult, FetchResult, FetchErrorInfo, HttpResult, HttpError }

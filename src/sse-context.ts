@@ -1,5 +1,5 @@
 import type {
-  CreateClientOptions,
+  CreateFetchOptions,
   HttpInterceptor,
   HttpMethod,
   IncomingHeaders,
@@ -13,12 +13,12 @@ import { mergeHeaders, resolveHeaders } from './utils/headers'
 type SendSseArgs = {
   path: string
   requestOptions?: RequestOptions
-  client: CreateClientOptions
+  client: CreateFetchOptions
   interceptors: HttpInterceptor[]
 }
 
 const resolveIncoming = async (
-  client: CreateClientOptions,
+  client: CreateFetchOptions,
 ): Promise<IncomingHeaders | undefined> => {
   if (!client.incoming) {
     return undefined

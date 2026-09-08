@@ -1,33 +1,44 @@
 import { describe, expect, it, vi } from 'vitest'
+import { isFetchError } from '../src'
 import { createTestClient, jsonResponse } from './helpers'
 
-describe('ssrfetch request', () => {
-  it('returns a typed ok result', async () => {
+describe('tanstack-fetch request', () => {
+  it('returns typed data by default (TanStack Query style)', async () => {
     const fetchImpl = vi.fn().mockResolvedValue(jsonResponse({ body: { id: '1', name: 'Ada' } }))
     const http = createTestClient(fetchImpl)
 
-    const result = await http.get<{ id: string; name: string }>('/users/:id', {
+    const data = await http.get<{ id: string; name: string }>('/users/:id', {
       params: { id: '1' },
       query: { include: 'posts' },
     })
 
-    expect(result.ok).toBe(true)
-    if (result.ok) {
-      expect(result.data.name).toBe('Ada')
-    }
+    expect(data.name).toBe('Ada')
     expect(String(fetchImpl.mock.calls[0]?.[0])).toBe(
       'https://api.example.com/users/1?include=posts',
     )
   })
 
-  it('returns a typed error result without throwing', async () => {
+  it('throws FetchError on HTTP failure by default', async () => {
     const fetchImpl = vi
       .fn()
       .mockResolvedValue(
         jsonResponse({ status: 404, body: { code: 'NOT_FOUND', message: 'missing' } }),
       )
     const http = createTestClient(fetchImpl)
-    const result = await http.get('/users/missing')
+
+    await expect(http.get('/users/missing')).rejects.toSatisfy(
+      (error: unknown) => isFetchError(error) && error.status === 404 && error.code === 'NOT_FOUND',
+    )
+  })
+
+  it('returns FetchResult when throwOnError is false', async () => {
+    const fetchImpl = vi
+      .fn()
+      .mockResolvedValue(
+        jsonResponse({ status: 404, body: { code: 'NOT_FOUND', message: 'missing' } }),
+      )
+    const http = createTestClient(fetchImpl, { throwOnError: false })
+    const result = await http.get('/users/missing', { throwOnError: false })
 
     expect(result.ok).toBe(false)
     if (!result.ok) {
@@ -47,12 +58,21 @@ describe('ssrfetch request', () => {
     expect(new Headers(init.headers).get('content-type')).toBe('application/json')
   })
 
-  it('throws when throwOnError is enabled', async () => {
+  it('exposes status and body on FetchError', async () => {
     const fetchImpl = vi
       .fn()
       .mockResolvedValue(jsonResponse({ status: 500, body: { message: 'boom' } }))
-    const http = createTestClient(fetchImpl, { throwOnError: true })
+    const http = createTestClient(fetchImpl)
 
-    await expect(http.get('/fail')).rejects.toThrow('boom')
+    try {
+      await http.get('/fail')
+      expect.unreachable()
+    } catch (error) {
+      expect(isFetchError(error)).toBe(true)
+      if (isFetchError(error)) {
+        expect(error.message).toBe('boom')
+        expect(error.status).toBe(500)
+      }
+    }
   })
 })

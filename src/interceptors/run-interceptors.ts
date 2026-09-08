@@ -1,11 +1,11 @@
 import { DEFAULT_INTERCEPTOR_ORDER } from '../constants'
-import type { HttpInterceptor, HttpResult, InterceptorHandler, RequestContext } from '../types'
+import type { HttpInterceptor, FetchResult, InterceptorHandler, RequestContext } from '../types'
 
 type HookOutcome<T> =
   | { type: 'continue'; context: T }
   | { type: 'drop' }
   | { type: 'retry'; delayMs?: number }
-  | { type: 'short-circuit'; result: HttpResult<unknown, unknown> }
+  | { type: 'short-circuit'; result: FetchResult<unknown, unknown> }
 
 const matchesInterceptor = (interceptor: HttpInterceptor, context: RequestContext) => {
   const match = interceptor.match

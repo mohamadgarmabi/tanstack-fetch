@@ -1,7 +1,8 @@
 import { describe, expect, it, vi } from 'vitest'
+import { isFetchError } from '../src'
 import { createTestClient, jsonResponse } from './helpers'
 
-describe('ssrfetch interceptors', () => {
+describe('tanstack-fetch interceptors', () => {
   it('lets seniors add a named auth interceptor', async () => {
     const fetchImpl = vi.fn().mockResolvedValue(jsonResponse({ body: { ok: true } }))
     const http = createTestClient(fetchImpl)
@@ -41,16 +42,17 @@ describe('ssrfetch interceptors', () => {
       },
     })
 
-    const result = await http.get('/secure')
-    expect(result.ok).toBe(true)
+    const data = await http.get<{ ok: boolean }>('/secure')
+    expect(data.ok).toBe(true)
     expect(fetchImpl).toHaveBeenCalledTimes(2)
     const secondHeaders = new Headers((fetchImpl.mock.calls[1]?.[1] as RequestInit).headers)
     expect(secondHeaders.get('authorization')).toBe('Bearer refreshed')
 
     http.eject('auth')
     fetchImpl.mockResolvedValueOnce(jsonResponse({ status: 401, body: { code: 'UNAUTHORIZED' } }))
-    const second = await http.get('/secure')
-    expect(second.ok).toBe(false)
+    await expect(http.get('/secure')).rejects.toSatisfy(
+      (error: unknown) => isFetchError(error) && error.status === 401,
+    )
   })
 
   it('supports short-circuit for mocks', async () => {
@@ -63,8 +65,8 @@ describe('ssrfetch interceptors', () => {
       }),
     })
 
-    const result = await http.get('/users')
-    expect(result.ok).toBe(true)
+    const users = await http.get<Array<{ id: string }>>('/users')
+    expect(users).toEqual([{ id: '1' }])
     expect(fetchImpl).not.toHaveBeenCalled()
   })
 

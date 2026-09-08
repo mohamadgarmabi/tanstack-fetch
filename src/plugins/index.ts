@@ -1,8 +1,11 @@
-import type { HttpInterceptor, PluginName } from '../types'
+import type { AuthConfig, HttpInterceptor, StatusHandlers } from '../types'
+import { createAuthInterceptor } from './auth'
 import { createRetryIdempotentInterceptor } from './retry-idempotent'
 import { createSseResumeInterceptor } from './sse-resume'
 import { createSsrForwardInterceptor } from './ssr-forward'
+import { createStatusInterceptor } from './status'
 import { createTraceInterceptor } from './trace'
+import type { PluginName } from '../types'
 
 const pluginFactories: Record<PluginName, () => HttpInterceptor> = {
   trace: createTraceInterceptor,
@@ -13,8 +16,11 @@ const pluginFactories: Record<PluginName, () => HttpInterceptor> = {
 
 export {
   pluginFactories,
+  createAuthInterceptor,
+  createStatusInterceptor,
   createRetryIdempotentInterceptor,
   createSseResumeInterceptor,
   createSsrForwardInterceptor,
   createTraceInterceptor,
 }
+export type { AuthConfig, StatusHandlers }

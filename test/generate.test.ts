@@ -70,7 +70,7 @@ const spec: OpenApiSpec = {
   },
 }
 
-describe('ssrfetch generate', () => {
+describe('tanstack-fetch generate', () => {
   it('requires spec and out flags', () => {
     expect(() => parseArgs(['generate'])).toThrow('--spec')
     const args = parseArgs(['generate', '--spec', './openapi.json', '--out', './src/api'])
@@ -78,14 +78,15 @@ describe('ssrfetch generate', () => {
   })
 
   it('writes typed client files from OpenAPI', async () => {
-    const out = await mkdtemp(join(tmpdir(), 'ssrfetch-'))
+    const out = await mkdtemp(join(tmpdir(), 'tanstack-fetch-'))
     await generateClient(spec, out)
     const types = await readFile(join(out, 'types.ts'), 'utf8')
     const client = await readFile(join(out, 'client.ts'), 'utf8')
 
     expect(types).toContain('type User =')
-    expect(client).toContain("http.get<User>('/users/:id'")
-    expect(client).toContain("http.sse<OrderEvent>('/events'")
+    expect(client).toContain("api.get<User>('/users/:id'")
+    expect(client).toContain("api.sse<OrderEvent>('/events'")
     expect(client).toContain('listUsers')
+    expect(client).toContain('createFetch')
   })
 })
