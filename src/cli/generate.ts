@@ -53,11 +53,11 @@ const methodLine = (operation: CollectedOperation) => {
   const options = optionsType(operation)
   const optional = options.endsWith('| undefined') ? '?' : ''
   if (operation.isSse) {
-    return `    ${operation.operationId}: (options${optional}: ${options}) => http.sse<${response}>('${clientPath(operation.path)}', options),`
+    return `    ${operation.operationId}: (options${optional}: ${options}) => api.sse<${response}>('${clientPath(operation.path)}', options),`
   }
   const method = operation.method.toLowerCase()
   const call = method === 'delete' ? 'delete' : method
-  return `    ${operation.operationId}: (options${optional}: ${options}) => http.${call}<${response}>('${clientPath(operation.path)}', options),`
+  return `    ${operation.operationId}: (options${optional}: ${options}) => api.${call}<${response}>('${clientPath(operation.path)}', options),`
 }
 
 const generateClientFile = (spec: OpenApiSpec, operations: CollectedOperation[]) => {
@@ -70,11 +70,11 @@ const generateClientFile = (spec: OpenApiSpec, operations: CollectedOperation[])
   const typesImport =
     schemaNames.length > 0 ? `import type { ${schemaNames.join(', ')} } from './types'\n` : ''
 
-  return `import { createClient } from 'ssrfetch'
-import type { CreateClientOptions, RequestOptions } from 'ssrfetch'
+  return `import { createFetch } from 'tanstack-fetch'
+import type { CreateFetchOptions, RequestOptions } from 'tanstack-fetch'
 ${typesImport}
-const createApi = (options: CreateClientOptions = {}) => {
-  const http = createClient(options)
+const createApi = (options: CreateFetchOptions = {}) => {
+  const api = createFetch(options)
   return {
 ${groups.join('\n')}
   }

@@ -4,7 +4,7 @@ const fillPath = (path: string, params?: PathParams) => {
   return path.replace(/:([A-Za-z0-9_]+)/g, (_match, key: string) => {
     const value = params?.[key]
     if (value === undefined) {
-      throw new Error(`ssrfetch: missing path param "${key}"`)
+      throw new Error(`tanstack-fetch: missing path param "${key}"`)
     }
     return encodeURIComponent(String(value))
   })
@@ -29,7 +29,7 @@ const assertAbsoluteUrl = (baseUrl: string | undefined, source: string | undefin
   }
 
   if (!/^https?:\/\//i.test(baseUrl)) {
-    throw new Error('ssrfetch: set an absolute baseUrl for SSR and Edge runtimes')
+    throw new Error('tanstack-fetch: set an absolute baseUrl for SSR and Edge runtimes')
   }
 }
 

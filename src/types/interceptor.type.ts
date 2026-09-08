@@ -1,4 +1,4 @@
-import type { HttpError, HttpResult } from './result.type'
+import type { FetchErrorInfo, FetchResult } from './result.type'
 import type { ClientSource, HttpMethod, IncomingHeaders, MaybePromise } from './common.type'
 
 type RequestContext = {
@@ -11,7 +11,7 @@ type RequestContext = {
   }
   response?: Response
   data?: unknown
-  error?: HttpError
+  error?: FetchErrorInfo
   incoming?: IncomingHeaders
   meta: {
     attempt: number
@@ -37,7 +37,7 @@ type InterceptorDecision<T> =
   | { action: 'skip' }
   | { action: 'drop' }
   | { action: 'retry'; delayMs?: number }
-  | { action: 'short-circuit'; result: HttpResult<unknown, unknown> }
+  | { action: 'short-circuit'; result: FetchResult<unknown, unknown> }
 
 type InterceptorHandler<T> = (context: T) => MaybePromise<InterceptorDecision<T> | void>
 

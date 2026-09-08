@@ -12,7 +12,7 @@ const parseArgs = (argv: string[]): CliArgs => {
     return { command: 'help' }
   }
   if (command !== 'generate') {
-    throw new Error(`ssrfetch: unknown command "${command}"`)
+    throw new Error(`tanstack-fetch: unknown command "${command}"`)
   }
 
   const flags = new Map<string, string>()
@@ -24,7 +24,7 @@ const parseArgs = (argv: string[]): CliArgs => {
     const key = token.slice(2)
     const value = rest[index + 1]
     if (!value || value.startsWith('--')) {
-      throw new Error(`ssrfetch: missing value for --${key}`)
+      throw new Error(`tanstack-fetch: missing value for --${key}`)
     }
     flags.set(key, value)
     index += 1
@@ -33,16 +33,16 @@ const parseArgs = (argv: string[]): CliArgs => {
   const spec = flags.get('spec')
   const out = flags.get('out')
   if (!spec || !out) {
-    throw new Error('ssrfetch: generate requires --spec and --out')
+    throw new Error('tanstack-fetch: generate requires --spec and --out')
   }
 
   return { command: 'generate', spec, out }
 }
 
-const helpText = `ssrfetch
+const helpText = `tanstack-fetch
 
 Usage:
-  ssrfetch generate --spec ./openapi.json --out ./src/api
+  tanstack-fetch generate --spec ./openapi.json --out ./src/api
 
 Flags:
   --spec   OpenAPI/Swagger JSON or YAML file

@@ -1,55 +1,278 @@
-# ssrfetch
+# tanstack-fetch
 
-Typed `fetch` client for React and Next.js.
+Typed `fetch` client shaped for **TanStack Query**.
 
-Works in the **browser**, **SSR**, and **Edge**. One client for JSON HTTP and SSE. Named interceptors, built-in plugins, and an OpenAPI codegen CLI.
+`queryFn` / `mutationFn` ready by default: returns **data**, throws **`FetchError`**, passes **`signal`**. Works in browser, SSR, and Edge — with SSE, named interceptors, and OpenAPI codegen.
 
 ```bash
-npm install ssrfetch
+npm install tanstack-fetch
 ```
 
-Requires Node 18+ (native `fetch`).
+Node 18+ (native `fetch`).
+
+> Not an official TanStack package — built to fit the same mental model as `@tanstack/react-query`.
+
+---
+
+## Why this API matches TanStack Query
+
+| TanStack Query needs | `tanstack-fetch` does |
+| --- | --- |
+| `queryFn` returns data | `api.get<T>()` → `Promise<T>` |
+| Failures must throw | HTTP errors throw `FetchError` |
+| Cancellation | Pass `{ signal }` from `queryFn` context |
+| Typed errors | `isFetchError(error)` → `status`, `code`, `body` |
+
+### Install peers
+
+```bash
+npm install tanstack-fetch @tanstack/react-query
+```
+
+### Shared client
+
+```ts
+// src/lib/api.ts
+import { createFetch } from 'tanstack-fetch'
+
+export const api = createFetch({
+  baseUrl: import.meta.env.VITE_API_URL ?? 'https://api.example.com',
+  plugins: ['trace', 'retry-idempotent'],
+})
+```
+
+### `useQuery` — basic
+
+```tsx
+import { useQuery } from '@tanstack/react-query'
+import { isFetchError } from 'tanstack-fetch'
+import { api } from '#/lib/api'
+
+type User = { id: string; name: string }
+
+const UsersPage = () => {
+  const { data, error, isPending, isFetching, refetch } = useQuery({
+    queryKey: ['users'],
+    queryFn: ({ signal }) => api.get<User[]>('/users', { signal }),
+  })
+
+  if (isPending) return <p>Loading…</p>
+  if (isFetchError(error)) return <p>{error.status}: {error.message}</p>
+  if (error) return <p>Something went wrong</p>
+
+  return (
+    <div>
+      <button onClick={() => refetch()} disabled={isFetching}>
+        Refresh
+      </button>
+      <ul>
+        {data.map((user) => (
+          <li key={user.id}>{user.name}</li>
+        ))}
+      </ul>
+    </div>
+  )
+}
+
+export default UsersPage
+```
+
+### `useQuery` — with params + `enabled`
+
+```tsx
+import { useQuery } from '@tanstack/react-query'
+import { isFetchError } from 'tanstack-fetch'
+import { api } from '#/lib/api'
+
+type User = { id: string; name: string; email: string }
+
+const UserDetail = ({ userId }: { userId?: string }) => {
+  const { data, error, isPending } = useQuery({
+    queryKey: ['users', userId],
+    enabled: Boolean(userId),
+    queryFn: ({ signal }) =>
+      api.get<User>('/users/:id', {
+        params: { id: userId! },
+        signal,
+      }),
+  })
+
+  if (!userId) return <p>Select a user</p>
+  if (isPending) return <p>Loading…</p>
+  if (isFetchError(error)) {
+    if (error.status === 404) return <p>User not found</p>
+    return <p>{error.code}: {error.message}</p>
+  }
+  if (error) return <p>Something went wrong</p>
+
+  return (
+    <article>
+      <h1>{data.name}</h1>
+      <p>{data.email}</p>
+    </article>
+  )
+}
+
+export default UserDetail
+```
+
+### `useQuery` + official `queryOptions`
+
+Share the same options between components, prefetch, and SSR:
+
+```ts
+// src/queries/users.ts
+import { queryOptions } from '@tanstack/react-query'
+import { api } from '#/lib/api'
+
+type User = { id: string; name: string }
+
+export const usersQueryOptions = queryOptions({
+  queryKey: ['users'],
+  queryFn: ({ signal }) => api.get<User[]>('/users', { signal }),
+})
+
+export const userQueryOptions = (id: string) =>
+  queryOptions({
+    queryKey: ['users', id],
+    queryFn: ({ signal }) =>
+      api.get<User>('/users/:id', { params: { id }, signal }),
+  })
+```
+
+```tsx
+import { useQuery } from '@tanstack/react-query'
+import { userQueryOptions, usersQueryOptions } from '#/queries/users'
+
+const UsersPage = () => {
+  const { data: users } = useQuery(usersQueryOptions)
+  return <ul>{users?.map((u) => <li key={u.id}>{u.name}</li>)}</ul>
+}
+
+const UserPage = ({ id }: { id: string }) => {
+  const { data: user } = useQuery(userQueryOptions(id))
+  return <h1>{user?.name}</h1>
+}
+```
+
+### `useMutation` + invalidate
+
+```tsx
+import { useMutation, useQueryClient } from '@tanstack/react-query'
+import { isFetchError } from 'tanstack-fetch'
+import { api } from '#/lib/api'
+
+type CreateUser = { name: string; email: string }
+type User = CreateUser & { id: string }
+
+const CreateUserForm = () => {
+  const queryClient = useQueryClient()
+
+  const mutation = useMutation({
+    mutationFn: (body: CreateUser) => api.post<User>('/users', { body }),
+    onSuccess: () => {
+      void queryClient.invalidateQueries({ queryKey: ['users'] })
+    },
+  })
+
+  return (
+    <form
+      onSubmit={(event) => {
+        event.preventDefault()
+        const form = new FormData(event.currentTarget)
+        mutation.mutate({
+          name: String(form.get('name')),
+          email: String(form.get('email')),
+        })
+      }}
+    >
+      <input name="name" />
+      <input name="email" type="email" />
+      <button type="submit" disabled={mutation.isPending}>
+        Create
+      </button>
+      {isFetchError(mutation.error) && (
+        <p>{mutation.error.status}: {mutation.error.message}</p>
+      )}
+    </form>
+  )
+}
+
+export default CreateUserForm
+```
+
+### Provider setup
+
+```tsx
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
+import { useState } from 'react'
+
+const App = ({ children }: { children: React.ReactNode }) => {
+  const [queryClient] = useState(() => new QueryClient())
+
+  return (
+    <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
+  )
+}
+
+export default App
+```
 
 ---
 
 ## Quick start
 
 ```ts
-import { createClient } from 'ssrfetch'
+import { createFetch, isFetchError } from 'tanstack-fetch'
 
-const http = createClient({
+const api = createFetch({
   baseUrl: 'https://api.example.com',
 })
 
-const result = await http.get<User>('/users/:id', {
-  params: { id: '1' },
-})
+// Success → data
+const user = await api.get<User>('/users/:id', { params: { id: '1' } })
+user.name
 
-if (result.ok) {
-  console.log(result.data)
-} else {
-  console.error(result.status, result.error.code, result.error.message)
+// Failure → throws FetchError (like queryFn)
+try {
+  await api.get('/missing')
+} catch (error) {
+  if (isFetchError(error)) {
+    error.status // 404
+    error.code
+    error.body
+  }
 }
+```
+
+Need a Result union instead? Opt out per client or per call:
+
+```ts
+const api = createFetch({ baseUrl: '...', throwOnError: false })
+
+const result = await api.get<User>('/users/1', { throwOnError: false })
+if (result.ok) result.data
+else result.error
 ```
 
 ---
 
-## Create a client
+## Create a client (`createFetch`)
+
+Same spirit as `createQueryClient` — one shared client, default options, plugins.
 
 ```ts
-import { createClient } from 'ssrfetch'
+import { createFetch } from 'tanstack-fetch'
 import { cookies } from 'next/headers'
 
-const http = createClient({
-  baseUrl: 'https://api.example.com',
+export const api = createFetch({
+  baseUrl: process.env.API_URL ?? process.env.NEXT_PUBLIC_API_URL,
   source: 'ssr', // 'browser' | 'ssr' | 'edge'
   timeoutMs: 15_000,
   maxRetries: 2,
-  throwOnError: false,
+  throwOnError: true, // default — Query-friendly
   credentials: 'include',
-  headers: {
-    'x-app': 'web',
-  },
+  headers: { 'x-app': 'web' },
   plugins: ['trace', 'ssr-forward', 'retry-idempotent', 'sse-resume'],
   incoming: async () => ({
     cookie: (await cookies()).toString(),
@@ -57,260 +280,147 @@ const http = createClient({
 })
 ```
 
-| Option | Type | Default | Description |
-| --- | --- | --- | --- |
-| `baseUrl` | `string` | — | API origin. Required for SSR/Edge (must be absolute). |
-| `source` | `'browser' \| 'ssr' \| 'edge'` | `'browser'` | Where the client runs. |
-| `headers` | `HeadersInit \| () => ...` | — | Default headers (static or async). |
-| `incoming` | object \| async fn | — | Cookie / auth / request-id from the server request. |
-| `plugins` | `PluginName[]` | `[]` | Built-in interceptors by name. |
-| `interceptors` | `HttpInterceptor[]` | `[]` | Custom interceptors at create time. |
-| `timeoutMs` | `number` | `30000` | Per-request timeout. |
-| `maxRetries` | `number` | `2` | Retry budget for interceptors that return `retry`. |
-| `throwOnError` | `boolean` | `false` | Throw instead of returning `Result`. |
-| `credentials` | `RequestCredentials` | — | Passed to `fetch`. |
-| `fetch` | `typeof fetch` | `globalThis.fetch` | Custom fetch (tests, polyfills). |
+| Option | Default | Notes |
+| --- | --- | --- |
+| `baseUrl` | — | Absolute URL required on SSR/Edge |
+| `source` | `'browser'` | Runtime |
+| `throwOnError` | `true` | `false` → `FetchResult` |
+| `plugins` | `[]` | Built-in interceptors |
+| `timeoutMs` | `30000` | Combined with Query `signal` |
+| `maxRetries` | `2` | For interceptor `retry` actions |
+| `fetch` | `globalThis.fetch` | Inject in tests |
 
 ---
 
-## HTTP methods
+## HTTP
 
 ```ts
-await http.get<User[]>('/users')
-await http.get<User>('/users/:id', { params: { id: '42' } })
-await http.get<User[]>('/users', { query: { page: 1, active: true } })
+await api.get<User[]>('/users')
+await api.get<User>('/users/:id', { params: { id: '42' }, signal })
+await api.get<User[]>('/users', { query: { page: 1, active: true } })
 
-await http.post<User>('/users', {
-  body: { name: 'Ada', email: 'ada@example.com' },
-})
+await api.post<User>('/users', { body: { name: 'Ada' } })
+await api.put<User>('/users/:id', { params: { id: '42' }, body: { name: 'Ada' } })
+await api.patch<User>('/users/:id', { params: { id: '42' }, body: { email: 'a@b.c' } })
+await api.delete<void>('/users/:id', { params: { id: '42' } })
 
-await http.put<User>('/users/:id', {
-  params: { id: '42' },
-  body: { name: 'Ada Lovelace' },
-})
-
-await http.patch<User>('/users/:id', {
-  params: { id: '42' },
-  body: { email: 'ada@lovelace.dev' },
-})
-
-await http.delete<void>('/users/:id', {
-  params: { id: '42' },
-})
-
-// Any method
-await http.request<User>('GET', '/users/:id', { params: { id: '1' } })
-```
-
-### Path params, query, body, headers
-
-```ts
-await http.get('/orgs/:orgId/users/:userId', {
-  params: { orgId: 'acme', userId: 7 },
-  query: {
-    include: 'roles',
-    limit: 20,
-    draft: undefined, // omitted from the URL
-  },
-  headers: {
-    'x-locale': 'en',
-  },
-  timeoutMs: 5_000,
-  parseAs: 'json', // 'json' | 'text' | 'blob'
-})
-```
-
-Path templates use `:param` style:
-
-```ts
-// → https://api.example.com/users/1?page=2
-await http.get('/users/:id', {
-  params: { id: '1' },
-  query: { page: 2 },
-})
+await api.request<User>('GET', '/users/:id', { params: { id: '1' } })
 ```
 
 ---
 
-## Result type (default)
-
-By default every call returns a discriminated union — no try/catch required:
+## `FetchError`
 
 ```ts
-type HttpResult<T, E = HttpError> =
-  | { ok: true; status: number; data: T; headers: Headers }
-  | { ok: false; status: number; error: E; headers: Headers }
-
-type HttpError = {
-  status: number
-  code: string
-  message: string
-  body: unknown
-}
-```
-
-```ts
-const result = await http.get<User>('/users/1')
-
-if (result.ok) {
-  result.data.name
-} else {
-  result.error.code // e.g. 'NOT_FOUND'
-  result.error.message
-  result.error.body
-}
-```
-
-### Throw on error
-
-```ts
-const http = createClient({
-  baseUrl: 'https://api.example.com',
-  throwOnError: true,
-})
+import { FetchError, isFetchError } from 'tanstack-fetch'
 
 try {
-  const result = await http.get<User>('/users/1')
-  // result.ok is true here
-  console.log(result.data)
+  await api.get('/secure')
 } catch (error) {
-  // network / HTTP failure
+  if (isFetchError(error)) {
+    error.status
+    error.code
+    error.message
+    error.body
+    error.headers
+    error.result // full FetchResult
+  }
 }
 ```
 
-Or per request:
-
-```ts
-await http.get('/users/1', { throwOnError: true })
-```
+Abort / cancel from TanStack Query is **not** wrapped — `AbortError` propagates so Query can ignore cancelled fetches.
 
 ---
 
 ## Plugins
 
-Plugins are **built-in interceptors**. Pass names to `createClient` — no boilerplate.
+Built-in interceptors — enable by name:
 
 ```ts
-const http = createClient({
+createFetch({
   baseUrl: 'https://api.example.com',
-  source: 'ssr',
   plugins: ['trace', 'ssr-forward', 'retry-idempotent', 'sse-resume'],
 })
 ```
 
-You can also import a factory and register it yourself:
+| Plugin | Role |
+| --- | --- |
+| `trace` | Sets `x-request-id` |
+| `ssr-forward` | Forwards cookie/auth/request-id on SSR (no-op in browser) |
+| `retry-idempotent` | Retries GET/HEAD/OPTIONS on 502/503/504 |
+| `sse-resume` | Drops heartbeats; sends `Last-Event-ID` on reconnect |
 
 ```ts
 import {
-  createClient,
+  createFetch,
   createTraceInterceptor,
   createSsrForwardInterceptor,
-} from 'ssrfetch'
+} from 'tanstack-fetch'
 
-const http = createClient({ baseUrl: 'https://api.example.com' })
-http.use('trace', createTraceInterceptor())
-http.use('ssr-forward', createSsrForwardInterceptor())
+const api = createFetch({ baseUrl: 'https://api.example.com' })
+api.use('trace', createTraceInterceptor())
+api.use('ssr-forward', createSsrForwardInterceptor())
 ```
 
 ### `trace`
 
-Adds `x-request-id` to every request (from `incoming.requestId`, or a new UUID).
-
 ```ts
-const http = createClient({
+const api = createFetch({
   baseUrl: 'https://api.example.com',
   plugins: ['trace'],
-  incoming: { requestId: 'req-from-gateway-123' },
+  incoming: { requestId: 'req-from-gateway' },
 })
-
-await http.get('/users')
-// Request header: x-request-id: req-from-gateway-123
+await api.get('/users')
+// → header x-request-id: req-from-gateway
 ```
 
-Without `incoming.requestId`:
+### `ssr-forward` (Next.js)
 
 ```ts
-const http = createClient({
-  baseUrl: 'https://api.example.com',
-  plugins: ['trace'],
-})
-
-await http.get('/users')
-// Request header: x-request-id: <random-uuid>
-```
-
-### `ssr-forward`
-
-On **SSR / Edge**, forwards cookie, authorization, and request-id from `incoming` onto the outbound request. On **browser**, it skips (does nothing).
-
-```ts
-// Next.js App Router — Server Component / Route Handler
 import { cookies, headers } from 'next/headers'
-import { createClient } from 'ssrfetch'
+import { createFetch } from 'tanstack-fetch'
 
-const http = createClient({
-  baseUrl: process.env.API_URL,
-  source: 'ssr',
-  plugins: ['ssr-forward', 'trace'],
-  incoming: async () => {
-    const jar = await cookies()
-    const h = await headers()
-    return {
-      cookie: jar.toString(),
-      authorization: h.get('authorization') ?? undefined,
-      requestId: h.get('x-request-id') ?? undefined,
-    }
-  },
-})
-
-const me = await http.get<User>('/me')
-// Outbound request includes Cookie / Authorization from the browser → Next → API hop
-```
-
-Browser client (plugin is a no-op):
-
-```ts
-const http = createClient({
-  baseUrl: 'https://api.example.com',
-  source: 'browser',
-  plugins: ['ssr-forward'], // safely ignored in the browser
-})
+export const createServerApi = async () =>
+  createFetch({
+    baseUrl: process.env.API_URL!,
+    source: 'ssr',
+    plugins: ['ssr-forward', 'trace', 'retry-idempotent'],
+    incoming: async () => {
+      const jar = await cookies()
+      const h = await headers()
+      return {
+        cookie: jar.toString(),
+        authorization: h.get('authorization') ?? undefined,
+        requestId: h.get('x-request-id') ?? undefined,
+      }
+    },
+  })
 ```
 
 ### `retry-idempotent`
 
-Retries **idempotent** methods (`GET`, `HEAD`, `OPTIONS`) when the status is `502`, `503`, or `504`. Backoff: `200ms * (attempt + 1)`.
-
 ```ts
-const http = createClient({
+const api = createFetch({
   baseUrl: 'https://api.example.com',
   plugins: ['retry-idempotent'],
   maxRetries: 2,
 })
 
-// GET may retry on 503
-await http.get('/health')
-
-// POST is not retried by this plugin
-await http.post('/orders', { body: { sku: 'ABC' } })
+await api.get('/health') // may retry on 503
+await api.post('/orders', { body: { sku: 'A' } }) // not retried
 ```
 
 ### `sse-resume`
 
-For SSE streams:
-
-1. Drops `ping` / `heartbeat` events so your loop only sees real data.
-2. On reconnect, sends `Last-Event-ID` from the last received event.
-
 ```ts
-const http = createClient({
+const api = createFetch({
   baseUrl: 'https://api.example.com',
   plugins: ['sse-resume'],
 })
 
-for await (const event of http.sse<OrderEvent>('/orders/stream')) {
-  // ping / heartbeat never reach here
-  console.log(event.id, event.event, event.data)
+for await (const event of api.sse<OrderEvent>('/orders/stream')) {
+  // ping / heartbeat never yield
+  console.log(event.id, event.data)
 }
 ```
 
@@ -318,96 +428,42 @@ for await (const event of http.sse<OrderEvent>('/orders/stream')) {
 
 ## Interceptors
 
-Named, ordered, matchable, and removable. Same pipeline for HTTP and SSE.
-
-### Add / replace / remove
+Named, ordered, removable — customize auth, logging, mocks.
 
 ```ts
-http.use('auth', {
+api.use('auth', {
   order: 20,
   onRequest: async (context) => {
     context.request.headers.set('authorization', `Bearer ${await getToken()}`)
-    return { action: 'continue', context }
-  },
-})
-
-// Same name replaces the previous one
-http.use('auth', { onRequest: () => ({ action: 'continue' }) })
-
-http.eject('auth')
-```
-
-### Per-request interceptors
-
-```ts
-// Skip auth for a public route
-await http.get('/public/config', {
-  interceptors: { eject: ['auth'] },
-})
-
-// Add a one-off interceptor for this call only
-await http.get('/admin', {
-  interceptors: {
-    use: [
-      {
-        name: 'admin-flag',
-        onRequest: (context) => {
-          context.request.headers.set('x-admin', '1')
-          return { action: 'continue', context }
-        },
-      },
-    ],
-  },
-})
-```
-
-### Auth + refresh example
-
-```ts
-let token = await loadToken()
-
-http.use('auth', {
-  order: 20,
-  onRequest: (context) => {
-    context.request.headers.set('authorization', `Bearer ${token}`)
     return { action: 'continue', context }
   },
   onResponseError: async (context) => {
     if (context.error?.status !== 401 || context.meta.attempt > 0) {
       return { action: 'continue', context }
     }
-    token = await refreshToken()
+    await refreshToken()
     return { action: 'retry' }
   },
 })
+
+api.eject('auth')
+
+// Per-request
+await api.get('/public', { interceptors: { eject: ['auth'] } })
 ```
 
-### Logging example
+### Actions
+
+`continue` · `skip` · `drop` (SSE) · `retry` · `short-circuit`
+
+### Hooks
+
+`onRequest` · `onRequestError` · `onResponse` · `onResponseError` · `onSseOpen` · `onSseEvent` · `onSseError` · `onSseReconnect`
+
+### Mock short-circuit
 
 ```ts
-http.use('log', {
-  order: 5,
-  onRequest: (context) => {
-    console.log('→', context.request.method, context.request.url.href)
-    return { action: 'continue', context }
-  },
-  onResponse: (context) => {
-    console.log('←', context.response?.status, context.request.url.pathname)
-    return { action: 'continue', context }
-  },
-  onResponseError: (context) => {
-    console.error('✗', context.error?.status, context.error?.code)
-    return { action: 'continue', context }
-  },
-})
-```
-
-### Mock / short-circuit example
-
-Skip the network entirely (useful in Storybook or tests):
-
-```ts
-http.use('mock-users', {
+api.use('mock-users', {
   match: { pathPrefix: '/users' },
   onRequest: () => ({
     action: 'short-circuit',
@@ -419,313 +475,163 @@ http.use('mock-users', {
     },
   }),
 })
-
-const users = await http.get('/users')
-// fetch is never called
 ```
-
-### Match filters
-
-Only run when the request matches:
-
-```ts
-http.use('billing-only', {
-  match: {
-    pathPrefix: '/billing',
-    method: 'POST',
-    // operation: 'createInvoice', // if you set options.operation
-    // status: 402,               // for response hooks
-  },
-  onRequest: (context) => {
-    context.request.headers.set('x-billing-version', '2')
-    return { action: 'continue', context }
-  },
-})
-
-await http.post('/billing/invoices', {
-  body: { amount: 10 },
-  operation: 'createInvoice',
-})
-```
-
-### Actions
-
-| Action | Meaning |
-| --- | --- |
-| `continue` | Keep going (optionally with an updated `context`). |
-| `skip` | Skip **this** interceptor; continue the chain. |
-| `drop` | SSE only — discard the event (e.g. heartbeat). |
-| `retry` | Retry the request (`delayMs` optional). |
-| `short-circuit` | Return a `HttpResult` immediately; no network. |
-
-### Hooks
-
-| Hook | When |
-| --- | --- |
-| `onRequest` | Before `fetch` |
-| `onRequestError` | Request setup / network failure before a response |
-| `onResponse` | After a successful HTTP response |
-| `onResponseError` | After an HTTP error response |
-| `onSseOpen` | SSE stream opened |
-| `onSseEvent` | Each SSE event |
-| `onSseError` | SSE error |
-| `onSseReconnect` | Before SSE reconnect |
-
-`order` defaults to `100`. Lower runs earlier on the way in.
 
 ---
 
-## Next.js SSR
+## TanStack Query + Next.js SSR
 
 ```ts
-// lib/http.ts
-import { createClient } from 'ssrfetch'
+// lib/api.ts
+import { createFetch } from 'tanstack-fetch'
 import { cookies } from 'next/headers'
 
-export const createServerHttp = async () =>
-  createClient({
+export const createServerApi = async () =>
+  createFetch({
     baseUrl: process.env.API_URL!,
     source: 'ssr',
     plugins: ['trace', 'ssr-forward', 'retry-idempotent'],
-    incoming: async () => ({
-      cookie: (await cookies()).toString(),
-    }),
+    incoming: async () => ({ cookie: (await cookies()).toString() }),
   })
 ```
 
 ```tsx
-// app/users/page.tsx
-import { createServerHttp } from '#/lib/http'
+// app/users/page.tsx — prefetch into Query cache
+import { dehydrate, HydrationBoundary, QueryClient } from '@tanstack/react-query'
+import { createServerApi } from '#/lib/api'
+import { UsersClient } from './users-client'
 
 const UsersPage = async () => {
-  const http = await createServerHttp()
-  const result = await http.get<User[]>('/users')
+  const api = await createServerApi()
+  const queryClient = new QueryClient()
 
-  if (!result.ok) {
-    return <p>Failed: {result.error.message}</p>
-  }
+  await queryClient.prefetchQuery({
+    queryKey: ['users'],
+    queryFn: () => api.get<User[]>('/users'),
+  })
 
   return (
-    <ul>
-      {result.data.map((user) => (
-        <li key={user.id}>{user.name}</li>
-      ))}
-    </ul>
+    <HydrationBoundary state={dehydrate(queryClient)}>
+      <UsersClient />
+    </HydrationBoundary>
   )
 }
 
 export default UsersPage
 ```
 
-### Browser client
-
-```ts
+```tsx
+// users-client.tsx
 'use client'
 
-import { createClient } from 'ssrfetch'
+import { useQuery } from '@tanstack/react-query'
+import { createFetch } from 'tanstack-fetch'
 
-export const browserHttp = createClient({
+const browserApi = createFetch({
   baseUrl: process.env.NEXT_PUBLIC_API_URL,
   source: 'browser',
   credentials: 'include',
-  plugins: ['trace', 'retry-idempotent', 'sse-resume'],
+  plugins: ['trace', 'retry-idempotent'],
 })
 
-browserHttp.use('auth', {
-  onRequest: (context) => {
-    const token = localStorage.getItem('token')
-    if (token) {
-      context.request.headers.set('authorization', `Bearer ${token}`)
-    }
-    return { action: 'continue', context }
-  },
-})
+export const UsersClient = () => {
+  const { data } = useQuery({
+    queryKey: ['users'],
+    queryFn: ({ signal }) => browserApi.get<User[]>('/users', { signal }),
+  })
+
+  return (
+    <ul>
+      {data?.map((user) => (
+        <li key={user.id}>{user.name}</li>
+      ))}
+    </ul>
+  )
+}
 ```
 
 ---
 
 ## SSE
 
-Uses `fetch` + streaming (not `EventSource`), so **Authorization**, cookies, and SSR all work.
+Uses `fetch` streams (not `EventSource`) — Authorization and SSR work.
 
 ```ts
-const http = createClient({
-  baseUrl: 'https://api.example.com',
-  plugins: ['sse-resume', 'trace'],
-})
-
-http.use('auth', {
-  onRequest: (context) => {
-    context.request.headers.set('authorization', `Bearer ${getToken()}`)
-    return { action: 'continue', context }
-  },
-})
-
-for await (const event of http.sse<OrderEvent>('/orders/stream', {
-  query: { accountId: '42' },
-})) {
-  console.log(event.event) // e.g. 'order.updated'
-  console.log(event.data) // typed OrderEvent
-  console.log(event.id) // for resume
+for await (const event of api.sse<OrderEvent>('/orders/stream', { signal })) {
+  event.event
+  event.data
+  event.id
 }
-```
-
-Custom SSE interceptor:
-
-```ts
-http.use('sse-log', {
-  onSseOpen: (context) => {
-    console.log('stream open', context.request.url.href)
-    return { action: 'continue', context }
-  },
-  onSseEvent: (context) => {
-    if (context.event.event === 'debug') {
-      return { action: 'drop' }
-    }
-    return { action: 'continue', context }
-  },
-  onSseReconnect: (context) => {
-    console.log('reconnecting, last id', context.meta.lastEventId)
-    return { action: 'continue', context }
-  },
-})
-```
-
-With AbortSignal:
-
-```ts
-const controller = new AbortController()
-
-const loop = (async () => {
-  for await (const event of http.sse('/events', { signal: controller.signal })) {
-    console.log(event.data)
-  }
-})()
-
-// later
-controller.abort()
-await loop
 ```
 
 ---
 
 ## OpenAPI CLI
 
-Generate a typed API client from OpenAPI / Swagger (JSON or YAML):
-
 ```bash
-npx ssrfetch generate --spec ./openapi.yaml --out ./src/api
+npx tanstack-fetch generate --spec ./openapi.yaml --out ./src/api
 ```
-
-Writes:
-
-- `types.ts` — schemas from `components.schemas`
-- `client.ts` — `createApi()` grouped by tags
-- `index.ts` — re-exports
-
-`text/event-stream` responses become `http.sse()`.
-
-### Spec snippet
-
-```yaml
-paths:
-  /users/{id}:
-    get:
-      operationId: getUser
-      tags: [users]
-      parameters:
-        - name: id
-          in: path
-          required: true
-          schema: { type: string }
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/User'
-  /events:
-    get:
-      operationId: streamEvents
-      tags: [events]
-      responses:
-        '200':
-          content:
-            text/event-stream:
-              schema:
-                $ref: '#/components/schemas/OrderEvent'
-```
-
-### Generated usage
 
 ```ts
 import { createApi } from './api'
+import { queryOptions } from '@tanstack/react-query'
 
 const api = createApi({
-  baseUrl: process.env.API_URL,
-  source: 'ssr',
-  plugins: ['ssr-forward', 'trace'],
+  baseUrl: process.env.NEXT_PUBLIC_API_URL,
+  plugins: ['trace', 'retry-idempotent'],
 })
 
-const user = await api.users.getUser({ params: { id: '1' } })
-if (user.ok) {
-  console.log(user.data)
-}
-
-for await (const event of api.events.streamEvents()) {
-  console.log(event.data)
-}
+export const getUserOptions = (id: string) =>
+  queryOptions({
+    queryKey: ['users', id],
+    queryFn: ({ signal }) => api.users.getUser({ params: { id }, signal }),
+  })
 ```
 
 ---
 
-## Try the local example
+## Helpers
+
+```ts
+import { unwrap, unwrapAsync, isFetchError, isAbortError } from 'tanstack-fetch'
+
+// When you already have a FetchResult
+const user = unwrap(result)
+const user2 = await unwrapAsync(api.get('/users/1', { throwOnError: false }))
+```
+
+---
+
+## Example
 
 ```bash
 npm run example
 ```
 
-Starts a tiny demo server, creates a client with plugins + a `log` interceptor, then runs HTTP + SSE calls.
-
----
-
-## API surface
+## API
 
 ```ts
 import {
-  createClient,
+  createFetch,
+  createFetchError,
+  isFetchError,
+  isAbortError,
+  unwrap,
+  unwrapAsync,
   createTraceInterceptor,
   createSsrForwardInterceptor,
   createRetryIdempotentInterceptor,
   createSseResumeInterceptor,
-} from 'ssrfetch'
-
-import type {
-  CreateClientOptions,
-  HttpClient,
-  HttpError,
-  HttpInterceptor,
-  HttpMethod,
-  HttpResult,
-  IncomingHeaders,
-  PluginName,
-  RequestContext,
-  RequestOptions,
-  SseEvent,
-} from 'ssrfetch'
+} from 'tanstack-fetch'
 ```
 
-| Client method | Description |
+| Method | Description |
 | --- | --- |
-| `get` / `post` / `put` / `patch` / `delete` | Typed HTTP helpers |
-| `request(method, path, options?)` | Generic method |
-| `sse(path, options?)` | Async iterable of SSE events |
-| `use(name, interceptor)` | Register / replace interceptor |
-| `eject(name)` | Remove interceptor |
-
----
+| `get/post/put/patch/delete` | Typed HTTP → `Promise<T>` |
+| `request(method, path, opts?)` | Generic verb |
+| `sse(path, opts?)` | Async iterable |
+| `use` / `eject` | Interceptors |
 
 ## License
 
 MIT
-# ssrfetch

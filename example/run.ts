@@ -1,4 +1,4 @@
-import { createClient } from '../src'
+import { createFetch } from '../src'
 import { createExampleServer } from './server'
 
 const runExample = async () => {
@@ -11,14 +11,14 @@ const runExample = async () => {
     throw new Error('example server did not bind a port')
   }
 
-  const http = createClient({
+  const api = createFetch({
     baseUrl: `http://127.0.0.1:${address.port}`,
     source: 'ssr',
     plugins: ['trace', 'ssr-forward', 'sse-resume'],
     incoming: { cookie: 'session=demo', requestId: 'example-1' },
   })
 
-  http.use('log', {
+  api.use('log', {
     order: 5,
     onRequest: (context) => {
       console.log(`${context.request.method} ${context.request.url.pathname}`)
@@ -26,20 +26,19 @@ const runExample = async () => {
     },
   })
 
-  const users = await http.get<Array<{ id: string; name: string }>>('/users', {
+  const users = await api.get<Array<{ id: string; name: string }>>('/users', {
     query: { page: 1 },
   })
-  if (users.ok) {
-    console.log('users', users.data)
-  }
+  console.log('users', users)
 
-  const missing = await http.get('/missing')
-  if (!missing.ok) {
-    console.log('error', missing.error.code, missing.error.message)
+  try {
+    await api.get('/missing')
+  } catch (error) {
+    console.log('error', error)
   }
 
   const events = []
-  for await (const event of http.sse<{ id: number; status: string }>('/events')) {
+  for await (const event of api.sse<{ id: number; status: string }>('/events')) {
     events.push(event)
   }
   console.log('sse events', events)

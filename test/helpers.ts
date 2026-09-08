@@ -1,4 +1,4 @@
-import { createClient } from '../src'
+import { createFetch } from '../src'
 
 type JsonResponse = {
   status?: number
@@ -12,8 +12,8 @@ const jsonResponse = ({ status = 200, body, headers }: JsonResponse = {}) =>
     headers: { 'content-type': 'application/json', ...headers },
   })
 
-const createTestClient = (fetchImpl: typeof fetch, extra?: Parameters<typeof createClient>[0]) =>
-  createClient({
+const createTestClient = (fetchImpl: typeof fetch, extra?: Parameters<typeof createFetch>[0]) =>
+  createFetch({
     baseUrl: 'https://api.example.com',
     fetch: fetchImpl,
     timeoutMs: 5_000,

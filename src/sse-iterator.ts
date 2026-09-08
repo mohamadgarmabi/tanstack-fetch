@@ -2,7 +2,7 @@ import type { SseEvent } from './types'
 import { resolveInterceptors, runHook } from './interceptors/run-interceptors'
 import { consumeSseBuffer } from './sse-parse'
 import { wait } from './utils/signals'
-import { toHttpError } from './utils/result'
+import { toFetchErrorInfo } from './utils/result'
 import { createSseContext, type SendSseArgs } from './sse-context'
 
 const createSseIterator = <T>(args: SendSseArgs): AsyncIterator<SseEvent<T>> => {
@@ -36,7 +36,7 @@ const createSseIterator = <T>(args: SendSseArgs): AsyncIterator<SseEvent<T>> => 
 
   const openStream = async (): Promise<boolean> => {
     if (!fetchImpl) {
-      throw new Error('ssrfetch: fetch is not available')
+      throw new Error('tanstack-fetch: fetch is not available')
     }
     let context = await createSseContext(args, attempt, lastEventId)
     const before = await runHook(interceptors, (item) => item.onRequest, context)
@@ -54,7 +54,7 @@ const createSseIterator = <T>(args: SendSseArgs): AsyncIterator<SseEvent<T>> => 
     })
     context.response = response
     if (!response.ok || !response.body) {
-      context.error = toHttpError(response.status, await response.text())
+      context.error = toFetchErrorInfo(response.status, await response.text())
       const failed = await runHook(interceptors, (item) => item.onSseError, context)
       if (failed.type === 'retry' && attempt < context.meta.maxRetries) {
         attempt += 1

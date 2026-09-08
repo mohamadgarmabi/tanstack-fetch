@@ -7,7 +7,7 @@ const loadSpec = async (specPath: string): Promise<OpenApiSpec> => {
   const parsed: unknown =
     specPath.endsWith('.yaml') || specPath.endsWith('.yml') ? parseYaml(raw) : JSON.parse(raw)
   if (!parsed || typeof parsed !== 'object') {
-    throw new Error('ssrfetch: OpenAPI spec must be an object')
+    throw new Error('tanstack-fetch: OpenAPI spec must be an object')
   }
   return parsed as OpenApiSpec
 }
