@@ -14,7 +14,7 @@ const HANDLER_KEYS = ['onMessage', 'onEvent', 'onOpen', 'onError', 'onClose', 'l
 const splitSseOptions = <T>(options?: SseCallOptions<T>) => {
   const handlers: SseHandlers<T> = {}
   const requestOptions: RequestOptions = { ...(options ?? {}) }
-  let lastEventId = options?.lastEventId
+  const lastEventId = options?.lastEventId
 
   for (const key of HANDLER_KEYS) {
     if (key === 'lastEventId') {
