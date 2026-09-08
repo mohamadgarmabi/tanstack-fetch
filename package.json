@@ -1,0 +1,80 @@
+{
+  "name": "typed-ssr-http",
+  "version": "1.0.0",
+  "description": "Typed fetch client for React and Next.js with SSR, SSE, named interceptors, and OpenAPI codegen.",
+  "license": "MIT",
+  "author": {
+    "name": "Mohammad Garmabi",
+    "email": "mwmdgmb@gmail.com",
+    "url": "https://github.com/mohamadgarmabi"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mohamadgarmabi/typed-ssr-http.git"
+  },
+  "bugs": {
+    "url": "https://github.com/mohamadgarmabi/typed-ssr-http/issues"
+  },
+  "homepage": "https://github.com/mohamadgarmabi/typed-ssr-http#readme",
+  "keywords": [
+    "fetch",
+    "http",
+    "typescript",
+    "ssr",
+    "sse",
+    "openapi",
+    "swagger",
+    "nextjs",
+    "react",
+    "interceptor"
+  ],
+  "type": "module",
+  "sideEffects": false,
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "bin": {
+    "typed-ssr-http": "./dist/cli.js"
+  },
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
+    }
+  },
+  "files": [
+    "dist",
+    "LICENSE",
+    "README.md"
+  ],
+  "engines": {
+    "node": ">=18"
+  },
+  "scripts": {
+    "build": "tsup",
+    "dev": "tsup --watch",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint src test example",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "example": "tsx example/run.ts",
+    "prepublishOnly": "npm run typecheck && npm run lint && npm test && npm run build"
+  },
+  "dependencies": {
+    "yaml": "^2.8.1"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.36.0",
+    "@types/node": "^24.5.2",
+    "eslint": "^9.36.0",
+    "prettier": "^3.6.2",
+    "tsx": "^4.20.5",
+    "tsup": "^8.5.0",
+    "typescript": "^5.9.2",
+    "typescript-eslint": "^8.44.0",
+    "vitest": "^3.2.4"
+  }
+}
