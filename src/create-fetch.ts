@@ -2,7 +2,6 @@ import { createConfigInterceptors } from './plugins/config-interceptors'
 import { pluginFactories } from './plugins'
 import { createFetchError } from './fetch-error'
 import { sendRequest } from './request'
-import { createSseApi } from './sse-listen'
 import type {
   CreateFetchOptions,
   FetchClient,
@@ -13,7 +12,12 @@ import type {
   RequestOptions,
 } from './types'
 
-const createFetch = (options: CreateFetchOptions = {}): FetchClient => {
+type FetchContext = {
+  clientOptions: CreateFetchOptions
+  interceptors: HttpInterceptor[]
+}
+
+const createFetchContext = (options: CreateFetchOptions = {}): FetchContext => {
   const clientOptions: CreateFetchOptions = {
     throwOnError: true,
     ...options,
@@ -24,6 +28,12 @@ const createFetch = (options: CreateFetchOptions = {}): FetchClient => {
     ...(clientOptions.plugins ?? []).map((name) => pluginFactories[name]()),
     ...(clientOptions.interceptors ?? []),
   ]
+
+  return { clientOptions, interceptors }
+}
+
+const createHttpClient = (context: FetchContext): Omit<FetchClient, 'sse'> => {
+  const { clientOptions, interceptors } = context
 
   const use: FetchClient['use'] = (name, interceptor, config) => {
     const next: HttpInterceptor = {
@@ -74,8 +84,6 @@ const createFetch = (options: CreateFetchOptions = {}): FetchClient => {
     return bound as FetchClient['get']
   }
 
-  const sse = createSseApi({ client: clientOptions, interceptors })
-
   return {
     use,
     eject,
@@ -85,11 +93,15 @@ const createFetch = (options: CreateFetchOptions = {}): FetchClient => {
     put: bindMethod('PUT'),
     patch: bindMethod('PATCH'),
     delete: bindMethod('DELETE'),
-    sse,
   }
 }
+
+/** Tiny HTTP client (no SSE). For streams use `tanstack-fetch/sse`. */
+const createFetch = (options?: CreateFetchOptions): Omit<FetchClient, 'sse'> =>
+  createHttpClient(createFetchContext(options))
 
 /** @deprecated Use createFetch */
 const createClient = createFetch
 
-export { createFetch, createClient }
+export { createFetch, createClient, createFetchContext, createHttpClient }
+export type { FetchContext }

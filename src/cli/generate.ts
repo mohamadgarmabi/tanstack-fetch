@@ -69,9 +69,14 @@ const generateClientFile = (spec: OpenApiSpec, operations: CollectedOperation[])
   const schemaNames = Object.keys(spec.components?.schemas ?? {}).map((name) => toPascal(name))
   const typesImport =
     schemaNames.length > 0 ? `import type { ${schemaNames.join(', ')} } from './types'\n` : ''
+  const hasSse = operations.some((item) => item.isSse)
+  const fetchImport = hasSse
+    ? `import { createFetch } from 'tanstack-fetch/sse'
+import type { CreateFetchOptions, RequestOptions } from 'tanstack-fetch'`
+    : `import { createFetch } from 'tanstack-fetch'
+import type { CreateFetchOptions, RequestOptions } from 'tanstack-fetch'`
 
-  return `import { createFetch } from 'tanstack-fetch'
-import type { CreateFetchOptions, RequestOptions } from 'tanstack-fetch'
+  return `${fetchImport}
 ${typesImport}
 const createApi = (options: CreateFetchOptions = {}) => {
   const api = createFetch(options)

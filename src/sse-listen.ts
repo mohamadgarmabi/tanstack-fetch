@@ -1,5 +1,5 @@
 import { isAbortError } from './fetch-error'
-import { sendSse } from './sse'
+import { sendSse } from './sse-stream'
 import { combineSignals } from './utils/signals'
 import type { SendSseArgs } from './sse-context'
 import type { RequestOptions, SseEvent, SseHandlers, SseSubscription } from './types'

@@ -1,4 +1,4 @@
-import { createFetch } from '../src'
+import { createFetch } from '../src/sse'
 import { createExampleServer } from './server'
 
 const runExample = async () => {

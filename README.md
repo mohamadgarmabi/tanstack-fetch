@@ -1,8 +1,13 @@
 # tanstack-fetch
 
-Typed `fetch` client shaped for **TanStack Query**.
+Typed `fetch` client shaped for **TanStack Query** — tiny HTTP core, optional SSE / React.
 
-`queryFn` / `mutationFn` ready by default: returns **data**, throws **`FetchError`**, passes **`signal`**. Works in browser, SSR, and Edge — with SSE, named interceptors, and OpenAPI codegen.
+| Import | What you get | Typical gzip |
+| --- | --- | --- |
+| `tanstack-fetch` | HTTP only (`get/post/…`) | **~3KB** |
+| `tanstack-fetch/sse` | + `api.sse()` | **~5KB** |
+| `tanstack-fetch/plugins` | plugin factories | **~1KB** |
+| `tanstack-fetch/react` | `FetchProvider` / `useFetch` / `useSse` | thin |
 
 ```bash
 npm install tanstack-fetch
@@ -11,6 +16,24 @@ npm install tanstack-fetch
 Node 18+ (native `fetch`).
 
 > Not an official TanStack package — built to fit the same mental model as `@tanstack/react-query`.
+
+---
+
+## Bundle size
+
+Tree-shake by importing only what you need:
+
+```ts
+// smallest — HTTP for TanStack Query
+import { createFetch } from 'tanstack-fetch'
+
+// only when you need streams
+import { createFetch } from 'tanstack-fetch/sse'
+```
+
+`yaml` is an **optional** peer (CLI YAML specs only). React is optional too.
+
+Run `npm run size` after build to print local gzip numbers.
 
 ---
 
@@ -555,6 +578,8 @@ await api.post('/orders', { body: { sku: 'A' } }) // not retried
 ### `sse-resume`
 
 ```ts
+import { createFetch } from 'tanstack-fetch/sse'
+
 const api = createFetch({
   baseUrl: 'https://api.example.com',
   plugins: ['sse-resume'],
@@ -703,6 +728,13 @@ Uses `fetch` streams (not `EventSource`) — Authorization, cookies, and SSR wor
 ### Simple — `onMessage`
 
 ```ts
+import { createFetch } from 'tanstack-fetch/sse'
+
+const api = createFetch({
+  baseUrl: 'https://api.example.com',
+  plugins: ['sse-resume'],
+})
+
 const stream = api.sse<OrderEvent>('/orders/stream', {
   onMessage: (data) => {
     console.log(data) // just the payload
@@ -716,8 +748,22 @@ stream.close()
 
 ### React — `useSse`
 
+Pass a client created from `tanstack-fetch/sse`:
+
 ```tsx
-import { useSse } from 'tanstack-fetch/react'
+import { createFetch } from 'tanstack-fetch/sse'
+import { FetchProvider, useSse } from 'tanstack-fetch/react'
+
+const api = createFetch({
+  baseUrl: import.meta.env.VITE_API_URL,
+  plugins: ['sse-resume'],
+})
+
+const App = () => (
+  <FetchProvider client={api}>
+    <OrdersLive />
+  </FetchProvider>
+)
 
 const OrdersLive = () => {
   const { data, isConnected, error } = useSse<OrderEvent>('/orders/stream')
@@ -734,6 +780,10 @@ const OrdersLive = () => {
 ### Advanced — `for await`
 
 ```ts
+import { createFetch } from 'tanstack-fetch/sse'
+
+const api = createFetch({ baseUrl: 'https://api.example.com' })
+
 for await (const event of api.sse<OrderEvent>('/orders/stream', { signal })) {
   event.event
   event.data

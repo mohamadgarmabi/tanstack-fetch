@@ -1,4 +1,6 @@
 import { createFetch } from '../src'
+import { createFetch as createSseFetch } from '../src/sse'
+import type { CreateFetchOptions, FetchClient } from '../src'
 
 type JsonResponse = {
   status?: number
@@ -12,7 +14,10 @@ const jsonResponse = ({ status = 200, body, headers }: JsonResponse = {}) =>
     headers: { 'content-type': 'application/json', ...headers },
   })
 
-const createTestClient = (fetchImpl: typeof fetch, extra?: Parameters<typeof createFetch>[0]) =>
+const createTestClient = (
+  fetchImpl: typeof fetch,
+  extra?: CreateFetchOptions,
+): ReturnType<typeof createFetch> =>
   createFetch({
     baseUrl: 'https://api.example.com',
     fetch: fetchImpl,
@@ -20,4 +25,12 @@ const createTestClient = (fetchImpl: typeof fetch, extra?: Parameters<typeof cre
     ...extra,
   })
 
-export { jsonResponse, createTestClient }
+const createSseTestClient = (fetchImpl: typeof fetch, extra?: CreateFetchOptions): FetchClient =>
+  createSseFetch({
+    baseUrl: 'https://api.example.com',
+    fetch: fetchImpl,
+    timeoutMs: 5_000,
+    ...extra,
+  })
+
+export { jsonResponse, createTestClient, createSseTestClient }

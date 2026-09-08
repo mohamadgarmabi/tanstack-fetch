@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from 'vitest'
-import { createTestClient } from './helpers'
+import { createSseTestClient } from './helpers'
 
 const sseStream = (chunks: string[]) => {
   const encoder = new TextEncoder()
@@ -24,7 +24,7 @@ describe('tanstack-fetch sse', () => {
           { status: 200, headers: { 'content-type': 'text/event-stream' } },
         ),
       )
-    const http = createTestClient(fetchImpl, { plugins: ['sse-resume'] })
+    const http = createSseTestClient(fetchImpl, { plugins: ['sse-resume'] })
     const events = []
     for await (const event of http.sse<{ id: number; status: string }>('/events')) {
       events.push(event)
@@ -45,7 +45,7 @@ describe('tanstack-fetch sse', () => {
         headers: { 'content-type': 'text/event-stream' },
       }),
     )
-    const http = createTestClient(fetchImpl, { plugins: ['sse-resume'] })
+    const http = createSseTestClient(fetchImpl, { plugins: ['sse-resume'] })
     const messages: Array<{ n: number }> = []
 
     await new Promise<void>((resolve, reject) => {
@@ -67,7 +67,7 @@ describe('tanstack-fetch sse', () => {
         headers: { 'content-type': 'text/event-stream' },
       }),
     )
-    const http = createTestClient(fetchImpl, { plugins: ['sse-resume'] })
+    const http = createSseTestClient(fetchImpl, { plugins: ['sse-resume'] })
     const seen: string[] = []
     http.use('capture-id', {
       onSseEvent: (context) => {

@@ -87,6 +87,6 @@ describe('tanstack-fetch generate', () => {
     expect(client).toContain("api.get<User>('/users/:id'")
     expect(client).toContain("api.sse<OrderEvent>('/events'")
     expect(client).toContain('listUsers')
-    expect(client).toContain('createFetch')
+    expect(client).toContain("from 'tanstack-fetch/sse'")
   })
 })
