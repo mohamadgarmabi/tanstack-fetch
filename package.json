@@ -1,6 +1,6 @@
 {
   "name": "tanstack-fetch",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "TanStack Query–ready fetch client for React and Next.js. SSR, SSE, interceptors, OpenAPI codegen.",
   "license": "MIT",
   "author": {
