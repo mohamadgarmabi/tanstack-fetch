@@ -1,12 +1,14 @@
-import { useRef } from 'react'
+import { createContext, useContext, useRef, type Context } from 'react'
 import { createFetch } from '../create-fetch'
-import type { CreateFetchOptions, FetchClient } from '../types'
-import type { FetchProviderProps } from './fetch-provider.type'
-import { createContext, useContext, type Context } from 'react'
+import type { CreateFetchOptions } from '../types'
+import type { FetchProviderProps, HttpFetchClient } from './fetch-provider.type'
+import type { FetchClient } from '../types'
 
-const FetchContext: Context<FetchClient | null> = createContext<FetchClient | null>(null)
+type AnyFetchClient = FetchClient | HttpFetchClient
 
-const buildClient = (props: FetchProviderProps): FetchClient => {
+const FetchContext: Context<AnyFetchClient | null> = createContext<AnyFetchClient | null>(null)
+
+const buildClient = (props: FetchProviderProps): AnyFetchClient => {
   if (props.client) {
     return props.client
   }
@@ -15,7 +17,7 @@ const buildClient = (props: FetchProviderProps): FetchClient => {
 }
 
 const useFetchProviderState = (props: FetchProviderProps) => {
-  const createdRef = useRef<FetchClient | null>(null)
+  const createdRef = useRef<AnyFetchClient | null>(null)
 
   if (props.client) {
     return { value: props.client, children: props.children }
@@ -28,7 +30,7 @@ const useFetchProviderState = (props: FetchProviderProps) => {
   return { value: createdRef.current, children: props.children }
 }
 
-const useFetch = (): FetchClient => {
+const useFetch = (): AnyFetchClient => {
   const client = useContext(FetchContext)
   if (!client) {
     throw new Error('tanstack-fetch: useFetch() must be used inside <FetchProvider>')
@@ -37,3 +39,4 @@ const useFetch = (): FetchClient => {
 }
 
 export { FetchContext, useFetchProviderState, useFetch }
+export type { AnyFetchClient }

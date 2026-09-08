@@ -44,6 +44,16 @@
       "import": "./dist/index.js",
       "require": "./dist/index.cjs"
     },
+    "./sse": {
+      "types": "./dist/sse.d.ts",
+      "import": "./dist/sse.js",
+      "require": "./dist/sse.cjs"
+    },
+    "./plugins": {
+      "types": "./dist/plugins.d.ts",
+      "import": "./dist/plugins.js",
+      "require": "./dist/plugins.cjs"
+    },
     "./react": {
       "types": "./dist/react.d.ts",
       "import": "./dist/react.js",
@@ -67,19 +77,21 @@
     "lint": "eslint src test example",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
+    "size": "npm run build && node scripts/size.mjs",
     "example": "tsx example/run.ts",
     "prepublishOnly": "npm run typecheck && npm run lint && npm test && npm run build"
   },
   "peerDependencies": {
-    "react": ">=18"
+    "react": ">=18",
+    "yaml": "^2.0.0"
   },
   "peerDependenciesMeta": {
     "react": {
       "optional": true
+    },
+    "yaml": {
+      "optional": true
     }
-  },
-  "dependencies": {
-    "yaml": "^2.8.1"
   },
   "devDependencies": {
     "@eslint/js": "^9.36.0",
@@ -92,6 +104,7 @@
     "tsup": "^8.5.0",
     "typescript": "^5.9.2",
     "typescript-eslint": "^8.44.0",
-    "vitest": "^3.2.4"
+    "vitest": "^3.2.4",
+    "yaml": "^2.8.1"
   }
 }

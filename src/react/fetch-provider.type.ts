@@ -1,10 +1,11 @@
 import type { ReactNode } from 'react'
 import type { CreateFetchOptions, FetchClient } from '../types'
 
+type HttpFetchClient = Omit<FetchClient, 'sse'>
+
 type FetchProviderProps = CreateFetchOptions & {
   children: ReactNode
-  /** Pass an existing client instead of creating one from the other props. */
-  client?: FetchClient
+  client?: FetchClient | HttpFetchClient
 }
 
-export type { FetchProviderProps }
+export type { FetchProviderProps, HttpFetchClient }

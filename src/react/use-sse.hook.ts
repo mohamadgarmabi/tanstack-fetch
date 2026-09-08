@@ -2,10 +2,9 @@ import { useEffect, useRef, useState } from 'react'
 import { isFetchError } from '../fetch-error'
 import { useFetch } from './fetch-provider.hook'
 import type { FetchError } from '../fetch-error'
-import type { SseEvent } from '../types'
+import type { FetchClient, SseEvent } from '../types'
 
 type UseSseOptions<T> = {
-  /** When false, the stream is not opened. Default true. */
   enabled?: boolean
   lastEventId?: string
   params?: Record<string, string | number>
@@ -23,6 +22,9 @@ type UseSseResult<T> = {
   close: () => void
 }
 
+const hasSse = (client: unknown): client is FetchClient =>
+  Boolean(client && typeof client === 'object' && 'sse' in client && typeof client.sse === 'function')
+
 const useSse = <T>(path: string, options: UseSseOptions<T> = {}): UseSseResult<T> => {
   const api = useFetch()
   const [data, setData] = useState<T | undefined>(undefined)
@@ -38,6 +40,14 @@ const useSse = <T>(path: string, options: UseSseOptions<T> = {}): UseSseResult<T
 
   useEffect(() => {
     if (options.enabled === false) {
+      return
+    }
+    if (!hasSse(api)) {
+      setError(
+        new Error(
+          'tanstack-fetch: useSse() needs a client from "tanstack-fetch/sse" (pass client to FetchProvider)',
+        ),
+      )
       return
     }
 
