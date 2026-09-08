@@ -1,8 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
-import { isFetchError } from '../fetch-error'
+import { isFetchError } from 'tanstack-fetch'
+import type { FetchError, FetchClient, SseEvent } from 'tanstack-fetch'
 import { useFetch } from './fetch-provider.hook'
-import type { FetchError } from '../fetch-error'
-import type { FetchClient, SseEvent } from '../types'
 
 type UseSseOptions<T> = {
   enabled?: boolean

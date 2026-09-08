@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react'
-import type { CreateFetchOptions, FetchClient } from '../types'
+import type { CreateFetchOptions, FetchClient } from 'tanstack-fetch'
 
 type HttpFetchClient = Omit<FetchClient, 'sse'>
 
