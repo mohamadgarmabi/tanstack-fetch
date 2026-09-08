@@ -1,5 +1,5 @@
 import type { MaybePromise } from './common.type'
-import type { HttpInterceptor, RequestContext } from './interceptor.type'
+import type { RequestContext } from './interceptor.type'
 import type { FetchErrorInfo } from './result.type'
 
 type StatusHandlerInput = {
@@ -8,10 +8,7 @@ type StatusHandlerInput = {
   context: RequestContext
 }
 
-type StatusHandlerResult =
-  | void
-  | { action: 'continue' }
-  | { action: 'retry'; delayMs?: number }
+type StatusHandlerResult = void | { action: 'continue' } | { action: 'retry'; delayMs?: number }
 
 type StatusHandler = (input: StatusHandlerInput) => MaybePromise<StatusHandlerResult>
 
