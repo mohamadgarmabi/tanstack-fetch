@@ -1,8 +1,7 @@
 import { createContext, useContext, useRef, type Context } from 'react'
-import { createFetch } from '../create-fetch'
-import type { CreateFetchOptions } from '../types'
+import { createFetch } from 'tanstack-fetch'
+import type { CreateFetchOptions, FetchClient } from 'tanstack-fetch'
 import type { FetchProviderProps, HttpFetchClient } from './fetch-provider.type'
-import type { FetchClient } from '../types'
 
 type AnyFetchClient = FetchClient | HttpFetchClient
 

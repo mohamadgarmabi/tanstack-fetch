@@ -4,10 +4,10 @@ Typed `fetch` client shaped for **TanStack Query** — tiny HTTP core, optional 
 
 | Import | What you get | Typical gzip |
 | --- | --- | --- |
-| `tanstack-fetch` | HTTP only (`get/post/…`) | **~3KB** |
-| `tanstack-fetch/sse` | + `api.sse()` | **~5KB** |
-| `tanstack-fetch/plugins` | plugin factories | **~1KB** |
-| `tanstack-fetch/react` | `FetchProvider` / `useFetch` / `useSse` | thin |
+| `tanstack-fetch` | HTTP only (`get/post/…`) | **~3.5KB** |
+| `tanstack-fetch/sse` | + `api.sse()` | **~4.7KB** |
+| `tanstack-fetch/plugins` | plugin factories | **~0.9KB** |
+| `tanstack-fetch/react` | `FetchProvider` / hooks (peer: core) | **~1KB** |
 
 ```bash
 npm install tanstack-fetch
