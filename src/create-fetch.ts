@@ -2,6 +2,7 @@ import { createConfigInterceptors } from './plugins/config-interceptors'
 import { pluginFactories } from './plugins'
 import { createFetchError } from './fetch-error'
 import { sendRequest } from './request'
+import { resolveUploadBody } from './utils/form-data'
 import type {
   CreateFetchOptions,
   FetchClient,
@@ -10,6 +11,7 @@ import type {
   HttpInterceptor,
   HttpMethod,
   RequestOptions,
+  UploadCallOptions,
 } from './types'
 
 type FetchContext = {
@@ -84,6 +86,15 @@ const createHttpClient = (context: FetchContext): Omit<FetchClient, 'sse'> => {
     return bound as FetchClient['get']
   }
 
+  const upload: FetchClient['upload'] = ((path: string, uploadOptions?: UploadCallOptions) => {
+    const { method = 'POST', file, files, fields, fieldName, body, ...rest } = uploadOptions ?? {}
+    return request(method, path, {
+      ...rest,
+      body: resolveUploadBody({ body, file, files, fields, fieldName }),
+      onUploadProgress: uploadOptions?.onUploadProgress,
+    } as never)
+  }) as FetchClient['upload']
+
   return {
     use,
     eject,
@@ -93,6 +104,7 @@ const createHttpClient = (context: FetchContext): Omit<FetchClient, 'sse'> => {
     put: bindMethod('PUT'),
     patch: bindMethod('PATCH'),
     delete: bindMethod('DELETE'),
+    upload,
   }
 }
 

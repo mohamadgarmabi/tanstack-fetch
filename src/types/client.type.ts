@@ -11,6 +11,7 @@ import type { AuthConfig, StatusHandler, StatusHandlers } from './config.type'
 import type { HttpInterceptor } from './interceptor.type'
 import type { FetchErrorInfo, FetchResult } from './result.type'
 import type { SseEvent, SseHandlers, SseSubscription } from './sse.type'
+import type { UploadOptions, UploadProgressHandler } from './upload.type'
 
 type RequestInterceptorConfig = {
   use?: HttpInterceptor[]
@@ -29,6 +30,8 @@ type RequestOptions = {
   parseAs?: 'json' | 'text' | 'blob'
   operation?: string
   interceptors?: RequestInterceptorConfig
+  /** Browser-only — uses XHR under the hood when set (fetch has no upload progress). */
+  onUploadProgress?: UploadProgressHandler
 }
 
 type CreateFetchOptions = {
@@ -79,6 +82,16 @@ type FetchRequest = {
   ): Promise<FetchResult<T, E>>
 }
 
+type UploadCallOptions = Omit<RequestOptions, 'body' | 'onUploadProgress'> & UploadOptions
+
+type UploadMethod = {
+  <T>(path: string, options?: UploadCallOptions & { throwOnError?: true }): Promise<T>
+  <T, E = FetchErrorInfo>(
+    path: string,
+    options: UploadCallOptions & { throwOnError: false },
+  ): Promise<FetchResult<T, E>>
+}
+
 type SseCallOptions<T = unknown> = RequestOptions &
   SseHandlers<T> & {
     lastEventId?: string
@@ -97,6 +110,8 @@ type FetchClient = {
   put: FetchMethod
   patch: FetchMethod
   delete: FetchMethod
+  /** Multipart / file upload — returns the same typed response body as `post`. */
+  upload: UploadMethod
   /**
    * Simple: pass `onMessage` / `onEvent` → returns `{ close }`.
    * Advanced: no handlers → `AsyncIterable` for `for await`.
@@ -128,5 +143,7 @@ export type {
   ResultOptions,
   FetchMethod,
   FetchRequest,
+  UploadCallOptions,
+  UploadMethod,
   SseCallOptions,
 }
