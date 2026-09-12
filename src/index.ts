@@ -1,9 +1,11 @@
 import { createFetch, createClient } from './create-fetch'
 import { createFetchError, isAbortError, isFetchError } from './fetch-error'
+import { createFormData } from './utils/form-data'
 import { unwrap, unwrapAsync } from './utils/result'
 
 export { createFetch, createClient }
 export { createFetchError, isFetchError, isAbortError }
+export { createFormData }
 export { unwrap, unwrapAsync }
 export type { FetchError } from './fetch-error'
 export type {
@@ -30,4 +32,10 @@ export type {
   StatusHandlerInput,
   StatusHandlerResult,
   StatusHandlers,
+  FormDataFields,
+  FormDataFieldValue,
+  UploadCallOptions,
+  UploadOptions,
+  UploadProgressEvent,
+  UploadProgressHandler,
 } from './types'

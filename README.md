@@ -474,6 +474,87 @@ await api.request<User>('GET', '/users/:id', { params: { id: '1' } })
 
 ---
 
+## Upload
+
+`FormData` / `Blob` / `File` are sent as-is (no JSON, no forced `Content-Type` — the boundary stays correct).
+
+The call still returns the **typed response body** from the server (same as `post`), not a special upload envelope.
+
+### `api.upload()` — file + fields + progress
+
+```ts
+type UploadResponse = { id: string; url: string }
+
+const file = input.files[0]
+
+const uploaded = await api.upload<UploadResponse>('/files', {
+  file,
+  fieldName: 'avatar', // default: 'file'
+  fields: { folder: 'avatars', public: true },
+  onUploadProgress: ({ loaded, total, progress }) => {
+    // progress is 0–1 when total is known (browser / XHR)
+    console.log(loaded, total, progress)
+  },
+})
+
+uploaded.url
+```
+
+Multiple files or raw `FormData`:
+
+```ts
+await api.upload('/docs', {
+  method: 'PUT',
+  files: [fileA, fileB],
+  fieldName: 'docs',
+})
+
+await api.upload<UploadResponse>('/files', {
+  body: createFormData({ file, note: 'cv' }),
+})
+```
+
+### `createFormData` helper
+
+```ts
+import { createFetch, createFormData } from 'tanstack-fetch'
+
+const api = createFetch({ baseUrl: 'https://api.example.com' })
+
+const body = createFormData({
+  title: 'Report',
+  tags: ['a', 'b'], // repeated field
+  file,
+})
+
+await api.post<UploadResponse>('/files', {
+  body,
+  onUploadProgress: ({ progress }) => console.log(progress),
+})
+```
+
+| Option | Notes |
+| --- | --- |
+| `file` / `files` | Appended under `fieldName` (default `"file"`) |
+| `fields` | Extra multipart values (string / number / boolean / `Blob` / arrays) |
+| `body` | Pre-built `FormData` / `Blob` / … |
+| `method` | `POST` (default), `PUT`, or `PATCH` |
+| `onUploadProgress` | Browser-only — uses XHR under the hood (`fetch` has no upload progress). No-ops on runtimes without `XMLHttpRequest` (falls back to `fetch`) |
+
+Works with TanStack Query mutations the same way as `post`:
+
+```ts
+useMutation({
+  mutationFn: (file: File) =>
+    api.upload<UploadResponse>('/files', {
+      file,
+      onUploadProgress: ({ progress }) => setProgress(progress ?? 0),
+    }),
+})
+```
+
+---
+
 ## `FetchError`
 
 ```ts

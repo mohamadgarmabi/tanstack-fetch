@@ -3,6 +3,7 @@ import { encodeBody, parseBody } from './utils/parse-body'
 import { toErrResult, toFetchErrorInfo, toOkResult } from './utils/result'
 import { runHook } from './interceptors/run-interceptors'
 import { createFetchError, isAbortError } from './fetch-error'
+import { canTrackUploadProgress, uploadWithProgress } from './utils/xhr-upload'
 import type { FetchResult, RequestOptions } from './types'
 
 type AttemptOutcome<T, E> =
@@ -16,16 +17,38 @@ type ExecuteArgs = {
   context: RequestContext
 }
 
-const executeFetch = async <T, E>(input: ExecuteArgs): Promise<AttemptOutcome<T, E>> => {
-  const { context, interceptors, fetchImpl, client, requestOptions } = input
-  try {
-    const response = await fetchImpl(context.request.url, {
+const sendHttp = async (input: ExecuteArgs, body: BodyInit | null | undefined) => {
+  const { context, fetchImpl, client, requestOptions } = input
+  const onUploadProgress = requestOptions?.onUploadProgress
+
+  if (onUploadProgress && canTrackUploadProgress()) {
+    return uploadWithProgress({
+      url: context.request.url,
       method: context.request.method,
       headers: context.request.headers,
-      body: encodeBody(context.request.body, context.request.headers),
+      body: (body ?? null) as XMLHttpRequestBodyInit | null,
       signal: context.request.signal,
       credentials: client.credentials,
+      onUploadProgress,
     })
+  }
+
+  return fetchImpl(context.request.url, {
+    method: context.request.method,
+    headers: context.request.headers,
+    body,
+    signal: context.request.signal,
+    credentials: client.credentials,
+  })
+}
+
+const executeFetch = async <T, E>(input: ExecuteArgs): Promise<AttemptOutcome<T, E>> => {
+  const { context, interceptors, requestOptions } = input
+  try {
+    const response = await sendHttp(
+      input,
+      encodeBody(context.request.body, context.request.headers),
+    )
     return handleResponse<T, E>({ interceptors, context, response, requestOptions })
   } catch (error) {
     if (isAbortError(error)) {
