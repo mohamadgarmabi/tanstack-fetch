@@ -1,14 +1,12 @@
 name: Publish Package
 
-# Auth: npm Trusted Publisher only (OIDC). Do NOT set NPM_TOKEN.
-# If NPM_TOKEN exists in GitHub Secrets, delete it — it causes EOTP.
-#
-# npmjs.com → Package → tanstack-fetch → Settings → Trusted Publisher
-#   Publisher: GitHub Actions
+# Requires Trusted Publisher on npmjs.com (Settings → Trusted Publisher):
 #   Organization or user: mohamadgarmabi
 #   Repository: tanstack-fetch
-#   Workflow filename: release.yml   ← exact name, with .yml
-#   Allowed actions: enable "npm publish"
+#   Workflow filename: release.yml
+#   Allowed actions: ✔ npm publish   ← required (do not leave unchecked)
+#
+# Do NOT add NPM_TOKEN — empty _authToken from setup-node blocks OIDC.
 
 on:
   push:
@@ -32,17 +30,23 @@ jobs:
     steps:
       - uses: actions/checkout@v5
 
+      # Do NOT set registry-url here — it writes
+      #   //registry.npmjs.org/:_authToken=${NODE_AUTH_TOKEN}
+      # which prevents OIDC trusted publishing when no token is set.
+      # See: https://github.com/npm/documentation/issues/1960
       - uses: actions/setup-node@v5
         with:
           node-version: '24'
-          registry-url: https://registry.npmjs.org
 
-      - name: Ensure npm supports OIDC trusted publishing
+      - name: Ensure npm CLI supports OIDC (≥ 11.5.1)
         run: |
           npm install -g npm@latest
           npm --version
-          # setup-node may write always-auth; that breaks OIDC publish
-          npm config delete always-auth || true
+          node --version
+          test -n "${ACTIONS_ID_TOKEN_REQUEST_URL:-}" || {
+            echo "ACTIONS_ID_TOKEN_REQUEST_URL missing — id-token: write not effective"
+            exit 1
+          }
 
       - run: npm ci
       - run: npm run typecheck
@@ -50,7 +54,15 @@ jobs:
       - run: npm test
       - run: npm run build
 
+      - name: Clear token placeholders that block OIDC
+        run: |
+          NPMRC="${NPM_CONFIG_USERCONFIG:-$HOME/.npmrc}"
+          if [ -f "$NPMRC" ]; then
+            sed -i '/_authToken/d' "$NPMRC"
+            sed -i '/always-auth/d' "$NPMRC"
+            echo "Cleaned $NPMRC:"
+            cat "$NPMRC" || true
+          fi
+
       - name: Publish to npm via OIDC
         run: npm publish --access public --ignore-scripts
-        # Intentionally no NODE_AUTH_TOKEN / NPM_TOKEN.
-        # Provenance is attached automatically with Trusted Publishing.
