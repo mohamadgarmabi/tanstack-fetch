@@ -1,0 +1,38 @@
+name: Publish Package
+
+on:
+  release:
+    types: [published]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  id-token: write # required for npm OIDC + provenance
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          registry-url: https://registry.npmjs.org
+
+      - name: Ensure npm supports trusted publishing
+        run: |
+          npm install -g npm@latest
+          npm --version
+
+      - run: npm ci
+      - run: npm run typecheck
+      - run: npm run lint
+      - run: npm test
+      - run: npm run build
+
+      # OIDC trusted publishing — no NPM_TOKEN / NODE_AUTH_TOKEN.
+      # Provenance is attached automatically on public repos.
+      # Configure Trusted Publisher on npmjs.com to match this file name exactly.
+      - name: Publish to npm
+        run: npm publish --access public --ignore-scripts
