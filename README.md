@@ -1,21 +1,63 @@
 # tanstack-fetch
 
-Typed `fetch` client shaped for **TanStack Query** — tiny HTTP core, optional SSE / React.
+**TypeScript HTTP / fetch client for TanStack Query (React Query)** — built for Next.js SSR, auth interceptors, SSE streams, and multipart file upload. A tiny (~3.5KB gzip), tree-shakeable alternative to axios when your `queryFn` / `mutationFn` just needs a typed `fetch` wrapper.
+
+[![npm version](https://img.shields.io/npm/v/tanstack-fetch.svg)](https://www.npmjs.com/package/tanstack-fetch)
+[![npm downloads](https://img.shields.io/npm/dm/tanstack-fetch.svg)](https://www.npmjs.com/package/tanstack-fetch)
+[![bundlephobia](https://img.shields.io/bundlephobia/minzip/tanstack-fetch)](https://bundlephobia.com/package/tanstack-fetch)
+[![license](https://img.shields.io/npm/l/tanstack-fetch.svg)](./LICENSE)
+[![Node.js](https://img.shields.io/node/v/tanstack-fetch.svg)](https://nodejs.org)
+[![TypeScript](https://img.shields.io/badge/TypeScript-ready-3178c6.svg)](https://www.typescriptlang.org/)
+
+```bash
+npm install tanstack-fetch
+# or
+pnpm add tanstack-fetch
+# or
+yarn add tanstack-fetch
+```
+
+Node 18+ (native `fetch`). Works in the browser, Node, and the Edge runtime.
+
+> **Not an official TanStack package** — designed to match the `@tanstack/react-query` mental model (`throw` on HTTP errors, pass `signal`, typed data).
+
+### Who is this for?
+
+- Apps using **TanStack Query / React Query** that need a shared HTTP client for `queryFn` and `mutationFn`
+- **Next.js** (App Router) SSR that must forward cookies / auth headers to your API
+- Teams wanting a **lightweight axios / ky / ofetch alternative** with interceptors, retries, SSE, and upload progress — without a large HTTP stack
+
+### Features at a glance
+
+- Typed `get` / `post` / `put` / `patch` / `delete` / `upload` → `Promise<T>`
+- Throws `FetchError` by default (TanStack Query–friendly); optional `FetchResult` union
+- `AbortSignal` + timeout, Bearer auth, 401 / 403 / 404 / 5xx handlers
+- Named interceptors (retry, short-circuit mocks, per-request eject)
+- SSR cookie / header forwarding (`ssr-forward` plugin)
+- Optional **SSE** over `fetch` streams (`tanstack-fetch/sse`)
+- Multipart **file upload** + `onUploadProgress` (browser)
+- Optional React `FetchProvider` / `useFetch` / `useSse`
+- OpenAPI → TypeScript client CLI
 
 | Import | What you get | Typical gzip |
 | --- | --- | --- |
-| `tanstack-fetch` | HTTP only (`get/post/…`) | **~3.5KB** |
+| `tanstack-fetch` | HTTP only (`get/post/upload/…`) | **~3.5KB** |
 | `tanstack-fetch/sse` | + `api.sse()` | **~4.7KB** |
 | `tanstack-fetch/plugins` | plugin factories | **~0.9KB** |
 | `tanstack-fetch/react` | `FetchProvider` / hooks (peer: core) | **~1KB** |
 
-```bash
-npm install tanstack-fetch
-```
+### Compared to axios, ky, ofetch
 
-Node 18+ (native `fetch`).
+| Need | `tanstack-fetch` |
+| --- | --- |
+| Drop into TanStack Query `queryFn` | Yes — returns data, throws `FetchError`, takes `signal` |
+| Next.js SSR cookie forwarding | Built-in `ssr-forward` plugin |
+| Interceptors without axios weight | Named, ordered, ejectable plugins |
+| SSE with Authorization headers | `tanstack-fetch/sse` (fetch streams, not `EventSource`) |
+| File upload + progress | `api.upload()` + `onUploadProgress` |
+| Bundle size | ~3.5KB gzip (HTTP core) |
 
-> Not an official TanStack package — built to fit the same mental model as `@tanstack/react-query`.
+Search terms this package targets: *fetch client for tanstack query*, *react query http client*, *next.js ssr fetch cookies*, *axios alternative typescript*, *openapi fetch codegen*.
 
 ---
 
@@ -921,6 +963,7 @@ npm run example
 ```ts
 import {
   createFetch,
+  createFormData,
   createFetchError,
   isFetchError,
   isAbortError,
@@ -936,10 +979,26 @@ import {
 | Method | Description |
 | --- | --- |
 | `get/post/put/patch/delete` | Typed HTTP → `Promise<T>` |
+| `upload(path, opts?)` | Multipart / file upload → `Promise<T>` |
 | `request(method, path, opts?)` | Generic verb |
 | `sse(path, { onMessage })` | Simple stream — returns `{ close }` |
 | `sse(path)` | Advanced — `for await` iterable |
 | `use` / `eject` | Interceptors |
+| `createFormData(fields)` | Build `FormData` from a plain object |
+
+## FAQ
+
+**Is tanstack-fetch an official TanStack package?**  
+No. It is an independent MIT library shaped for `@tanstack/react-query`.
+
+**Can I use it without React Query?**  
+Yes. It is a plain TypeScript `fetch` client; React Query is optional.
+
+**Does it work with Next.js App Router SSR?**  
+Yes. Use `source: 'ssr'`, the `ssr-forward` plugin, and `incoming` cookies/headers.
+
+**How do I upload files?**  
+Use `api.upload({ file, fields, onUploadProgress })` or `api.post` with `createFormData(...)`.
 
 ## License
 
