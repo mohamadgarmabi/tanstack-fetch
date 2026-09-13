@@ -1,6 +1,6 @@
 {
   "name": "tanstack-fetch",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "TypeScript fetch / HTTP client for TanStack Query & React Query. Next.js SSR, interceptors, SSE, file upload, OpenAPI — lightweight axios alternative (~3.5KB).",
   "license": "MIT",
   "author": {
