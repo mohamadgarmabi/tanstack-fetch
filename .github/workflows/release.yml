@@ -1,16 +1,14 @@
 name: Publish Package
 
-# Green provenance check = publish from this workflow on a public repo.
+# Auth: npm Trusted Publisher only (OIDC). Do NOT set NPM_TOKEN.
+# If NPM_TOKEN exists in GitHub Secrets, delete it — it causes EOTP.
 #
-# Preferred auth: Trusted Publisher (OIDC) — no NPM_TOKEN needed.
-#   npmjs.com → tanstack-fetch → Settings → Trusted Publisher → GitHub Actions
+# npmjs.com → Package → tanstack-fetch → Settings → Trusted Publisher
+#   Publisher: GitHub Actions
 #   Organization or user: mohamadgarmabi
 #   Repository: tanstack-fetch
-#   Workflow filename: release.yml
-#   Allowed: npm publish
-#
-# Fallback: classic npm "Automation" token as secret NPM_TOKEN
-#   (Granular / publish tokens that require OTP will fail with EOTP in CI)
+#   Workflow filename: release.yml   ← exact name, with .yml
+#   Allowed actions: enable "npm publish"
 
 on:
   push:
@@ -43,7 +41,8 @@ jobs:
         run: |
           npm install -g npm@latest
           npm --version
-          node --version
+          # setup-node may write always-auth; that breaks OIDC publish
+          npm config delete always-auth || true
 
       - run: npm ci
       - run: npm run typecheck
@@ -51,10 +50,7 @@ jobs:
       - run: npm test
       - run: npm run build
 
-      # OIDC first (Trusted Publisher). Do NOT force --provenance:
-      # trusted publishing enables it automatically for public repos.
-      # NODE_AUTH_TOKEN is only a fallback if Trusted Publisher is not set.
-      - name: Publish to npm
+      - name: Publish to npm via OIDC
         run: npm publish --access public --ignore-scripts
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+        # Intentionally no NODE_AUTH_TOKEN / NPM_TOKEN.
+        # Provenance is attached automatically with Trusted Publishing.
