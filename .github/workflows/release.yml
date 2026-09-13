@@ -1,15 +1,16 @@
 name: Publish Package
 
-# Green npm provenance check requires:
-# 1) Public GitHub repo (mohamadgarmabi/tanstack-fetch)
-# 2) permissions.id-token: write
-# 3) npm publish --provenance from this workflow
-# 4) package.json "repository.url" matching this repo
+# Green provenance check = publish from this workflow on a public repo.
 #
-# Auth (pick one):
-# A) GitHub secret NPM_TOKEN (classic — used below)
-# B) npmjs.com → Package → Settings → Trusted Publisher
-#    user: mohamadgarmabi | repo: tanstack-fetch | workflow: release.yml
+# Preferred auth: Trusted Publisher (OIDC) — no NPM_TOKEN needed.
+#   npmjs.com → tanstack-fetch → Settings → Trusted Publisher → GitHub Actions
+#   Organization or user: mohamadgarmabi
+#   Repository: tanstack-fetch
+#   Workflow filename: release.yml
+#   Allowed: npm publish
+#
+# Fallback: classic npm "Automation" token as secret NPM_TOKEN
+#   (Granular / publish tokens that require OTP will fail with EOTP in CI)
 
 on:
   push:
@@ -31,14 +32,14 @@ jobs:
   publish:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v5
         with:
           node-version: '24'
           registry-url: https://registry.npmjs.org
 
-      - name: Ensure modern npm CLI
+      - name: Ensure npm supports OIDC trusted publishing
         run: |
           npm install -g npm@latest
           npm --version
@@ -50,9 +51,10 @@ jobs:
       - run: npm test
       - run: npm run build
 
-      - name: Publish to npm with provenance
-        run: npm publish --access public --provenance --ignore-scripts
+      # OIDC first (Trusted Publisher). Do NOT force --provenance:
+      # trusted publishing enables it automatically for public repos.
+      # NODE_AUTH_TOKEN is only a fallback if Trusted Publisher is not set.
+      - name: Publish to npm
+        run: npm publish --access public --ignore-scripts
         env:
-          # Create at https://www.npmjs.com/settings/~/tokens (Automation token)
-          # then: GitHub repo → Settings → Secrets → Actions → NPM_TOKEN
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
