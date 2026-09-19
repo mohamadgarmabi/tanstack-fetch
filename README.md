@@ -43,31 +43,6 @@ That’s it: returns data, throws `FetchError` on HTTP errors, honors Query’s 
 
 > Not an official TanStack package — built to match the `@tanstack/react-query` mental model.
 
-## Documentation
-
-**Live docs:** [https://mohamadgarmabi.github.io/tanstack-fetch/](https://mohamadgarmabi.github.io/tanstack-fetch/)
-
-The VitePress site lives in [`website/`](./website) and deploys automatically on every push to `main` (workflow: [Deploy Docs](https://github.com/mohamadgarmabi/tanstack-fetch/actions/workflows/docs.yml)).
-
-### Local preview
-
-```bash
-npm run docs:dev
-```
-
-Build only: `npm run docs:build` · Preview build: `npm run docs:preview`
-
-### One-time GitHub Pages setup
-
-If the live URL returns **404/403**, enable Pages once:
-
-1. Open [Settings → Pages](https://github.com/mohamadgarmabi/tanstack-fetch/settings/pages)
-2. Under **Build and deployment** → **Source**, choose **Deploy from a branch**
-3. Branch: **`gh-pages`** / folder: **`/` (root)** → Save
-4. Re-run **Deploy Docs** (or push any commit to `main`)
-
-After the first successful deploy, the site is at `/tanstack-fetch/` (repo name base path).
-
 ---
 
 ## Why tanstack-fetch

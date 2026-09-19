@@ -1,40 +1,21 @@
-# tanstack-fetch docs (VitePress)
+# Docs site (VitePress)
 
-Documentation site for **tanstack-fetch**, published to GitHub Pages.
-
-**Live URL (after deploy):** https://mohamadgarmabi.github.io/tanstack-fetch/
-
-## Local
+Source for https://mohamadgarmabi.github.io/tanstack-fetch/
 
 ```bash
-cd website
-npm install
-npm run dev
+npm run docs:dev      # from repo root
+npm run docs:build
 ```
 
-## Build
+## GitHub Pages (one-time)
 
-```bash
-npm run build
-npm run preview
-```
+Hard reload must show this VitePress site — **not** the root `README.md`.
 
-`base` is `/tanstack-fetch/` for project Pages.
+If hard reload shows the README, Pages is pointed at `main`. Fix:
 
-## GitHub Pages setup
-
-1. Repo **Settings → Pages → Build and deployment → Source**: **GitHub Actions** (not “Deploy from a branch”).
-2. Push to `main` (or run the **Deploy Docs** workflow manually).
-3. Site appears at `https://mohamadgarmabi.github.io/tanstack-fetch/`.
-
-
-## SEO / Google Search
-
-After the site is live:
-
-1. Open [Google Search Console](https://search.google.com/search-console)
-2. Add property: `https://mohamadgarmabi.github.io/tanstack-fetch/`
-3. Verify (HTML tag or DNS). Paste the token into `website/.vitepress/config.ts` → `google-site-verification` meta
-4. Submit sitemap: `https://mohamadgarmabi.github.io/tanstack-fetch/sitemap.xml`
-
-Author page (indexed for name searches): `/author` — **Mohammad Garmabi**
+1. [Settings → Pages](https://github.com/mohamadgarmabi/tanstack-fetch/settings/pages)
+2. **Source:** either
+   - **GitHub Actions**, or
+   - **Deploy from a branch** → **`gh-pages`** / **`/` (root)**
+3. Do **not** choose `main` (that publishes `README.md`)
+4. Push to `main` or re-run **Deploy Docs**
