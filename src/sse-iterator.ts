@@ -1,8 +1,9 @@
-import type { SseEvent } from './types'
+import type { FetchResult, SseEvent } from './types'
 import { resolveInterceptors, runHook } from './interceptors/run-interceptors'
 import { consumeSseBuffer } from './sse-parse'
 import { wait } from './utils/signals'
-import { toFetchErrorInfo } from './utils/result'
+import { toErrResult, toFetchErrorInfo } from './utils/result'
+import { createFetchError } from './fetch-error'
 import { createSseContext, type SendSseArgs } from './sse-context'
 
 const createSseIterator = <T>(args: SendSseArgs): AsyncIterator<SseEvent<T>> => {
@@ -40,8 +41,29 @@ const createSseIterator = <T>(args: SendSseArgs): AsyncIterator<SseEvent<T>> => 
     }
     let context = await createSseContext(args, attempt, lastEventId)
     const before = await runHook(interceptors, (item) => item.onRequest, context)
-    if (before.type === 'short-circuit' || before.type === 'retry') {
+    if (before.type === 'short-circuit') {
+      const result = before.result as FetchResult<unknown, unknown>
+      if (!result.ok) {
+        throw createFetchError(result as FetchResult<never, ReturnType<typeof toFetchErrorInfo>>)
+      }
       return false
+    }
+    if (before.type === 'retry') {
+      if (attempt < context.meta.maxRetries) {
+        attempt += 1
+        await wait(before.delayMs ?? 500)
+        return openStream()
+      }
+      throw createFetchError(
+        toErrResult(
+          0,
+          toFetchErrorInfo(0, {
+            code: 'RETRY_EXHAUSTED',
+            message: 'tanstack-fetch: exceeded retry budget',
+          }),
+          new Headers(),
+        ),
+      )
     }
     if (before.type === 'continue') {
       context = before.context
@@ -65,7 +87,7 @@ const createSseIterator = <T>(args: SendSseArgs): AsyncIterator<SseEvent<T>> => 
         }
         return openStream()
       }
-      throw Object.assign(new Error(context.error.message), { error: context.error })
+      throw createFetchError(toErrResult(response.status, context.error, response.headers))
     }
     await runHook(interceptors, (item) => item.onSseOpen, context)
     reader = response.body.pipeThrough(new TextDecoderStream()).getReader()

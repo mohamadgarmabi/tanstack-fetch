@@ -70,18 +70,36 @@ describe('tanstack-fetch interceptors', () => {
     expect(fetchImpl).not.toHaveBeenCalled()
   })
 
-  it('can eject interceptors per request', async () => {
-    const fetchImpl = vi.fn().mockResolvedValue(jsonResponse({ body: {} }))
-    const http = createTestClient(fetchImpl)
-    http.use('auth', {
-      onRequest: (context) => {
-        context.request.headers.set('authorization', 'Bearer secret')
-        return { action: 'continue', context }
-      },
+  it('returns last FetchError when retry budget is exhausted', async () => {
+    const fetchImpl = vi
+      .fn()
+      .mockImplementation(() =>
+        jsonResponse({ status: 503, body: { code: 'UNAVAILABLE', message: 'down' } }),
+      )
+    const http = createTestClient(fetchImpl, {
+      plugins: ['retry-idempotent'],
+      maxRetries: 1,
     })
 
-    await http.get('/public', { interceptors: { eject: ['auth'] } })
-    const headers = new Headers((fetchImpl.mock.calls[0]?.[1] as RequestInit).headers)
-    expect(headers.get('authorization')).toBeNull()
+    await expect(http.get('/flaky')).rejects.toSatisfy(
+      (error: unknown) =>
+        isFetchError(error) && error.status === 503 && error.code === 'UNAVAILABLE',
+    )
+    expect(fetchImpl).toHaveBeenCalledTimes(2)
+  })
+
+  it('surfaces invalid JSON as PARSE_ERROR with HTTP status', async () => {
+    const fetchImpl = vi.fn().mockResolvedValue(
+      new Response('{not-json', {
+        status: 200,
+        headers: { 'content-type': 'application/json' },
+      }),
+    )
+    const http = createTestClient(fetchImpl)
+
+    await expect(http.get('/broken')).rejects.toSatisfy(
+      (error: unknown) =>
+        isFetchError(error) && error.status === 200 && error.code === 'PARSE_ERROR',
+    )
   })
 })

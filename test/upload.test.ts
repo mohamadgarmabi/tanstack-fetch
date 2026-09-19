@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from 'vitest'
-import { createFormData } from '../src'
+import { createFormData, isAbortError } from '../src'
 import { createTestClient, jsonResponse } from './helpers'
 
 describe('upload', () => {
@@ -134,6 +134,32 @@ describe('upload', () => {
     expect(fetchImpl).not.toHaveBeenCalled()
     expect(lastXhr?.open).toHaveBeenCalledWith('POST', 'https://api.example.com/upload', true)
     expect(progress).toHaveBeenCalledWith({ loaded: 50, total: 100, progress: 0.5 })
+
+    vi.unstubAllGlobals()
+  })
+
+  it('rejects immediately when upload signal is already aborted', async () => {
+    class XhrMock {
+      upload = { onprogress: null }
+      open = vi.fn()
+      setRequestHeader = vi.fn()
+      send = vi.fn()
+      abort = vi.fn()
+      getAllResponseHeaders = vi.fn(() => '')
+    }
+    vi.stubGlobal('XMLHttpRequest', XhrMock)
+
+    const http = createTestClient(vi.fn())
+    const controller = new AbortController()
+    controller.abort()
+
+    await expect(
+      http.upload('/upload', {
+        file: new Blob(['x']),
+        signal: controller.signal,
+        onUploadProgress: vi.fn(),
+      }),
+    ).rejects.toSatisfy((error: unknown) => isAbortError(error))
 
     vi.unstubAllGlobals()
   })

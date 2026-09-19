@@ -5,6 +5,8 @@ import { executeFetch } from './request-execute'
 import { assertAbsoluteUrl, buildUrl } from './utils/build-url'
 import { mergeHeaders, resolveHeaders } from './utils/headers'
 import { combineSignals, createTimeoutSignal, wait } from './utils/signals'
+import { createFetchError } from './fetch-error'
+import { toErrResult, toFetchErrorInfo } from './utils/result'
 import type { FetchErrorInfo, FetchResult, IncomingHeaders, RequestContext } from './types'
 
 type SendRequestArgs = {
@@ -67,7 +69,16 @@ const sendRequest = async <T, E = FetchErrorInfo>(
     }
   }
 
-  throw new Error('tanstack-fetch: exceeded retry budget')
+  throw createFetchError(
+    toErrResult(
+      0,
+      toFetchErrorInfo(0, {
+        code: 'RETRY_EXHAUSTED',
+        message: 'tanstack-fetch: exceeded retry budget',
+      }),
+      new Headers(),
+    ),
+  )
 }
 
 const runAttempt = async <T, E>(input: {
@@ -82,6 +93,19 @@ const runAttempt = async <T, E>(input: {
     return { kind: 'result' as const, result: before.result as FetchResult<T, E> }
   }
   if (before.type === 'retry') {
+    if (context.meta.attempt >= context.meta.maxRetries) {
+      return {
+        kind: 'result' as const,
+        result: toErrResult(
+          0,
+          toFetchErrorInfo(0, {
+            code: 'RETRY_EXHAUSTED',
+            message: 'tanstack-fetch: exceeded retry budget',
+          }) as E,
+          new Headers(),
+        ),
+      }
+    }
     return { kind: 'retry' as const, delayMs: before.delayMs }
   }
   if (before.type === 'continue') {
