@@ -1,3 +1,4 @@
+import { registerClientOptions } from './client-options'
 import { createConfigInterceptors } from './plugins/config-interceptors'
 import { pluginFactories } from './plugins'
 import { createFetchError } from './fetch-error'
@@ -95,7 +96,7 @@ const createHttpClient = (context: FetchContext): Omit<FetchClient, 'sse'> => {
     } as never)
   }) as FetchClient['upload']
 
-  return {
+  const client = {
     use,
     eject,
     request,
@@ -106,6 +107,9 @@ const createHttpClient = (context: FetchContext): Omit<FetchClient, 'sse'> => {
     delete: bindMethod('DELETE'),
     upload,
   }
+
+  registerClientOptions(client, clientOptions)
+  return client
 }
 
 /** Tiny HTTP client (no SSE). For streams use `tanstack-fetch/sse`. */

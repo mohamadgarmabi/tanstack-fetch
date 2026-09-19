@@ -1,3 +1,4 @@
+import { registerClientOptions } from '../client-options'
 import { createFetchContext, createHttpClient } from '../create-fetch'
 import { createSseApi } from '../sse-listen'
 import type { CreateFetchOptions, FetchClient } from '../types'
@@ -6,13 +7,15 @@ import type { CreateFetchOptions, FetchClient } from '../types'
 const createFetch = (options: CreateFetchOptions = {}): FetchClient => {
   const context = createFetchContext(options)
   const http = createHttpClient(context)
-  return {
+  const client: FetchClient = {
     ...http,
     sse: createSseApi({
       client: context.clientOptions,
       interceptors: context.interceptors,
     }),
   }
+  registerClientOptions(client, context.clientOptions)
+  return client
 }
 
 /** @deprecated Use createFetch from `tanstack-fetch/sse` */
