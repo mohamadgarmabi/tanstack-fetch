@@ -2,17 +2,21 @@
 
 **Typed Fetch client designed for TanStack Query.**
 
+A **react-query fetch client** / **axios alternative for TanStack Query** — tiny HTTP core, typed errors, AbortSignal, SSR, SSE, plugins.
+
 Tiny HTTP core · Typed errors · 401 / 403 / 404 / 5xx handling · AbortSignal · SSE · SSR · Plugins · React
 
 [![npm version](https://img.shields.io/npm/v/tanstack-fetch.svg)](https://www.npmjs.com/package/tanstack-fetch)
-[![npm downloads](https://img.shields.io/npm/dm/tanstack-fetch.svg)](https://www.npmjs.com/package/tanstack-fetch)
+[![npm downloads](https://img.shields.io/npm/dw/tanstack-fetch.svg)](https://www.npmjs.com/package/tanstack-fetch)
 [![bundle size](https://img.shields.io/bundlephobia/minzip/tanstack-fetch)](https://bundlephobia.com/package/tanstack-fetch)
 [![license](https://img.shields.io/npm/l/tanstack-fetch.svg)](./LICENSE)
-[![CI](https://img.shields.io/github/actions/workflow/status/mohamadgarmabi/tanstack-fetch/release.yml?label=publish)](https://github.com/mohamadgarmabi/tanstack-fetch/actions)
+[![CI](https://img.shields.io/github/actions/workflow/status/mohamadgarmabi/tanstack-fetch/ci.yml?branch=main&label=CI)](https://github.com/mohamadgarmabi/tanstack-fetch/actions/workflows/ci.yml)
 [![TypeScript](https://img.shields.io/badge/TypeScript-ready-3178c6.svg)](https://www.typescriptlang.org/)
 
+## 30-second quickstart
+
 ```bash
-npm install tanstack-fetch
+npm install tanstack-fetch @tanstack/react-query
 ```
 
 ```ts
@@ -27,6 +31,10 @@ useQuery({
 })
 ```
 
+That’s it: returns data, throws `FetchError` on HTTP errors, honors Query’s `signal`.
+
+**Examples:** [`examples/`](./examples) · **Changelog:** [`CHANGELOG.md`](./CHANGELOG.md)
+
 > Not an official TanStack package — built to match the `@tanstack/react-query` mental model.
 
 ---
@@ -35,18 +43,20 @@ useQuery({
 
 Built for the way TanStack Query actually works: return data, throw on failure, honor `signal`.
 
-| | |
-| --- | --- |
-| **Tiny HTTP core** | ~3.5KB gzip — tree-shakeable entry points |
-| **Typed errors** | `FetchError` with `status`, `code`, `body` + `isFetchError()` |
-| **Status handling** | First-class `401` / `403` / `404` / `5xx` (and `onStatus` map) |
-| **AbortSignal** | Pass Query’s `signal` — cancels cleanly, no false errors |
-| **SSE** | Streams over `fetch` (auth + cookies work) via `tanstack-fetch/sse` |
-| **SSR** | Next.js-ready cookie / header forwarding (`ssr-forward`) |
-| **Plugins** | Named interceptors: retry, trace, mocks, eject per request |
-| **React** | Optional `FetchProvider`, `useFetch`, `useSse` |
+|                     |                                                                     |
+| ------------------- | ------------------------------------------------------------------- |
+| **Tiny HTTP core**  | ~3.5KB gzip — tree-shakeable entry points                           |
+| **Typed errors**    | `FetchError` with `status`, `code`, `body` + `isFetchError()`       |
+| **Status handling** | First-class `401` / `403` / `404` / `5xx` (and `onStatus` map)      |
+| **AbortSignal**     | Pass Query’s `signal` — cancels cleanly, no false errors            |
+| **SSE**             | Streams over `fetch` (auth + cookies work) via `tanstack-fetch/sse` |
+| **SSR**             | Next.js-ready cookie / header forwarding (`ssr-forward`)            |
+| **Plugins**         | Named interceptors: retry, trace, mocks, eject per request          |
+| **React**           | Optional `FetchProvider`, `useFetch`, `useSse`                      |
 
 Also: multipart **upload** + progress, OpenAPI codegen CLI, Edge-friendly.
+
+Compared to **axios / ky / ofetch**: same mental model as TanStack Query `queryFn`, ~3.5KB core, SSR cookie forwarding, and SSE with Authorization — without pulling a large HTTP stack.
 
 ---
 
@@ -77,12 +87,12 @@ try {
 
 ## Bundle size
 
-| Import | What you get | Typical gzip |
-| --- | --- | --- |
-| `tanstack-fetch` | HTTP (`get/post/upload/…`) | **~3.5KB** |
-| `tanstack-fetch/sse` | + `api.sse()` | **~4.7KB** |
-| `tanstack-fetch/plugins` | plugin factories | **~0.9KB** |
-| `tanstack-fetch/react` | `FetchProvider` / hooks | **~1KB** |
+| Import                   | What you get               | Typical gzip |
+| ------------------------ | -------------------------- | ------------ |
+| `tanstack-fetch`         | HTTP (`get/post/upload/…`) | **~3.5KB**   |
+| `tanstack-fetch/sse`     | + `api.sse()`              | **~4.7KB**   |
+| `tanstack-fetch/plugins` | plugin factories           | **~0.9KB**   |
+| `tanstack-fetch/react`   | `FetchProvider` / hooks    | **~1KB**     |
 
 ```ts
 import { createFetch } from 'tanstack-fetch' // HTTP only
@@ -95,14 +105,16 @@ import { createFetch } from 'tanstack-fetch/sse' // + streams
 
 ## Compared to axios / ky / ofetch
 
-| Need | tanstack-fetch |
-| --- | --- |
+| Need                               | tanstack-fetch                                    |
+| ---------------------------------- | ------------------------------------------------- |
 | Drop into TanStack Query `queryFn` | Returns data, throws `FetchError`, takes `signal` |
-| Next.js SSR cookies | `ssr-forward` plugin |
-| Interceptors without axios weight | Named, ordered, ejectable plugins |
-| SSE with Authorization | `tanstack-fetch/sse` (not `EventSource`) |
-| File upload + progress | `api.upload()` + `onUploadProgress` |
-| Bundle | ~3.5KB gzip HTTP core |
+| Next.js SSR cookies                | `ssr-forward` plugin                              |
+| Interceptors without axios weight  | Named, ordered, ejectable plugins                 |
+| SSE with Authorization             | `tanstack-fetch/sse` (not `EventSource`)          |
+| File upload + progress             | `api.upload()` + `onUploadProgress`               |
+| Bundle                             | ~3.5KB gzip HTTP core                             |
+
+**Recipes:** [refresh token on 401](./docs/recipes/refresh-token.md) · [examples](./examples) · [social post draft](./docs/social-post.md)
 
 ---
 
@@ -137,14 +149,14 @@ export const api = createFetch({
 
 Handlers run **before** the error is thrown (so TanStack Query still gets `isError` / `FetchError`).
 
-| Option | When |
-| --- | --- |
-| `getToken` / `auth` | Every request — sets `Authorization: Bearer …` |
-| `onUnauthorized` | HTTP **401** |
-| `onForbidden` | HTTP **403** |
-| `onNotFound` | HTTP **404** |
-| `onServerError` | HTTP **5xx** |
-| `onStatus` | Advanced map (exact code, `4xx`, `5xx`, `default`) |
+| Option              | When                                               |
+| ------------------- | -------------------------------------------------- |
+| `getToken` / `auth` | Every request — sets `Authorization: Bearer …`     |
+| `onUnauthorized`    | HTTP **401**                                       |
+| `onForbidden`       | HTTP **403**                                       |
+| `onNotFound`        | HTTP **404**                                       |
+| `onServerError`     | HTTP **5xx**                                       |
+| `onStatus`          | Advanced map (exact code, `4xx`, `5xx`, `default`) |
 
 ```ts
 createFetch({
@@ -231,8 +243,19 @@ const UsersPage = () => {
   })
 
   if (isPending) return <p>Loading…</p>
-  if (isFetchError(error)) return <p>{error.status}: {error.message}</p>
-  return <ul>{data.map((u) => <li key={u.id}>{u.name}</li>)}</ul>
+  if (isFetchError(error))
+    return (
+      <p>
+        {error.status}: {error.message}
+      </p>
+    )
+  return (
+    <ul>
+      {data.map((u) => (
+        <li key={u.id}>{u.name}</li>
+      ))}
+    </ul>
+  )
 }
 ```
 
@@ -250,12 +273,12 @@ const api = createFetch({ baseUrl: '…', getToken: … })
 
 ## Why this API matches TanStack Query
 
-| TanStack Query needs | `tanstack-fetch` does |
-| --- | --- |
-| `queryFn` returns data | `api.get<T>()` → `Promise<T>` |
-| Failures must throw | HTTP errors throw `FetchError` |
-| Cancellation | Pass `{ signal }` from `queryFn` context |
-| Typed errors | `isFetchError(error)` → `status`, `code`, `body` |
+| TanStack Query needs   | `tanstack-fetch` does                            |
+| ---------------------- | ------------------------------------------------ |
+| `queryFn` returns data | `api.get<T>()` → `Promise<T>`                    |
+| Failures must throw    | HTTP errors throw `FetchError`                   |
+| Cancellation           | Pass `{ signal }` from `queryFn` context         |
+| Typed errors           | `isFetchError(error)` → `status`, `code`, `body` |
 
 ### Install peers
 
@@ -291,7 +314,12 @@ const UsersPage = () => {
   })
 
   if (isPending) return <p>Loading…</p>
-  if (isFetchError(error)) return <p>{error.status}: {error.message}</p>
+  if (isFetchError(error))
+    return (
+      <p>
+        {error.status}: {error.message}
+      </p>
+    )
   if (error) return <p>Something went wrong</p>
 
   return (
@@ -335,7 +363,11 @@ const UserDetail = ({ userId }: { userId?: string }) => {
   if (isPending) return <p>Loading…</p>
   if (isFetchError(error)) {
     if (error.status === 404) return <p>User not found</p>
-    return <p>{error.code}: {error.message}</p>
+    return (
+      <p>
+        {error.code}: {error.message}
+      </p>
+    )
   }
   if (error) return <p>Something went wrong</p>
 
@@ -369,8 +401,7 @@ export const usersQueryOptions = queryOptions({
 export const userQueryOptions = (id: string) =>
   queryOptions({
     queryKey: ['users', id],
-    queryFn: ({ signal }) =>
-      api.get<User>('/users/:id', { params: { id }, signal }),
+    queryFn: ({ signal }) => api.get<User>('/users/:id', { params: { id }, signal }),
   })
 ```
 
@@ -380,7 +411,13 @@ import { userQueryOptions, usersQueryOptions } from '#/queries/users'
 
 const UsersPage = () => {
   const { data: users } = useQuery(usersQueryOptions)
-  return <ul>{users?.map((u) => <li key={u.id}>{u.name}</li>)}</ul>
+  return (
+    <ul>
+      {users?.map((u) => (
+        <li key={u.id}>{u.name}</li>
+      ))}
+    </ul>
+  )
 }
 
 const UserPage = ({ id }: { id: string }) => {
@@ -426,7 +463,9 @@ const CreateUserForm = () => {
         Create
       </button>
       {isFetchError(mutation.error) && (
-        <p>{mutation.error.status}: {mutation.error.message}</p>
+        <p>
+          {mutation.error.status}: {mutation.error.message}
+        </p>
       )}
     </form>
   )
@@ -444,9 +483,7 @@ import { useState } from 'react'
 const App = ({ children }: { children: React.ReactNode }) => {
   const [queryClient] = useState(() => new QueryClient())
 
-  return (
-    <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
-  )
+  return <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
 }
 
 export default App
@@ -514,15 +551,15 @@ export const api = createFetch({
 })
 ```
 
-| Option | Default | Notes |
-| --- | --- | --- |
-| `baseUrl` | — | Absolute URL required on SSR/Edge |
-| `source` | `'browser'` | Runtime |
-| `throwOnError` | `true` | `false` → `FetchResult` |
-| `plugins` | `[]` | Built-in interceptors |
-| `timeoutMs` | `30000` | Combined with Query `signal` |
-| `maxRetries` | `2` | For interceptor `retry` actions |
-| `fetch` | `globalThis.fetch` | Inject in tests |
+| Option         | Default            | Notes                             |
+| -------------- | ------------------ | --------------------------------- |
+| `baseUrl`      | —                  | Absolute URL required on SSR/Edge |
+| `source`       | `'browser'`        | Runtime                           |
+| `throwOnError` | `true`             | `false` → `FetchResult`           |
+| `plugins`      | `[]`               | Built-in interceptors             |
+| `timeoutMs`    | `30000`            | Combined with Query `signal`      |
+| `maxRetries`   | `2`                | For interceptor `retry` actions   |
+| `fetch`        | `globalThis.fetch` | Inject in tests                   |
 
 ---
 
@@ -602,12 +639,12 @@ await api.post<UploadResponse>('/files', {
 })
 ```
 
-| Option | Notes |
-| --- | --- |
-| `file` / `files` | Appended under `fieldName` (default `"file"`) |
-| `fields` | Extra multipart values (string / number / boolean / `Blob` / arrays) |
-| `body` | Pre-built `FormData` / `Blob` / … |
-| `method` | `POST` (default), `PUT`, or `PATCH` |
+| Option             | Notes                                                                                                                                        |
+| ------------------ | -------------------------------------------------------------------------------------------------------------------------------------------- |
+| `file` / `files`   | Appended under `fieldName` (default `"file"`)                                                                                                |
+| `fields`           | Extra multipart values (string / number / boolean / `Blob` / arrays)                                                                         |
+| `body`             | Pre-built `FormData` / `Blob` / …                                                                                                            |
+| `method`           | `POST` (default), `PUT`, or `PATCH`                                                                                                          |
 | `onUploadProgress` | Browser-only — uses XHR under the hood (`fetch` has no upload progress). No-ops on runtimes without `XMLHttpRequest` (falls back to `fetch`) |
 
 Works with TanStack Query mutations the same way as `post`:
@@ -658,19 +695,15 @@ createFetch({
 })
 ```
 
-| Plugin | Role |
-| --- | --- |
-| `trace` | Sets `x-request-id` |
-| `ssr-forward` | Forwards cookie/auth/request-id on SSR (no-op in browser) |
-| `retry-idempotent` | Retries GET/HEAD/OPTIONS on 502/503/504 |
-| `sse-resume` | Drops heartbeats; sends `Last-Event-ID` on reconnect |
+| Plugin             | Role                                                      |
+| ------------------ | --------------------------------------------------------- |
+| `trace`            | Sets `x-request-id`                                       |
+| `ssr-forward`      | Forwards cookie/auth/request-id on SSR (no-op in browser) |
+| `retry-idempotent` | Retries GET/HEAD/OPTIONS on 502/503/504                   |
+| `sse-resume`       | Drops heartbeats; sends `Last-Event-ID` on reconnect      |
 
 ```ts
-import {
-  createFetch,
-  createTraceInterceptor,
-  createSsrForwardInterceptor,
-} from 'tanstack-fetch'
+import { createFetch, createTraceInterceptor, createSsrForwardInterceptor } from 'tanstack-fetch'
 
 const api = createFetch({ baseUrl: 'https://api.example.com' })
 api.use('trace', createTraceInterceptor())
@@ -985,6 +1018,17 @@ const user2 = await unwrapAsync(api.get('/users/1', { throwOnError: false }))
 npm run example
 ```
 
+Copy-paste apps under [`examples/`](./examples):
+
+| App                                           | Focus                               |
+| --------------------------------------------- | ----------------------------------- |
+| [`basic-http`](./examples/basic-http)         | Plain `get` / `post` / `FetchError` |
+| [`tanstack-query`](./examples/tanstack-query) | `useQuery` + `useMutation`          |
+| [`auth-status`](./examples/auth-status)       | Token + 401 / 403 / 404 / 5xx       |
+| [`file-upload`](./examples/file-upload)       | `api.upload` + progress             |
+| [`sse-live`](./examples/sse-live)             | `useSse` live stream                |
+| [`next-ssr`](./examples/next-ssr)             | App Router + `ssr-forward`          |
+
 ## API
 
 ```ts
@@ -1003,15 +1047,15 @@ import {
 } from 'tanstack-fetch'
 ```
 
-| Method | Description |
-| --- | --- |
-| `get/post/put/patch/delete` | Typed HTTP → `Promise<T>` |
-| `upload(path, opts?)` | Multipart / file upload → `Promise<T>` |
-| `request(method, path, opts?)` | Generic verb |
-| `sse(path, { onMessage })` | Simple stream — returns `{ close }` |
-| `sse(path)` | Advanced — `for await` iterable |
-| `use` / `eject` | Interceptors |
-| `createFormData(fields)` | Build `FormData` from a plain object |
+| Method                         | Description                            |
+| ------------------------------ | -------------------------------------- |
+| `get/post/put/patch/delete`    | Typed HTTP → `Promise<T>`              |
+| `upload(path, opts?)`          | Multipart / file upload → `Promise<T>` |
+| `request(method, path, opts?)` | Generic verb                           |
+| `sse(path, { onMessage })`     | Simple stream — returns `{ close }`    |
+| `sse(path)`                    | Advanced — `for await` iterable        |
+| `use` / `eject`                | Interceptors                           |
+| `createFormData(fields)`       | Build `FormData` from a plain object   |
 
 ## FAQ
 

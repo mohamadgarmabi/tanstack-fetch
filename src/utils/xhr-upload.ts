@@ -36,6 +36,11 @@ const toProgressEvent = (event: ProgressEvent) => {
 /** Browser upload via XHR so `upload.onprogress` works (fetch has no upload progress). */
 const uploadWithProgress = (args: XhrUploadArgs): Promise<Response> =>
   new Promise((resolve, reject) => {
+    if (args.signal?.aborted) {
+      reject(new DOMException('The operation was aborted.', 'AbortError'))
+      return
+    }
+
     const xhr = new XMLHttpRequest()
     xhr.open(args.method, args.url.toString(), true)
     xhr.responseType = 'arraybuffer'

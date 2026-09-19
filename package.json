@@ -1,7 +1,7 @@
 {
   "name": "tanstack-fetch",
-  "version": "1.0.5",
-  "description": "TypeScript fetch / HTTP client for TanStack Query & React Query. Next.js SSR, interceptors, SSE, file upload, OpenAPI — lightweight axios alternative (~3.5KB).",
+  "version": "1.0.6",
+  "description": "React Query / TanStack Query fetch client — typed errors, AbortSignal, SSR, SSE, upload. Lightweight axios/ky alternative (~3.5KB).",
   "license": "MIT",
   "author": {
     "name": "Mohammad Garmabi",
@@ -52,7 +52,9 @@
     "file-upload",
     "upload-progress",
     "abortsignal",
-    "fetch-wrapper"
+    "fetch-wrapper",
+    "react-query-fetch-client",
+    "tanstack-query-fetch"
   ],
   "type": "module",
   "sideEffects": false,
@@ -87,7 +89,8 @@
   "files": [
     "dist",
     "LICENSE",
-    "README.md"
+    "README.md",
+    "CHANGELOG.md"
   ],
   "engines": {
     "node": ">=18"

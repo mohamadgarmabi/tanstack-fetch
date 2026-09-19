@@ -1,4 +1,5 @@
 import { describe, expect, it, vi } from 'vitest'
+import { isFetchError } from '../src'
 import { createSseTestClient } from './helpers'
 
 const sseStream = (chunks: string[]) => {
@@ -80,5 +81,56 @@ describe('tanstack-fetch sse', () => {
       expect(event.id).toBe('42')
     }
     expect(seen).toEqual(['42'])
+  })
+
+  it('throws when onRequest short-circuits with an error', async () => {
+    const fetchImpl = vi.fn()
+    const http = createSseTestClient(fetchImpl)
+    http.use('block', {
+      onRequest: () => ({
+        action: 'short-circuit',
+        result: {
+          ok: false,
+          status: 403,
+          error: { status: 403, code: 'FORBIDDEN', message: 'blocked', body: null },
+          headers: new Headers(),
+        },
+      }),
+    })
+
+    await expect(async () => {
+      for await (const event of http.sse('/events')) {
+        void event
+      }
+    }).rejects.toSatisfy((error: unknown) => isFetchError(error) && error.status === 403)
+    expect(fetchImpl).not.toHaveBeenCalled()
+  })
+
+  it('retries onRequest retry actions until the stream opens', async () => {
+    const fetchImpl = vi.fn().mockResolvedValueOnce(
+      new Response(sseStream(['event: tick\ndata: {"n":1}\n\n']), {
+        status: 200,
+        headers: { 'content-type': 'text/event-stream' },
+      }),
+    )
+    const http = createSseTestClient(fetchImpl, { maxRetries: 1 })
+    let attempts = 0
+    http.use('retry-open', {
+      onRequest: () => {
+        attempts += 1
+        if (attempts === 1) {
+          return { action: 'retry', delayMs: 1 }
+        }
+        return { action: 'continue' }
+      },
+    })
+
+    const events = []
+    for await (const event of http.sse<{ n: number }>('/events')) {
+      events.push(event)
+    }
+    expect(attempts).toBe(2)
+    expect(events).toHaveLength(1)
+    expect(fetchImpl).toHaveBeenCalledTimes(1)
   })
 })

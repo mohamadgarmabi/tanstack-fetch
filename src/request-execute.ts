@@ -1,5 +1,5 @@
 import type { CreateFetchOptions, HttpInterceptor, RequestContext } from './types'
-import { encodeBody, parseBody } from './utils/parse-body'
+import { encodeBody, isBodyParseError, parseBody } from './utils/parse-body'
 import { toErrResult, toFetchErrorInfo, toOkResult } from './utils/result'
 import { runHook } from './interceptors/run-interceptors'
 import { createFetchError, isAbortError } from './fetch-error'
@@ -42,6 +42,11 @@ const sendHttp = async (input: ExecuteArgs, body: BodyInit | null | undefined) =
   })
 }
 
+const toErrorResult = <T, E>(status: number, error: E, headers: Headers): AttemptOutcome<T, E> => ({
+  kind: 'result',
+  result: toErrResult(status, error, headers),
+})
+
 const executeFetch = async <T, E>(input: ExecuteArgs): Promise<AttemptOutcome<T, E>> => {
   const { context, interceptors, requestOptions } = input
   try {
@@ -49,10 +54,20 @@ const executeFetch = async <T, E>(input: ExecuteArgs): Promise<AttemptOutcome<T,
       input,
       encodeBody(context.request.body, context.request.headers),
     )
-    return handleResponse<T, E>({ interceptors, context, response, requestOptions })
+    return await handleResponse<T, E>({ interceptors, context, response, requestOptions })
   } catch (error) {
     if (isAbortError(error)) {
       throw error
+    }
+    if (isBodyParseError(error)) {
+      const info = toFetchErrorInfo(error.status, {
+        code: 'PARSE_ERROR',
+        message: error.message,
+        body: error.bodyText,
+      })
+      throw createFetchError(
+        toErrResult(error.status, info, error.headers) as FetchResult<never, typeof info>,
+      )
     }
     context.error = toFetchErrorInfo(0, {
       code: 'NETWORK_ERROR',
@@ -60,6 +75,9 @@ const executeFetch = async <T, E>(input: ExecuteArgs): Promise<AttemptOutcome<T,
     })
     const failed = await runHook(interceptors, (item) => item.onRequestError, context)
     if (failed.type === 'retry') {
+      if (context.meta.attempt >= context.meta.maxRetries) {
+        return toErrorResult(0, context.error as E, new Headers())
+      }
       return { kind: 'retry', delayMs: failed.delayMs }
     }
     if (failed.type === 'short-circuit') {
@@ -91,6 +109,10 @@ const handleResponse = async <T, E>(input: {
   }
   const after = await runHook(interceptors, hook, context)
   if (after.type === 'retry') {
+    if (context.meta.attempt >= context.meta.maxRetries) {
+      const error = (context.error ?? toFetchErrorInfo(response.status, context.data)) as E
+      return toErrorResult(response.status, error, response.headers)
+    }
     return { kind: 'retry', delayMs: after.delayMs }
   }
   if (after.type === 'short-circuit') {
