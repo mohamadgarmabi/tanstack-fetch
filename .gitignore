@@ -6,3 +6,6 @@ coverage
 .env
 .env.*
 example/generated
+
+# hero gif source frames (regenerate via scripts/make-hero-gif.sh)
+docs/assets/gif-frames/

@@ -13,6 +13,12 @@ Tiny HTTP core · Typed errors · 401 / 403 / 404 / 5xx handling · AbortSignal 
 [![CI](https://img.shields.io/github/actions/workflow/status/mohamadgarmabi/tanstack-fetch/ci.yml?branch=main&label=CI)](https://github.com/mohamadgarmabi/tanstack-fetch/actions/workflows/ci.yml)
 [![TypeScript](https://img.shields.io/badge/TypeScript-ready-3178c6.svg)](https://www.typescriptlang.org/)
 
+<p align="center">
+  <img src="./docs/assets/tanstack-fetch-hero.gif" alt="tanstack-fetch — createFetch + TanStack Query" width="720" />
+</p>
+
+<p align="center"><b>createFetch</b> + <b>TanStack Query</b> — return data, throw on error, honor <code>signal</code>.</p>
+
 ## 30-second quickstart
 
 ```bash
@@ -53,6 +59,7 @@ Built for the way TanStack Query actually works: return data, throw on failure, 
 | **SSR**             | Next.js-ready cookie / header forwarding (`ssr-forward`)            |
 | **Plugins**         | Named interceptors: retry, trace, mocks, eject per request          |
 | **React**           | Optional `FetchProvider`, `useFetch`, `useSse`                      |
+| **tRPC**            | `tanstack-fetch/trpc` — same auth/plugins with Router & Start       |
 
 Also: multipart **upload** + progress, OpenAPI codegen CLI, Edge-friendly.
 
@@ -93,6 +100,7 @@ try {
 | `tanstack-fetch/sse`     | + `api.sse()`              | **~4.7KB**   |
 | `tanstack-fetch/plugins` | plugin factories           | **~0.9KB**   |
 | `tanstack-fetch/react`   | `FetchProvider` / hooks    | **~1KB**     |
+| `tanstack-fetch/trpc`    | tRPC link via `createFetch` | **~3.1KB**   |
 
 ```ts
 import { createFetch } from 'tanstack-fetch' // HTTP only
@@ -100,6 +108,41 @@ import { createFetch } from 'tanstack-fetch/sse' // + streams
 ```
 
 `yaml` and React are optional peers. Run `npm run size` after build for local gzip numbers.
+
+---
+
+## tRPC (React · Router · Start)
+
+Same `createFetch` client — drop into tRPC:
+
+```bash
+npm install tanstack-fetch @trpc/client @trpc/tanstack-react-query @tanstack/react-query
+```
+
+```ts
+import { createFetch } from 'tanstack-fetch'
+import { createTRPCFetchClient } from 'tanstack-fetch/trpc'
+import { createTRPCOptionsProxy } from '@trpc/tanstack-react-query'
+import { QueryClient } from '@tanstack/react-query'
+import type { AppRouter } from './server'
+
+const api = createFetch({
+  getToken: () => localStorage.getItem('access_token'),
+  onUnauthorized: () => localStorage.removeItem('access_token'),
+})
+
+const queryClient = new QueryClient()
+const trpcClient = createTRPCFetchClient<AppRouter>({
+  url: '/api/trpc',
+  client: api,
+})
+const trpc = createTRPCOptionsProxy<AppRouter>({ client: trpcClient, queryClient })
+
+// React / Router / Start
+useQuery(trpc.post.list.queryOptions())
+```
+
+Full setup (Router loaders, TanStack Start SSR): [`docs/recipes/trpc.md`](./docs/recipes/trpc.md)
 
 ---
 
@@ -1028,6 +1071,7 @@ Copy-paste apps under [`examples/`](./examples):
 | [`file-upload`](./examples/file-upload)       | `api.upload` + progress             |
 | [`sse-live`](./examples/sse-live)             | `useSse` live stream                |
 | [`next-ssr`](./examples/next-ssr)             | App Router + `ssr-forward`          |
+| [`trpc`](./examples/trpc)                     | tRPC + `createTRPCFetchClient`      |
 
 ## API
 

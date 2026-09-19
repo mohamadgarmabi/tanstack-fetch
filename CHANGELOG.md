@@ -1,5 +1,19 @@
 # Changelog
 
+## 1.1.0
+
+### Features
+
+- **tRPC integration** via `tanstack-fetch/trpc`: `createTRPCFetch`, `createTRPCFetchLink`, `createTRPCFetchClient`
+- Reuse the same `createFetch` auth / plugins / status handlers with tRPC
+- Works with React Query, TanStack Router, and TanStack Start (relative `/api/trpc` URLs)
+
+### Docs
+
+- Recipe: [`docs/recipes/trpc.md`](./docs/recipes/trpc.md)
+- Example: [`examples/trpc`](./examples/trpc)
+
+
 ## 1.0.6
 
 ### Fixes
