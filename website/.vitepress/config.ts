@@ -109,6 +109,7 @@ const config = defineConfig({
   cleanUrls: true,
   lastUpdated: true,
   ignoreDeadLinks: true,
+  srcExclude: ['**/README.md'],
   metaChunk: true,
 
   sitemap: {
@@ -116,12 +117,13 @@ const config = defineConfig({
   },
 
   head: [
-    ['link', { rel: 'icon', type: 'image/png', href: '/tanstack-fetch/images/tanstack-fetch-hero.png' }],
-    ['link', { rel: 'apple-touch-icon', href: '/tanstack-fetch/images/docs-og-banner.png' }],
+    ['link', { rel: 'icon', type: 'image/jpeg', href: '/tanstack-fetch/images/logo.jpg' }],
+    ['link', { rel: 'apple-touch-icon', href: '/tanstack-fetch/images/logo.jpg' }],
     ['link', { rel: 'author', href: '/tanstack-fetch/author' }],
     ['link', { rel: 'me', href: 'https://github.com/mohamadgarmabi' }],
     ['link', { rel: 'me', href: `mailto:${AUTHOR_EMAIL}` }],
-    ['meta', { name: 'theme-color', content: '#0b1220' }],
+    ['meta', { name: 'theme-color', content: '#050505' }],
+    ['meta', { name: 'msapplication-TileColor', content: '#f05a12' }],
     ['meta', { name: 'author', content: AUTHOR_NAME }],
     ['meta', { name: 'creator', content: AUTHOR_NAME }],
     ['meta', { name: 'publisher', content: AUTHOR_NAME }],
@@ -174,7 +176,7 @@ const config = defineConfig({
   },
 
   themeConfig: {
-    logo: '/images/tanstack-fetch-hero.png',
+    logo: { src: '/images/logo.jpg', alt: 'tanstack-fetch' },
     siteTitle: SITE_NAME,
     search: { provider: 'local' },
     outline: [2, 3],
@@ -195,6 +197,7 @@ const config = defineConfig({
       { text: 'API', link: '/api/create-fetch' },
       { text: 'Recipes', link: '/recipes/refresh-token' },
       { text: 'Examples', link: '/examples/' },
+      { text: 'Packages', link: '/packages' },
       { text: 'Author', link: '/author' },
       {
         text: 'v1.1',

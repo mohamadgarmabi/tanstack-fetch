@@ -1,10 +1,12 @@
 # Refresh token on 401
 
+![Auth and 401 status handling](/images/docs-auth-status.png)
+
 Full walkthrough lives in the repo recipe. Pattern:
 
-1. Intercept `onResponseError` when `status === 401`  
-2. Refresh the access token once (dedupe in-flight refresh)  
-3. Return `{ action: 'retry' }` so the original request runs again  
+1. Intercept `onResponseError` when `status === 401`
+2. Refresh the access token once (dedupe in-flight refresh)
+3. Return `{ action: 'retry' }` so the original request runs again
 
 ```ts
 api.use('refresh-token', {

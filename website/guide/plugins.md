@@ -1,13 +1,15 @@
 # Plugins & interceptors
 
+![Named plugin and interceptor pipeline](/images/docs-plugins.png)
+
 ## Built-in plugins
 
-| Plugin | Role |
-| --- | --- |
-| `trace` | Adds `x-request-id` |
-| `ssr-forward` | Forwards cookies / auth on the server |
-| `retry-idempotent` | Retries safe methods on retryable statuses |
-| `sse-resume` | Drops heartbeats; sends `Last-Event-ID` on reconnect |
+| Plugin             | Role                                                 |
+| ------------------ | ---------------------------------------------------- |
+| `trace`            | Adds `x-request-id`                                  |
+| `ssr-forward`      | Forwards cookies / auth on the server                |
+| `retry-idempotent` | Retries safe methods on retryable statuses           |
+| `sse-resume`       | Drops heartbeats; sends `Last-Event-ID` on reconnect |
 
 ```ts
 createFetch({

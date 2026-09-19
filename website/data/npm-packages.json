@@ -1,0 +1,81 @@
+{
+  "updatedAt": "2026-09-19T12:19:40.952Z",
+  "author": "Mohammad Garmabi",
+  "npmUser": "mohammad.garmabi",
+  "packages": [
+    {
+      "name": "tanstack-fetch",
+      "version": "1.0.6",
+      "weekly": 644,
+      "monthly": 677,
+      "description": "React Query / TanStack Query fetch client — typed errors, AbortSignal, SSR, SSE, upload. Lightweight axios/ky alternativ"
+    },
+    {
+      "name": "vite-plugin-react-splash",
+      "version": "1.0.13",
+      "weekly": 108,
+      "monthly": 532,
+      "description": "Vite plugin + React hook for splash screens and loading screens in React apps and PWAs. Light/dark themes, animations, s"
+    },
+    {
+      "name": "url-validation-query",
+      "version": "0.0.17",
+      "weekly": 20,
+      "monthly": 50,
+      "description": "**URL Validation Query** URL Validation Query is a utility library providing a range of functions for managing query str"
+    },
+    {
+      "name": "sse-shared-worker-react-hook",
+      "version": "1.0.19",
+      "weekly": 23,
+      "monthly": 43,
+      "description": "Type-safe Server-Sent Events (SSE) hook for React with token authentication and retry logic"
+    },
+    {
+      "name": "react-video-capture",
+      "version": "0.0.4",
+      "weekly": 14,
+      "monthly": 25,
+      "description": "A flexible React component for video capture and recording"
+    },
+    {
+      "name": "react-performanalyzer",
+      "version": "0.0.7",
+      "weekly": 9,
+      "monthly": 25,
+      "description": "A comprehensive React performance analysis tool that checks for memory leaks, performance issues, and code quality probl"
+    },
+    {
+      "name": "sse-crossframework",
+      "version": "1.0.2",
+      "weekly": 3,
+      "monthly": 17,
+      "description": "Framework-agnostic SSE toolkit with React, Vue, and Solid adapters"
+    },
+    {
+      "name": "image-auth",
+      "version": "0.0.16",
+      "weekly": 17,
+      "monthly": 34,
+      "description": "To install the package, you can use npm or yarn:"
+    },
+    {
+      "name": "react-providers-tree",
+      "version": "1.0.0",
+      "weekly": 1,
+      "monthly": 13,
+      "description": "A utility to build a tree of React providers with their props"
+    },
+    {
+      "name": "frontend-stack-cli",
+      "version": "0.0.1",
+      "weekly": 1,
+      "monthly": 11,
+      "description": "A CLI tool for setting up Stack Setup projects. It provides a guided process for creating a new project, selecting the p"
+    }
+  ],
+  "totals": {
+    "weekly": 840,
+    "monthly": 1427
+  }
+}

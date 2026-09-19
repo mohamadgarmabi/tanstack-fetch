@@ -9,9 +9,9 @@
         width: 1200px; height: 760px; overflow: hidden;
         font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
         background:
-          radial-gradient(ellipse 80% 60% at 50% 0%, #1a2744 0%, transparent 55%),
-          linear-gradient(180deg, #0b1220 0%, #070b14 100%);
-        color: #e8eefc;
+          radial-gradient(ellipse 70% 55% at 50% 0%, rgba(255, 122, 24, 0.22) 0%, transparent 55%),
+          linear-gradient(180deg, #0a0a0a 0%, #050505 100%);
+        color: #fff7ed;
       }
       .scene {
         width: 1200px; height: 760px; padding: 36px 48px 28px;
@@ -20,78 +20,74 @@
       .brand { text-align: center; opacity: 0; transform: translateY(8px); }
       .brand.show { opacity: 1; transform: none; }
       .logo {
-        width: 56px; height: 56px; margin: 0 auto 12px; border-radius: 14px;
-        background: linear-gradient(135deg, #38bdf8, #f97316);
-        display: grid; place-items: center;
-        box-shadow: 0 0 32px rgba(56, 189, 248, 0.35);
+        width: 72px; height: 72px; margin: 0 auto 12px; border-radius: 50%;
+        overflow: hidden; border: 2px solid rgba(255, 247, 237, 0.85);
+        box-shadow: 0 0 0 4px rgba(255, 122, 24, 0.28), 0 0 28px rgba(255, 122, 24, 0.35);
       }
-      .logo svg { width: 30px; height: 30px; }
+      .logo img { width: 100%; height: 100%; object-fit: cover; display: block; }
       h1 { font-size: 34px; font-weight: 750; letter-spacing: -0.03em; line-height: 1.1; }
-      h1 span { color: #38bdf8; }
-      .tagline { margin-top: 8px; font-size: 18px; color: #9db0d0; font-weight: 500; }
+      h1 span { color: #ff7a18; }
+      .tagline { margin-top: 8px; font-size: 18px; color: #d6c4b0; font-weight: 500; }
       .editor {
         width: 100%; flex: 1; min-height: 0; border-radius: 16px;
-        border: 1px solid #24314a; background: #0f172a;
-        box-shadow: 0 24px 60px rgba(0,0,0,0.45), inset 0 1px 0 rgba(255,255,255,0.04);
+        border: 1px solid rgba(255, 122, 24, 0.22); background: #121212;
+        box-shadow: 0 24px 60px rgba(0,0,0,0.55), inset 0 1px 0 rgba(255,255,255,0.04);
         overflow: hidden; opacity: 0; transform: translateY(12px) scale(0.985);
         display: flex; flex-direction: column;
       }
       .editor.show { opacity: 1; transform: none; }
       .chrome {
         height: 40px; display: flex; align-items: center; gap: 8px;
-        padding: 0 14px; border-bottom: 1px solid #1e2a40; background: #111827;
+        padding: 0 14px; border-bottom: 1px solid rgba(255, 122, 24, 0.14); background: #0a0a0a;
       }
       .dot { width: 10px; height: 10px; border-radius: 50%; }
       .dot.r { background: #ff5f57; } .dot.y { background: #febc2e; } .dot.g { background: #28c840; }
       .tabs { display: flex; gap: 4px; margin-left: 14px; }
       .tab {
         font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
-        font-size: 12px; color: #7f92b3; padding: 6px 10px; border-radius: 8px 8px 0 0;
+        font-size: 12px; color: #a89888; padding: 6px 10px; border-radius: 8px 8px 0 0;
       }
-      .tab.active { color: #e8eefc; background: #0f172a; }
+      .tab.active { color: #fff7ed; background: #121212; }
       .panes { display: grid; grid-template-columns: 1fr 1fr; flex: 1; min-height: 0; }
-      .pane { padding: 18px 20px 20px; border-right: 1px solid #1e2a40; position: relative; overflow: hidden; }
+      .pane { padding: 18px 20px 20px; border-right: 1px solid rgba(255, 122, 24, 0.12); position: relative; overflow: hidden; }
       .pane:last-child { border-right: none; }
       .pane-title {
         font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
-        font-size: 11px; color: #6b7f9e; margin-bottom: 12px;
+        font-size: 11px; color: #8a7a6a; margin-bottom: 12px;
       }
       pre {
         font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
-        font-size: 13.5px; line-height: 1.55; white-space: pre; color: #cbd5e1;
+        font-size: 13.5px; line-height: 1.55; white-space: pre; color: #e8ddd0;
       }
-      .k { color: #7dd3fc; } .s { color: #fdba74; } .f { color: #86efac; }
-      .t { color: #c4b5fd; }
+      .k { color: #ffb347; } .s { color: #ff8a4c; } .f { color: #86c46a; }
+      .t { color: #ffd19a; }
       .line { opacity: 0; } .line.on { opacity: 1; }
       .cursor {
-        display: inline-block; width: 8px; height: 15px; background: #38bdf8;
+        display: inline-block; width: 8px; height: 15px; background: #ff7a18;
         vertical-align: -2px; margin-left: 1px; animation: blink 0.9s step-end infinite;
       }
       @keyframes blink { 50% { opacity: 0; } }
       .tooltip {
-        position: absolute; left: 52px; bottom: 58px; background: #1e293b;
-        border: 1px solid #334155; border-radius: 8px; padding: 8px 12px;
+        position: absolute; left: 52px; bottom: 58px; background: #1a1410;
+        border: 1px solid rgba(255, 122, 24, 0.35); border-radius: 8px; padding: 8px 12px;
         font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
-        font-size: 12.5px; color: #e2e8f0; box-shadow: 0 12px 30px rgba(0,0,0,0.4);
+        font-size: 12.5px; color: #fff7ed; box-shadow: 0 12px 30px rgba(0,0,0,0.5);
         opacity: 0; transform: translateY(6px);
       }
       .tooltip.show { opacity: 1; transform: none; }
-      .tooltip .hint { color: #38bdf8; } .tooltip .type { color: #86efac; }
+      .tooltip .hint { color: #ff7a18; } .tooltip .type { color: #86c46a; }
       .foot {
         font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
-        font-size: 22px; font-weight: 700; color: #cbd5e1; letter-spacing: -0.02em; opacity: 0;
+        font-size: 22px; font-weight: 700; color: #e8ddd0; letter-spacing: -0.02em; opacity: 0;
       }
-      .foot.show { opacity: 1; } .foot span { color: #38bdf8; }
+      .foot.show { opacity: 1; } .foot span { color: #ff7a18; }
     </style>
   </head>
   <body>
     <div class="scene">
       <div class="brand" id="brand">
         <div class="logo" aria-hidden="true">
-          <svg viewBox="0 0 24 24" fill="none">
-            <path d="M4 8.5L12 4l8 4.5v7L12 20l-8-4.5v-7z" stroke="white" stroke-width="1.8" fill="rgba(255,255,255,0.12)"/>
-            <path d="M12 12v8M12 12L4 8.5M12 12l8-3.5" stroke="white" stroke-width="1.5"/>
-          </svg>
+          <img src="./tanstack-fetch-logo.jpg" alt="" />
         </div>
         <h1>tanstack-<span>fetch</span></h1>
         <p class="tagline">Typed Fetch client designed for TanStack Query</p>

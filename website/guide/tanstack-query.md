@@ -1,5 +1,7 @@
 # TanStack Query
 
+![useQuery, queryOptions, and useMutation with createFetch](/images/docs-tanstack-query.png)
+
 ## Shared `queryOptions`
 
 ```ts
