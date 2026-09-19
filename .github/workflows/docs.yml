@@ -7,13 +7,15 @@ on:
 
 permissions:
   contents: write
+  pages: write
+  id-token: write
 
 concurrency:
   group: pages
   cancel-in-progress: true
 
 jobs:
-  deploy:
+  build:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v5
@@ -24,17 +26,63 @@ jobs:
           cache: npm
           cache-dependency-path: website/package-lock.json
 
-      - name: Install and build
+      - name: Install and build VitePress
         working-directory: website
         run: |
           npm ci
           npm run build
 
-      - name: Deploy to GitHub Pages
-        uses: peaceiris/actions-gh-pages@v4
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: website/.vitepress/dist
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: vitepress-dist
+          path: website/.vitepress/dist
+
+  # Always publish VitePress to gh-pages (never serve main/README.md).
+  deploy-branch:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: vitepress-dist
+          path: dist
+
+      - name: Ensure Pages source is gh-pages (not main)
+        continue-on-error: true
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          # main/(root) publishes README.md — hard reload shows README instead of VitePress.
+          gh api "repos/${{ github.repository }}/pages" -X POST \
+            -f build_type=legacy \
+            -f source[branch]=gh-pages \
+            -f source[path]=/ || true
+          gh api "repos/${{ github.repository }}/pages" -X PUT \
+            -f build_type=legacy \
+            -f source[branch]=gh-pages \
+            -f source[path]=/ || true
+
+      - uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: website/.vitepress/dist
+          publish_dir: dist
           force_orphan: true
           user_name: github-actions[bot]
           user_email: 41898282+github-actions[bot]@users.noreply.github.com
+
+  # Optional: works when Settings → Pages → Source is "GitHub Actions".
+  deploy-actions:
+    needs: build
+    if: success()
+    continue-on-error: true
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4
