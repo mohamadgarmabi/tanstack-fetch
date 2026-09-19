@@ -1,0 +1,10 @@
+/* TEAM */
+Developer: Mohammad Garmabi
+Contact: mwmdgmb@gmail.com
+GitHub: https://github.com/mohamadgarmabi
+npm: https://www.npmjs.com/~ (see package tanstack-fetch)
+
+/* SITE */
+Standards: HTML5, CSS3, Markdown
+Software: VitePress, TypeScript
+Language: English

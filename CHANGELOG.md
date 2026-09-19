@@ -10,6 +10,7 @@
 
 ### Docs
 
+- VitePress site under [`website/`](./website) (GitHub Pages)
 - Recipe: [`docs/recipes/trpc.md`](./docs/recipes/trpc.md)
 - Example: [`examples/trpc`](./examples/trpc)
 
