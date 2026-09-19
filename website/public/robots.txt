@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://mohamadgarmabi.github.io/tanstack-fetch/sitemap.xml

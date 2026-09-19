@@ -39,7 +39,7 @@ useQuery({
 
 That’s it: returns data, throws `FetchError` on HTTP errors, honors Query’s `signal`.
 
-**Examples:** [`examples/`](./examples) · **Changelog:** [`CHANGELOG.md`](./CHANGELOG.md)
+**Docs:** [mohamadgarmabi.github.io/tanstack-fetch](https://mohamadgarmabi.github.io/tanstack-fetch/) · **Examples:** [`examples/`](./examples) · **Changelog:** [`CHANGELOG.md`](./CHANGELOG.md)
 
 > Not an official TanStack package — built to match the `@tanstack/react-query` mental model.
 

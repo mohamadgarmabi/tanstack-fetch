@@ -9,3 +9,7 @@ example/generated
 
 # hero gif source frames (regenerate via scripts/make-hero-gif.sh)
 docs/assets/gif-frames/
+
+# VitePress
+website/.vitepress/dist
+website/.vitepress/cache

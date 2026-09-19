@@ -15,8 +15,10 @@
   "bugs": {
     "url": "https://github.com/mohamadgarmabi/tanstack-fetch/issues"
   },
-  "homepage": "https://github.com/mohamadgarmabi/tanstack-fetch#readme",
+  "homepage": "https://mohamadgarmabi.github.io/tanstack-fetch/",
   "keywords": [
+    "Mohammad Garmabi",
+    "mohammad garmabi",
     "fetch",
     "http-client",
     "http",
@@ -119,7 +121,10 @@
     "format:check": "prettier --check .",
     "size": "node scripts/size.mjs",
     "example": "tsx example/run.ts",
-    "prepublishOnly": "npm run typecheck && npm run lint && npm test && npm run build"
+    "prepublishOnly": "npm run typecheck && npm run lint && npm test && npm run build",
+    "docs:dev": "npm run dev --prefix website",
+    "docs:build": "npm run build --prefix website",
+    "docs:preview": "npm run preview --prefix website"
   },
   "peerDependencies": {
     "@trpc/client": ">=10",
