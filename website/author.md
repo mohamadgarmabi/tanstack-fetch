@@ -7,7 +7,7 @@ head:
       content: Mohammad Garmabi
   - - meta
     - name: keywords
-      content: Mohammad Garmabi, mohammad garmabi, tanstack-fetch, TanStack Query, TypeScript, React, open source
+      content: Mohammad Garmabi, mohammad garmabi, LinkedIn, tanstack-fetch, TanStack Query, TypeScript, React, open source
 ---
 
 # Mohammad Garmabi
@@ -22,10 +22,12 @@ head:
 | -------------------------------------------------------------- | ------------------------------------------------------- |
 | [tanstack-fetch](https://www.npmjs.com/package/tanstack-fetch) | Typed Fetch for TanStack Query — SSR, SSE, upload, tRPC |
 | [GitHub](https://github.com/mohamadgarmabi)                    | Open-source repositories                                |
+| [LinkedIn](https://www.linkedin.com/in/mohammad-garmabi/)      | Professional profile                                    |
 
 ## Links
 
 - GitHub: [github.com/mohamadgarmabi](https://github.com/mohamadgarmabi)
+- LinkedIn: [linkedin.com/in/mohammad-garmabi](https://www.linkedin.com/in/mohammad-garmabi/)
 - npm package: [tanstack-fetch](https://www.npmjs.com/package/tanstack-fetch)
 - Docs: [tanstack-fetch documentation](/)
 - Email: [mwmdgmb@gmail.com](mailto:mwmdgmb@gmail.com)

@@ -2,7 +2,8 @@
 Developer: Mohammad Garmabi
 Contact: mwmdgmb@gmail.com
 GitHub: https://github.com/mohamadgarmabi
-npm: https://www.npmjs.com/~ (see package tanstack-fetch)
+LinkedIn: https://www.linkedin.com/in/mohammad-garmabi/
+npm: https://www.npmjs.com/~mohammad.garmabi
 
 /* SITE */
 Standards: HTML5, CSS3, Markdown
