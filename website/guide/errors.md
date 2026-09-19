@@ -1,5 +1,7 @@
 # Errors
 
+![FetchError with status, code, message, body](/images/docs-errors.png)
+
 By default (`throwOnError: true`) failed HTTP calls throw a **`FetchError`**.
 
 ```ts
@@ -11,8 +13,8 @@ try {
   await api.get('/missing')
 } catch (error) {
   if (isFetchError(error)) {
-    console.log(error.status)  // 404
-    console.log(error.code)    // e.g. from body
+    console.log(error.status) // 404
+    console.log(error.code) // e.g. from body
     console.log(error.message)
     console.log(error.body)
   }
@@ -45,8 +47,8 @@ if (!result.ok) {
 
 ## Helpers
 
-| Helper | Purpose |
-| --- | --- |
-| `isFetchError(error)` | Narrow to `FetchError` |
-| `isAbortError(error)` | Abort / timeout — usually not an HTTP failure |
-| `createFetchError(result)` | Build a `FetchError` from a failed result |
+| Helper                     | Purpose                                       |
+| -------------------------- | --------------------------------------------- |
+| `isFetchError(error)`      | Narrow to `FetchError`                        |
+| `isAbortError(error)`      | Abort / timeout — usually not an HTTP failure |
+| `createFetchError(result)` | Build a `FetchError` from a failed result     |

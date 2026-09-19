@@ -1,5 +1,7 @@
 # Plugin API
 
+![Plugin pipeline](/images/docs-plugins.png)
+
 ```ts
 import { pluginFactories } from 'tanstack-fetch/plugins'
 ```

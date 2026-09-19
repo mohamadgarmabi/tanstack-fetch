@@ -1,5 +1,7 @@
 # tRPC
 
+![tRPC httpBatchLink powered by createFetch](/images/docs-trpc.png)
+
 Same `createFetch` auth / plugins — wired into tRPC for **React**, **TanStack Router**, and **TanStack Start**.
 
 ```bash
@@ -30,11 +32,11 @@ useQuery(trpc.post.list.queryOptions())
 
 ## Helpers
 
-| Helper | Role |
-| --- | --- |
-| `createTRPCFetch(api)` | `fetch` for `httpBatchLink` |
-| `createTRPCFetchLink({ url, client })` | ready terminating link |
-| `createTRPCFetchClient<AppRouter>(…)` | full client |
+| Helper                                 | Role                        |
+| -------------------------------------- | --------------------------- |
+| `createTRPCFetch(api)`                 | `fetch` for `httpBatchLink` |
+| `createTRPCFetchLink({ url, client })` | ready terminating link      |
+| `createTRPCFetchClient<AppRouter>(…)`  | full client                 |
 
 Relative URLs like `/api/trpc` work for Router / Start. Full SSR notes: [tRPC recipe](/recipes/trpc).
 

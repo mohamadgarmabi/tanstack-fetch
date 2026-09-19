@@ -1,5 +1,7 @@
 # tRPC + tanstack-fetch
 
+![tRPC transport via createFetch](/images/docs-trpc.png)
+
 Use the same `createFetch` auth, plugins, and status handlers as your REST client — with tRPC over React, TanStack Router, or TanStack Start.
 
 Copy-paste app: Copy-paste app: [examples/trpc](https://github.com/mohamadgarmabi/tanstack-fetch/tree/main/examples/trpc).

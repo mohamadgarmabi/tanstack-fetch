@@ -9,8 +9,8 @@ hero:
   text: Typed Fetch for TanStack Query
   tagline: By Mohammad Garmabi · Tiny HTTP core · typed errors · AbortSignal · SSR · SSE · tRPC — built for the queryFn mental model.
   image:
-    src: /images/docs-og-banner.png
-    alt: tanstack-fetch by Mohammad Garmabi — Typed Fetch for TanStack Query
+    src: /images/logo.jpg
+    alt: tanstack-fetch fox logo by Mohammad Garmabi
   actions:
     - theme: brand
       text: Get started
@@ -21,6 +21,9 @@ hero:
     - theme: alt
       text: Author
       link: /author
+    - theme: alt
+      text: npm downloads
+      link: /packages
 
 features:
   - title: Query-native
@@ -34,6 +37,10 @@ features:
 ---
 
 <p align="center">
+  <img class="brand-logo-hero" src="/images/logo.jpg" alt="tanstack-fetch logo" width="180" height="180" />
+</p>
+
+<p align="center">
   <img class="hero-gif" src="/images/tanstack-fetch-hero.gif" alt="tanstack-fetch by Mohammad Garmabi — createFetch + TanStack Query demo" width="720" height="456" />
 </p>
 
@@ -42,6 +49,20 @@ features:
   <a href="https://www.npmjs.com/package/tanstack-fetch">npm</a> ·
   <a href="https://github.com/mohamadgarmabi/tanstack-fetch">GitHub</a>
 </p>
+
+<NpmDownloadBadges package-name="tanstack-fetch" />
+
+<p align="center">
+  <a href="/packages">All npm packages by Mohammad Garmabi →</a>
+</p>
+
+## Visual overview
+
+|                                                |                                                    |
+| ---------------------------------------------- | -------------------------------------------------- |
+| ![Mental model](/images/docs-mental-model.png) | ![TanStack Query](/images/docs-tanstack-query.png) |
+| ![Auth & status](/images/docs-auth-status.png) | ![tRPC](/images/docs-trpc.png)                     |
+| ![SSR](/images/docs-ssr-forward.png)           | ![SSE](/images/docs-sse.png)                       |
 
 ```ts
 import { createFetch } from 'tanstack-fetch'

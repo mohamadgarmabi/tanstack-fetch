@@ -1,5 +1,8 @@
 # Examples
 
+![Entry points used across examples](/images/docs-entry-points.png)
+
+
 Copy-paste apps in the repository:
 
 | Example | What it shows |

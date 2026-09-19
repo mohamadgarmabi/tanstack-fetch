@@ -1,5 +1,7 @@
 # Upload
 
+![Multipart upload with progress](/images/docs-upload.png)
+
 ```ts
 await api.upload('/files', {
   file,

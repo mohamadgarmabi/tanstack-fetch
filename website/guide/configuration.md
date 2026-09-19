@@ -1,5 +1,7 @@
 # Configuration
 
+![Auth, token, and status handlers](/images/docs-auth-status.png)
+
 Two paths: **simple** (most apps) and **advanced** (plugins + interceptors).
 
 ## Simple path
@@ -29,14 +31,14 @@ export const api = createFetch({
 })
 ```
 
-| Option | When |
-| --- | --- |
-| `getToken` / `auth` | Every request — `Authorization: Bearer …` |
-| `onUnauthorized` | HTTP **401** |
-| `onForbidden` | HTTP **403** |
-| `onNotFound` | HTTP **404** |
-| `onServerError` | HTTP **5xx** |
-| `onStatus` | Advanced map (exact code, `4xx`, `5xx`, `default`) |
+| Option              | When                                               |
+| ------------------- | -------------------------------------------------- |
+| `getToken` / `auth` | Every request — `Authorization: Bearer …`          |
+| `onUnauthorized`    | HTTP **401**                                       |
+| `onForbidden`       | HTTP **403**                                       |
+| `onNotFound`        | HTTP **404**                                       |
+| `onServerError`     | HTTP **5xx**                                       |
+| `onStatus`          | Advanced map (exact code, `4xx`, `5xx`, `default`) |
 
 ### Advanced `auth` + `onStatus`
 

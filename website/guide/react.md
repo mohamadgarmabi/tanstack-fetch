@@ -31,8 +31,19 @@ const UsersPage = () => {
   })
 
   if (isPending) return <p>Loading…</p>
-  if (isFetchError(error)) return <p>{error.status}: {error.message}</p>
-  return <ul>{data.map((u) => <li key={u.id}>{u.name}</li>)}</ul>
+  if (isFetchError(error))
+    return (
+      <p>
+        {error.status}: {error.message}
+      </p>
+    )
+  return (
+    <ul>
+      {data.map((u) => (
+        <li key={u.id}>{u.name}</li>
+      ))}
+    </ul>
+  )
 }
 ```
 

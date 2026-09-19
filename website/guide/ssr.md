@@ -1,5 +1,7 @@
 # SSR & Next.js
 
+![SSR cookie forwarding with ssr-forward](/images/docs-ssr-forward.png)
+
 Use absolute `baseUrl` on the server and the `ssr-forward` plugin to forward cookies / auth headers.
 
 ```ts

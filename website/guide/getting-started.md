@@ -1,6 +1,10 @@
 # Getting started
 
+![tanstack-fetch logo](/images/logo.jpg){width=200}
+
 ## Install
+
+<NpmDownloadBadges package-name="tanstack-fetch" />
 
 ```bash
 npm install tanstack-fetch @tanstack/react-query
@@ -64,10 +68,10 @@ try {
 
 ## Next steps
 
-| Goal | Page |
-| --- | --- |
-| Token + 401 / 403 / 404 | [Configuration](./configuration) |
+| Goal                        | Page                               |
+| --------------------------- | ---------------------------------- |
+| Token + 401 / 403 / 404     | [Configuration](./configuration)   |
 | `useQuery` / `queryOptions` | [TanStack Query](./tanstack-query) |
-| Next.js cookies | [SSR & Next.js](./ssr) |
-| Streams | [SSE](./sse) |
-| tRPC | [tRPC](./trpc) |
+| Next.js cookies             | [SSR & Next.js](./ssr)             |
+| Streams                     | [SSE](./sse)                       |
+| tRPC                        | [tRPC](./trpc)                     |
