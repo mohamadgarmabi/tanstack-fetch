@@ -37,24 +37,22 @@ features:
 ---
 
 <p align="center">
-  <img class="brand-logo-hero" src="/images/logo.jpg" alt="tanstack-fetch logo" width="180" height="180" />
+  <img class="brand-logo-hero" src="./images/logo.jpg" alt="tanstack-fetch logo" width="180" height="180" />
 </p>
 
 <p align="center">
-  <img class="hero-gif" src="/images/tanstack-fetch-hero.gif" alt="tanstack-fetch by Mohammad Garmabi — createFetch + TanStack Query demo" width="720" height="456" />
+  <img class="hero-gif" src="./images/tanstack-fetch-hero.gif" alt="tanstack-fetch by Mohammad Garmabi — createFetch + TanStack Query demo" width="720" height="456" />
 </p>
 
-<p align="center">
-  Created by <strong><a href="/author">Mohammad Garmabi</a></strong> ·
+<p align="center" class="home-meta-links">
+  Created by <strong><a href="./author">Mohammad Garmabi</a></strong> ·
   <a href="https://www.npmjs.com/package/tanstack-fetch">npm</a> ·
   <a href="https://github.com/mohamadgarmabi/tanstack-fetch">GitHub</a>
 </p>
 
 <NpmDownloadBadges package-name="tanstack-fetch" />
 
-<p align="center">
-  <a href="/packages">All npm packages by Mohammad Garmabi →</a>
-</p>
+<HomePackagesLink />
 
 ## Visual overview
 
