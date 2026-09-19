@@ -6,6 +6,8 @@ const AUTHOR_NAME = 'Mohammad Garmabi'
 const AUTHOR_EMAIL = 'mwmdgmb@gmail.com'
 const AUTHOR_URL = `${SITE_URL}/author`
 const GITHUB_URL = 'https://github.com/mohamadgarmabi/tanstack-fetch'
+const LINKEDIN_URL = 'https://www.linkedin.com/in/mohammad-garmabi/'
+const GITHUB_PROFILE_URL = 'https://github.com/mohamadgarmabi'
 const NPM_URL = 'https://www.npmjs.com/package/tanstack-fetch'
 const OG_IMAGE = `${SITE_URL}/images/docs-og-banner.png`
 const DEFAULT_DESCRIPTION =
@@ -27,6 +29,8 @@ const KEYWORDS = [
   'tRPC',
   'Next.js',
   'createFetch',
+  'Mohammad Garmabi LinkedIn',
+  'mohammad garmabi linkedin',
 ].join(', ')
 
 const toAbsoluteUrl = (page: string) => {
@@ -87,7 +91,8 @@ const buildJsonLd = (pageUrl: string, title: string, description: string) => {
       email: AUTHOR_EMAIL,
       jobTitle: 'Software Engineer',
       sameAs: [
-        'https://github.com/mohamadgarmabi',
+        GITHUB_PROFILE_URL,
+        LINKEDIN_URL,
         NPM_URL,
         AUTHOR_URL,
       ],
@@ -120,7 +125,8 @@ const config = defineConfig({
     ['link', { rel: 'icon', type: 'image/jpeg', href: '/tanstack-fetch/images/logo.jpg' }],
     ['link', { rel: 'apple-touch-icon', href: '/tanstack-fetch/images/logo.jpg' }],
     ['link', { rel: 'author', href: '/tanstack-fetch/author' }],
-    ['link', { rel: 'me', href: 'https://github.com/mohamadgarmabi' }],
+    ['link', { rel: 'me', href: GITHUB_PROFILE_URL }],
+    ['link', { rel: 'me', href: LINKEDIN_URL }],
     ['link', { rel: 'me', href: `mailto:${AUTHOR_EMAIL}` }],
     ['meta', { name: 'theme-color', content: '#050505' }],
     ['meta', { name: 'msapplication-TileColor', content: '#f05a12' }],
@@ -182,6 +188,7 @@ const config = defineConfig({
     outline: [2, 3],
     socialLinks: [
       { icon: 'github', link: GITHUB_URL },
+      { icon: 'linkedin', link: LINKEDIN_URL },
       { icon: 'npm', link: NPM_URL },
     ],
     editLink: {

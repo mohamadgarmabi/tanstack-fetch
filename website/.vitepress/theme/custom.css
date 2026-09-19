@@ -225,3 +225,18 @@
   color: var(--vp-c-text-2);
   font-variant-numeric: tabular-nums;
 }
+
+
+.home-intro-center {
+  text-align: center;
+}
+
+.home-packages-link {
+  text-align: center;
+  margin: 0.5rem 0 1.75rem !important;
+}
+
+.home-packages-link a {
+  font-weight: 600;
+  color: var(--vp-c-brand-1);
+}
