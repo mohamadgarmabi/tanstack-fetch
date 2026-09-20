@@ -13,3 +13,4 @@ docs/assets/gif-frames/
 # VitePress
 website/.vitepress/dist
 website/.vitepress/cache
+.pnpm-store
