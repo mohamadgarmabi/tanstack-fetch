@@ -13,16 +13,16 @@ Methods on the client returned by `createFetch`:
 
 ## Request options
 
-| Option             | Notes                       |
-| ------------------ | --------------------------- |
-| `params`           | Path params (`/users/:id`)  |
-| `query`            | Query string                |
-| `body`             | JSON / FormData / …         |
-| `headers`          | Per-request headers         |
-| `signal`           | AbortSignal (pass Query’s)  |
-| `timeoutMs`        | Override client timeout     |
-| `throwOnError`     | Override client default     |
-| `parseAs`          | `json` \| `text` \| `blob`  |
-| `operation`        | Name for interceptor match  |
-| `interceptors`     | Per-request `use` / `eject` |
-| `onUploadProgress` | Browser upload progress     |
+| Option             | Notes                                                               |
+| ------------------ | ------------------------------------------------------------------- |
+| `params`           | Typed from path (`:id` / `{id}`) — required when placeholders exist |
+| `query`            | Query string                                                        |
+| `body`             | JSON / FormData / …                                                 |
+| `headers`          | Per-request headers                                                 |
+| `signal`           | AbortSignal (pass Query’s)                                          |
+| `timeoutMs`        | Override client timeout                                             |
+| `throwOnError`     | Override client default                                             |
+| `parseAs`          | `json` \| `text` \| `blob`                                          |
+| `operation`        | Name for interceptor match                                          |
+| `interceptors`     | Per-request `use` / `eject`                                         |
+| `onUploadProgress` | Browser upload progress                                             |

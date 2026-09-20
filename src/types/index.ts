@@ -49,6 +49,12 @@ import type {
   OkResult,
 } from './result.type'
 import type { SseEvent, SseHandlers, SseSubscription } from './sse.type'
+import type {
+  ExtractPathParamKeys,
+  PathParamsOf,
+  PathParamValue,
+  WithPathParams,
+} from './path-params.type'
 
 export type {
   CreateFetchOptions,
@@ -92,4 +98,8 @@ export type {
   SseEvent,
   SseHandlers,
   SseSubscription,
+  ExtractPathParamKeys,
+  PathParamsOf,
+  PathParamValue,
+  WithPathParams,
 }

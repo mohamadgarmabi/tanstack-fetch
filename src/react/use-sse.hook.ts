@@ -1,17 +1,18 @@
 import { useEffect, useRef, useState } from 'react'
 import { isFetchError } from 'tanstack-fetch'
-import type { FetchError, FetchClient, SseEvent } from 'tanstack-fetch'
+import type { FetchError, FetchClient, SseEvent, WithPathParams } from 'tanstack-fetch'
 import { useFetch } from './fetch-provider.hook'
 
-type UseSseOptions<T> = {
+type UseSseOptionsBase<T> = {
   enabled?: boolean
   lastEventId?: string
-  params?: Record<string, string | number>
   query?: Record<string, string | number | boolean | undefined | null>
   onMessage?: (data: T, event: SseEvent<T>) => void
   onEvent?: (event: SseEvent<T>) => void
   onError?: (error: unknown) => void
 }
+
+type UseSseOptions<T, TPath extends string = string> = UseSseOptionsBase<T> & WithPathParams<TPath>
 
 type UseSseResult<T> = {
   data: T | undefined
@@ -22,9 +23,14 @@ type UseSseResult<T> = {
 }
 
 const hasSse = (client: unknown): client is FetchClient =>
-  Boolean(client && typeof client === 'object' && 'sse' in client && typeof client.sse === 'function')
+  Boolean(
+    client && typeof client === 'object' && 'sse' in client && typeof client.sse === 'function',
+  )
 
-const useSse = <T>(path: string, options: UseSseOptions<T> = {}): UseSseResult<T> => {
+const useSse = <T, TPath extends string = string>(
+  path: TPath,
+  options: UseSseOptions<T, TPath> = {} as UseSseOptions<T, TPath>,
+): UseSseResult<T> => {
   const api = useFetch()
   const [data, setData] = useState<T | undefined>(undefined)
   const [event, setEvent] = useState<SseEvent<T> | undefined>(undefined)
@@ -34,7 +40,7 @@ const useSse = <T>(path: string, options: UseSseOptions<T> = {}): UseSseResult<T
   const optionsRef = useRef(options)
   optionsRef.current = options
 
-  const paramsKey = JSON.stringify(options.params ?? null)
+  const paramsKey = JSON.stringify('params' in options ? options.params : null)
   const queryKey = JSON.stringify(options.query ?? null)
 
   useEffect(() => {
@@ -51,20 +57,19 @@ const useSse = <T>(path: string, options: UseSseOptions<T> = {}): UseSseResult<T
     }
 
     setError(undefined)
-    const subscription = api.sse<T>(path, {
-      params: optionsRef.current.params,
-      query: optionsRef.current.query,
+    const subscription = api.sse<T, TPath>(path, {
+      ...(optionsRef.current as UseSseOptions<T, TPath>),
       lastEventId: optionsRef.current.lastEventId,
       onOpen: () => setIsConnected(true),
-      onMessage: (message, nextEvent) => {
+      onMessage: (message: T, nextEvent: SseEvent<T>) => {
         setData(message)
         setEvent(nextEvent)
         optionsRef.current.onMessage?.(message, nextEvent)
       },
-      onEvent: (nextEvent) => {
+      onEvent: (nextEvent: SseEvent<T>) => {
         optionsRef.current.onEvent?.(nextEvent)
       },
-      onError: (nextError) => {
+      onError: (nextError: unknown) => {
         setIsConnected(false)
         const normalized =
           nextError instanceof Error ? nextError : new Error('SSE connection failed')
@@ -72,7 +77,7 @@ const useSse = <T>(path: string, options: UseSseOptions<T> = {}): UseSseResult<T
         optionsRef.current.onError?.(nextError)
       },
       onClose: () => setIsConnected(false),
-    })
+    } as never)
 
     closeRef.current = subscription.close
 
