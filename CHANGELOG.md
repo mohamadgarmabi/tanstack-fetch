@@ -1,12 +1,19 @@
 # Changelog
 
+## 1.2.1
+
+### Features
+
+- **Path-typed `params`**: `api.get('/users/:id', { params: { id } })` infers required keys from `:param` / `{param}` patterns
+- Export `PathParamsOf`, `ExtractPathParamKeys`, `pathParams()` helper
+- Typed `params` on `get` / `post` / `put` / `patch` / `delete` / `upload` / `sse` / `useSse`
+
 ## 1.2.0
 
 ### Features
 
 - **First-class 4xx status shortcuts**: `onBadRequest` (400), `onMethodNotAllowed` (405), `onRequestTimeout` (408), `onConflict` (409), `onGone` (410), `onPayloadTooLarge` (413), `onUnsupportedMediaType` (415), `onUnprocessableEntity` (422), **`onTooManyRequests` (429)**, `onUnavailableForLegalReasons` (451), plus **`onClientError`** (`4xx` catch-all)
 - **`parseRetryAfter(headers)`** helper for rate-limit `Retry-After` delays
-- **Path-typed `params`**: `api.get('/users/:id', { params: { id } })` infers required keys from `:param` / `{param}` patterns; export `PathParamsOf`, `pathParams()`
 - Docs: live VitePress playgrounds (real `createFetch` + mock `fetch`), rate-limit recipe
 
 ## 1.1.0
