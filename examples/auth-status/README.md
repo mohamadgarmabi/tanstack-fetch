@@ -1,15 +1,5 @@
-# Example: auth + status handlers
+# auth-status
 
-Simple React page that wires Bearer token and 401 / 403 / 404 / 5xx callbacks.
+Simple React page that wires Bearer token and **4xx / 5xx** callbacks — including **429** via `onTooManyRequests` + `parseRetryAfter`.
 
-## Install
-
-```bash
-npm install tanstack-fetch react
-```
-
-## Files
-
-- [`src/lib/api.ts`](./src/lib/api.ts) — token + status handlers
-- [`src/auth-status.hook.ts`](./src/auth-status.hook.ts) — load profile / typed errors
-- [`src/App.tsx`](./src/App.tsx) — UI only
+See `src/lib/api.ts`.

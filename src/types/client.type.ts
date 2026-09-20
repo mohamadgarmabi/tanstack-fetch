@@ -53,15 +53,37 @@ type CreateFetchOptions = {
   /** Advanced auth config (overrides `getToken` when both set via `auth`). */
   auth?: AuthConfig
 
+  /** Called on HTTP 400. */
+  onBadRequest?: StatusHandler
   /** Called on HTTP 401 before the error is thrown / returned. */
   onUnauthorized?: StatusHandler
   /** Called on HTTP 403. */
   onForbidden?: StatusHandler
   /** Called on HTTP 404. */
   onNotFound?: StatusHandler
+  /** Called on HTTP 405. */
+  onMethodNotAllowed?: StatusHandler
+  /** Called on HTTP 408. */
+  onRequestTimeout?: StatusHandler
+  /** Called on HTTP 409. */
+  onConflict?: StatusHandler
+  /** Called on HTTP 410. */
+  onGone?: StatusHandler
+  /** Called on HTTP 413. */
+  onPayloadTooLarge?: StatusHandler
+  /** Called on HTTP 415. */
+  onUnsupportedMediaType?: StatusHandler
+  /** Called on HTTP 422. */
+  onUnprocessableEntity?: StatusHandler
+  /** Called on HTTP 429 (rate limit). Prefer reading `Retry-After` via `parseRetryAfter`. */
+  onTooManyRequests?: StatusHandler
+  /** Called on HTTP 451. */
+  onUnavailableForLegalReasons?: StatusHandler
+  /** Called on any HTTP 4xx without a more specific handler. */
+  onClientError?: StatusHandler
   /** Called on HTTP 5xx (500–599). */
   onServerError?: StatusHandler
-  /** Advanced per-status map (`401`, `403`, `4xx`, `5xx`, `default`, …). */
+  /** Advanced per-status map (`401`, `429`, `4xx`, `5xx`, `default`, …). */
   onStatus?: StatusHandlers
 }
 

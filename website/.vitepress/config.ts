@@ -1,3 +1,4 @@
+import { fileURLToPath, URL } from 'node:url'
 import { defineConfig, type HeadConfig } from 'vitepress'
 
 const SITE_URL = 'https://mohamadgarmabi.github.io/tanstack-fetch'
@@ -71,7 +72,7 @@ const buildJsonLd = (pageUrl: string, title: string, description: string) => {
       description: DEFAULT_DESCRIPTION,
       url: `${SITE_URL}/`,
       downloadUrl: NPM_URL,
-      softwareVersion: '1.1.0',
+      softwareVersion: '1.2.0',
       license: 'https://opensource.org/licenses/MIT',
       codeRepository: GITHUB_URL,
       programmingLanguage: ['TypeScript', 'JavaScript'],
@@ -202,12 +203,13 @@ const config = defineConfig({
     nav: [
       { text: 'Guide', link: '/guide/getting-started' },
       { text: 'API', link: '/api/create-fetch' },
+      { text: 'Playground', link: '/examples/playground' },
       { text: 'Recipes', link: '/recipes/refresh-token' },
       { text: 'Examples', link: '/examples/' },
       { text: 'Packages', link: '/packages' },
       { text: 'Author', link: '/author' },
       {
-        text: 'v1.1',
+        text: 'v1.2',
         items: [
           { text: 'Changelog', link: `${GITHUB_URL}/blob/main/CHANGELOG.md` },
           { text: 'npm', link: NPM_URL },
@@ -264,6 +266,7 @@ const config = defineConfig({
           text: 'Recipes',
           items: [
             { text: 'Refresh token on 401', link: '/recipes/refresh-token' },
+            { text: 'Rate limit (429)', link: '/recipes/rate-limit' },
             { text: 'tRPC + Router / Start', link: '/recipes/trpc' },
           ],
         },
@@ -271,9 +274,34 @@ const config = defineConfig({
       '/examples/': [
         {
           text: 'Examples',
-          items: [{ text: 'Overview', link: '/examples/' }],
+          items: [
+            { text: 'Overview', link: '/examples/' },
+            { text: 'Live playground', link: '/examples/playground' },
+            { text: 'React Query', link: '/examples/react' },
+            { text: 'Next.js SSR', link: '/examples/next-ssr' },
+            { text: 'Upload', link: '/examples/upload' },
+            { text: 'SSE', link: '/examples/sse' },
+          ],
         },
       ],
+    },
+  },
+
+  vite: {
+    resolve: {
+      alias: {
+        'tanstack-fetch/sse': fileURLToPath(new URL('../../src/sse/index.ts', import.meta.url)),
+        'tanstack-fetch/react': fileURLToPath(new URL('../../src/react/index.ts', import.meta.url)),
+        'tanstack-fetch/plugins': fileURLToPath(
+          new URL('../../src/plugins/index.ts', import.meta.url),
+        ),
+        'tanstack-fetch': fileURLToPath(new URL('../../src/index.ts', import.meta.url)),
+      },
+    },
+    server: {
+      fs: {
+        allow: ['..'],
+      },
     },
   },
 })

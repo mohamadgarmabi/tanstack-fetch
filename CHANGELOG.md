@@ -1,5 +1,13 @@
 # Changelog
 
+## 1.2.0
+
+### Features
+
+- **First-class 4xx status shortcuts**: `onBadRequest` (400), `onMethodNotAllowed` (405), `onRequestTimeout` (408), `onConflict` (409), `onGone` (410), `onPayloadTooLarge` (413), `onUnsupportedMediaType` (415), `onUnprocessableEntity` (422), **`onTooManyRequests` (429)**, `onUnavailableForLegalReasons` (451), plus **`onClientError`** (`4xx` catch-all)
+- **`parseRetryAfter(headers)`** helper for rate-limit `Retry-After` delays
+- Docs: live VitePress playgrounds (real `createFetch` + mock `fetch`), rate-limit recipe
+
 ## 1.1.0
 
 ### Features

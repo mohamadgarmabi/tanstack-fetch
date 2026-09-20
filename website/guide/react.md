@@ -2,6 +2,10 @@
 
 Optional helpers from `tanstack-fetch/react`.
 
+## Live demo
+
+<ReactQueryDemo />
+
 ## `FetchProvider`
 
 ```tsx

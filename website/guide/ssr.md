@@ -2,6 +2,10 @@
 
 ![SSR cookie forwarding with ssr-forward](/images/docs-ssr-forward.png)
 
+## Live demo
+
+<NextSsrDemo />
+
 Use absolute `baseUrl` on the server and the `ssr-forward` plugin to forward cookies / auth headers.
 
 ```ts

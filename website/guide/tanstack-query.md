@@ -2,6 +2,10 @@
 
 ![useQuery, queryOptions, and useMutation with createFetch](/images/docs-tanstack-query.png)
 
+## Live demo
+
+<ReactQueryDemo />
+
 ## Shared `queryOptions`
 
 ```ts

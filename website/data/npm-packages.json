@@ -1,14 +1,14 @@
 {
-  "updatedAt": "2026-09-19T12:19:40.952Z",
+  "updatedAt": "2026-09-20T06:39:52.463234+00:00",
   "author": "Mohammad Garmabi",
   "npmUser": "mohammad.garmabi",
   "packages": [
     {
       "name": "tanstack-fetch",
-      "version": "1.0.6",
+      "version": "1.2.0",
       "weekly": 644,
       "monthly": 677,
-      "description": "React Query / TanStack Query fetch client — typed errors, AbortSignal, SSR, SSE, upload. Lightweight axios/ky alternativ"
+      "description": "React Query / TanStack Query fetch client \u2014 typed errors, 4xx/429, AbortSignal, SSR, SSE, upload, tRPC (~3.5KB)."
     },
     {
       "name": "vite-plugin-react-splash",
