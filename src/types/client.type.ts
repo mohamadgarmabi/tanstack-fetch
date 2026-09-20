@@ -9,6 +9,7 @@ import type {
 } from './common.type'
 import type { AuthConfig, StatusHandler, StatusHandlers } from './config.type'
 import type { HttpInterceptor } from './interceptor.type'
+import type { PathRequestArgs, WithPathParams } from './path-params.type'
 import type { FetchErrorInfo, FetchResult } from './result.type'
 import type { SseEvent, SseHandlers, SseSubscription } from './sse.type'
 import type { UploadOptions, UploadProgressHandler } from './upload.type'
@@ -90,31 +91,49 @@ type CreateFetchOptions = {
 type ThrowingOptions = Omit<RequestOptions, 'throwOnError'> & { throwOnError?: true }
 type ResultOptions = Omit<RequestOptions, 'throwOnError'> & { throwOnError: false }
 
+type UploadCallOptions = Omit<RequestOptions, 'body' | 'onUploadProgress'> & UploadOptions
+
+type ThrowingBase = Omit<ThrowingOptions, 'params'>
+type ResultBase = Omit<ResultOptions, 'params'>
+type UploadBase = Omit<UploadCallOptions, 'params'>
+
 type FetchMethod = {
-  <T>(path: string, options?: ThrowingOptions): Promise<T>
-  <T, E = FetchErrorInfo>(path: string, options: ResultOptions): Promise<FetchResult<T, E>>
+  <TData, TPath extends string = string>(
+    path: TPath,
+    ...args: PathRequestArgs<TPath, ThrowingBase>
+  ): Promise<TData>
+  <TData, TPath extends string = string, E = FetchErrorInfo>(
+    path: TPath,
+    ...args: PathRequestArgs<TPath, ResultBase & { throwOnError: false }>
+  ): Promise<FetchResult<TData, E>>
 }
 
 type FetchRequest = {
-  <T>(method: HttpMethod, path: string, options?: ThrowingOptions): Promise<T>
-  <T, E = FetchErrorInfo>(
+  <TData, TPath extends string = string>(
     method: HttpMethod,
-    path: string,
-    options: ResultOptions,
-  ): Promise<FetchResult<T, E>>
+    path: TPath,
+    ...args: PathRequestArgs<TPath, ThrowingBase>
+  ): Promise<TData>
+  <TData, TPath extends string = string, E = FetchErrorInfo>(
+    method: HttpMethod,
+    path: TPath,
+    ...args: PathRequestArgs<TPath, ResultBase & { throwOnError: false }>
+  ): Promise<FetchResult<TData, E>>
 }
-
-type UploadCallOptions = Omit<RequestOptions, 'body' | 'onUploadProgress'> & UploadOptions
 
 type UploadMethod = {
-  <T>(path: string, options?: UploadCallOptions & { throwOnError?: true }): Promise<T>
-  <T, E = FetchErrorInfo>(
-    path: string,
-    options: UploadCallOptions & { throwOnError: false },
-  ): Promise<FetchResult<T, E>>
+  <TData, TPath extends string = string>(
+    path: TPath,
+    ...args: PathRequestArgs<TPath, UploadBase & { throwOnError?: true }>
+  ): Promise<TData>
+  <TData, TPath extends string = string, E = FetchErrorInfo>(
+    path: TPath,
+    ...args: PathRequestArgs<TPath, UploadBase & { throwOnError: false }>
+  ): Promise<FetchResult<TData, E>>
 }
 
-type SseCallOptions<T = unknown> = RequestOptions &
+type SseCallOptions<T = unknown, TPath extends string = string> = Omit<RequestOptions, 'params'> &
+  WithPathParams<TPath> &
   SseHandlers<T> & {
     lastEventId?: string
   }
@@ -139,12 +158,18 @@ type FetchClient = {
    * Advanced: no handlers → `AsyncIterable` for `for await`.
    */
   sse: {
-    <T>(
-      path: string,
-      options: SseCallOptions<T> &
+    <T, TPath extends string = string>(
+      path: TPath,
+      options: SseCallOptions<T, TPath> &
         ({ onMessage: SseHandlers<T>['onMessage'] } | { onEvent: SseHandlers<T>['onEvent'] }),
     ): SseSubscription
-    <T>(path: string, options?: SseCallOptions<T>): AsyncIterable<SseEvent<T>>
+    <T, TPath extends string = string>(
+      path: TPath,
+      ...args: PathRequestArgs<
+        TPath,
+        Omit<RequestOptions, 'params'> & SseHandlers<T> & { lastEventId?: string }
+      >
+    ): AsyncIterable<SseEvent<T>>
   }
 }
 
