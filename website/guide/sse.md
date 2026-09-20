@@ -2,6 +2,10 @@
 
 ![Server-Sent Events over fetch with Authorization](/images/docs-sse.png)
 
+## Live demo
+
+<SseDemo />
+
 Import from `tanstack-fetch/sse` so streams use `fetch` (cookies + `Authorization` work).
 
 ```ts

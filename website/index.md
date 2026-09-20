@@ -16,22 +16,22 @@ hero:
       text: Get started
       link: /guide/getting-started
     - theme: alt
+      text: Live playground
+      link: /examples/playground
+    - theme: alt
       text: View on GitHub
       link: https://github.com/mohamadgarmabi/tanstack-fetch
     - theme: alt
       text: Author
       link: /author
-    - theme: alt
-      text: npm downloads
-      link: /packages
 
 features:
   - title: Query-native
     details: Returns data, throws FetchError, honors signal — drop straight into useQuery / queryOptions.
   - title: ~3.5KB core
     details: Tree-shakeable entries for HTTP, SSE, React, plugins, and tRPC. No axios-sized stack.
-  - title: Auth & status
-    details: getToken, onUnauthorized / 403 / 404 / 5xx, plus named plugins and interceptors.
+  - title: Auth & every 4xx
+    details: getToken plus 401–429 shortcuts (and onClientError / 4xx), including rate-limit Retry-After.
   - title: SSR · SSE · Upload · tRPC
     details: Cookie forwarding, fetch-based streams, multipart progress, and createTRPCFetchClient.
 ---
@@ -41,6 +41,14 @@ features:
 <NpmDownloadBadges package-name="tanstack-fetch" />
 
 <HomePackagesLink />
+
+## Try it live
+
+Click real status codes — this runs **`createFetch` in your browser** with a mock `fetch` (not a screenshot).
+
+<StatusPlayground />
+
+More live demos: [React](/examples/react) · [Next.js SSR](/examples/next-ssr) · [Upload](/examples/upload) · [SSE](/examples/sse) · [all playgrounds](/examples/playground)
 
 ## Visual overview
 

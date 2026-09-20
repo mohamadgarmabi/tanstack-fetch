@@ -72,6 +72,54 @@ describe('tanstack-fetch config (simple path)', () => {
     expect(onServerError.mock.calls[0]?.[0].status).toBe(503)
   })
 
+  it('runs onTooManyRequests for 429', async () => {
+    const onTooManyRequests = vi.fn()
+    const fetchImpl = vi.fn().mockResolvedValue(
+      jsonResponse({
+        status: 429,
+        body: { code: 'RATE_LIMIT', message: 'Slow down' },
+        headers: { 'retry-after': '2' },
+      }),
+    )
+    const http = createTestClient(fetchImpl, { onTooManyRequests })
+
+    await expect(http.get('/limited')).rejects.toSatisfy(
+      (error: unknown) => isFetchError(error) && error.status === 429,
+    )
+    expect(onTooManyRequests).toHaveBeenCalledTimes(1)
+    expect(onTooManyRequests.mock.calls[0]?.[0].status).toBe(429)
+  })
+
+  it('runs onClientError for unmatched 4xx', async () => {
+    const onClientError = vi.fn()
+    const onTooManyRequests = vi.fn()
+    const fetchImpl = vi
+      .fn()
+      .mockResolvedValue(jsonResponse({ status: 418, body: { code: 'TEAPOT' } }))
+    const http = createTestClient(fetchImpl, { onClientError, onTooManyRequests })
+
+    await expect(http.get('/tea')).rejects.toSatisfy(
+      (error: unknown) => isFetchError(error) && error.status === 418,
+    )
+    expect(onClientError).toHaveBeenCalledTimes(1)
+    expect(onTooManyRequests).not.toHaveBeenCalled()
+  })
+
+  it('prefers exact 4xx shortcuts over onClientError', async () => {
+    const onConflict = vi.fn()
+    const onClientError = vi.fn()
+    const fetchImpl = vi
+      .fn()
+      .mockResolvedValue(jsonResponse({ status: 409, body: { code: 'CONFLICT' } }))
+    const http = createTestClient(fetchImpl, { onConflict, onClientError })
+
+    await expect(http.post('/orders', { body: {} })).rejects.toSatisfy(
+      (error: unknown) => isFetchError(error) && error.status === 409,
+    )
+    expect(onConflict).toHaveBeenCalledTimes(1)
+    expect(onClientError).not.toHaveBeenCalled()
+  })
+
   it('supports advanced onStatus map and auth config', async () => {
     const on418 = vi.fn()
     const fetchImpl = vi

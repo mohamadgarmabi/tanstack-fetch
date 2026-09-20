@@ -13,9 +13,19 @@ type StatusHandlerResult = void | { action: 'continue' } | { action: 'retry'; de
 type StatusHandler = (input: StatusHandlerInput) => MaybePromise<StatusHandlerResult>
 
 type StatusHandlers = {
+  400?: StatusHandler
   401?: StatusHandler
   403?: StatusHandler
   404?: StatusHandler
+  405?: StatusHandler
+  408?: StatusHandler
+  409?: StatusHandler
+  410?: StatusHandler
+  413?: StatusHandler
+  415?: StatusHandler
+  422?: StatusHandler
+  429?: StatusHandler
+  451?: StatusHandler
   500?: StatusHandler
   '4xx'?: StatusHandler
   '5xx'?: StatusHandler

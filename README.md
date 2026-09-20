@@ -4,7 +4,7 @@
 
 A **react-query fetch client** / **axios alternative for TanStack Query** — tiny HTTP core, typed errors, AbortSignal, SSR, SSE, plugins.
 
-Tiny HTTP core · Typed errors · 401 / 403 / 404 / 5xx handling · AbortSignal · SSE · SSR · Plugins · React
+Tiny HTTP core · Typed errors · 4xx / 5xx handlers (incl. **429**) · AbortSignal · SSE · SSR · Plugins · React
 
 [![npm version](https://img.shields.io/npm/v/tanstack-fetch.svg)](https://www.npmjs.com/package/tanstack-fetch)
 [![npm downloads](https://img.shields.io/npm/dw/tanstack-fetch.svg)](https://www.npmjs.com/package/tanstack-fetch)
@@ -165,10 +165,10 @@ Full setup (Router loaders, TanStack Start SSR): [`docs/recipes/trpc.md`](./docs
 
 ### 1) Simple path — `baseUrl`, token, status handlers
 
-Most apps only need this: set API URL, attach a token, and decide what happens on **401 / 403 / 404 / 5xx**.
+Most apps only need this: set API URL, attach a token, and decide what happens on **4xx / 5xx** (including **429**).
 
 ```ts
-import { createFetch } from 'tanstack-fetch'
+import { createFetch, parseRetryAfter } from 'tanstack-fetch'
 
 export const api = createFetch({
   baseUrl: import.meta.env.VITE_API_URL,
@@ -184,6 +184,13 @@ export const api = createFetch({
   onNotFound: ({ error }) => {
     console.warn('Missing resource', error.message) // 404
   },
+  onTooManyRequests: ({ context }) => {
+    const waitMs = parseRetryAfter(context.response?.headers, 1000)
+    console.warn('Rate limited', waitMs) // 429
+  },
+  onClientError: ({ status }) => {
+    console.warn('Other 4xx', status)
+  },
   onServerError: ({ status }) => {
     console.error('Server error', status) // 500–599
   },
@@ -198,6 +205,8 @@ Handlers run **before** the error is thrown (so TanStack Query still gets `isErr
 | `onUnauthorized`    | HTTP **401**                                       |
 | `onForbidden`       | HTTP **403**                                       |
 | `onNotFound`        | HTTP **404**                                       |
+| `onTooManyRequests` | HTTP **429** (use `parseRetryAfter`)               |
+| `onClientError`     | Any other **4xx**                                  |
 | `onServerError`     | HTTP **5xx**                                       |
 | `onStatus`          | Advanced map (exact code, `4xx`, `5xx`, `default`) |
 
@@ -1067,7 +1076,7 @@ Copy-paste apps under [`examples/`](./examples):
 | --------------------------------------------- | ----------------------------------- |
 | [`basic-http`](./examples/basic-http)         | Plain `get` / `post` / `FetchError` |
 | [`tanstack-query`](./examples/tanstack-query) | `useQuery` + `useMutation`          |
-| [`auth-status`](./examples/auth-status)       | Token + 401 / 403 / 404 / 5xx       |
+| [`auth-status`](./examples/auth-status)       | Token + 4xx (incl. **429**) / 5xx   |
 | [`file-upload`](./examples/file-upload)       | `api.upload` + progress             |
 | [`sse-live`](./examples/sse-live)             | `useSse` live stream                |
 | [`next-ssr`](./examples/next-ssr)             | App Router + `ssr-forward`          |

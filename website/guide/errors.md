@@ -17,9 +17,32 @@ try {
     console.log(error.code) // e.g. from body
     console.log(error.message)
     console.log(error.body)
+    console.log(error.headers.get('retry-after')) // useful for 429
   }
 }
 ```
+
+## Status handlers (4xx + 5xx)
+
+Handlers run **before** the error is thrown (Query still gets `isError` / `FetchError`):
+
+```ts
+import { createFetch, parseRetryAfter } from 'tanstack-fetch'
+
+createFetch({
+  onUnauthorized: () => logout(), // 401
+  onForbidden: () => toast.error('Forbidden'), // 403
+  onNotFound: () => toast.error('Missing'), // 404
+  onTooManyRequests: ({ context }) => {
+    const waitMs = parseRetryAfter(context.response?.headers, 1000)
+    toast.error(`Rate limited — retry in ${Math.ceil(waitMs / 1000)}s`)
+  },
+  onClientError: ({ status }) => console.warn('4xx', status),
+  onServerError: ({ status }) => console.error('5xx', status),
+})
+```
+
+Full shortcut table: [Configuration](./configuration). Live demo: [playground](/examples/playground).
 
 ## With TanStack Query
 
@@ -31,6 +54,10 @@ const { error } = useQuery({
 
 if (isFetchError(error) && error.status === 404) {
   return <p>Not found</p>
+}
+
+if (isFetchError(error) && error.status === 429) {
+  return <p>Slow down — try again shortly</p>
 }
 ```
 
@@ -52,3 +79,4 @@ if (!result.ok) {
 | `isFetchError(error)`      | Narrow to `FetchError`                        |
 | `isAbortError(error)`      | Abort / timeout — usually not an HTTP failure |
 | `createFetchError(result)` | Build a `FetchError` from a failed result     |
+| `parseRetryAfter(headers)` | `Retry-After` → delay ms (for **429**)        |
