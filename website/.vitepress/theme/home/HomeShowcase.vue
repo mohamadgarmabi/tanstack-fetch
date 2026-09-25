@@ -5,6 +5,7 @@ import { showcase } from './home.content'
 
 const activeId = ref(showcase[0]?.id ?? 'query')
 const fileIndex = ref(0)
+const panelKey = ref(0)
 
 const active = computed(
   () => showcase.find((item) => item.id === activeId.value) ?? showcase[0],
@@ -21,8 +22,15 @@ const highlightedOutput = computed(() =>
 )
 
 const selectTab = (id: string) => {
+  if (id === activeId.value) return
   activeId.value = id
   fileIndex.value = 0
+  panelKey.value += 1
+}
+
+const selectFile = (index: number) => {
+  fileIndex.value = index
+  panelKey.value += 1
 }
 </script>
 
@@ -59,13 +67,13 @@ const selectTab = (id: string) => {
           type="button"
           class="home-file"
           :class="{ 'is-active': index === fileIndex }"
-          @click="fileIndex = index"
+          @click="selectFile(index)"
         >
           {{ file.name }}
         </button>
       </div>
 
-      <div class="home-split">
+      <div :key="panelKey" class="home-split home-split-anim">
         <div class="home-code">
           <div class="home-code-bar">
             <span class="home-code-dots" aria-hidden="true" />

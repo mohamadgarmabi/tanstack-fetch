@@ -55,6 +55,11 @@ import type {
   PathParamValue,
   WithPathParams,
 } from './path-params.type'
+import type {
+  RefreshTokenAfterConfig,
+  RefreshTokenBeforeConfig,
+  RefreshTokenConfig,
+} from './refresh-token.type'
 
 export type {
   CreateFetchOptions,
@@ -102,4 +107,7 @@ export type {
   PathParamsOf,
   PathParamValue,
   WithPathParams,
+  RefreshTokenAfterConfig,
+  RefreshTokenBeforeConfig,
+  RefreshTokenConfig,
 }

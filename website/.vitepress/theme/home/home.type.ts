@@ -50,6 +50,29 @@ type PillLink = {
   href: string
 }
 
+type WhyItem = {
+  title: string
+  text: string
+}
+
+type TestimonialItem = {
+  quote: string
+  author: string
+  role: string
+}
+
+type StackBlitzLink = {
+  label: string
+  href: string
+  docs: string
+}
+
+type StatItem = {
+  value: string
+  label: string
+  href?: string
+}
+
 export type {
   CodeFile,
   CompareMark,
@@ -60,4 +83,8 @@ export type {
   PillLink,
   ShowcaseItem,
   ShowcaseOutput,
+  StackBlitzLink,
+  StatItem,
+  TestimonialItem,
+  WhyItem,
 }

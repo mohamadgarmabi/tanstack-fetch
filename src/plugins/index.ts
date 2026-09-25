@@ -1,5 +1,7 @@
 import type { AuthConfig, HttpInterceptor, StatusHandlers } from '../types'
+import type { RefreshTokenConfig } from '../types/refresh-token.type'
 import { createAuthInterceptor } from './auth'
+import { createRefreshTokenInterceptor } from './refresh-token'
 import { createRetryIdempotentInterceptor } from './retry-idempotent'
 import { createSseResumeInterceptor } from './sse-resume'
 import { createSsrForwardInterceptor } from './ssr-forward'
@@ -17,10 +19,11 @@ const pluginFactories: Record<PluginName, () => HttpInterceptor> = {
 export {
   pluginFactories,
   createAuthInterceptor,
+  createRefreshTokenInterceptor,
   createStatusInterceptor,
   createRetryIdempotentInterceptor,
   createSseResumeInterceptor,
   createSsrForwardInterceptor,
   createTraceInterceptor,
 }
-export type { AuthConfig, StatusHandlers }
+export type { AuthConfig, RefreshTokenConfig, StatusHandlers }

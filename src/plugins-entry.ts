@@ -1,5 +1,6 @@
 import {
   createAuthInterceptor,
+  createRefreshTokenInterceptor,
   createRetryIdempotentInterceptor,
   createSseResumeInterceptor,
   createSsrForwardInterceptor,
@@ -7,7 +8,7 @@ import {
   createTraceInterceptor,
   pluginFactories,
 } from './plugins'
-import type { HttpInterceptor, PluginName } from './types'
+import type { HttpInterceptor, PluginName, RefreshTokenConfig } from './types'
 
 const resolvePlugins = (names: PluginName[]): HttpInterceptor[] =>
   names.map((name) => pluginFactories[name]())
@@ -16,10 +17,11 @@ export {
   resolvePlugins,
   pluginFactories,
   createAuthInterceptor,
+  createRefreshTokenInterceptor,
   createStatusInterceptor,
   createRetryIdempotentInterceptor,
   createSseResumeInterceptor,
   createSsrForwardInterceptor,
   createTraceInterceptor,
 }
-export type { PluginName, HttpInterceptor }
+export type { PluginName, HttpInterceptor, RefreshTokenConfig }

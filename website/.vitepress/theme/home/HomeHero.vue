@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import { withBase } from 'vitepress'
-import { GITHUB_URL, INSTALL_COMMAND } from './home.content'
+import { CHANGELOG_URL, GITHUB_URL, INSTALL_COMMAND } from './home.content'
 
 const copied = ref(false)
 
@@ -16,8 +16,8 @@ const copyInstall = async () => {
 
 <template>
   <header class="home-hero">
-    <a class="home-badge" :href="GITHUB_URL" target="_blank" rel="noopener">
-      <span>v1.2</span>
+    <a class="home-badge" :href="CHANGELOG_URL" target="_blank" rel="noopener">
+      <span>v1.3.0</span>
       Changelog on GitHub
       <svg viewBox="0 0 16 16" aria-hidden="true">
         <path d="M6 3h7v7M13 3 3 13" />
@@ -28,7 +28,8 @@ const copyInstall = async () => {
 
     <p class="home-hero-lead">
       Write the request once. tanstack-fetch returns the data, throws a typed error, and honors
-      AbortSignal, so it drops straight into TanStack Query. SSR, SSE, upload, and tRPC stay optional.
+      AbortSignal, so it drops straight into TanStack Query. SSR, SSE, upload, refresh-token, and tRPC
+      stay optional.
     </p>
 
     <div class="home-actions">

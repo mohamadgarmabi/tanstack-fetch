@@ -3,9 +3,29 @@
 ![Plugin pipeline](/images/docs-plugins.png)
 
 ```ts
-import { pluginFactories } from 'tanstack-fetch/plugins'
+import {
+  pluginFactories,
+  createRefreshTokenInterceptor,
+} from 'tanstack-fetch/plugins'
 ```
 
-Built-in names: `trace` · `ssr-forward` · `retry-idempotent` · `sse-resume` · (see package exports).
+Built-in names: `trace` · `ssr-forward` · `retry-idempotent` · `sse-resume`.
 
-Prefer enabling via `createFetch({ plugins: […] })` unless you need the raw factories.
+Factories for app wiring: `createAuthInterceptor` · `createStatusInterceptor` · **`createRefreshTokenInterceptor`** · `createTraceInterceptor` · …
+
+Prefer enabling named plugins via `createFetch({ plugins: […] })`. For refresh token, call the factory and `api.use`:
+
+```ts
+api.use(
+  'refresh-token',
+  createRefreshTokenInterceptor({
+    refresh: async () => {
+      /* update token */
+    },
+    before: { getExpiresAt: () => expiresAt, skewMs: 60_000 },
+    after: { enabled: true },
+  }),
+)
+```
+
+See [Refresh token](/recipes/refresh-token).

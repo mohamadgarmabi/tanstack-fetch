@@ -834,6 +834,25 @@ api.sse<OrderEvent>('/orders/stream', {
 
 Named, ordered, removable — customize auth, logging, mocks.
 
+For refresh tokens, prefer the structured helper (before = time, after = first 401):
+
+```ts
+import { createRefreshTokenInterceptor } from 'tanstack-fetch/plugins'
+
+api.use(
+  'refresh-token',
+  createRefreshTokenInterceptor({
+    refresh: async () => {
+      /* update accessToken (+ expiresAt) */
+    },
+    before: { getExpiresAt: () => expiresAt, skewMs: 60_000 },
+    after: { enabled: true },
+  }),
+)
+```
+
+Or wire a custom interceptor:
+
 ```ts
 api.use('auth', {
   order: 20,

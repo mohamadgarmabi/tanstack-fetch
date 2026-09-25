@@ -1,60 +1,63 @@
-# Recipe: refresh token on 401
+# Recipe: refresh token
 
-Keep this **out of the core package** — apps differ on cookie vs memory, single-flight queues, and logout UX. Use a named interceptor:
+Use `createRefreshTokenInterceptor` from `tanstack-fetch/plugins`.
+
+| Strategy | When | How |
+| --- | --- | --- |
+| **Before** | Token near expiry (time-based) | `onRequest` refreshes, then auth attaches the new token |
+| **After** | First `401` | Refresh once (single-flight), then `{ action: 'retry' }` |
 
 ```ts
 import { createFetch } from 'tanstack-fetch'
+import { createRefreshTokenInterceptor } from 'tanstack-fetch/plugins'
 
 let accessToken = localStorage.getItem('access_token')
-let refreshPromise: Promise<string> | null = null
+let expiresAt = Number(localStorage.getItem('access_expires_at') ?? 0)
 
-const refreshAccessToken = async () => {
-  if (!refreshPromise) {
-    refreshPromise = fetch('/auth/refresh', { method: 'POST', credentials: 'include' })
-      .then(async (response) => {
-        if (!response.ok) throw new Error('refresh failed')
-        const body = (await response.json()) as { accessToken: string }
-        accessToken = body.accessToken
-        localStorage.setItem('access_token', accessToken)
-        return accessToken
-      })
-      .finally(() => {
-        refreshPromise = null
-      })
-  }
-  return refreshPromise
+const persist = (token: string, expiresInSeconds: number) => {
+  accessToken = token
+  expiresAt = Date.now() + expiresInSeconds * 1000
+  localStorage.setItem('access_token', accessToken)
+  localStorage.setItem('access_expires_at', String(expiresAt))
 }
 
 export const api = createFetch({
   baseUrl: import.meta.env.VITE_API_URL,
   getToken: () => accessToken,
   onUnauthorized: () => {
-    // final failure after retries — send user to login
     localStorage.removeItem('access_token')
+    localStorage.removeItem('access_expires_at')
     window.location.href = '/login'
   },
 })
 
-api.use('refresh-token', {
-  order: 40,
-  onResponseError: async (context) => {
-    if (context.error?.status !== 401 || context.meta.attempt > 0) {
-      return { action: 'continue', context }
-    }
-    try {
-      await refreshAccessToken()
-      return { action: 'retry' }
-    } catch {
-      return { action: 'continue', context }
-    }
-  },
-})
+api.use(
+  'refresh-token',
+  createRefreshTokenInterceptor({
+    refresh: async () => {
+      const response = await fetch('/auth/refresh', {
+        method: 'POST',
+        credentials: 'include',
+      })
+      if (!response.ok) throw new Error('refresh failed')
+      const body = (await response.json()) as {
+        accessToken: string
+        expiresIn: number
+      }
+      persist(body.accessToken, body.expiresIn)
+    },
+    before: {
+      getExpiresAt: () => expiresAt,
+      skewMs: 60_000,
+    },
+    after: { enabled: true },
+  }),
+)
 ```
 
 Notes:
 
-- `attempt > 0` prevents infinite refresh loops
-- Single-flight `refreshPromise` avoids parallel refresh storms
-- Status handler `onUnauthorized` still runs only when retry is **not** chosen (retry has lower `order` than `on-status` when you return `retry` first — put refresh before status, or omit `onUnauthorized` until refresh fails)
-
-With default orders: custom `refresh-token` (40) runs before `retry-idempotent` (80) and `on-status` (95). Returning `{ action: 'retry' }` skips status handlers on that attempt.
+- `before` — refresh when `Date.now() >= expiresAt - skewMs`
+- `after` — refresh on the first 401 only (`attempt === 0`); set `after: false` to disable
+- Single-flight refresh is shared across both paths
+- Order `10` runs before auth (`15`) so the new token is attached on the next hop
