@@ -11,6 +11,8 @@ Use `createRefreshTokenInterceptor` from `tanstack-fetch/plugins`. It covers bot
 
 ## Full example (before + after)
 
+Refresh through the **same `api` client**. Eject `refresh-token` (and `auth`) on that call so the interceptor cannot recurse.
+
 ```ts
 import { createFetch } from 'tanstack-fetch'
 import { createRefreshTokenInterceptor } from 'tanstack-fetch/plugins'
@@ -27,6 +29,7 @@ const persist = (token: string, expiresInSeconds: number) => {
 
 export const api = createFetch({
   baseUrl: import.meta.env.VITE_API_URL,
+  credentials: 'include',
   getToken: () => accessToken,
   onUnauthorized: () => {
     localStorage.removeItem('access_token')
@@ -39,15 +42,13 @@ api.use(
   'refresh-token',
   createRefreshTokenInterceptor({
     refresh: async () => {
-      const response = await fetch('/auth/refresh', {
-        method: 'POST',
-        credentials: 'include',
-      })
-      if (!response.ok) throw new Error('refresh failed')
-      const body = (await response.json()) as {
+      const body = await api.post<{
         accessToken: string
         expiresIn: number
-      }
+      }>('/auth/refresh', {
+        // Avoid infinite 401 → refresh → 401 loops
+        interceptors: { eject: ['refresh-token', 'auth'] },
+      })
       persist(body.accessToken, body.expiresIn)
     },
     // BEFORE — proactive, based on time
@@ -73,7 +74,13 @@ api.use(
   'refresh-token',
   createRefreshTokenInterceptor({
     refresh: async () => {
-      /* update accessToken */
+      const body = await api.post<{
+        accessToken: string
+        expiresIn: number
+      }>('/auth/refresh', {
+        interceptors: { eject: ['refresh-token', 'auth'] },
+      })
+      persist(body.accessToken, body.expiresIn)
     },
   }),
 )
@@ -88,7 +95,13 @@ api.use(
   'refresh-token',
   createRefreshTokenInterceptor({
     refresh: async () => {
-      /* update accessToken + expiresAt */
+      const body = await api.post<{
+        accessToken: string
+        expiresIn: number
+      }>('/auth/refresh', {
+        interceptors: { eject: ['refresh-token', 'auth'] },
+      })
+      persist(body.accessToken, body.expiresIn)
     },
     before: {
       getExpiresAt: () => expiresAt,
@@ -101,8 +114,10 @@ api.use(
 
 ## Notes
 
+- Call refresh with `api.post(..., { interceptors: { eject: ['refresh-token', 'auth'] } })` so the same client is used without re-entering the interceptor
+- `credentials: 'include'` on `createFetch` sends the refresh cookie with that call
 - Order `10` runs **before** auth (`15`), so a before-refresh updates the token that gets attached
-- `attempt > 0` blocks infinite 401 refresh loops
+- `attempt > 0` blocks infinite 401 refresh loops on the original request
 - One shared `refreshPromise` covers parallel requests (before and after)
 - Failed refresh continues the pipeline so `onUnauthorized` can send the user to login
 

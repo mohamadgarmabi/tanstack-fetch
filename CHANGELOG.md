@@ -4,7 +4,7 @@
 
 ### Features
 
-- **`createRefreshTokenInterceptor`** (`tanstack-fetch/plugins`): structured refresh with **before** (time / `getExpiresAt` + `skewMs`) and **after** (first `401` → single-flight refresh → retry)
+- **`createRefreshTokenInterceptor`** (`tanstack-fetch/plugins`): structured refresh with **before** (time / `getExpiresAt` + `skewMs`) and **after** (first `401` → single-flight refresh → retry). Refresh via the same `api` client with `interceptors: { eject: ['refresh-token', 'auth'] }`.
 
 ### Docs
 
