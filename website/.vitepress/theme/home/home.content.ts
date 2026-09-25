@@ -5,14 +5,28 @@ import type {
   PackageItem,
   PillLink,
   ShowcaseItem,
+  StackBlitzLink,
+  TestimonialItem,
+  WhyItem,
 } from './home.type'
+import npmPackages from '../../../data/npm-packages.json'
 
 const GITHUB_URL = 'https://github.com/mohamadgarmabi/tanstack-fetch'
+const CHANGELOG_URL = `${GITHUB_URL}/blob/main/CHANGELOG.md`
 const NPM_URL = 'https://www.npmjs.com/package/tanstack-fetch'
 const AUTHOR_URL = 'https://github.com/mohamadgarmabi'
 const LINKEDIN_URL = 'https://www.linkedin.com/in/mohammad-garmabi/'
+const STACKBLITZ_BASE =
+  'https://stackblitz.com/github/mohamadgarmabi/tanstack-fetch/tree/main/examples'
 
 const INSTALL_COMMAND = 'npm install tanstack-fetch'
+
+const formatCount = (value: number) => {
+  if (value >= 1000) return `${(value / 1000).toFixed(1).replace(/\.0$/, '')}K`
+  return String(value)
+}
+
+const featuredPackage = npmPackages.packages.find((item) => item.name === 'tanstack-fetch')
 
 const showcase: ShowcaseItem[] = [
   {
@@ -94,9 +108,7 @@ FetchError {
 export const api = createFetch({
   baseUrl: 'https://api.example.com',
   getToken: () => localStorage.getItem('token'),
-  onUnauthorized: () => {
-    localStorage.removeItem('token')
-  },
+  onUnauthorized: () => logout(),
   onTooManyRequests: ({ context }) => {
     const waitMs = parseRetryAfter(
       context.response?.headers,
@@ -120,29 +132,84 @@ FetchError {
     },
   },
   {
-    id: 'params',
-    label: 'Path params',
-    lead: 'Typed path params fill :id and similar segments. No string concat.',
+    id: 'refresh',
+    label: 'Refresh token',
+    lead: 'Before: refresh near expiry. After: refresh on the first 401, then retry. One single-flight promise for both.',
     files: [
       {
-        name: 'profile.ts',
-        code: `const user = await api.get<User>(
-  '/users/:id/posts/:postId',
-  {
-    params: { id: '42', postId: '9' },
+        name: 'api.ts',
+        code: `import { createFetch } from 'tanstack-fetch'
+import { createRefreshTokenInterceptor } from 'tanstack-fetch/plugins'
+
+let accessToken = localStorage.getItem('access_token')
+let expiresAt = Number(
+  localStorage.getItem('access_expires_at') ?? 0,
+)
+
+const persist = (
+  token: string,
+  expiresInSeconds: number,
+) => {
+  accessToken = token
+  expiresAt = Date.now() + expiresInSeconds * 1000
+  localStorage.setItem('access_token', accessToken)
+  localStorage.setItem(
+    'access_expires_at',
+    String(expiresAt),
+  )
+}
+
+export const api = createFetch({
+  baseUrl: import.meta.env.VITE_API_URL,
+  getToken: () => accessToken,
+  onUnauthorized: () => {
+    localStorage.removeItem('access_token')
+    window.location.href = '/login'
   },
+})
+
+api.use(
+  'refresh-token',
+  createRefreshTokenInterceptor({
+    refresh: async () => {
+      const response = await fetch('/auth/refresh', {
+        method: 'POST',
+        credentials: 'include',
+      })
+      if (!response.ok) throw new Error('refresh failed')
+      const body = (await response.json()) as {
+        accessToken: string
+        expiresIn: number
+      }
+      persist(body.accessToken, body.expiresIn)
+    },
+    // BEFORE — time-based
+    before: {
+      getExpiresAt: () => expiresAt,
+      skewMs: 60_000,
+    },
+    // AFTER — first 401
+    after: { enabled: true },
+  }),
 )`,
       },
     ],
     output: {
-      name: 'request + data',
-      code: `GET /users/42/posts/9
+      name: 'flow',
+      code: `// BEFORE (near expiry)
+refresh → attach token
+GET /me → 200
 
-user ← {
-  id: '42',
-  postId: '9',
-  title: 'Hello',
-}`,
+// AFTER (first 401)
+GET /me → 401
+refresh (single-flight)
+GET /me → 200
+
+// parallel 401s share
+// one refreshPromise
+
+// refresh fails →
+onUnauthorized → /login`,
     },
   },
   {
@@ -234,34 +301,6 @@ progress → 1
     },
   },
   {
-    id: 'plugins',
-    label: 'Plugins',
-    lead: 'Named interceptors for retry and tracing. Eject one on a single call when you need to.',
-    files: [
-      {
-        name: 'api.ts',
-        code: `const api = createFetch({
-  baseUrl: 'https://api.example.com',
-  plugins: ['trace', 'retry-idempotent'],
-})
-
-await api.get('/health')
-
-await api.get('/reports', {
-  eject: ['retry-idempotent'],
-})`,
-      },
-    ],
-    output: {
-      name: 'trace',
-      code: `[trace] GET /health → 200 (42ms)
-[retry] skipped on /reports
-
-// eject removes one plugin
-// for that request only`,
-    },
-  },
-  {
     id: 'trpc',
     label: 'tRPC',
     lead: 'The same client, auth, and plugins become the tRPC link.',
@@ -295,76 +334,36 @@ const posts = await trpcClient.post.list.query()`,
     },
   },
   {
-    id: 'react',
-    label: 'React',
-    lead: 'Optional provider and hooks. The HTTP core stays out of the React bundle until you import it.',
+    id: 'openapi',
+    label: 'OpenAPI',
+    lead: 'Generate a typed client from an OpenAPI document with the bundled CLI.',
     files: [
       {
-        name: 'app.tsx',
-        code: `import { FetchProvider, useFetch } from 'tanstack-fetch/react'
-import { useQuery } from '@tanstack/react-query'
-
-const App = () => (
-  <FetchProvider
-    baseUrl="https://api.example.com"
-    plugins={['trace']}
-  >
-    <UsersPage />
-  </FetchProvider>
-)
-
-const UsersPage = () => {
-  const api = useFetch()
-  return useQuery({
-    queryKey: ['users'],
-    queryFn: ({ signal }) =>
-      api.get<User[]>('/users', { signal }),
-  })
-}`,
+        name: 'terminal',
+        code: `npx tanstack-fetch generate \\
+  --input ./openapi.yaml \\
+  --out ./src/api`,
       },
-    ],
-    output: {
-      name: 'hook result',
-      code: `{
-  data: [{ id: '1', name: 'Ada' }],
-  isPending: false,
-  isError: false,
-}
-
-// useFetch() shares one client
-// for the whole tree`,
-    },
-  },
-  {
-    id: 'abort',
-    label: 'AbortSignal',
-    lead: 'Pass Query’s signal and cancels stay clean. No false error after unmount.',
-    files: [
       {
-        name: 'search.ts',
-        code: `useQuery({
-  queryKey: ['search', q],
-  queryFn: ({ signal }) =>
-    api.get<Hit[]>('/search', {
-      query: { q },
-      signal,
-    }),
+        name: 'client.ts',
+        code: `import { api } from './api'
+
+const users = await api.getUsers({
+  query: { limit: 20 },
 })`,
       },
     ],
     output: {
-      name: 'cancel',
-      code: `// user types fast → previous
-// request aborts
+      name: 'generated',
+      code: `src/api/
+  index.ts
+  types.ts
 
-AbortedError (ignored by Query)
-
-// new request →
-[{ id: 'h1', title: 'fetch' }]`,
+// paths + params typed
+// from the OpenAPI document`,
     },
   },
 ]
-
 
 const features: FeatureItem[] = [
   {
@@ -378,6 +377,10 @@ const features: FeatureItem[] = [
   {
     title: 'Status handlers',
     text: '401, 403, 404, 429, other 4xx, and 5xx each have a hook.',
+  },
+  {
+    title: 'Refresh on 401',
+    text: 'createRefreshTokenInterceptor: before (time) and after (first 401), single-flight.',
   },
   {
     title: 'About 3.5KB',
@@ -410,10 +413,6 @@ const features: FeatureItem[] = [
   {
     title: 'React helpers',
     text: 'FetchProvider, useFetch, and useSse when a component tree should share one client.',
-  },
-  {
-    title: 'Runs at the edge',
-    text: 'The core is fetch. Node, Bun, Deno, workers, and the browser all qualify.',
   },
 ]
 
@@ -488,6 +487,14 @@ const compareRows: CompareRow[] = [
     ofetch: 'no',
   },
   {
+    feature: 'Refresh before expiry + after first 401',
+    href: '/recipes/refresh-token',
+    fetch: 'yes',
+    axios: 'partial',
+    ky: 'no',
+    ofetch: 'no',
+  },
+  {
     feature: 'Next.js cookie forwarding',
     href: '/guide/ssr',
     fetch: 'yes',
@@ -521,6 +528,83 @@ const compareRows: CompareRow[] = [
   },
 ]
 
+const whyAxios: WhyItem[] = [
+  {
+    title: 'Built for queryFn',
+    text: 'axios wraps responses. tanstack-fetch returns data, throws FetchError, and takes signal.',
+  },
+  {
+    title: 'SSR cookies without glue',
+    text: 'ssr-forward ships cookie and auth headers from the incoming request. No hand-rolled adapter.',
+  },
+  {
+    title: 'SSE that can authenticate',
+    text: 'EventSource cannot send Authorization. tanstack-fetch/sse uses fetch, so tokens work.',
+  },
+]
+
+const quickstartCode = `import { createFetch } from 'tanstack-fetch'
+import { useQuery } from '@tanstack/react-query'
+
+const api = createFetch({ baseUrl: '/api' })
+
+useQuery({
+  queryKey: ['users'],
+  queryFn: ({ signal }) => api.get('/users', { signal }),
+})`
+
+const testimonials: TestimonialItem[] = [
+  {
+    quote:
+      'Drop createFetch into queryFn and stop rewriting axios adapters for AbortSignal and errors.',
+    author: 'For TanStack Query apps',
+    role: 'Primary fit',
+  },
+  {
+    quote: 'One client for REST, SSR cookie forwarding, SSE with auth, and a tRPC link.',
+    author: 'For fullstack TypeScript',
+    role: 'Same mental model',
+  },
+  {
+    quote: 'About 3.5KB core. Pull SSE, React, plugins, or tRPC only when you need them.',
+    author: 'For bundle-conscious teams',
+    role: 'Tree-shakeable entries',
+  },
+]
+
+const stackBlitzLinks: StackBlitzLink[] = [
+  {
+    label: 'TanStack Query',
+    href: `${STACKBLITZ_BASE}/tanstack-query`,
+    docs: '/examples/react',
+  },
+  {
+    label: 'Next.js SSR',
+    href: `${STACKBLITZ_BASE}/next-ssr`,
+    docs: '/examples/next-ssr',
+  },
+  {
+    label: 'Upload',
+    href: `${STACKBLITZ_BASE}/file-upload`,
+    docs: '/examples/upload',
+  },
+  {
+    label: 'SSE',
+    href: `${STACKBLITZ_BASE}/sse-live`,
+    docs: '/examples/sse',
+  },
+  {
+    label: 'tRPC',
+    href: `${STACKBLITZ_BASE}/trpc`,
+    docs: '/recipes/trpc',
+  },
+  {
+    label: 'Auth status',
+    href: `${STACKBLITZ_BASE}/auth-status`,
+    docs: '/recipes/refresh-token',
+  },
+]
+
 const runtimes: PillLink[] = [
   { label: 'Node.js', href: '/guide/getting-started' },
   { label: 'Bun', href: '/guide/getting-started' },
@@ -550,6 +634,7 @@ const footerColumns: FooterColumn[] = [
       { label: 'Errors', href: '/guide/errors' },
       { label: 'TanStack Query', href: '/guide/tanstack-query' },
       { label: 'Comparison', href: '/guide/comparison' },
+      { label: 'LLM context', href: '/llms.txt' },
     ],
   },
   {
@@ -559,8 +644,8 @@ const footerColumns: FooterColumn[] = [
       { label: 'SSE', href: '/guide/sse' },
       { label: 'Upload', href: '/guide/upload' },
       { label: 'tRPC', href: '/guide/trpc' },
+      { label: 'Refresh token', href: '/recipes/refresh-token' },
       { label: 'OpenAPI', href: '/guide/openapi' },
-      { label: 'Plugins', href: '/guide/plugins' },
     ],
   },
   {
@@ -580,20 +665,37 @@ const footerColumns: FooterColumn[] = [
       { label: 'npm', href: NPM_URL },
       { label: 'Author', href: '/author' },
       { label: 'Packages', href: '/packages' },
-      { label: 'Changelog', href: `${GITHUB_URL}/blob/main/CHANGELOG.md` },
+      { label: 'Changelog', href: CHANGELOG_URL },
     ],
   },
 ]
 
 const stats = [
-  { value: '~3.5KB', label: 'gzip HTTP core' },
-  { value: '5', label: 'tree-shaken entries' },
-  { value: 'MIT', label: 'licensed, free' },
-  { value: 'v1.2', label: 'current release' },
+  {
+    value: '~3.5KB',
+    label: 'gzip HTTP core',
+    href: 'https://bundlephobia.com/package/tanstack-fetch',
+  },
+  {
+    value: formatCount(featuredPackage?.weekly ?? 0),
+    label: 'downloads / week',
+    href: NPM_URL,
+  },
+  {
+    value: formatCount(featuredPackage?.monthly ?? 0),
+    label: 'downloads / month',
+    href: NPM_URL,
+  },
+  {
+    value: `v${featuredPackage?.version ?? '1.3.0'}`,
+    label: 'current release',
+    href: CHANGELOG_URL,
+  },
 ]
 
 export {
   AUTHOR_URL,
+  CHANGELOG_URL,
   GITHUB_URL,
   INSTALL_COMMAND,
   LINKEDIN_URL,
@@ -603,7 +705,11 @@ export {
   footerColumns,
   integrations,
   packages,
+  quickstartCode,
   runtimes,
   showcase,
+  stackBlitzLinks,
   stats,
+  testimonials,
+  whyAxios,
 }

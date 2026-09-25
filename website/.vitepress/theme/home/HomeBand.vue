@@ -9,8 +9,14 @@ const toHref = (href: string) => (href.startsWith('http') ? href : withBase(href
   <section class="home-band">
     <ul class="home-stats">
       <li v-for="stat in stats" :key="stat.label">
-        <strong>{{ stat.value }}</strong>
-        <span>{{ stat.label }}</span>
+        <a v-if="stat.href" :href="toHref(stat.href)" target="_blank" rel="noopener">
+          <strong>{{ stat.value }}</strong>
+          <span>{{ stat.label }}</span>
+        </a>
+        <template v-else>
+          <strong>{{ stat.value }}</strong>
+          <span>{{ stat.label }}</span>
+        </template>
       </li>
     </ul>
 

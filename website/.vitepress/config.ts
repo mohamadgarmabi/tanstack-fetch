@@ -215,6 +215,7 @@ const config = defineConfig({
           { text: 'Packages', link: '/packages' },
           { text: 'Author', link: '/author' },
           { text: 'Changelog', link: `${GITHUB_URL}/blob/main/CHANGELOG.md` },
+          { text: 'LLM context', link: '/llms.txt' },
           { text: 'npm', link: NPM_URL },
         ],
       },
@@ -268,7 +269,7 @@ const config = defineConfig({
         {
           text: 'Recipes',
           items: [
-            { text: 'Refresh token on 401', link: '/recipes/refresh-token' },
+            { text: 'Refresh token', link: '/recipes/refresh-token' },
             { text: 'Rate limit (429)', link: '/recipes/rate-limit' },
             { text: 'tRPC + Router / Start', link: '/recipes/trpc' },
           ],

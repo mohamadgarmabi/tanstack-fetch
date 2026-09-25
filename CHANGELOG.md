@@ -1,5 +1,16 @@
 # Changelog
 
+## 1.3.0
+
+### Features
+
+- **`createRefreshTokenInterceptor`** (`tanstack-fetch/plugins`): structured refresh with **before** (time / `getExpiresAt` + `skewMs`) and **after** (first `401` → single-flight refresh → retry)
+
+### Docs
+
+- Homepage: Why not axios, 30-second start, StackBlitz links, refresh-token showcase, `llms.txt`
+- Recipe and comparison updated for before/after refresh
+
 ## 1.2.1
 
 ### Features

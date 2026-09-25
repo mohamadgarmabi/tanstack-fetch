@@ -1,0 +1,64 @@
+# tanstack-fetch
+
+> Typed Fetch client designed for TanStack Query. Tiny HTTP core, typed errors, AbortSignal, SSR, SSE, upload, tRPC.
+
+Docs: https://mohamadgarmabi.github.io/tanstack-fetch/
+Repo: https://github.com/mohamadgarmabi/tanstack-fetch
+npm: https://www.npmjs.com/package/tanstack-fetch
+
+## Install
+
+```bash
+npm install tanstack-fetch @tanstack/react-query
+```
+
+## Quickstart
+
+```ts
+import { createFetch } from 'tanstack-fetch'
+import { useQuery } from '@tanstack/react-query'
+
+const api = createFetch({ baseUrl: 'https://api.example.com' })
+
+useQuery({
+  queryKey: ['users'],
+  queryFn: ({ signal }) => api.get<User[]>('/users', { signal }),
+})
+```
+
+## Mental model
+
+1. Return data on success
+2. Throw FetchError on HTTP failure
+3. Honor AbortSignal
+
+## Entry points
+
+- `tanstack-fetch` — HTTP core (~3.5KB gzip)
+- `tanstack-fetch/sse` — fetch-based SSE
+- `tanstack-fetch/plugins` — named interceptors
+- `tanstack-fetch/react` — FetchProvider / useFetch / useSse
+- `tanstack-fetch/trpc` — tRPC link via createFetch
+
+## Key guides
+
+- Getting started: /guide/getting-started
+- Configuration / status handlers: /guide/configuration
+- Errors: /guide/errors
+- TanStack Query: /guide/tanstack-query
+- SSR: /guide/ssr
+- SSE: /guide/sse
+- Upload: /guide/upload
+- tRPC: /guide/trpc
+- OpenAPI CLI: /guide/openapi
+- Refresh token: /recipes/refresh-token
+- Comparison: /guide/comparison
+- Playground: /examples/playground
+
+## Refresh token recipe (summary)
+
+Use `createRefreshTokenInterceptor` from `tanstack-fetch/plugins`:
+
+- **before** — `getExpiresAt` + `skewMs`; refresh onRequest when near expiry
+- **after** — on first 401 (`attempt === 0`), single-flight refresh, then `{ action: 'retry' }`
+- If refresh fails, continue so `onUnauthorized` can logout

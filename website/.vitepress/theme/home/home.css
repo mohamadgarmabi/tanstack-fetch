@@ -366,6 +366,16 @@
   text-align: center;
 }
 
+.home-stats a {
+  display: block;
+  color: inherit;
+  text-decoration: none !important;
+}
+
+.home-stats a:hover strong {
+  color: var(--home-accent);
+}
+
 .home-stats strong {
   display: block;
   font-size: 1.55rem;
@@ -673,11 +683,184 @@
   margin-top: 0;
 }
 
+.home-split-anim {
+  animation: home-panel-in 0.28s ease;
+}
+
+@keyframes home-panel-in {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.home-files {
+  display: flex;
+  gap: 0.35rem;
+  padding: 0.75rem 1rem 0;
+  border-bottom: 1px solid var(--home-line);
+}
+
+.home-file {
+  padding: 0.4rem 0.7rem;
+  border-radius: 0.5rem 0.5rem 0 0;
+  font-size: 0.8rem;
+  font-family: 'JetBrains Mono', ui-monospace, monospace;
+}
+
+.home-file.is-active {
+  color: var(--home-text);
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.home-why ul,
+.home-social ul,
+.home-blitz ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 0.85rem;
+}
+
+.home-why ul {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.home-why li,
+.home-social li,
+.home-blitz li {
+  border: 1px solid var(--home-line);
+  border-radius: 1rem;
+  background: var(--home-card);
+  padding: 1.1rem 1.15rem;
+}
+
+.home-why h3 {
+  margin: 0 0 0.4rem !important;
+  border: 0 !important;
+  font-size: 1.02rem !important;
+}
+
+.home-why p,
+.home-social p {
+  margin: 0 !important;
+  color: var(--home-muted);
+  line-height: 1.55;
+  font-size: 0.92rem;
+}
+
+.home-why-link {
+  margin: 1.2rem 0 0 !important;
+  text-align: center;
+}
+
+.home-why-link a {
+  color: var(--home-accent) !important;
+  font-weight: 600;
+}
+
+.home-quick-grid {
+  display: grid;
+  grid-template-columns: 1.4fr 1fr;
+  gap: 1rem;
+  align-items: stretch;
+}
+
+.home-quick .home-code {
+  border: 1px solid var(--home-line-strong);
+  border-radius: 1rem;
+  overflow: hidden;
+  background: rgba(9, 9, 11, 0.72);
+}
+
+.home-quick-side {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 1.25rem;
+  padding: 1.2rem 1.3rem;
+  border: 1px solid var(--home-line);
+  border-radius: 1rem;
+  background: var(--home-card);
+}
+
+.home-quick-side ol {
+  margin: 0;
+  padding-left: 1.1rem;
+  color: var(--home-muted);
+  line-height: 1.7;
+}
+
+.home-quick-side .home-btn {
+  align-self: flex-start;
+}
+
+.home-social ul {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.home-social strong {
+  display: block;
+  margin-top: 1rem;
+  color: var(--home-text);
+}
+
+.home-social span {
+  color: var(--home-faint);
+  font-size: 0.82rem;
+}
+
+.home-blitz ul {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.home-blitz li {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+
+.home-blitz-main {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  color: var(--home-text) !important;
+  text-decoration: none !important;
+  font-weight: 600;
+}
+
+.home-blitz-main span {
+  color: var(--home-accent);
+  font-size: 0.75rem;
+  font-weight: 500;
+}
+
+.home-blitz-docs {
+  color: var(--home-muted) !important;
+  text-decoration: none !important;
+  font-size: 0.85rem;
+}
+
+.home-blitz-docs:hover,
+.home-blitz-main:hover {
+  color: var(--home-accent) !important;
+}
+
 @media (max-width: 900px) {
   .home-stats,
   .home-features ul,
   .home-packages ul,
-  .home-footer-grid {
+  .home-footer-grid,
+  .home-why ul,
+  .home-social ul,
+  .home-blitz ul,
+  .home-quick-grid {
     grid-template-columns: 1fr 1fr;
   }
 
@@ -700,7 +883,11 @@
   .home-stats,
   .home-features ul,
   .home-packages ul,
-  .home-footer-grid {
+  .home-footer-grid,
+  .home-why ul,
+  .home-social ul,
+  .home-blitz ul,
+  .home-quick-grid {
     grid-template-columns: 1fr;
   }
 
