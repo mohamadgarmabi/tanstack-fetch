@@ -8,7 +8,9 @@ import { stackBlitzLinks } from './home.content'
     <div class="home-section-head">
       <p class="home-eyebrow">Open in StackBlitz</p>
       <h2>Run the examples in the browser.</h2>
-      <p class="home-lead">Each link opens the matching folder from the repo. Docs pages stay one click away.</p>
+      <p class="home-lead">
+        Each link opens the matching folder from the repo. Docs pages stay one click away.
+      </p>
     </div>
 
     <ul>

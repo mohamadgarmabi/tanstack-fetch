@@ -3,10 +3,7 @@
 ![Plugin pipeline](/images/docs-plugins.png)
 
 ```ts
-import {
-  pluginFactories,
-  createRefreshTokenInterceptor,
-} from 'tanstack-fetch/plugins'
+import { pluginFactories, createRefreshTokenInterceptor } from 'tanstack-fetch/plugins'
 ```
 
 Built-in names: `trace` · `ssr-forward` · `retry-idempotent` · `sse-resume`.

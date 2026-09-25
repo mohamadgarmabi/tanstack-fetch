@@ -42,25 +42,25 @@ export const api = createFetch({
 
 ### Status shortcuts
 
-| Option                           | When                         |
-| -------------------------------- | ---------------------------- |
-| `getToken` / `auth`              | Every request — Bearer token |
-| `onBadRequest`                   | HTTP **400**                 |
-| `onUnauthorized`                 | HTTP **401**                 |
-| `onForbidden`                    | HTTP **403**                 |
-| `onNotFound`                     | HTTP **404**                 |
-| `onMethodNotAllowed`             | HTTP **405**                 |
-| `onRequestTimeout`               | HTTP **408**                 |
-| `onConflict`                     | HTTP **409**                 |
-| `onGone`                         | HTTP **410**                 |
-| `onPayloadTooLarge`              | HTTP **413**                 |
-| `onUnsupportedMediaType`         | HTTP **415**                 |
-| `onUnprocessableEntity`          | HTTP **422**                 |
-| `onTooManyRequests`              | HTTP **429**                 |
-| `onUnavailableForLegalReasons`   | HTTP **451**                 |
-| `onClientError`                  | Any other **4xx** (`4xx`)    |
-| `onServerError`                  | HTTP **5xx**                 |
-| `onStatus`                       | Advanced map (exact / buckets / `default`) |
+| Option                         | When                                       |
+| ------------------------------ | ------------------------------------------ |
+| `getToken` / `auth`            | Every request — Bearer token               |
+| `onBadRequest`                 | HTTP **400**                               |
+| `onUnauthorized`               | HTTP **401**                               |
+| `onForbidden`                  | HTTP **403**                               |
+| `onNotFound`                   | HTTP **404**                               |
+| `onMethodNotAllowed`           | HTTP **405**                               |
+| `onRequestTimeout`             | HTTP **408**                               |
+| `onConflict`                   | HTTP **409**                               |
+| `onGone`                       | HTTP **410**                               |
+| `onPayloadTooLarge`            | HTTP **413**                               |
+| `onUnsupportedMediaType`       | HTTP **415**                               |
+| `onUnprocessableEntity`        | HTTP **422**                               |
+| `onTooManyRequests`            | HTTP **429**                               |
+| `onUnavailableForLegalReasons` | HTTP **451**                               |
+| `onClientError`                | Any other **4xx** (`4xx`)                  |
+| `onServerError`                | HTTP **5xx**                               |
+| `onStatus`                     | Advanced map (exact / buckets / `default`) |
 
 Resolution order: **exact status** → **`5xx` / `4xx` buckets** → **`default`**.
 

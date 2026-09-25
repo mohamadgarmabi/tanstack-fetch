@@ -2,10 +2,10 @@
 
 Use `createRefreshTokenInterceptor` from `tanstack-fetch/plugins`.
 
-| Strategy | When | How |
-| --- | --- | --- |
-| **Before** | Token near expiry (time-based) | `onRequest` refreshes, then auth attaches the new token |
-| **After** | First `401` | Refresh once (single-flight), then `{ action: 'retry' }` |
+| Strategy   | When                           | How                                                      |
+| ---------- | ------------------------------ | -------------------------------------------------------- |
+| **Before** | Token near expiry (time-based) | `onRequest` refreshes, then auth attaches the new token  |
+| **After**  | First `401`                    | Refresh once (single-flight), then `{ action: 'retry' }` |
 
 Refresh through the **same `api` client**. Eject `refresh-token` (and `auth`) on that call so the interceptor cannot recurse.
 

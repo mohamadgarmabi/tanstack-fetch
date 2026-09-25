@@ -99,8 +99,8 @@ await queryClient.prefetchQuery({
         <p class="status-playground-eyebrow">Live demo · Next.js SSR</p>
         <h2>ssr-forward cookie / auth</h2>
         <p class="status-playground-lead">
-          Real <code>createFetch</code> with <code>source: 'ssr'</code> +
-          <code>ssr-forward</code> — watch headers get attached (then skipped in browser).
+          Real <code>createFetch</code> with <code>source: 'ssr'</code> + <code>ssr-forward</code> —
+          watch headers get attached (then skipped in browser).
         </p>
       </div>
       <button type="button" class="status-clear" :disabled="busy" @click="clearLogs">
@@ -109,12 +109,7 @@ await queryClient.prefetchQuery({
     </header>
 
     <div class="live-query-actions">
-      <button
-        type="button"
-        class="status-chip tone-ok"
-        :disabled="busy"
-        @click="runServerPrefetch"
-      >
+      <button type="button" class="status-chip tone-ok" :disabled="busy" @click="runServerPrefetch">
         1 · Server prefetch
       </button>
       <button
@@ -132,7 +127,9 @@ await queryClient.prefetchQuery({
       <ul v-if="logs.length">
         <li v-for="entry in logs" :key="entry.id" class="kind-handler">{{ entry.text }}</li>
       </ul>
-      <p v-else class="status-empty">Run server prefetch to see forwarded Cookie / Authorization.</p>
+      <p v-else class="status-empty">
+        Run server prefetch to see forwarded Cookie / Authorization.
+      </p>
     </div>
 
     <pre class="status-code"><code>{{ snippet }}</code></pre>

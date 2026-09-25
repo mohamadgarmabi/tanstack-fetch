@@ -17,7 +17,15 @@ const config = defineConfig([
     target: 'es2022',
     treeshake: true,
     splitting: false,
-    external: ['react', 'react/jsx-runtime', 'yaml', '@trpc/client', '@trpc/server', 'tanstack-fetch', 'tanstack-fetch/sse'],
+    external: [
+      'react',
+      'react/jsx-runtime',
+      'yaml',
+      '@trpc/client',
+      '@trpc/server',
+      'tanstack-fetch',
+      'tanstack-fetch/sse',
+    ],
   },
   {
     entry: { cli: 'src/cli/index.ts' },

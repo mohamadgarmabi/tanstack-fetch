@@ -4,10 +4,10 @@
 
 Use `createRefreshTokenInterceptor` from `tanstack-fetch/plugins`. It covers both strategies:
 
-| Strategy | When | How |
-| --- | --- | --- |
-| **Before** | Token near expiry (time-based) | `onRequest` refreshes, then auth attaches the new token |
-| **After** | First `401` | Refresh once (single-flight), then `{ action: 'retry' }` |
+| Strategy   | When                           | How                                                      |
+| ---------- | ------------------------------ | -------------------------------------------------------- |
+| **Before** | Token near expiry (time-based) | `onRequest` refreshes, then auth attaches the new token  |
+| **After**  | First `401`                    | Refresh once (single-flight), then `{ action: 'retry' }` |
 
 ## Full example (before + after)
 

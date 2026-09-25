@@ -8,8 +8,17 @@ const highlightTypeScript = (source: string) => {
   const escaped = escapeHtml(source)
 
   return escaped.replace(
-    new RegExp(`(<span class="tok-c">[\\s\\S]*?<\\/span>)|(\\/\\/.*$)|('[^']*'|"[^"]*"|\`[^\`]*\`)|(${KEYWORD})`, 'gm'),
-    (match, comment: string | undefined, lineComment: string | undefined, string: string | undefined, keyword: string | undefined) => {
+    new RegExp(
+      `(<span class="tok-c">[\\s\\S]*?<\\/span>)|(\\/\\/.*$)|('[^']*'|"[^"]*"|\`[^\`]*\`)|(${KEYWORD})`,
+      'gm',
+    ),
+    (
+      match,
+      comment: string | undefined,
+      lineComment: string | undefined,
+      string: string | undefined,
+      keyword: string | undefined,
+    ) => {
       if (comment) return comment
       if (lineComment) return `<span class="tok-c">${lineComment}</span>`
       if (string) return `<span class="tok-s">${string}</span>`

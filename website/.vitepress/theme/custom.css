@@ -266,7 +266,6 @@
   font-variant-numeric: tabular-nums;
 }
 
-
 .home-intro-center {
   text-align: center;
 }
@@ -280,7 +279,6 @@
   font-weight: 600;
   color: var(--vp-c-brand-1);
 }
-
 
 /* Atmospheric home background */
 .VPHome {
@@ -350,8 +348,7 @@
   border-radius: 18px;
   border: 1px solid rgba(255, 122, 24, 0.28);
   background:
-    linear-gradient(165deg, rgba(255, 122, 24, 0.08), transparent 42%),
-    var(--vp-c-bg-soft);
+    linear-gradient(165deg, rgba(255, 122, 24, 0.08), transparent 42%), var(--vp-c-bg-soft);
   box-shadow: 0 18px 50px rgba(0, 0, 0, 0.22);
 }
 
@@ -659,8 +656,7 @@
   border-radius: 16px;
   border: 1px solid rgba(255, 122, 24, 0.35);
   background:
-    linear-gradient(145deg, rgba(255, 122, 24, 0.14), transparent 55%),
-    var(--vp-c-bg-soft);
+    linear-gradient(145deg, rgba(255, 122, 24, 0.14), transparent 55%), var(--vp-c-bg-soft);
   box-shadow: 0 14px 40px rgba(0, 0, 0, 0.2);
 }
 
@@ -717,8 +713,7 @@
 
 .npm-card.highlight {
   background:
-    linear-gradient(160deg, rgba(255, 122, 24, 0.1), transparent 50%),
-    var(--vp-c-bg-soft);
+    linear-gradient(160deg, rgba(255, 122, 24, 0.1), transparent 50%), var(--vp-c-bg-soft);
 }
 
 .packages-featured-title {
