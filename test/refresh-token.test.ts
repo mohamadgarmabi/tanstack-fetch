@@ -143,4 +143,42 @@ describe('createRefreshTokenInterceptor', () => {
     )
     expect(onRefreshFailed).toHaveBeenCalledTimes(1)
   })
+
+  it('can refresh through the same client when refresh-token is ejected', async () => {
+    const fetchImpl = vi.fn().mockImplementation((url: string | URL, init?: RequestInit) => {
+      const path = String(url)
+      if (path.endsWith('/auth/refresh')) {
+        return jsonResponse({ body: { accessToken: 'refreshed', expiresIn: 3600 } })
+      }
+      const authorization = new Headers(init?.headers).get('authorization')
+      if (authorization === 'Bearer refreshed') {
+        return jsonResponse({ body: { ok: true } })
+      }
+      return jsonResponse({ status: 401, body: { code: 'UNAUTHORIZED' } })
+    })
+
+    let token = 'old'
+    const http = createTestClient(fetchImpl, {
+      credentials: 'include',
+      getToken: () => token,
+    })
+    http.use(
+      'refresh-token',
+      createRefreshTokenInterceptor({
+        refresh: async () => {
+          const body = await http.post<{ accessToken: string; expiresIn: number }>(
+            '/auth/refresh',
+            { interceptors: { eject: ['refresh-token', 'auth'] } },
+          )
+          token = body.accessToken
+        },
+      }),
+    )
+
+    const data = await http.get<{ ok: boolean }>('/secure')
+    expect(data.ok).toBe(true)
+    expect(fetchImpl.mock.calls.some(([url]) => String(url).endsWith('/auth/refresh'))).toBe(
+      true,
+    )
+  })
 })

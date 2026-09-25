@@ -52,7 +52,13 @@ api.use(
   'refresh-token',
   createRefreshTokenInterceptor({
     refresh: async () => {
-      /* update accessToken (+ expiresAt) */
+      const body = await api.post<{
+        accessToken: string
+        expiresIn: number
+      }>('/auth/refresh', {
+        interceptors: { eject: ['refresh-token', 'auth'] },
+      })
+      /* persist body.accessToken + expiresAt */
     },
     before: {
       getExpiresAt: () => expiresAt,

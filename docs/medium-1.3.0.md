@@ -1,24 +1,8 @@
-# Medium draft — tanstack-fetch 1.3.0
-
-Copy into Medium. Suggested tags: `TypeScript`, `React`, `TanStack Query`, `React Query`, `Open Source`, `Web Development`.
-
----
-
-## Title options
-
-1. Refresh tokens without the spaghetti: before expiry and after 401
-2. I added a structured refresh-token interceptor to tanstack-fetch
-3. Stop hand-rolling 401 refresh loops in every TanStack Query app
-
-**Recommended:** Refresh tokens without the spaghetti: before expiry and after 401
-
-## Subtitle
+# Refresh tokens without the spaghetti: before expiry and after 401
 
 tanstack-fetch 1.3.0 ships `createRefreshTokenInterceptor` — one helper for proactive (time-based) and reactive (first 401) refresh, with single-flight built in.
 
 ---
-
-## Body
 
 Most apps that talk to a secured API eventually hit the same problem:
 
@@ -28,7 +12,7 @@ People solve it differently. Some refresh only after a `401`. Some try to refres
 
 I wanted both strategies in one place — with a clear structure — so I shipped them in **tanstack-fetch 1.3.0**.
 
-### What is tanstack-fetch?
+## What is tanstack-fetch?
 
 [tanstack-fetch](https://www.npmjs.com/package/tanstack-fetch) is a typed Fetch client shaped for TanStack Query (React Query).
 
@@ -44,7 +28,7 @@ HTTP core is about **3.5KB gzip**. SSR, SSE, upload, React helpers, and tRPC are
 
 Not an official TanStack package — just shaped for the same call site.
 
-### The refresh problem, in two sentences
+## The refresh problem, in two sentences
 
 **Before the request:** if the access token is about to expire, refresh it first so the call never sees a 401.
 
@@ -52,7 +36,7 @@ Not an official TanStack package — just shaped for the same call site.
 
 Both paths need **single-flight** refresh. If ten queries 401 at once, you still call `/auth/refresh` once.
 
-### The new API: before + after
+## The new API: before + after
 
 ```ts
 import { createFetch } from 'tanstack-fetch'
@@ -70,6 +54,7 @@ const persist = (token: string, expiresInSeconds: number) => {
 
 export const api = createFetch({
   baseUrl: import.meta.env.VITE_API_URL,
+  credentials: 'include',
   getToken: () => accessToken,
   onUnauthorized: () => {
     localStorage.removeItem('access_token')
@@ -82,15 +67,13 @@ api.use(
   'refresh-token',
   createRefreshTokenInterceptor({
     refresh: async () => {
-      const response = await fetch('/auth/refresh', {
-        method: 'POST',
-        credentials: 'include',
-      })
-      if (!response.ok) throw new Error('refresh failed')
-      const body = (await response.json()) as {
+      const body = await api.post<{
         accessToken: string
         expiresIn: number
-      }
+      }>('/auth/refresh', {
+        // Same client — eject so the interceptor cannot recurse
+        interceptors: { eject: ['refresh-token', 'auth'] },
+      })
       persist(body.accessToken, body.expiresIn)
     },
 
@@ -119,7 +102,7 @@ Need only proactive refresh? Set `after: false`.
 
 Failed refresh continues the pipeline, so your existing `onUnauthorized` can send the user to login.
 
-### Why this belongs next to Query
+## Why this belongs next to Query
 
 TanStack Query already retries, cancels, and caches. Your HTTP client should not fight that.
 
@@ -127,9 +110,9 @@ tanstack-fetch returns data and throws. The refresh interceptor retries the **HT
 
 That split keeps auth logic out of every `useQuery` and every screen.
 
-### What else landed recently
+## What else landed recently
 
-**1.2.1 — path-typed params**
+### 1.2.1 — path-typed params
 
 ```ts
 api.get('/users/:id', { params: { id: userId } })
@@ -137,15 +120,15 @@ api.get('/users/:id', { params: { id: userId } })
 
 Required keys are inferred from `:param` / `{param}` patterns.
 
-**1.2.0 — first-class 4xx handlers**
+### 1.2.0 — first-class 4xx handlers
 
 `onUnauthorized`, `onTooManyRequests`, `onClientError`, plus `parseRetryAfter` for rate limits.
 
-**Docs**
+### Docs
 
 The site now has a clearer homepage, a live comparison story, StackBlitz links, and an `llms.txt` for AI tools.
 
-### Try it
+## Try it
 
 ```bash
 npm install tanstack-fetch @tanstack/react-query
@@ -163,30 +146,12 @@ useQuery({
 })
 ```
 
-### Links
+## Links
 
-- npm: https://www.npmjs.com/package/tanstack-fetch
-- Docs: https://mohamadgarmabi.github.io/tanstack-fetch/
-- Refresh recipe: https://mohamadgarmabi.github.io/tanstack-fetch/recipes/refresh-token
-- GitHub: https://github.com/mohamadgarmabi/tanstack-fetch
-- Changelog 1.3.0: https://github.com/mohamadgarmabi/tanstack-fetch/blob/main/CHANGELOG.md
+- [npm](https://www.npmjs.com/package/tanstack-fetch)
+- [Docs](https://mohamadgarmabi.github.io/tanstack-fetch/)
+- [Refresh recipe](https://mohamadgarmabi.github.io/tanstack-fetch/recipes/refresh-token)
+- [GitHub](https://github.com/mohamadgarmabi/tanstack-fetch)
+- [Changelog 1.3.0](https://github.com/mohamadgarmabi/tanstack-fetch/blob/main/CHANGELOG.md)
 
 If you build TanStack Query apps and are tired of hand-rolled refresh queues, try the before/after helper and tell me what still hurts. Issues and PRs welcome.
-
----
-
-## Short Medium note (optional pin / LinkedIn cross-post)
-
-```
-Shipped tanstack-fetch 1.3.0
-
-createRefreshTokenInterceptor:
-• before → refresh near expiry (time-based)
-• after → refresh on first 401, then retry
-• single-flight shared across both paths
-
-Built for TanStack Query’s mental model: return data, throw, honor AbortSignal.
-
-npm i tanstack-fetch
-Docs: https://mohamadgarmabi.github.io/tanstack-fetch/recipes/refresh-token
-```

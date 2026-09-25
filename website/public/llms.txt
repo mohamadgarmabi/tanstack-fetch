@@ -61,4 +61,5 @@ Use `createRefreshTokenInterceptor` from `tanstack-fetch/plugins`:
 
 - **before** — `getExpiresAt` + `skewMs`; refresh onRequest when near expiry
 - **after** — on first 401 (`attempt === 0`), single-flight refresh, then `{ action: 'retry' }`
+- Refresh via same `api` with `interceptors: { eject: ['refresh-token', 'auth'] }`
 - If refresh fails, continue so `onUnauthorized` can logout

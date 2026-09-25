@@ -7,6 +7,8 @@ Use `createRefreshTokenInterceptor` from `tanstack-fetch/plugins`.
 | **Before** | Token near expiry (time-based) | `onRequest` refreshes, then auth attaches the new token |
 | **After** | First `401` | Refresh once (single-flight), then `{ action: 'retry' }` |
 
+Refresh through the **same `api` client**. Eject `refresh-token` (and `auth`) on that call so the interceptor cannot recurse.
+
 ```ts
 import { createFetch } from 'tanstack-fetch'
 import { createRefreshTokenInterceptor } from 'tanstack-fetch/plugins'
@@ -23,6 +25,7 @@ const persist = (token: string, expiresInSeconds: number) => {
 
 export const api = createFetch({
   baseUrl: import.meta.env.VITE_API_URL,
+  credentials: 'include',
   getToken: () => accessToken,
   onUnauthorized: () => {
     localStorage.removeItem('access_token')
@@ -35,15 +38,13 @@ api.use(
   'refresh-token',
   createRefreshTokenInterceptor({
     refresh: async () => {
-      const response = await fetch('/auth/refresh', {
-        method: 'POST',
-        credentials: 'include',
-      })
-      if (!response.ok) throw new Error('refresh failed')
-      const body = (await response.json()) as {
+      const body = await api.post<{
         accessToken: string
         expiresIn: number
-      }
+      }>('/auth/refresh', {
+        // Avoid infinite 401 → refresh → 401 loops
+        interceptors: { eject: ['refresh-token', 'auth'] },
+      })
       persist(body.accessToken, body.expiresIn)
     },
     before: {
@@ -57,6 +58,8 @@ api.use(
 
 Notes:
 
+- `api.post('/auth/refresh', { interceptors: { eject: ['refresh-token', 'auth'] } })` — same client, no recursion
+- `credentials: 'include'` sends the refresh cookie
 - `before` — refresh when `Date.now() >= expiresAt - skewMs`
 - `after` — refresh on the first 401 only (`attempt === 0`); set `after: false` to disable
 - Single-flight refresh is shared across both paths

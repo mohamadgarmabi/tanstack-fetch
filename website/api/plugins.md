@@ -20,7 +20,10 @@ api.use(
   'refresh-token',
   createRefreshTokenInterceptor({
     refresh: async () => {
-      /* update token */
+      const body = await api.post<{ accessToken: string }>('/auth/refresh', {
+        interceptors: { eject: ['refresh-token', 'auth'] },
+      })
+      /* update token from body */
     },
     before: { getExpiresAt: () => expiresAt, skewMs: 60_000 },
     after: { enabled: true },
