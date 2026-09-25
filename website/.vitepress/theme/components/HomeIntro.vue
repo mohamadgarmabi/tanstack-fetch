@@ -32,9 +32,13 @@ import { withBase } from 'vitepress'
       ·
       <a href="https://www.npmjs.com/package/tanstack-fetch" target="_blank" rel="noopener">npm</a>
       ·
-      <a href="https://github.com/mohamadgarmabi/tanstack-fetch" target="_blank" rel="noopener">GitHub</a>
+      <a href="https://github.com/mohamadgarmabi/tanstack-fetch" target="_blank" rel="noopener"
+        >GitHub</a
+      >
       ·
-      <a href="https://www.linkedin.com/in/mohammad-garmabi/" target="_blank" rel="noopener me">LinkedIn</a>
+      <a href="https://www.linkedin.com/in/mohammad-garmabi/" target="_blank" rel="noopener me"
+        >LinkedIn</a
+      >
     </p>
   </div>
 </template>

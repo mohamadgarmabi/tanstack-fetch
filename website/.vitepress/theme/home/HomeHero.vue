@@ -28,8 +28,8 @@ const copyInstall = async () => {
 
     <p class="home-hero-lead">
       Write the request once. tanstack-fetch returns the data, throws a typed error, and honors
-      AbortSignal, so it drops straight into TanStack Query. SSR, SSE, upload, refresh-token, and tRPC
-      stay optional.
+      AbortSignal, so it drops straight into TanStack Query. SSR, SSE, upload, refresh-token, and
+      tRPC stay optional.
     </p>
 
     <div class="home-actions">

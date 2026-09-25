@@ -91,10 +91,10 @@ api.use(
 
 That is the whole structure.
 
-| Strategy | When it runs | What it does |
-| --- | --- | --- |
-| **before** | `now >= expiresAt - skewMs` | Refresh on `onRequest`, then auth attaches the new token |
-| **after** | First `401` (`attempt === 0`) | Single-flight refresh, then `{ action: 'retry' }` |
+| Strategy   | When it runs                  | What it does                                             |
+| ---------- | ----------------------------- | -------------------------------------------------------- |
+| **before** | `now >= expiresAt - skewMs`   | Refresh on `onRequest`, then auth attaches the new token |
+| **after**  | First `401` (`attempt === 0`) | Single-flight refresh, then `{ action: 'retry' }`        |
 
 Need only reactive refresh? Omit `before`.
 

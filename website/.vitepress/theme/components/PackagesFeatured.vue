@@ -8,8 +8,8 @@ import NpmDownloadBadges from './NpmDownloadBadges.vue'
     <p class="status-playground-eyebrow">Featured · v1.2</p>
     <h2 class="packages-featured-title">tanstack-fetch</h2>
     <p>
-      Typed Fetch for TanStack Query — <strong>4xx handlers (incl. 429)</strong>, SSR, SSE,
-      upload, tRPC.
+      Typed Fetch for TanStack Query — <strong>4xx handlers (incl. 429)</strong>, SSR, SSE, upload,
+      tRPC.
     </p>
     <NpmDownloadBadges package-name="tanstack-fetch" />
     <div class="npm-card-actions">

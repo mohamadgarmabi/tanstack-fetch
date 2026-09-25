@@ -7,9 +7,7 @@ const activeId = ref(showcase[0]?.id ?? 'query')
 const fileIndex = ref(0)
 const panelKey = ref(0)
 
-const active = computed(
-  () => showcase.find((item) => item.id === activeId.value) ?? showcase[0],
-)
+const active = computed(() => showcase.find((item) => item.id === activeId.value) ?? showcase[0])
 
 const activeFile = computed(() => active.value?.files[fileIndex.value] ?? active.value?.files[0])
 

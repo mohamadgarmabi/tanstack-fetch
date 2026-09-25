@@ -80,12 +80,9 @@ const docsHref = (name: string) => {
       >
         <div class="npm-card-top">
           <h3>
-            <a
-              :href="`https://www.npmjs.com/package/${pkg.name}`"
-              target="_blank"
-              rel="noopener"
-              >{{ pkg.name }}</a
-            >
+            <a :href="`https://www.npmjs.com/package/${pkg.name}`" target="_blank" rel="noopener">{{
+              pkg.name
+            }}</a>
           </h3>
           <span class="npm-version">v{{ pkg.version }}</span>
         </div>
@@ -119,16 +116,10 @@ const docsHref = (name: string) => {
             rel="noopener"
             >npm</a
           >
-          <a
-            v-if="pkg.name === highlight"
-            class="npm-chip brand"
-            :href="docsHref(pkg.name)"
+          <a v-if="pkg.name === highlight" class="npm-chip brand" :href="docsHref(pkg.name)"
             >Docs</a
           >
-          <a
-            v-if="pkg.name === highlight"
-            class="npm-chip"
-            :href="withBase('/examples/playground')"
+          <a v-if="pkg.name === highlight" class="npm-chip" :href="withBase('/examples/playground')"
             >Live demos</a
           >
         </div>

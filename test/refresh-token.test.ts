@@ -177,8 +177,6 @@ describe('createRefreshTokenInterceptor', () => {
 
     const data = await http.get<{ ok: boolean }>('/secure')
     expect(data.ok).toBe(true)
-    expect(fetchImpl.mock.calls.some(([url]) => String(url).endsWith('/auth/refresh'))).toBe(
-      true,
-    )
+    expect(fetchImpl.mock.calls.some(([url]) => String(url).endsWith('/auth/refresh'))).toBe(true)
   })
 })

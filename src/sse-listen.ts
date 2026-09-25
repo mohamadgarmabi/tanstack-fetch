@@ -9,7 +9,14 @@ type SseCallOptions<T> = RequestOptions &
     lastEventId?: string
   }
 
-const HANDLER_KEYS = ['onMessage', 'onEvent', 'onOpen', 'onError', 'onClose', 'lastEventId'] as const
+const HANDLER_KEYS = [
+  'onMessage',
+  'onEvent',
+  'onOpen',
+  'onError',
+  'onClose',
+  'lastEventId',
+] as const
 
 const splitSseOptions = <T>(options?: SseCallOptions<T>) => {
   const handlers: SseHandlers<T> = {}
@@ -39,7 +46,7 @@ const splitSseOptions = <T>(options?: SseCallOptions<T>) => {
 const hasSseHandlers = <T>(options?: SseCallOptions<T>) =>
   Boolean(
     options &&
-      (options.onMessage || options.onEvent || options.onOpen || options.onError || options.onClose),
+    (options.onMessage || options.onEvent || options.onOpen || options.onError || options.onClose),
   )
 
 const listenSse = <T>(args: SendSseArgs, handlers: SseHandlers<T>): SseSubscription => {

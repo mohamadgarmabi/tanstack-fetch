@@ -19,10 +19,10 @@ const mockFetch: typeof fetch = async (input, init) => {
 
   if (method === 'POST' && url.includes('/users')) {
     const body = JSON.parse(String(init?.body ?? '{}')) as { name?: string }
-    return new Response(
-      JSON.stringify({ id: String(Date.now()), name: body.name ?? 'Anon' }),
-      { status: 201, headers: { 'content-type': 'application/json' } },
-    )
+    return new Response(JSON.stringify({ id: String(Date.now()), name: body.name ?? 'Anon' }), {
+      status: 201,
+      headers: { 'content-type': 'application/json' },
+    })
   }
 
   if (url.includes('/boom')) {

@@ -9,8 +9,8 @@ import { whyAxios } from './home.content'
       <p class="home-eyebrow">Why not axios?</p>
       <h2>Same job. Query-shaped answer.</h2>
       <p class="home-lead">
-        axios, ky, and ofetch are solid HTTP clients. tanstack-fetch is shaped for the call site TanStack Query
-        already expects.
+        axios, ky, and ofetch are solid HTTP clients. tanstack-fetch is shaped for the call site
+        TanStack Query already expects.
       </p>
     </div>
 

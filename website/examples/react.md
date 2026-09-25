@@ -29,7 +29,12 @@ const UsersPage = () => {
   })
 
   if (isPending) return <p>Loading…</p>
-  if (isFetchError(error)) return <p>{error.status}: {error.message}</p>
+  if (isFetchError(error))
+    return (
+      <p>
+        {error.status}: {error.message}
+      </p>
+    )
   return (
     <ul>
       {data.map((u) => (

@@ -94,12 +94,12 @@ try {
 
 ## Bundle size
 
-| Import                   | What you get               | Typical gzip |
-| ------------------------ | -------------------------- | ------------ |
-| `tanstack-fetch`         | HTTP (`get/post/upload/…`) | **~3.5KB**   |
-| `tanstack-fetch/sse`     | + `api.sse()`              | **~4.7KB**   |
-| `tanstack-fetch/plugins` | plugin factories           | **~0.9KB**   |
-| `tanstack-fetch/react`   | `FetchProvider` / hooks    | **~1KB**     |
+| Import                   | What you get                | Typical gzip |
+| ------------------------ | --------------------------- | ------------ |
+| `tanstack-fetch`         | HTTP (`get/post/upload/…`)  | **~3.5KB**   |
+| `tanstack-fetch/sse`     | + `api.sse()`               | **~4.7KB**   |
+| `tanstack-fetch/plugins` | plugin factories            | **~0.9KB**   |
+| `tanstack-fetch/react`   | `FetchProvider` / hooks     | **~1KB**     |
 | `tanstack-fetch/trpc`    | tRPC link via `createFetch` | **~3.1KB**   |
 
 ```ts

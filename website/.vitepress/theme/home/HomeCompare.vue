@@ -16,8 +16,8 @@ const labelFor = (mark: CompareMark) => {
       <p class="home-eyebrow">Comparison</p>
       <h2>Measured against the usual clients.</h2>
       <p class="home-lead">
-        axios, ky, and ofetch are all capable HTTP clients. tanstack-fetch is shaped for the TanStack
-        Query call site, and for the SSR, SSE, and tRPC cases that sit next to it.
+        axios, ky, and ofetch are all capable HTTP clients. tanstack-fetch is shaped for the
+        TanStack Query call site, and for the SSR, SSE, and tRPC cases that sit next to it.
         <a :href="withBase('/guide/comparison')">Full comparison</a>
       </p>
     </div>

@@ -4,83 +4,237 @@
     <meta charset="UTF-8" />
     <title>tanstack-fetch hero</title>
     <style>
-      * { box-sizing: border-box; margin: 0; padding: 0; }
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
       body {
-        width: 1200px; height: 760px; overflow: hidden;
-        font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
+        width: 1200px;
+        height: 760px;
+        overflow: hidden;
+        font-family:
+          ui-sans-serif,
+          system-ui,
+          -apple-system,
+          Segoe UI,
+          Roboto,
+          Helvetica,
+          Arial,
+          sans-serif;
         background:
           radial-gradient(ellipse 70% 55% at 50% 0%, rgba(255, 122, 24, 0.22) 0%, transparent 55%),
           linear-gradient(180deg, #0a0a0a 0%, #050505 100%);
         color: #fff7ed;
       }
       .scene {
-        width: 1200px; height: 760px; padding: 36px 48px 28px;
-        display: flex; flex-direction: column; align-items: center; gap: 22px;
+        width: 1200px;
+        height: 760px;
+        padding: 36px 48px 28px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 22px;
       }
-      .brand { text-align: center; opacity: 0; transform: translateY(8px); }
-      .brand.show { opacity: 1; transform: none; }
+      .brand {
+        text-align: center;
+        opacity: 0;
+        transform: translateY(8px);
+      }
+      .brand.show {
+        opacity: 1;
+        transform: none;
+      }
       .logo {
-        width: 72px; height: 72px; margin: 0 auto 12px; border-radius: 50%;
-        overflow: hidden; border: 2px solid rgba(255, 247, 237, 0.85);
-        box-shadow: 0 0 0 4px rgba(255, 122, 24, 0.28), 0 0 28px rgba(255, 122, 24, 0.35);
+        width: 72px;
+        height: 72px;
+        margin: 0 auto 12px;
+        border-radius: 50%;
+        overflow: hidden;
+        border: 2px solid rgba(255, 247, 237, 0.85);
+        box-shadow:
+          0 0 0 4px rgba(255, 122, 24, 0.28),
+          0 0 28px rgba(255, 122, 24, 0.35);
       }
-      .logo img { width: 100%; height: 100%; object-fit: cover; display: block; }
-      h1 { font-size: 34px; font-weight: 750; letter-spacing: -0.03em; line-height: 1.1; }
-      h1 span { color: #ff7a18; }
-      .tagline { margin-top: 8px; font-size: 18px; color: #d6c4b0; font-weight: 500; }
+      .logo img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        display: block;
+      }
+      h1 {
+        font-size: 34px;
+        font-weight: 750;
+        letter-spacing: -0.03em;
+        line-height: 1.1;
+      }
+      h1 span {
+        color: #ff7a18;
+      }
+      .tagline {
+        margin-top: 8px;
+        font-size: 18px;
+        color: #d6c4b0;
+        font-weight: 500;
+      }
       .editor {
-        width: 100%; flex: 1; min-height: 0; border-radius: 16px;
-        border: 1px solid rgba(255, 122, 24, 0.22); background: #121212;
-        box-shadow: 0 24px 60px rgba(0,0,0,0.55), inset 0 1px 0 rgba(255,255,255,0.04);
-        overflow: hidden; opacity: 0; transform: translateY(12px) scale(0.985);
-        display: flex; flex-direction: column;
+        width: 100%;
+        flex: 1;
+        min-height: 0;
+        border-radius: 16px;
+        border: 1px solid rgba(255, 122, 24, 0.22);
+        background: #121212;
+        box-shadow:
+          0 24px 60px rgba(0, 0, 0, 0.55),
+          inset 0 1px 0 rgba(255, 255, 255, 0.04);
+        overflow: hidden;
+        opacity: 0;
+        transform: translateY(12px) scale(0.985);
+        display: flex;
+        flex-direction: column;
       }
-      .editor.show { opacity: 1; transform: none; }
+      .editor.show {
+        opacity: 1;
+        transform: none;
+      }
       .chrome {
-        height: 40px; display: flex; align-items: center; gap: 8px;
-        padding: 0 14px; border-bottom: 1px solid rgba(255, 122, 24, 0.14); background: #0a0a0a;
+        height: 40px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 0 14px;
+        border-bottom: 1px solid rgba(255, 122, 24, 0.14);
+        background: #0a0a0a;
       }
-      .dot { width: 10px; height: 10px; border-radius: 50%; }
-      .dot.r { background: #ff5f57; } .dot.y { background: #febc2e; } .dot.g { background: #28c840; }
-      .tabs { display: flex; gap: 4px; margin-left: 14px; }
+      .dot {
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+      }
+      .dot.r {
+        background: #ff5f57;
+      }
+      .dot.y {
+        background: #febc2e;
+      }
+      .dot.g {
+        background: #28c840;
+      }
+      .tabs {
+        display: flex;
+        gap: 4px;
+        margin-left: 14px;
+      }
       .tab {
         font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
-        font-size: 12px; color: #a89888; padding: 6px 10px; border-radius: 8px 8px 0 0;
+        font-size: 12px;
+        color: #a89888;
+        padding: 6px 10px;
+        border-radius: 8px 8px 0 0;
       }
-      .tab.active { color: #fff7ed; background: #121212; }
-      .panes { display: grid; grid-template-columns: 1fr 1fr; flex: 1; min-height: 0; }
-      .pane { padding: 18px 20px 20px; border-right: 1px solid rgba(255, 122, 24, 0.12); position: relative; overflow: hidden; }
-      .pane:last-child { border-right: none; }
+      .tab.active {
+        color: #fff7ed;
+        background: #121212;
+      }
+      .panes {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        flex: 1;
+        min-height: 0;
+      }
+      .pane {
+        padding: 18px 20px 20px;
+        border-right: 1px solid rgba(255, 122, 24, 0.12);
+        position: relative;
+        overflow: hidden;
+      }
+      .pane:last-child {
+        border-right: none;
+      }
       .pane-title {
         font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
-        font-size: 11px; color: #8a7a6a; margin-bottom: 12px;
+        font-size: 11px;
+        color: #8a7a6a;
+        margin-bottom: 12px;
       }
       pre {
         font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
-        font-size: 13.5px; line-height: 1.55; white-space: pre; color: #e8ddd0;
+        font-size: 13.5px;
+        line-height: 1.55;
+        white-space: pre;
+        color: #e8ddd0;
       }
-      .k { color: #ffb347; } .s { color: #ff8a4c; } .f { color: #86c46a; }
-      .t { color: #ffd19a; }
-      .line { opacity: 0; } .line.on { opacity: 1; }
+      .k {
+        color: #ffb347;
+      }
+      .s {
+        color: #ff8a4c;
+      }
+      .f {
+        color: #86c46a;
+      }
+      .t {
+        color: #ffd19a;
+      }
+      .line {
+        opacity: 0;
+      }
+      .line.on {
+        opacity: 1;
+      }
       .cursor {
-        display: inline-block; width: 8px; height: 15px; background: #ff7a18;
-        vertical-align: -2px; margin-left: 1px; animation: blink 0.9s step-end infinite;
+        display: inline-block;
+        width: 8px;
+        height: 15px;
+        background: #ff7a18;
+        vertical-align: -2px;
+        margin-left: 1px;
+        animation: blink 0.9s step-end infinite;
       }
-      @keyframes blink { 50% { opacity: 0; } }
+      @keyframes blink {
+        50% {
+          opacity: 0;
+        }
+      }
       .tooltip {
-        position: absolute; left: 52px; bottom: 58px; background: #1a1410;
-        border: 1px solid rgba(255, 122, 24, 0.35); border-radius: 8px; padding: 8px 12px;
+        position: absolute;
+        left: 52px;
+        bottom: 58px;
+        background: #1a1410;
+        border: 1px solid rgba(255, 122, 24, 0.35);
+        border-radius: 8px;
+        padding: 8px 12px;
         font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
-        font-size: 12.5px; color: #fff7ed; box-shadow: 0 12px 30px rgba(0,0,0,0.5);
-        opacity: 0; transform: translateY(6px);
+        font-size: 12.5px;
+        color: #fff7ed;
+        box-shadow: 0 12px 30px rgba(0, 0, 0, 0.5);
+        opacity: 0;
+        transform: translateY(6px);
       }
-      .tooltip.show { opacity: 1; transform: none; }
-      .tooltip .hint { color: #ff7a18; } .tooltip .type { color: #86c46a; }
+      .tooltip.show {
+        opacity: 1;
+        transform: none;
+      }
+      .tooltip .hint {
+        color: #ff7a18;
+      }
+      .tooltip .type {
+        color: #86c46a;
+      }
       .foot {
         font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
-        font-size: 22px; font-weight: 700; color: #e8ddd0; letter-spacing: -0.02em; opacity: 0;
+        font-size: 22px;
+        font-weight: 700;
+        color: #e8ddd0;
+        letter-spacing: -0.02em;
+        opacity: 0;
       }
-      .foot.show { opacity: 1; } .foot span { color: #ff7a18; }
+      .foot.show {
+        opacity: 1;
+      }
+      .foot span {
+        color: #ff7a18;
+      }
     </style>
   </head>
   <body>
@@ -137,10 +291,12 @@
       const step = Number(new URLSearchParams(location.search).get('step') || '0')
       const renderLines = (el, lines, count, showCursor) => {
         const visible = lines.slice(0, Math.max(0, count))
-        el.innerHTML = visible.map((line, index) => {
-          const isLast = index === visible.length - 1 && showCursor
-          return `<div class="line on">${line || '&nbsp;'}${isLast ? '<span class="cursor"></span>' : ''}</div>`
-        }).join('')
+        el.innerHTML = visible
+          .map((line, index) => {
+            const isLast = index === visible.length - 1 && showCursor
+            return `<div class="line on">${line || '&nbsp;'}${isLast ? '<span class="cursor"></span>' : ''}</div>`
+          })
+          .join('')
       }
       if (step >= 1) brand.classList.add('show')
       if (step >= 2) editor.classList.add('show')

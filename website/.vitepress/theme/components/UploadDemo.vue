@@ -127,7 +127,13 @@ const snippet = `await api.upload('/files', {
 
     <p class="status-result">{{ selectedName }}</p>
 
-    <div class="demo-progress" role="progressbar" :aria-valuenow="progress" aria-valuemin="0" aria-valuemax="100">
+    <div
+      class="demo-progress"
+      role="progressbar"
+      :aria-valuenow="progress"
+      aria-valuemin="0"
+      aria-valuemax="100"
+    >
       <div class="demo-progress-bar" :style="{ width: progressLabel }" />
       <span>{{ progressLabel }}</span>
     </div>
