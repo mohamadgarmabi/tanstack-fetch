@@ -11,7 +11,9 @@ import NextSsrDemo from './components/NextSsrDemo.vue'
 import UploadDemo from './components/UploadDemo.vue'
 import SseDemo from './components/SseDemo.vue'
 import PackagesFeatured from './components/PackagesFeatured.vue'
+import HomeLanding from './home/HomeLanding.vue'
 import './custom.css'
+import './home/home.css'
 
 const theme: Theme = {
   extends: DefaultTheme,
@@ -27,6 +29,7 @@ const theme: Theme = {
     app.component('UploadDemo', UploadDemo)
     app.component('SseDemo', SseDemo)
     app.component('PackagesFeatured', PackagesFeatured)
+    app.component('HomeLanding', HomeLanding)
   },
 }
 
