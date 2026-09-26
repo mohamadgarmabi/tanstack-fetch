@@ -12,6 +12,25 @@ npm: https://www.npmjs.com/package/tanstack-fetch
 npm install tanstack-fetch @tanstack/react-query
 ```
 
+## Agent skill (Cursor / Claude / Codex)
+
+```bash
+# npm
+npx skills add mohamadgarmabi/tanstack-fetch --skill tanstack-fetch
+
+# pnpm
+pnpm dlx skills add mohamadgarmabi/tanstack-fetch --skill tanstack-fetch
+
+# yarn
+yarn dlx skills add mohamadgarmabi/tanstack-fetch --skill tanstack-fetch
+
+# bun
+bunx skills add mohamadgarmabi/tanstack-fetch --skill tanstack-fetch
+```
+
+Skill page: https://mohamadgarmabi.github.io/tanstack-fetch/guide/skill  
+Raw skill: https://mohamadgarmabi.github.io/tanstack-fetch/skills/tanstack-fetch/SKILL.md
+
 ## Quickstart
 
 ```ts
@@ -43,6 +62,7 @@ useQuery({
 ## Key guides
 
 - Getting started: /guide/getting-started
+- Agent skill: /guide/skill
 - Configuration / status handlers: /guide/configuration
 - Errors: /guide/errors
 - TanStack Query: /guide/tanstack-query

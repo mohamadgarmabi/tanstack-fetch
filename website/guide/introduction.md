@@ -37,5 +37,6 @@ import { createFetch } from 'tanstack-fetch/sse' // + streams
 ## Next
 
 - [Getting started](./getting-started)
+- [Agent skill](./skill) — `npx skills add mohamadgarmabi/tanstack-fetch --skill tanstack-fetch`
 - [Why this API?](./why)
 - [TanStack Query recipes](./tanstack-query)

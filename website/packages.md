@@ -14,9 +14,9 @@ Live download badges and stats for packages by **[Mohammad Garmabi](/author)**
 [LinkedIn](https://www.linkedin.com/in/mohammad-garmabi/) ·
 [GitHub](https://github.com/mohamadgarmabi)).
 
-```bash
-npm install tanstack-fetch @tanstack/react-query
-```
+Counts refresh from the npm API whenever you open this page.
+
+<InstallTabs packages="tanstack-fetch @tanstack/react-query" />
 
 <PackagesFeatured />
 
@@ -26,7 +26,6 @@ npm install tanstack-fetch @tanstack/react-query
 
 ## Install
 
-```bash
-npm install tanstack-fetch
-npm install vite-plugin-react-splash
-```
+<InstallTabs packages="tanstack-fetch" />
+
+<InstallTabs packages="vite-plugin-react-splash" />

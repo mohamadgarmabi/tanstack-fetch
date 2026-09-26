@@ -122,9 +122,10 @@
     "size": "node scripts/size.mjs",
     "example": "tsx example/run.ts",
     "prepublishOnly": "npm run typecheck && npm run lint && npm test && npm run build",
-    "docs:dev": "npm run dev --prefix website",
-    "docs:build": "npm run build --prefix website",
-    "docs:preview": "npm run preview --prefix website"
+    "docs:dev": "npm run skills:sync && npm run dev --prefix website",
+    "docs:build": "npm run skills:sync && npm run build --prefix website",
+    "docs:preview": "npm run preview --prefix website",
+    "skills:sync": "rm -rf website/public/skills/tanstack-fetch && mkdir -p website/public/skills && cp -R .agents/skills/tanstack-fetch website/public/skills/"
   },
   "peerDependencies": {
     "@trpc/client": ">=10",

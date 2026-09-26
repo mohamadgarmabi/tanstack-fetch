@@ -1,35 +1,47 @@
 <script setup lang="ts">
-withDefaults(
+import { computed, onMounted, ref } from 'vue'
+
+const props = withDefaults(
   defineProps<{
     packageName?: string
   }>(),
   { packageName: 'tanstack-fetch' },
 )
+
+const badgeNonce = ref('')
+
+onMounted(() => {
+  badgeNonce.value = String(Date.now())
+})
+
+const href = computed(() => `https://www.npmjs.com/package/${props.packageName}`)
+
+const badge = (path: string, color: string, label: string) => {
+  const bust = badgeNonce.value ? `&cacheSeconds=60&t=${badgeNonce.value}` : ''
+  return `https://img.shields.io/npm/${path}/${props.packageName}?style=for-the-badge&color=${color}&label=${encodeURIComponent(label)}${bust}`
+}
 </script>
 
 <template>
   <p class="npm-download-badges">
-    <a :href="`https://www.npmjs.com/package/${packageName}`" target="_blank" rel="noopener">
-      <img
-        :src="`https://img.shields.io/npm/v/${packageName}?style=for-the-badge&color=ff7a18&label=npm`"
-        :alt="`${packageName} on npm`"
-      />
+    <a :href="href" target="_blank" rel="noopener">
+      <img :src="badge('v', 'ff7a18', 'npm')" :alt="`${packageName} on npm`" />
     </a>
-    <a :href="`https://www.npmjs.com/package/${packageName}`" target="_blank" rel="noopener">
+    <a :href="href" target="_blank" rel="noopener">
       <img
-        :src="`https://img.shields.io/npm/dw/${packageName}?style=for-the-badge&color=f05a12&label=downloads%2Fweek`"
+        :src="badge('dw', 'f05a12', 'downloads/week')"
         :alt="`${packageName} weekly downloads`"
       />
     </a>
-    <a :href="`https://www.npmjs.com/package/${packageName}`" target="_blank" rel="noopener">
+    <a :href="href" target="_blank" rel="noopener">
       <img
-        :src="`https://img.shields.io/npm/dm/${packageName}?style=for-the-badge&color=c62818&label=downloads%2Fmonth`"
+        :src="badge('dm', 'c62818', 'downloads/month')"
         :alt="`${packageName} monthly downloads`"
       />
     </a>
-    <a :href="`https://www.npmjs.com/package/${packageName}`" target="_blank" rel="noopener">
+    <a :href="href" target="_blank" rel="noopener">
       <img
-        :src="`https://img.shields.io/npm/dt/${packageName}?style=for-the-badge&color=6b7c3a&label=total%20downloads`"
+        :src="badge('dt', '6b7c3a', 'total downloads')"
         :alt="`${packageName} total downloads`"
       />
     </a>

@@ -1,11 +1,16 @@
 <script setup lang="ts">
+import { computed } from 'vue'
 import { withBase } from 'vitepress'
 import NpmDownloadBadges from './NpmDownloadBadges.vue'
+import { useNpmPackageStats } from '../composables/use-npm-stats'
+
+const { pkg } = useNpmPackageStats('tanstack-fetch')
+const versionLabel = computed(() => `Featured · v${pkg.value?.version ?? '1.3.0'}`)
 </script>
 
 <template>
   <section class="packages-hero-panel" aria-label="Featured package tanstack-fetch">
-    <p class="status-playground-eyebrow">Featured · v1.2</p>
+    <p class="status-playground-eyebrow">{{ versionLabel }}</p>
     <h2 class="packages-featured-title">tanstack-fetch</h2>
     <p>
       Typed Fetch for TanStack Query — <strong>4xx handlers (incl. 429)</strong>, SSR, SSE, upload,

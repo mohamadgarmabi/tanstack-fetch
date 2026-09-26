@@ -1,12 +1,22 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { computed, ref } from 'vue'
 import { withBase } from 'vitepress'
-import { CHANGELOG_URL, GITHUB_URL, INSTALL_COMMAND } from './home.content'
+import { CHANGELOG_URL, GITHUB_URL, INSTALL_COMMANDS } from './home.content'
 
+const activeId = ref<(typeof INSTALL_COMMANDS)[number]['id']>('npm')
 const copied = ref(false)
 
+const active = computed(
+  () => INSTALL_COMMANDS.find((item) => item.id === activeId.value) ?? INSTALL_COMMANDS[0],
+)
+
+const select = (id: (typeof INSTALL_COMMANDS)[number]['id']) => {
+  activeId.value = id
+  copied.value = false
+}
+
 const copyInstall = async () => {
-  await navigator.clipboard.writeText(INSTALL_COMMAND)
+  await navigator.clipboard.writeText(active.value.command)
   copied.value = true
   window.setTimeout(() => {
     copied.value = false
@@ -51,10 +61,26 @@ const copyInstall = async () => {
       </a>
     </div>
 
-    <button class="home-install" type="button" @click="copyInstall">
-      <span class="home-install-prompt">$</span>
-      <code>{{ INSTALL_COMMAND }}</code>
-      <span class="home-install-copy">{{ copied ? 'Copied' : 'Copy' }}</span>
-    </button>
+    <div class="home-install-wrap">
+      <div class="home-install-managers" role="tablist" aria-label="Package manager">
+        <button
+          v-for="item in INSTALL_COMMANDS"
+          :key="item.id"
+          type="button"
+          role="tab"
+          class="home-install-manager"
+          :class="{ 'is-active': item.id === active.id }"
+          :aria-selected="item.id === active.id"
+          @click="select(item.id)"
+        >
+          {{ item.label }}
+        </button>
+      </div>
+      <button class="home-install" type="button" @click="copyInstall">
+        <span class="home-install-prompt">$</span>
+        <code>{{ active.command }}</code>
+        <span class="home-install-copy">{{ copied ? 'Copied' : 'Copy' }}</span>
+      </button>
+    </div>
   </header>
 </template>

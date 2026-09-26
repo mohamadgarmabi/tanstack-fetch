@@ -207,6 +207,7 @@ const config = defineConfig({
       { text: 'API', link: '/api/create-fetch', activeMatch: '/api/' },
       { text: 'Comparison', link: '/guide/comparison' },
       { text: 'Playground', link: '/examples/playground', activeMatch: '/examples/' },
+      { text: 'Skill', link: '/guide/skill' },
       {
         text: 'More',
         items: [
@@ -227,6 +228,7 @@ const config = defineConfig({
           items: [
             { text: 'What is tanstack-fetch?', link: '/guide/introduction' },
             { text: 'Getting started', link: '/guide/getting-started' },
+            { text: 'Agent skill', link: '/guide/skill' },
             { text: 'Why this API?', link: '/guide/why' },
             { text: 'Comparison', link: '/guide/comparison' },
           ],

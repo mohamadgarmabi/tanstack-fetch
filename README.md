@@ -22,7 +22,14 @@ Tiny HTTP core · Typed errors · 4xx / 5xx handlers (incl. **429**) · AbortSig
 ## 30-second quickstart
 
 ```bash
+# npm
 npm install tanstack-fetch @tanstack/react-query
+# pnpm
+pnpm add tanstack-fetch @tanstack/react-query
+# yarn
+yarn add tanstack-fetch @tanstack/react-query
+# bun
+bun add tanstack-fetch @tanstack/react-query
 ```
 
 ```ts
@@ -39,7 +46,7 @@ useQuery({
 
 That’s it: returns data, throws `FetchError` on HTTP errors, honors Query’s `signal`.
 
-**Docs:** [mohamadgarmabi.github.io/tanstack-fetch](https://mohamadgarmabi.github.io/tanstack-fetch/) · **Examples:** [`examples/`](./examples) · **Changelog:** [`CHANGELOG.md`](./CHANGELOG.md)
+**Docs:** [mohamadgarmabi.github.io/tanstack-fetch](https://mohamadgarmabi.github.io/tanstack-fetch/) · **Agent skill:** [`npx` / `pnpm dlx` / `yarn dlx` / `bunx` skills add …](https://mohamadgarmabi.github.io/tanstack-fetch/guide/skill) · **Examples:** [`examples/`](./examples) · **Changelog:** [`CHANGELOG.md`](./CHANGELOG.md)
 
 > Not an official TanStack package — built to match the `@tanstack/react-query` mental model.
 

@@ -4,9 +4,7 @@
 
 Same `createFetch` auth / plugins — wired into tRPC for **React**, **TanStack Router**, and **TanStack Start**.
 
-```bash
-npm install tanstack-fetch @trpc/client @trpc/tanstack-react-query @tanstack/react-query
-```
+<InstallTabs packages="tanstack-fetch @trpc/client @trpc/tanstack-react-query @tanstack/react-query" />
 
 ```ts
 import { createFetch } from 'tanstack-fetch'
