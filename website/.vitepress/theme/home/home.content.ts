@@ -9,7 +9,6 @@ import type {
   TestimonialItem,
   WhyItem,
 } from './home.type'
-import npmPackages from '../../../data/npm-packages.json'
 
 const GITHUB_URL = 'https://github.com/mohamadgarmabi/tanstack-fetch'
 const CHANGELOG_URL = `${GITHUB_URL}/blob/main/CHANGELOG.md`
@@ -19,14 +18,14 @@ const LINKEDIN_URL = 'https://www.linkedin.com/in/mohammad-garmabi/'
 const STACKBLITZ_BASE =
   'https://stackblitz.com/github/mohamadgarmabi/tanstack-fetch/tree/main/examples'
 
-const INSTALL_COMMAND = 'npm install tanstack-fetch'
+const INSTALL_COMMANDS = [
+  { id: 'npm', label: 'npm', command: 'npm install tanstack-fetch' },
+  { id: 'pnpm', label: 'pnpm', command: 'pnpm add tanstack-fetch' },
+  { id: 'yarn', label: 'yarn', command: 'yarn add tanstack-fetch' },
+  { id: 'bun', label: 'bun', command: 'bun add tanstack-fetch' },
+] as const
 
-const formatCount = (value: number) => {
-  if (value >= 1000) return `${(value / 1000).toFixed(1).replace(/\.0$/, '')}K`
-  return String(value)
-}
-
-const featuredPackage = npmPackages.packages.find((item) => item.name === 'tanstack-fetch')
+const INSTALL_COMMAND = INSTALL_COMMANDS[0].command
 
 const showcase: ShowcaseItem[] = [
   {
@@ -670,34 +669,12 @@ const footerColumns: FooterColumn[] = [
   },
 ]
 
-const stats = [
-  {
-    value: '~3.5KB',
-    label: 'gzip HTTP core',
-    href: 'https://bundlephobia.com/package/tanstack-fetch',
-  },
-  {
-    value: formatCount(featuredPackage?.weekly ?? 0),
-    label: 'downloads / week',
-    href: NPM_URL,
-  },
-  {
-    value: formatCount(featuredPackage?.monthly ?? 0),
-    label: 'downloads / month',
-    href: NPM_URL,
-  },
-  {
-    value: `v${featuredPackage?.version ?? '1.3.0'}`,
-    label: 'current release',
-    href: CHANGELOG_URL,
-  },
-]
-
 export {
   AUTHOR_URL,
   CHANGELOG_URL,
   GITHUB_URL,
   INSTALL_COMMAND,
+  INSTALL_COMMANDS,
   LINKEDIN_URL,
   NPM_URL,
   compareRows,
@@ -709,7 +686,6 @@ export {
   runtimes,
   showcase,
   stackBlitzLinks,
-  stats,
   testimonials,
   whyAxios,
 }

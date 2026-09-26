@@ -145,6 +145,92 @@
   height: 28px;
 }
 
+.install-tabs {
+  margin: 1rem 0 1.5rem;
+  border: 1px solid var(--vp-c-divider);
+  border-radius: 12px;
+  overflow: hidden;
+  background: var(--vp-c-bg-soft);
+}
+
+.install-tabs-bar {
+  display: flex;
+  gap: 0.15rem;
+  padding: 0.35rem 0.4rem 0;
+  border-bottom: 1px solid var(--vp-c-divider);
+  overflow-x: auto;
+}
+
+.install-tabs-tab {
+  border: 0;
+  background: transparent;
+  color: var(--vp-c-text-2);
+  cursor: pointer;
+  padding: 0.65rem 0.85rem 0.7rem;
+  font-size: 0.88rem;
+  font-weight: 550;
+  white-space: nowrap;
+  position: relative;
+}
+
+.install-tabs-tab.is-active {
+  color: var(--vp-c-text-1);
+}
+
+.install-tabs-tab.is-active::after {
+  content: '';
+  position: absolute;
+  left: 0.65rem;
+  right: 0.65rem;
+  bottom: -1px;
+  height: 2px;
+  border-radius: 2px;
+  background: var(--vp-c-brand-1, #f05a12);
+}
+
+.install-tabs-cmd {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  width: 100%;
+  border: 0;
+  background: transparent;
+  color: var(--vp-c-text-1);
+  cursor: pointer;
+  padding: 0.9rem 1rem;
+  text-align: start;
+  font: inherit;
+}
+
+.install-tabs-cmd:hover {
+  background: var(--vp-c-bg-alt);
+}
+
+.install-tabs-prompt {
+  color: var(--vp-c-brand-1, #f05a12);
+  font-family: var(--vp-font-family-mono);
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+.install-tabs-cmd code {
+  flex: 1;
+  overflow-x: auto;
+  background: transparent;
+  padding: 0;
+  font-size: 0.9rem;
+  white-space: nowrap;
+}
+
+.install-tabs-copy {
+  flex-shrink: 0;
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--vp-c-text-2);
+}
+
 .npm-packages {
   margin: 1.5rem 0 2rem;
 }

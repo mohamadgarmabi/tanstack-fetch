@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import { computed } from 'vue'
+import { computed, onMounted, ref } from 'vue'
 import { withBase } from 'vitepress'
-import data from '../../../data/npm-packages.json'
+import { formatUpdatedAt, useNpmPackages } from '../composables/use-npm-stats'
 
 const props = withDefaults(
   defineProps<{
@@ -16,21 +16,19 @@ const props = withDefaults(
   },
 )
 
-const format = (n: number) => n.toLocaleString('en-US')
+const { data, loading, live } = useNpmPackages()
+const badgeNonce = ref('')
 
-const updatedLabel = computed(() => {
-  try {
-    return new Date(data.updatedAt).toLocaleString('en-GB', {
-      dateStyle: 'medium',
-      timeStyle: 'short',
-    })
-  } catch {
-    return data.updatedAt
-  }
+onMounted(() => {
+  badgeNonce.value = String(Date.now())
 })
 
+const format = (n: number) => n.toLocaleString('en-US')
+
+const updatedLabel = computed(() => formatUpdatedAt(data.value.updatedAt))
+
 const packages = computed(() => {
-  const list = [...data.packages].sort((a, b) => b.monthly - a.monthly)
+  const list = [...data.value.packages].sort((a, b) => b.monthly - a.monthly)
   return props.limit > 0 ? list.slice(0, props.limit) : list
 })
 
@@ -40,10 +38,18 @@ const docsHref = (name: string) => {
   }
   return `https://www.npmjs.com/package/${name}`
 }
+
+const badgeSrc = (kind: 'dw' | 'dm' | 'v', name: string) => {
+  const colors = { dw: 'ff7a18', dm: 'c62818', v: '6b7c3a' } as const
+  const labels = { dw: 'week', dm: 'month', v: '' } as const
+  const label = labels[kind] ? `label=${labels[kind]}&` : ''
+  const bust = badgeNonce.value ? `&cacheSeconds=60&t=${badgeNonce.value}` : ''
+  return `https://img.shields.io/npm/${kind}/${name}?${label}color=${colors[kind]}${bust}`
+}
 </script>
 
 <template>
-  <div class="npm-packages">
+  <div class="npm-packages" :data-live="live ? 'true' : 'false'">
     <div v-if="showTotals" class="npm-totals">
       <div class="npm-total-card">
         <span class="npm-total-label">Weekly downloads</span>
@@ -68,7 +74,8 @@ const docsHref = (name: string) => {
       <a href="https://www.linkedin.com/in/mohammad-garmabi/" target="_blank" rel="noopener"
         >LinkedIn</a
       >
-      · updated {{ updatedLabel }}
+      ·
+      <span>{{ live ? 'live' : loading ? 'updating…' : 'snapshot' }} · {{ updatedLabel }}</span>
     </p>
 
     <div class="npm-grid">
@@ -89,20 +96,16 @@ const docsHref = (name: string) => {
         <p class="npm-desc">{{ pkg.description }}</p>
         <div class="npm-badges">
           <img
-            :src="`https://img.shields.io/npm/dw/${pkg.name}?label=week&color=ff7a18`"
+            :src="badgeSrc('dw', pkg.name)"
             :alt="`${pkg.name} weekly downloads`"
             loading="lazy"
           />
           <img
-            :src="`https://img.shields.io/npm/dm/${pkg.name}?label=month&color=c62818`"
+            :src="badgeSrc('dm', pkg.name)"
             :alt="`${pkg.name} monthly downloads`"
             loading="lazy"
           />
-          <img
-            :src="`https://img.shields.io/npm/v/${pkg.name}?color=6b7c3a`"
-            :alt="`${pkg.name} version`"
-            loading="lazy"
-          />
+          <img :src="badgeSrc('v', pkg.name)" :alt="`${pkg.name} version`" loading="lazy" />
         </div>
         <div class="npm-stats">
           <span>{{ format(pkg.weekly) }} / week</span>

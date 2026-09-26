@@ -10,6 +10,7 @@
 
 - Homepage: Why not axios, 30-second start, StackBlitz links, refresh-token showcase, `llms.txt`
 - Recipe and comparison updated for before/after refresh
+- **Agent skill**: `.agents/skills/tanstack-fetch` + install page (`npx skills add mohamadgarmabi/tanstack-fetch --skill tanstack-fetch`)
 
 ## 1.2.1
 

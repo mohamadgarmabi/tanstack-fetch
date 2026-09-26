@@ -6,9 +6,7 @@
 
 <NpmDownloadBadges package-name="tanstack-fetch" />
 
-```bash
-npm install tanstack-fetch @tanstack/react-query
-```
+<InstallTabs packages="tanstack-fetch @tanstack/react-query" />
 
 React / YAML peers are optional. For SSE, React helpers, or tRPC, import the matching entry — same package.
 
@@ -70,6 +68,7 @@ try {
 
 | Goal                        | Page                               |
 | --------------------------- | ---------------------------------- |
+| Cursor / agent skill        | [Agent skill](./skill)             |
 | Token + 401 / 403 / 404     | [Configuration](./configuration)   |
 | `useQuery` / `queryOptions` | [TanStack Query](./tanstack-query) |
 | Next.js cookies             | [SSR & Next.js](./ssr)             |

@@ -150,7 +150,7 @@
   display: inline-flex;
   align-items: center;
   gap: 0.7rem;
-  margin-top: 1.35rem;
+  margin-top: 0;
   padding: 0.55rem 0.7rem 0.55rem 0.9rem;
   border-radius: 0.75rem;
   border: 1px solid var(--home-line);
@@ -159,6 +159,47 @@
   font-family: 'JetBrains Mono', ui-monospace, monospace;
   font-size: 0.84rem;
   cursor: pointer;
+  max-width: 100%;
+}
+
+.home-install-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.55rem;
+  margin-top: 1.35rem;
+  max-width: 100%;
+}
+
+.home-install-managers {
+  display: flex;
+  gap: 0.2rem;
+  padding: 0.2rem;
+  border-radius: 0.65rem;
+  border: 1px solid var(--home-line);
+  background: rgba(0, 0, 0, 0.35);
+}
+
+.home-install-manager {
+  border: 0;
+  background: transparent;
+  color: var(--home-muted);
+  cursor: pointer;
+  padding: 0.35rem 0.7rem;
+  border-radius: 0.45rem;
+  font-size: 0.78rem;
+  font-weight: 600;
+}
+
+.home-install-manager.is-active {
+  color: var(--home-text);
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.home-install code {
+  overflow-x: auto;
+  white-space: nowrap;
+  max-width: min(70vw, 28rem);
 }
 
 .home-install-prompt {
