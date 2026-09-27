@@ -1,20 +1,20 @@
 {
-  "updatedAt": "2026-09-26T11:28:56.985Z",
+  "updatedAt": "2026-09-27T09:27:23.075Z",
   "author": "Mohammad Garmabi",
   "npmUser": "mohammad.garmabi",
   "packages": [
     {
       "name": "tanstack-fetch",
-      "version": "1.3.0",
-      "weekly": 664,
-      "monthly": 1336,
+      "version": "1.4.0",
+      "weekly": 847,
+      "monthly": 1524,
       "description": "React Query / TanStack Query fetch client — typed errors, AbortSignal, SSR, SSE, upload. Lightweight axios/ky alternativ"
     },
     {
       "name": "vite-plugin-react-splash",
       "version": "1.1.0",
-      "weekly": 226,
-      "monthly": 667,
+      "weekly": 261,
+      "monthly": 694,
       "description": "Fast Vite splash screen plugin for React PWAs — critical CSS for better FCP/LCP, progress API, prefers-reduced-motion, w"
     },
     {
@@ -34,15 +34,15 @@
     {
       "name": "react-video-capture",
       "version": "0.0.4",
-      "weekly": 4,
-      "monthly": 27,
+      "weekly": 10,
+      "monthly": 33,
       "description": "A flexible React component for video capture and recording"
     },
     {
       "name": "react-performanalyzer",
       "version": "0.0.7",
-      "weekly": 1,
-      "monthly": 17,
+      "weekly": 10,
+      "monthly": 26,
       "description": "A comprehensive React performance analysis tool that checks for memory leaks, performance issues, and code quality probl"
     },
     {
@@ -55,15 +55,15 @@
     {
       "name": "image-auth",
       "version": "0.0.16",
-      "weekly": 10,
+      "weekly": 8,
       "monthly": 40,
       "description": "To install the package, you can use npm or yarn:"
     },
     {
       "name": "react-providers-tree",
       "version": "1.0.0",
-      "weekly": 3,
-      "monthly": 15,
+      "weekly": 4,
+      "monthly": 16,
       "description": "A utility to build a tree of React providers with their props"
     },
     {
@@ -75,7 +75,7 @@
     }
   ],
   "totals": {
-    "weekly": 929,
-    "monthly": 2239
+    "weekly": 1161,
+    "monthly": 2470
   }
 }
