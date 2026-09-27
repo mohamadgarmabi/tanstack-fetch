@@ -1,5 +1,17 @@
 # Changelog
 
+## 1.4.0
+
+### Features
+
+- **`tanstack-fetch/devtools`**: request dock for HTTP / SSE / SSR / tRPC — `setupDevtools(api)` one-liner, call graph with Cursor / Zed / VS Code picker, SSE event list, caller file label (e.g. `profile.hook.ts`)
+- **SSE `onSseClose` interceptor hook**: stream end notifies listeners; DevTools marks SSE as `live` → `success`
+- tRPC success path runs `onResponse` so DevTools / logging see timing
+
+### Docs
+
+- Live DevTools preview at `/examples/devtools` (Shift→ **Alt+Shift+F** / **⌥⇧F**)
+
 ## 1.3.0
 
 ### Features
