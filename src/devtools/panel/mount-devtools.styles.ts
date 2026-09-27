@@ -144,6 +144,7 @@ const CSS = `
   text-transform: uppercase;
 }
 .tf-dt-pill.pending { background: rgba(97,175,239,.15); color: var(--tf-dt-pending); }
+.tf-dt-pill.live { background: rgba(61,214,140,.18); color: var(--tf-dt-ok); }
 .tf-dt-pill.success { background: rgba(61,214,140,.15); color: var(--tf-dt-ok); }
 .tf-dt-pill.error, .tf-dt-pill.aborted { background: rgba(240,113,120,.15); color: var(--tf-dt-err); }
 .tf-dt-detail {

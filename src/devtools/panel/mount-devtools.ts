@@ -287,11 +287,14 @@ const mountDevtools = (options: MountDevtoolsOptions) => {
       row.className = `tf-dt-row${selectedId === entry.id ? ' is-selected' : ''}`
       const sseHint = entry.kind === 'sse' && entry.sse ? ` · ${entry.sse.eventCount} evt` : ''
       const caller = entry.callerFile ?? '—'
+      const isLive = entry.status === 'pending' && entry.sse?.open
+      const pillClass = isLive ? 'live' : entry.status
+      const pillLabel = isLive ? 'live' : entry.status
       row.innerHTML = `
         <span class="tf-dt-method">${entry.method}</span>
         <span class="tf-dt-path" title="${entry.url}">${entry.path}${sseHint}</span>
         <span class="tf-dt-caller" title="Called from">${caller}</span>
-        <span class="tf-dt-pill ${entry.status}">${entry.status}</span>
+        <span class="tf-dt-pill ${pillClass}">${pillLabel}</span>
         <span class="tf-dt-meta">${entry.timingMs != null ? `${Math.round(entry.timingMs)}ms` : '—'}</span>
       `
       row.addEventListener('click', () => store.select(entry.id))

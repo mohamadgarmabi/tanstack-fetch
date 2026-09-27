@@ -58,6 +58,8 @@ type HttpInterceptor = {
   onSseEvent?: InterceptorHandler<SseEventContext>
   onSseError?: InterceptorHandler<RequestContext>
   onSseReconnect?: InterceptorHandler<RequestContext>
+  /** Fired when the SSE stream ends cleanly (server close or client abort after open). */
+  onSseClose?: InterceptorHandler<RequestContext>
 }
 
 export type {

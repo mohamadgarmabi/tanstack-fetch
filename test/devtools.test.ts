@@ -184,6 +184,8 @@ describe('devtools interceptor', () => {
     expect(entry?.sse?.eventCount).toBeGreaterThanOrEqual(1)
     expect(entry?.sse?.events?.length).toBeGreaterThanOrEqual(1)
     expect(entry?.sse?.events?.[0]?.data).toEqual({ n: 1 })
+    expect(entry?.status).toBe('success')
+    expect(entry?.sse?.open).toBe(false)
   })
 
   it('setupDevtools registers interceptor in one call', async () => {

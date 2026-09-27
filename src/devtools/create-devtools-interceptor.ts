@@ -278,6 +278,29 @@ const createDevtoolsInterceptor = (
       })
       return { action: 'continue' }
     },
+    onSseClose: (context) => {
+      const id = resolveSseId(context)
+      const existing = store.getById(id)
+      if (!existing) return { action: 'continue' }
+      // Aborted streams already finished via signal listener.
+      if (existing.status === 'aborted' || existing.status === 'error') {
+        return { action: 'continue' }
+      }
+      finish(context, 'success', {
+        id,
+        kind: 'sse',
+        httpStatus: existing.httpStatus ?? context.response?.status ?? 200,
+        sse: emptySse({
+          open: false,
+          eventCount: existing.sse?.eventCount ?? 0,
+          events: existing.sse?.events ?? [],
+          lastEventId: existing.sse?.lastEventId ?? context.meta.lastEventId,
+          lastEventName: existing.sse?.lastEventName,
+        }),
+      })
+      sseStreamIds.delete(context.request.url.pathname)
+      return { action: 'continue' }
+    },
   }
 }
 

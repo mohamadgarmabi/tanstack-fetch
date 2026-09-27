@@ -1,4 +1,4 @@
-import type { FetchResult, SseEvent } from './types'
+import type { FetchResult, RequestContext, SseEvent } from './types'
 import { resolveInterceptors, runHook } from './interceptors/run-interceptors'
 import { consumeSseBuffer } from './sse-parse'
 import { wait } from './utils/signals'
@@ -17,12 +17,21 @@ const createSseIterator = <T>(args: SendSseArgs): AsyncIterator<SseEvent<T>> => 
     : undefined
   let attempt = 0
   let closed = false
+  let openContext: RequestContext | undefined
+  let closeNotified = false
+
+  const notifyClose = async () => {
+    if (closeNotified || !openContext) return
+    closeNotified = true
+    await runHook(interceptors, (item) => item.onSseClose, openContext)
+  }
 
   const pull = async (): Promise<IteratorResult<SseEvent<T>>> => {
     if (queue.length > 0) {
       return { value: queue.shift() as SseEvent<T>, done: false }
     }
     if (closed) {
+      await notifyClose()
       return { value: undefined, done: true }
     }
     if (!reader) {
@@ -89,6 +98,7 @@ const createSseIterator = <T>(args: SendSseArgs): AsyncIterator<SseEvent<T>> => 
       }
       throw createFetchError(toErrResult(response.status, context.error, response.headers))
     }
+    openContext = context
     await runHook(interceptors, (item) => item.onSseOpen, context)
     reader = response.body.pipeThrough(new TextDecoderStream()).getReader()
     return true
@@ -98,12 +108,14 @@ const createSseIterator = <T>(args: SendSseArgs): AsyncIterator<SseEvent<T>> => 
     const currentReader = reader
     if (!currentReader) {
       closed = true
+      await notifyClose()
       return { value: undefined, done: true }
     }
     const chunk = await currentReader.read()
     if (chunk.done) {
       reader = undefined
       closed = true
+      await notifyClose()
       return pull()
     }
     const parsed = consumeSseBuffer(buffer + chunk.value)
@@ -111,6 +123,10 @@ const createSseIterator = <T>(args: SendSseArgs): AsyncIterator<SseEvent<T>> => 
     for (const event of parsed.events) {
       lastEventId = event.id ?? lastEventId
       const context = await createSseContext(args, attempt, lastEventId)
+      // Preserve requestId from the open context so DevTools / hooks can correlate.
+      if (openContext?.meta.requestId) {
+        context.meta.requestId = openContext.meta.requestId
+      }
       const after = await runHook(interceptors, (item) => item.onSseEvent, { ...context, event })
       if (after.type === 'drop') {
         continue
@@ -122,7 +138,20 @@ const createSseIterator = <T>(args: SendSseArgs): AsyncIterator<SseEvent<T>> => 
     return pull()
   }
 
-  return { next: pull }
+  return {
+    next: pull,
+    return: async () => {
+      closed = true
+      try {
+        await reader?.cancel()
+      } catch {
+        // ignore
+      }
+      reader = undefined
+      await notifyClose()
+      return { value: undefined, done: true }
+    },
+  }
 }
 
 export { createSseIterator }
