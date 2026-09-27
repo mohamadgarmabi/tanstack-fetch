@@ -2,6 +2,10 @@
 import { computed, ref } from 'vue'
 import { withBase } from 'vitepress'
 import { CHANGELOG_URL, GITHUB_URL, INSTALL_COMMANDS } from './home.content'
+import { useNpmPackageStats } from '../composables/use-npm-stats'
+
+const { pkg } = useNpmPackageStats('tanstack-fetch')
+const releaseVersion = computed(() => `v${pkg.value?.version ?? '1.4.0'}`)
 
 const activeId = ref<(typeof INSTALL_COMMANDS)[number]['id']>('npm')
 const copied = ref(false)
@@ -27,7 +31,7 @@ const copyInstall = async () => {
 <template>
   <header class="home-hero">
     <a class="home-badge" :href="CHANGELOG_URL" target="_blank" rel="noopener">
-      <span>v1.3.0</span>
+      <span>{{ releaseVersion }}</span>
       Changelog on GitHub
       <svg viewBox="0 0 16 16" aria-hidden="true">
         <path d="M6 3h7v7M13 3 3 13" />
