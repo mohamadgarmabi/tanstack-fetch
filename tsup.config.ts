@@ -8,6 +8,7 @@ const config = defineConfig([
       plugins: 'src/plugins-entry.ts',
       react: 'src/react/index.ts',
       trpc: 'src/trpc/index.ts',
+      devtools: 'src/devtools/index.ts',
     },
     format: ['esm', 'cjs'],
     dts: true,

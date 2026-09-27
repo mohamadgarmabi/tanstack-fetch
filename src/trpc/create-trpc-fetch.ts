@@ -137,6 +137,19 @@ const createTRPCFetch = (source?: CreateTRPCFetchSource): typeof fetch => {
           }
           continue
         }
+        return response
+      }
+
+      // Success — run onResponse so DevTools / logging interceptors see timing + status.
+      // Body stays unread so tRPC can parse the Response.
+      context = { ...context, response }
+      const afterOk = await runHook(interceptors, (item) => item.onResponse, context)
+      if (afterOk.type === 'retry' && attempt < maxRetries) {
+        attempt += 1
+        if (afterOk.delayMs) {
+          await wait(afterOk.delayMs)
+        }
+        continue
       }
 
       return response

@@ -95,6 +95,11 @@
       "types": "./dist/trpc.d.ts",
       "import": "./dist/trpc.js",
       "require": "./dist/trpc.cjs"
+    },
+    "./devtools": {
+      "types": "./dist/devtools.d.ts",
+      "import": "./dist/devtools.js",
+      "require": "./dist/devtools.cjs"
     }
   },
   "files": [

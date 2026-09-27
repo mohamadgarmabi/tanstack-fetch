@@ -9,13 +9,14 @@ description: Live createFetch demos for React, Next.js, upload, SSE, and status 
 
 These widgets run **`createFetch` in your browser** (mock `fetch` / streams) — not screenshots.
 
-| Demo                                 | What it runs                |
-| ------------------------------------ | --------------------------- |
-| [Status / 4xx](/examples/playground) | Handlers incl. **429**      |
-| [React Query](/examples/react)       | `queryFn` + `mutationFn`    |
-| [Next.js SSR](/examples/next-ssr)    | `ssr-forward` cookies       |
-| [Upload](/examples/upload)           | `api.upload` multipart      |
-| [SSE](/examples/sse)                 | `tanstack-fetch/sse` stream |
+| Demo                                 | What it runs                 |
+| ------------------------------------ | ---------------------------- |
+| [Status / 4xx](/examples/playground) | Handlers incl. **429**       |
+| [React Query](/examples/react)       | `queryFn` + `mutationFn`     |
+| [Next.js SSR](/examples/next-ssr)    | `ssr-forward` cookies        |
+| [Upload](/examples/upload)           | `api.upload` multipart       |
+| [SSE](/examples/sse)                 | `tanstack-fetch/sse` stream  |
+| [DevTools](/examples/devtools)       | HTTP / SSE / SSR / tRPC dock |
 
 <ReactQueryDemo />
 

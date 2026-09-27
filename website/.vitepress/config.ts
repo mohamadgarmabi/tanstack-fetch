@@ -287,6 +287,7 @@ const config = defineConfig({
             { text: 'Next.js SSR', link: '/examples/next-ssr' },
             { text: 'Upload', link: '/examples/upload' },
             { text: 'SSE', link: '/examples/sse' },
+            { text: 'DevTools', link: '/examples/devtools' },
           ],
         },
       ],
@@ -301,6 +302,10 @@ const config = defineConfig({
         'tanstack-fetch/plugins': fileURLToPath(
           new URL('../../src/plugins/index.ts', import.meta.url),
         ),
+        'tanstack-fetch/devtools': fileURLToPath(
+          new URL('../../src/devtools/index.ts', import.meta.url),
+        ),
+        'tanstack-fetch/trpc': fileURLToPath(new URL('../../src/trpc/index.ts', import.meta.url)),
         'tanstack-fetch': fileURLToPath(new URL('../../src/index.ts', import.meta.url)),
       },
     },
