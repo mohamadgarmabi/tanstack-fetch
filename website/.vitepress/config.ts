@@ -305,7 +305,10 @@ const config = defineConfig({
         'tanstack-fetch/devtools': fileURLToPath(
           new URL('../../src/devtools/index.ts', import.meta.url),
         ),
-        'tanstack-fetch/trpc': fileURLToPath(new URL('../../src/trpc/index.ts', import.meta.url)),
+        // Only the fetch adapter — full `trpc` barrel pulls `@trpc/client` (not in website deps).
+        'tanstack-fetch/trpc': fileURLToPath(
+          new URL('../../src/trpc/create-trpc-fetch.ts', import.meta.url),
+        ),
         'tanstack-fetch': fileURLToPath(new URL('../../src/index.ts', import.meta.url)),
       },
     },
