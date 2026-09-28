@@ -114,7 +114,7 @@ onBeforeUnmount(() => {
 })
 
 const snippet = `import { createFetch } from 'tanstack-fetch/sse'
-import { FetchProvider, useSse } from 'tanstack-fetch/react'
+import { useSse } from 'tanstack-fetch/react'
 
 const api = createFetch({
   baseUrl: import.meta.env.VITE_API_URL,
@@ -123,9 +123,11 @@ const api = createFetch({
 })
 
 const OrdersLive = () => {
-  const { data, status, error, close } = useSse<Tick>('/orders/stream')
+  // Pass client — FetchProvider is optional
+  const { data, status, error, close } = useSse<Tick>('/orders/stream', {
+    client: api,
+  })
 
-  // status: 'connecting' | 'connected' | 'disconnected' | 'error'
   if (status === 'error') return <p>{error?.message}</p>
 
   return (
@@ -135,13 +137,7 @@ const OrdersLive = () => {
       <button type="button" onClick={close}>Disconnect</button>
     </div>
   )
-}
-
-const App = () => (
-  <FetchProvider client={api}>
-    <OrdersLive />
-  </FetchProvider>
-)`
+}`
 </script>
 
 <template>
@@ -151,8 +147,8 @@ const App = () => (
         <p class="status-playground-eyebrow">Live demo · useSse</p>
         <h2>React <code>useSse</code> + status</h2>
         <p class="status-playground-lead">
-          Same lifecycle as the hook:
-          <code>connecting</code> → <code>connected</code> →
+          Pass <code>{'{ client: api }'}</code> — no <code>FetchProvider</code> required.
+          Status: <code>connecting</code> → <code>connected</code> →
           <code>disconnected</code> / <code>error</code>.
         </p>
       </div>

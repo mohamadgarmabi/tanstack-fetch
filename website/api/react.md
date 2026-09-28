@@ -6,8 +6,8 @@ import { FetchProvider, useFetch, useSse } from 'tanstack-fetch/react'
 
 | Export                  | Role                                |
 | ----------------------- | ----------------------------------- |
-| `FetchProvider`         | Share client / config via context   |
-| `useFetch()`            | Read the client                     |
+| `FetchProvider`         | Optional shared client via context  |
+| `useFetch()`            | Read client from `FetchProvider`    |
 | `useSse(path, options)` | React SSE helper (needs SSE client) |
 
 ### `useSse` result
@@ -20,11 +20,18 @@ import { FetchProvider, useFetch, useSse } from 'tanstack-fetch/react'
 | `status` | `'connecting' \| 'connected' \| 'disconnected' \| 'error'` |
 | `close`  | Stop the stream                                            |
 
-### `useSse` example
+### `useSse` options
+
+| Option   | Role                                      |
+| -------- | ----------------------------------------- |
+| `client` | SSE client from `tanstack-fetch/sse` (**preferred** — no provider) |
+| `enabled` | When `false`, stays `disconnected`       |
+
+### Example (no provider)
 
 ```tsx
 import { createFetch } from 'tanstack-fetch/sse'
-import { FetchProvider, useSse } from 'tanstack-fetch/react'
+import { useSse } from 'tanstack-fetch/react'
 
 const api = createFetch({
   plugins: ['sse-resume'],
@@ -32,7 +39,9 @@ const api = createFetch({
 })
 
 const OrdersLive = () => {
-  const { data, status, error, close } = useSse<{ id: string }>('/orders/stream')
+  const { data, status, error, close } = useSse<{ id: string }>('/orders/stream', {
+    client: api,
+  })
 
   if (status === 'connecting') return <p>Connecting…</p>
   if (status === 'error') return <p>{error?.message}</p>
@@ -47,12 +56,6 @@ const OrdersLive = () => {
     </div>
   )
 }
-
-export const App = () => (
-  <FetchProvider client={api}>
-    <OrdersLive />
-  </FetchProvider>
-)
 ```
 
 Live demo: [SSE — useSse](/guide/sse#react-usesse) · [React guide](/guide/react#usesse)

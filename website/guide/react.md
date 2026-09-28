@@ -8,6 +8,8 @@ Optional helpers from `tanstack-fetch/react`.
 
 ## `FetchProvider`
 
+Optional — only if you want `useFetch()` from context. For SSE you can skip it and pass `client` to `useSse`.
+
 ```tsx
 import { FetchProvider, useFetch } from 'tanstack-fetch/react'
 import { useQuery } from '@tanstack/react-query'
@@ -51,31 +53,21 @@ const UsersPage = () => {
 }
 ```
 
-Or pass an existing client:
-
-```tsx
-const api = createFetch({ baseUrl: '…', getToken: … })
-
-<FetchProvider client={api}>
-  <App />
-</FetchProvider>
-```
-
 ## `useSse`
 
-Requires a client from **`tanstack-fetch/sse`** (not the HTTP-only entry).
+Create the client from **`tanstack-fetch/sse`**, then pass it as `{ client: api }`. **FetchProvider is not required.**
 
-`status`: `'connecting' | 'connected' | 'disconnected' | 'error'` — `isConnected` was removed in **1.4.1**.
+`status`: `'connecting' | 'connected' | 'disconnected' | 'error'`
 
 ### Live demo
 
 <UseSseDemo />
 
-### Full example
+### Recommended (no provider)
 
 ```tsx
 import { createFetch } from 'tanstack-fetch/sse'
-import { FetchProvider, useSse } from 'tanstack-fetch/react'
+import { useSse } from 'tanstack-fetch/react'
 
 type OrderEvent = { id: string; status: string }
 
@@ -87,15 +79,11 @@ const api = createFetch({
 
 const OrdersLive = () => {
   const { data, status, error, close } = useSse<OrderEvent>('/orders/stream', {
-    enabled: true,
-    onMessage: (payload) => {
-      console.log('tick', payload)
-    },
+    client: api,
+    onMessage: (payload) => console.log('tick', payload),
   })
 
-  if (status === 'error') {
-    return <p>Stream failed: {error?.message}</p>
-  }
+  if (status === 'error') return <p>Stream failed: {error?.message}</p>
 
   return (
     <div>
@@ -107,12 +95,10 @@ const OrdersLive = () => {
     </div>
   )
 }
-
-const App = () => (
-  <FetchProvider client={api}>
-    <OrdersLive />
-  </FetchProvider>
-)
 ```
 
-Cloneable app: [`examples/sse-live`](https://github.com/mohamadgarmabi/tanstack-fetch/tree/main/examples/sse-live) · also [SSE guide](./sse)
+### Optional: via `FetchProvider`
+
+If the tree already has `<FetchProvider client={api}>`, you can omit `client` and `useSse` reads it from context.
+
+Cloneable app: [`examples/sse-live`](https://github.com/mohamadgarmabi/tanstack-fetch/tree/main/examples/sse-live) · [SSE guide](./sse)

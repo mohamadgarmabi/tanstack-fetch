@@ -1,6 +1,6 @@
 # Example: SSE live feed
 
-Uses `tanstack-fetch/sse` + `FetchProvider` + `useSse`.
+Uses `tanstack-fetch/sse` + `useSse({ client })` — **no FetchProvider required**.
 
 ## Install
 
@@ -11,6 +11,5 @@ npm install tanstack-fetch react
 ## Files
 
 - [`src/lib/api.ts`](./src/lib/api.ts) — client from `tanstack-fetch/sse`
-- [`src/main.tsx`](./src/main.tsx) — wrap with `FetchProvider`
-- [`src/sse-live.hook.ts`](./src/sse-live.hook.ts) — `useSse` + event list
+- [`src/sse-live.hook.ts`](./src/sse-live.hook.ts) — `useSse({ client: api })` + event list
 - [`src/App.tsx`](./src/App.tsx) — UI only

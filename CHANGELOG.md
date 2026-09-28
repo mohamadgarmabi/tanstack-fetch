@@ -1,5 +1,15 @@
 # Changelog
 
+## 1.4.2
+
+### Fixes
+
+- **`useSse({ client })`**: pass the SSE client directly — **FetchProvider is no longer required**
+
+### Docs
+
+- React / SSE guides and `examples/sse-live` use `client: api` without a provider
+
 ## 1.4.1
 
 ### Fixes / Features

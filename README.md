@@ -1015,31 +1015,30 @@ stream.close()
 
 ### React — `useSse`
 
-Pass a client created from `tanstack-fetch/sse`:
+Pass a client from `tanstack-fetch/sse` — **FetchProvider is optional**:
 
 ```tsx
 import { createFetch } from 'tanstack-fetch/sse'
-import { FetchProvider, useSse } from 'tanstack-fetch/react'
+import { useSse } from 'tanstack-fetch/react'
 
 const api = createFetch({
   baseUrl: import.meta.env.VITE_API_URL,
   plugins: ['sse-resume'],
 })
 
-const App = () => (
-  <FetchProvider client={api}>
-    <OrdersLive />
-  </FetchProvider>
-)
-
 const OrdersLive = () => {
-  const { data, status, error } = useSse<OrderEvent>('/orders/stream')
+  const { data, status, error, close } = useSse<OrderEvent>('/orders/stream', {
+    client: api,
+  })
 
   if (error || status === 'error') return <p>Stream failed</p>
   return (
     <p>
       {status === 'connected' ? 'Live' : status === 'connecting' ? 'Connecting…' : status}{' '}
       {data?.status}
+      <button type="button" onClick={close}>
+        Stop
+      </button>
     </p>
   )
 }

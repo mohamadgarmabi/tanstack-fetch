@@ -13,7 +13,9 @@ Start the stream — real **`tanstack-fetch/sse`** against a mock `text/event-st
 
 ## React `useSse`
 
-Same client with **`status`**: `connecting` | `connected` | `disconnected` | `error`.
+Pass `{ client: api }` — **FetchProvider is optional**.
+
+`status`: `connecting` | `connected` | `disconnected` | `error`.
 
 <UseSseDemo />
 
@@ -21,7 +23,7 @@ Same client with **`status`**: `connecting` | `connected` | `disconnected` | `er
 
 ```tsx
 import { createFetch } from 'tanstack-fetch/sse'
-import { FetchProvider, useSse } from 'tanstack-fetch/react'
+import { useSse } from 'tanstack-fetch/react'
 
 const api = createFetch({
   plugins: ['sse-resume'],
@@ -29,7 +31,9 @@ const api = createFetch({
 })
 
 const OrdersLive = () => {
-  const { data, status, error, close } = useSse<OrderEvent>('/orders/stream')
+  const { data, status, error, close } = useSse<OrderEvent>('/orders/stream', {
+    client: api,
+  })
 
   if (status === 'error') return <p>{error?.message}</p>
 
@@ -43,12 +47,6 @@ const OrdersLive = () => {
     </div>
   )
 }
-
-const App = () => (
-  <FetchProvider client={api}>
-    <OrdersLive />
-  </FetchProvider>
-)
 ```
 
 Guide: [SSE](/guide/sse) · [React](/guide/react#usesse) · example: [`examples/sse-live`](https://github.com/mohamadgarmabi/tanstack-fetch/tree/main/examples/sse-live)

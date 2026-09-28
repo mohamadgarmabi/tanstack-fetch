@@ -5,7 +5,7 @@ import { CHANGELOG_URL, GITHUB_URL, INSTALL_COMMANDS } from './home.content'
 import { useNpmPackageStats } from '../composables/use-npm-stats'
 
 const { pkg } = useNpmPackageStats('tanstack-fetch')
-const releaseVersion = computed(() => `v${pkg.value?.version ?? '1.4.1'}`)
+const releaseVersion = computed(() => `v${pkg.value?.version ?? '1.4.2'}`)
 
 const activeId = ref<(typeof INSTALL_COMMANDS)[number]['id']>('npm')
 const copied = ref(false)

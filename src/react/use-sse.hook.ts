@@ -1,9 +1,11 @@
-import { useEffect, useRef, useState } from 'react'
+import { useContext, useEffect, useRef, useState } from 'react'
 import { isFetchError } from 'tanstack-fetch'
 import type { FetchError, FetchClient, SseEvent, SseStatus, WithPathParams } from 'tanstack-fetch'
-import { useFetch } from './fetch-provider.hook'
+import { FetchContext } from './fetch-provider.hook'
 
 type UseSseOptionsBase<T> = {
+  /** SSE client from `tanstack-fetch/sse`. Prefer this over FetchProvider. */
+  client?: FetchClient
   enabled?: boolean
   lastEventId?: string
   query?: Record<string, string | number | boolean | undefined | null>
@@ -32,7 +34,8 @@ const useSse = <T, TPath extends string = string>(
   path: TPath,
   options: UseSseOptions<T, TPath> = {} as UseSseOptions<T, TPath>,
 ): UseSseResult<T> => {
-  const api = useFetch()
+  const contextClient = useContext(FetchContext)
+  const api = options.client ?? contextClient
   const [data, setData] = useState<T | undefined>(undefined)
   const [event, setEvent] = useState<SseEvent<T> | undefined>(undefined)
   const [error, setError] = useState<FetchError | Error | undefined>(undefined)
@@ -53,7 +56,7 @@ const useSse = <T, TPath extends string = string>(
       setStatus('error')
       setError(
         new Error(
-          'tanstack-fetch: useSse() needs a client from "tanstack-fetch/sse" (pass client to FetchProvider)',
+          'tanstack-fetch: useSse() needs a client from "tanstack-fetch/sse" — pass { client: api } or wrap with <FetchProvider client={api}>',
         ),
       )
       return
