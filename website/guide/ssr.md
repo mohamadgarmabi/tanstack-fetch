@@ -31,7 +31,7 @@ import { usersQueryOptions } from '@/queries/users'
 
 export default async function Page() {
   const queryClient = new QueryClient()
-  await queryClient.prefetchQuery(usersQueryOptions)
+  await queryClient.query(usersQueryOptions)
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>
       <UsersClient />

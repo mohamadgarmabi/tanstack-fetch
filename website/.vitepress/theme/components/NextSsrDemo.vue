@@ -86,7 +86,7 @@ const createServerApi = async () =>
     }),
   })
 
-await queryClient.prefetchQuery({
+await queryClient.query({
   queryKey: ['users'],
   queryFn: async () => (await createServerApi()).get('/users'),
 })`
