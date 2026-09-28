@@ -1,5 +1,6 @@
 {
   "name": "tanstack-fetch-docs",
+  "version": "1.4.2",
   "private": true,
   "type": "module",
   "scripts": {

@@ -1,34 +1,34 @@
 {
-  "updatedAt": "2026-09-27T09:27:23.075Z",
+  "updatedAt": "2026-09-28T14:49:57.521Z",
   "author": "Mohammad Garmabi",
   "npmUser": "mohammad.garmabi",
   "packages": [
     {
       "name": "tanstack-fetch",
-      "version": "1.4.0",
-      "weekly": 847,
-      "monthly": 1524,
+      "version": "1.4.2",
+      "weekly": 445,
+      "monthly": 1721,
       "description": "React Query / TanStack Query fetch client — typed errors, AbortSignal, SSR, SSE, upload. Lightweight axios/ky alternativ"
     },
     {
       "name": "vite-plugin-react-splash",
       "version": "1.1.0",
-      "weekly": 261,
-      "monthly": 694,
+      "weekly": 257,
+      "monthly": 733,
       "description": "Fast Vite splash screen plugin for React PWAs — critical CSS for better FCP/LCP, progress API, prefers-reduced-motion, w"
     },
     {
       "name": "url-validation-query",
       "version": "0.0.17",
-      "weekly": 17,
+      "weekly": 16,
       "monthly": 65,
       "description": "**URL Validation Query** URL Validation Query is a utility library providing a range of functions for managing query str"
     },
     {
       "name": "sse-shared-worker-react-hook",
       "version": "1.0.19",
-      "weekly": 4,
-      "monthly": 45,
+      "weekly": 27,
+      "monthly": 66,
       "description": "Type-safe Server-Sent Events (SSE) hook for React with token authentication and retry logic"
     },
     {
@@ -41,22 +41,22 @@
     {
       "name": "react-performanalyzer",
       "version": "0.0.7",
-      "weekly": 10,
+      "weekly": 9,
       "monthly": 26,
       "description": "A comprehensive React performance analysis tool that checks for memory leaks, performance issues, and code quality probl"
     },
     {
       "name": "sse-crossframework",
       "version": "1.0.2",
-      "weekly": 0,
-      "monthly": 17,
+      "weekly": 8,
+      "monthly": 24,
       "description": "Framework-agnostic SSE toolkit with React, Vue, and Solid adapters"
     },
     {
       "name": "image-auth",
       "version": "0.0.16",
-      "weekly": 8,
-      "monthly": 40,
+      "weekly": 7,
+      "monthly": 38,
       "description": "To install the package, you can use npm or yarn:"
     },
     {
@@ -75,7 +75,7 @@
     }
   ],
   "totals": {
-    "weekly": 1161,
-    "monthly": 2470
+    "weekly": 783,
+    "monthly": 2732
   }
 }
