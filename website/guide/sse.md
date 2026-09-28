@@ -38,6 +38,10 @@ for await (const event of api.sse<OrderEvent>('/orders/stream', { signal })) {
 
 ## React `useSse`
 
+### Live demo
+
+<UseSseDemo />
+
 ```tsx
 import { createFetch } from 'tanstack-fetch/sse'
 import { FetchProvider, useSse } from 'tanstack-fetch/react'
@@ -48,13 +52,16 @@ const LiveFeed = () => {
   const { data, status, error, close } = useSse<OrderEvent>('/orders/stream')
 
   // status: 'connecting' | 'connected' | 'disconnected' | 'error'
+  if (status === 'error') return <p>{error?.message}</p>
+
   return (
-    <p>
-      {status} {data?.id}
+    <div>
+      <p>{status}</p>
+      <p>{data?.id}</p>
       <button type="button" onClick={close}>
         Stop
       </button>
-    </p>
+    </div>
   )
 }
 

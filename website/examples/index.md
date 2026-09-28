@@ -26,6 +26,8 @@ These widgets run **`createFetch` in your browser** (mock `fetch` / streams) —
 
 <SseDemo />
 
+<UseSseDemo />
+
 ## Copy-paste apps
 
 Clone the repo and open a folder under [`examples/`](https://github.com/mohamadgarmabi/tanstack-fetch/tree/main/examples):

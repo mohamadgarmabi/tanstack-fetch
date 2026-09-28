@@ -63,4 +63,56 @@ const api = createFetch({ baseUrl: '…', getToken: … })
 
 ## `useSse`
 
-Requires a client from `tanstack-fetch/sse`. Returns `status`: `connecting` | `connected` | `disconnected` | `error` (no `isConnected`). See [SSE](./sse).
+Requires a client from **`tanstack-fetch/sse`** (not the HTTP-only entry).
+
+`status`: `'connecting' | 'connected' | 'disconnected' | 'error'` — `isConnected` was removed in **1.4.1**.
+
+### Live demo
+
+<UseSseDemo />
+
+### Full example
+
+```tsx
+import { createFetch } from 'tanstack-fetch/sse'
+import { FetchProvider, useSse } from 'tanstack-fetch/react'
+
+type OrderEvent = { id: string; status: string }
+
+const api = createFetch({
+  baseUrl: import.meta.env.VITE_API_URL,
+  plugins: ['sse-resume'],
+  getToken: () => localStorage.getItem('access_token'),
+})
+
+const OrdersLive = () => {
+  const { data, status, error, close } = useSse<OrderEvent>('/orders/stream', {
+    enabled: true,
+    onMessage: (payload) => {
+      console.log('tick', payload)
+    },
+  })
+
+  if (status === 'error') {
+    return <p>Stream failed: {error?.message}</p>
+  }
+
+  return (
+    <div>
+      <p>status: {status}</p>
+      <p>{data ? `${data.id} · ${data.status}` : 'waiting…'}</p>
+      <button type="button" onClick={close} disabled={status === 'disconnected'}>
+        Disconnect
+      </button>
+    </div>
+  )
+}
+
+const App = () => (
+  <FetchProvider client={api}>
+    <OrdersLive />
+  </FetchProvider>
+)
+```
+
+Cloneable app: [`examples/sse-live`](https://github.com/mohamadgarmabi/tanstack-fetch/tree/main/examples/sse-live) · also [SSE guide](./sse)

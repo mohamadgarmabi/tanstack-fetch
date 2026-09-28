@@ -10,6 +10,7 @@ import ReactQueryDemo from './components/ReactQueryDemo.vue'
 import NextSsrDemo from './components/NextSsrDemo.vue'
 import UploadDemo from './components/UploadDemo.vue'
 import SseDemo from './components/SseDemo.vue'
+import UseSseDemo from './components/UseSseDemo.vue'
 import DevtoolsDemo from './components/DevtoolsDemo.vue'
 import InstallTabs from './components/InstallTabs.vue'
 import PackagesFeatured from './components/PackagesFeatured.vue'
@@ -30,6 +31,7 @@ const theme: Theme = {
     app.component('NextSsrDemo', NextSsrDemo)
     app.component('UploadDemo', UploadDemo)
     app.component('SseDemo', SseDemo)
+    app.component('UseSseDemo', UseSseDemo)
     app.component('DevtoolsDemo', DevtoolsDemo)
     app.component('PackagesFeatured', PackagesFeatured)
     app.component('InstallTabs', InstallTabs)
