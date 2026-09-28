@@ -48,7 +48,7 @@ import type {
   HttpResult,
   OkResult,
 } from './result.type'
-import type { SseEvent, SseHandlers, SseSubscription } from './sse.type'
+import type { SseEvent, SseHandlers, SseStatus, SseSubscription } from './sse.type'
 import type {
   ExtractPathParamKeys,
   PathParamsOf,
@@ -102,6 +102,7 @@ export type {
   OkResult,
   SseEvent,
   SseHandlers,
+  SseStatus,
   SseSubscription,
   ExtractPathParamKeys,
   PathParamsOf,

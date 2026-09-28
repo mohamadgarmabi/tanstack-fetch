@@ -1033,12 +1033,13 @@ const App = () => (
 )
 
 const OrdersLive = () => {
-  const { data, isConnected, error } = useSse<OrderEvent>('/orders/stream')
+  const { data, status, error } = useSse<OrderEvent>('/orders/stream')
 
-  if (error) return <p>Stream failed</p>
+  if (error || status === 'error') return <p>Stream failed</p>
   return (
     <p>
-      {isConnected ? 'Live' : 'Connecting…'} {data?.status}
+      {status === 'connected' ? 'Live' : status === 'connecting' ? 'Connecting…' : status}{' '}
+      {data?.status}
     </p>
   )
 }

@@ -100,6 +100,7 @@ const createSseIterator = <T>(args: SendSseArgs): AsyncIterator<SseEvent<T>> => 
     }
     openContext = context
     await runHook(interceptors, (item) => item.onSseOpen, context)
+    args.onStreamOpen?.()
     reader = response.body.pipeThrough(new TextDecoderStream()).getReader()
     return true
   }

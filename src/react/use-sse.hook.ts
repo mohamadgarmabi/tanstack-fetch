@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { isFetchError } from 'tanstack-fetch'
-import type { FetchError, FetchClient, SseEvent, WithPathParams } from 'tanstack-fetch'
+import type { FetchError, FetchClient, SseEvent, SseStatus, WithPathParams } from 'tanstack-fetch'
 import { useFetch } from './fetch-provider.hook'
 
 type UseSseOptionsBase<T> = {
@@ -18,7 +18,8 @@ type UseSseResult<T> = {
   data: T | undefined
   event: SseEvent<T> | undefined
   error: FetchError | Error | undefined
-  isConnected: boolean
+  /** `connecting` → `connected` → `disconnected` | `error` */
+  status: SseStatus
   close: () => void
 }
 
@@ -35,7 +36,7 @@ const useSse = <T, TPath extends string = string>(
   const [data, setData] = useState<T | undefined>(undefined)
   const [event, setEvent] = useState<SseEvent<T> | undefined>(undefined)
   const [error, setError] = useState<FetchError | Error | undefined>(undefined)
-  const [isConnected, setIsConnected] = useState(false)
+  const [status, setStatus] = useState<SseStatus>('disconnected')
   const closeRef = useRef<(() => void) | null>(null)
   const optionsRef = useRef(options)
   optionsRef.current = options
@@ -45,9 +46,11 @@ const useSse = <T, TPath extends string = string>(
 
   useEffect(() => {
     if (options.enabled === false) {
+      setStatus('disconnected')
       return
     }
     if (!hasSse(api)) {
+      setStatus('error')
       setError(
         new Error(
           'tanstack-fetch: useSse() needs a client from "tanstack-fetch/sse" (pass client to FetchProvider)',
@@ -57,10 +60,11 @@ const useSse = <T, TPath extends string = string>(
     }
 
     setError(undefined)
+    setStatus('connecting')
     const subscription = api.sse<T, TPath>(path, {
       ...(optionsRef.current as UseSseOptions<T, TPath>),
       lastEventId: optionsRef.current.lastEventId,
-      onOpen: () => setIsConnected(true),
+      onOpen: () => setStatus('connected'),
       onMessage: (message: T, nextEvent: SseEvent<T>) => {
         setData(message)
         setEvent(nextEvent)
@@ -70,13 +74,13 @@ const useSse = <T, TPath extends string = string>(
         optionsRef.current.onEvent?.(nextEvent)
       },
       onError: (nextError: unknown) => {
-        setIsConnected(false)
+        setStatus('error')
         const normalized =
           nextError instanceof Error ? nextError : new Error('SSE connection failed')
         setError(isFetchError(nextError) ? nextError : normalized)
         optionsRef.current.onError?.(nextError)
       },
-      onClose: () => setIsConnected(false),
+      onClose: () => setStatus('disconnected'),
     } as never)
 
     closeRef.current = subscription.close
@@ -84,7 +88,7 @@ const useSse = <T, TPath extends string = string>(
     return () => {
       subscription.close()
       closeRef.current = null
-      setIsConnected(false)
+      setStatus('disconnected')
     }
   }, [api, path, options.enabled, options.lastEventId, paramsKey, queryKey])
 
@@ -92,7 +96,7 @@ const useSse = <T, TPath extends string = string>(
     data,
     event,
     error,
-    isConnected,
+    status,
     close: () => closeRef.current?.(),
   }
 }

@@ -15,6 +15,8 @@ type SendSseArgs = {
   requestOptions?: RequestOptions
   client: CreateFetchOptions
   interceptors: HttpInterceptor[]
+  /** Called after the SSE response opens successfully. */
+  onStreamOpen?: () => void
 }
 
 const resolveIncoming = async (

@@ -55,10 +55,10 @@ const listenSse = <T>(args: SendSseArgs, handlers: SseHandlers<T>): SseSubscript
 
   const run = async () => {
     try {
-      handlers.onOpen?.()
       for await (const event of sendSse<T>({
         ...args,
         requestOptions: { ...args.requestOptions, signal },
+        onStreamOpen: () => handlers.onOpen?.(),
       })) {
         handlers.onEvent?.(event)
         handlers.onMessage?.(event.data, event)

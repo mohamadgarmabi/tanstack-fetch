@@ -44,9 +44,25 @@ import { FetchProvider, useSse } from 'tanstack-fetch/react'
 
 const api = createFetch({ plugins: ['sse-resume'] })
 
-<FetchProvider client={api}>
-  <LiveFeed />
-</FetchProvider>
+const LiveFeed = () => {
+  const { data, status, error, close } = useSse<OrderEvent>('/orders/stream')
+
+  // status: 'connecting' | 'connected' | 'disconnected' | 'error'
+  return (
+    <p>
+      {status} {data?.id}
+      <button type="button" onClick={close}>
+        Stop
+      </button>
+    </p>
+  )
+}
+
+const App = () => (
+  <FetchProvider client={api}>
+    <LiveFeed />
+  </FetchProvider>
+)
 ```
 
 Example: [`examples/sse-live`](https://github.com/mohamadgarmabi/tanstack-fetch/tree/main/examples/sse-live)

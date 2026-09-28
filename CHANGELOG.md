@@ -1,5 +1,17 @@
 # Changelog
 
+## 1.4.1
+
+### Fixes / Features
+
+- **`useSse` status**: returns `status: 'connecting' | 'connected' | 'disconnected' | 'error'` instead of `isConnected`
+- **`SseStatus` type** exported from `tanstack-fetch` and `tanstack-fetch/react`
+- **`onOpen` timing**: fires when the SSE response is actually open (not when `subscribe` starts)
+
+### Docs
+
+- SSE / React guides and `examples/sse-live` updated for `status`
+
 ## 1.4.0
 
 ### Features

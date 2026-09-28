@@ -133,4 +133,28 @@ describe('tanstack-fetch sse', () => {
     expect(events).toHaveLength(1)
     expect(fetchImpl).toHaveBeenCalledTimes(1)
   })
+
+  it('fires onOpen after the stream response opens', async () => {
+    const fetchImpl = vi.fn().mockResolvedValue(
+      new Response(sseStream(['event: tick\ndata: {"n":1}\n\n']), {
+        status: 200,
+        headers: { 'content-type': 'text/event-stream' },
+      }),
+    )
+    const http = createSseTestClient(fetchImpl)
+    const order: string[] = []
+
+    await new Promise<void>((resolve, reject) => {
+      http.sse<{ n: number }>('/events', {
+        onOpen: () => order.push('open'),
+        onMessage: () => order.push('message'),
+        onClose: () => resolve(),
+        onError: reject,
+      })
+    })
+
+    expect(order[0]).toBe('open')
+    expect(order).toContain('message')
+    expect(fetchImpl).toHaveBeenCalled()
+  })
 })

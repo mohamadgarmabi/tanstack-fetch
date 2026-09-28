@@ -25,7 +25,7 @@ const stats = computed(() => [
     href: NPM_URL,
   },
   {
-    value: `v${pkg.value?.version ?? '1.4.0'}`,
+    value: `v${pkg.value?.version ?? '1.4.1'}`,
     label: 'current release',
     href: CHANGELOG_URL,
   },

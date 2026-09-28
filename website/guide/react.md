@@ -63,4 +63,4 @@ const api = createFetch({ baseUrl: '…', getToken: … })
 
 ## `useSse`
 
-Requires a client from `tanstack-fetch/sse`. See [SSE](./sse).
+Requires a client from `tanstack-fetch/sse`. Returns `status`: `connecting` | `connected` | `disconnected` | `error` (no `isConnected`). See [SSE](./sse).

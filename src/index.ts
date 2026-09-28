@@ -29,6 +29,7 @@ export type {
   RequestOptions,
   SseEvent,
   SseHandlers,
+  SseStatus,
   SseSubscription,
   SseCallOptions,
   AuthConfig,

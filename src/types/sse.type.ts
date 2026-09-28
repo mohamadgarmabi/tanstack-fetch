@@ -1,3 +1,5 @@
+type SseStatus = 'connecting' | 'connected' | 'disconnected' | 'error'
+
 type SseEvent<T = unknown> = {
   event?: string
   data: T
@@ -15,9 +17,10 @@ type SseHandlers<T = unknown> = {
   onMessage?: (data: T, event: SseEvent<T>) => void
   /** Full SSE event (`event`, `data`, `id`). */
   onEvent?: (event: SseEvent<T>) => void
+  /** Fired when the stream is open (response OK), not when subscribe() is called. */
   onOpen?: () => void
   onError?: (error: unknown) => void
   onClose?: () => void
 }
 
-export type { SseEvent, SseSubscription, SseHandlers }
+export type { SseStatus, SseEvent, SseSubscription, SseHandlers }

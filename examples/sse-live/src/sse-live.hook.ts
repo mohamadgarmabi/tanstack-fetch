@@ -2,18 +2,25 @@ import { useState } from 'react'
 import { useSse } from 'tanstack-fetch/react'
 import type { OrderEvent } from './sse-live.type'
 
+const STATUS_LABEL: Record<string, string> = {
+  connecting: 'Connecting…',
+  connected: 'Live',
+  disconnected: 'Disconnected',
+  error: 'Error',
+}
+
 const useSseLiveApp = () => {
   const [events, setEvents] = useState<OrderEvent[]>([])
-  const { isConnected, error, close } = useSse<OrderEvent>('/orders/stream', {
+  const { status, error, close } = useSse<OrderEvent>('/orders/stream', {
     onMessage: (data) => {
       setEvents((current) => [data, ...current].slice(0, 20))
     },
   })
 
   const errorMessage = error ? error.message : ''
-  const statusLabel = isConnected ? 'Live' : 'Connecting…'
+  const statusLabel = STATUS_LABEL[status] ?? status
 
-  return { events, errorMessage, statusLabel, close }
+  return { events, errorMessage, statusLabel, status, close }
 }
 
 export { useSseLiveApp }
