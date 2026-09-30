@@ -208,6 +208,7 @@ const config = defineConfig({
       { text: 'Comparison', link: '/guide/comparison' },
       { text: 'Playground', link: '/examples/playground', activeMatch: '/examples/' },
       { text: 'Skill', link: '/guide/skill' },
+      { text: 'Blog', link: '/blog/', activeMatch: '/blog/' },
       {
         text: 'More',
         items: [
@@ -274,6 +275,15 @@ const config = defineConfig({
             { text: 'Refresh token', link: '/recipes/refresh-token' },
             { text: 'Rate limit (429)', link: '/recipes/rate-limit' },
             { text: 'tRPC + Router / Start', link: '/recipes/trpc' },
+          ],
+        },
+      ],
+      '/blog/': [
+        {
+          text: 'Blog',
+          items: [
+            { text: 'All posts', link: '/blog/' },
+            { text: 'tanstack-fetch 1.3 → 1.4.2', link: '/blog/tanstack-fetch-1-4' },
           ],
         },
       ],

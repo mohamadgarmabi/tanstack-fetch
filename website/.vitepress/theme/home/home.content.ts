@@ -15,6 +15,7 @@ const CHANGELOG_URL = `${GITHUB_URL}/blob/main/CHANGELOG.md`
 const NPM_URL = 'https://www.npmjs.com/package/tanstack-fetch'
 const AUTHOR_URL = 'https://github.com/mohamadgarmabi'
 const LINKEDIN_URL = 'https://www.linkedin.com/in/mohammad-garmabi/'
+const RELEASE_POST_URL = '/blog/tanstack-fetch-1-4'
 const STACKBLITZ_BASE =
   'https://stackblitz.com/github/mohamadgarmabi/tanstack-fetch/tree/main/examples'
 
@@ -212,6 +213,41 @@ onUnauthorized → /login`,
     },
   },
   {
+    id: 'devtools',
+    label: 'DevTools',
+    lead: 'One line adds a dock for HTTP, SSE, SSR, and tRPC: status, duration, attempts, and the file that sent each request.',
+    files: [
+      {
+        name: 'api.ts',
+        code: `import { createFetch } from 'tanstack-fetch'
+import { setupDevtools } from 'tanstack-fetch/devtools'
+
+export const api = createFetch({
+  baseUrl: import.meta.env.VITE_API_URL,
+  plugins: ['trace'],
+})
+
+setupDevtools(api)
+
+// toggle: Alt+Shift+F (macOS: ⌥⇧F)`,
+      },
+    ],
+    output: {
+      name: 'dock',
+      code: `HTTP  GET  /api/profile  200  143ms
+      2 attempts · profile.hook.ts
+
+HTTP  POST /api/orders   500  320ms
+      3 attempts · CreateOrder.tsx
+
+SSE   GET  /api/stream   live → success
+tRPC  user.list          200  112ms
+
+// click a call-graph node →
+// open in Cursor / Zed / VS Code`,
+    },
+  },
+  {
     id: 'ssr',
     label: 'SSR',
     lead: 'Forward the incoming cookie jar on the server. The browser client stays the same.',
@@ -382,6 +418,10 @@ const features: FeatureItem[] = [
     text: 'createRefreshTokenInterceptor: before (time) and after (first 401), single-flight.',
   },
   {
+    title: 'Request DevTools',
+    text: 'setupDevtools(api) shows HTTP, SSE, SSR, and tRPC with attempts, timing, and caller file.',
+  },
+  {
     title: 'About 3.5KB',
     text: 'The HTTP entry is the core. SSE, React, plugins, and tRPC are separate imports.',
   },
@@ -452,6 +492,13 @@ const packages: PackageItem[] = [
     href: '/guide/trpc',
   },
   {
+    title: 'DevTools',
+    spec: 'tanstack-fetch/devtools',
+    text: 'A request dock for HTTP, SSE, SSR, and tRPC.',
+    tags: ['~5.5KB'],
+    href: '/examples/devtools',
+  },
+  {
     title: 'OpenAPI CLI',
     spec: 'tanstack-fetch generate',
     text: 'Turn an OpenAPI document into a typed client.',
@@ -514,6 +561,14 @@ const compareRows: CompareRow[] = [
     href: '/guide/upload',
     fetch: 'yes',
     axios: 'yes',
+    ky: 'no',
+    ofetch: 'no',
+  },
+  {
+    feature: 'Request DevTools for HTTP, SSE, SSR, tRPC',
+    href: '/examples/devtools',
+    fetch: 'yes',
+    axios: 'no',
     ky: 'no',
     ofetch: 'no',
   },
@@ -655,6 +710,7 @@ const footerColumns: FooterColumn[] = [
       { label: 'Next.js SSR', href: '/examples/next-ssr' },
       { label: 'Upload', href: '/examples/upload' },
       { label: 'SSE', href: '/examples/sse' },
+      { label: 'DevTools', href: '/examples/devtools' },
     ],
   },
   {
@@ -662,6 +718,7 @@ const footerColumns: FooterColumn[] = [
     links: [
       { label: 'GitHub', href: GITHUB_URL },
       { label: 'npm', href: NPM_URL },
+      { label: 'Blog', href: '/blog/' },
       { label: 'Author', href: '/author' },
       { label: 'Packages', href: '/packages' },
       { label: 'Changelog', href: CHANGELOG_URL },
@@ -677,6 +734,7 @@ export {
   INSTALL_COMMANDS,
   LINKEDIN_URL,
   NPM_URL,
+  RELEASE_POST_URL,
   compareRows,
   features,
   footerColumns,

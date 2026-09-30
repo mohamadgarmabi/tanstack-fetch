@@ -815,3 +815,9 @@
   justify-content: flex-start;
   margin: 0.85rem 0 0.35rem;
 }
+
+.blog-meta {
+  margin-top: -0.5rem;
+  color: var(--vp-c-text-2);
+  font-size: 0.9rem;
+}

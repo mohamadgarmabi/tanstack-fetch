@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue'
 import { withBase } from 'vitepress'
-import { CHANGELOG_URL, GITHUB_URL, INSTALL_COMMANDS } from './home.content'
+import { GITHUB_URL, INSTALL_COMMANDS, RELEASE_POST_URL } from './home.content'
 import { useNpmPackageStats } from '../composables/use-npm-stats'
 
 const { pkg } = useNpmPackageStats('tanstack-fetch')
@@ -30,11 +30,11 @@ const copyInstall = async () => {
 
 <template>
   <header class="home-hero">
-    <a class="home-badge" :href="CHANGELOG_URL" target="_blank" rel="noopener">
+    <a class="home-badge" :href="withBase(RELEASE_POST_URL)">
       <span>{{ releaseVersion }}</span>
-      Changelog on GitHub
+      New: DevTools + automatic token refresh
       <svg viewBox="0 0 16 16" aria-hidden="true">
-        <path d="M6 3h7v7M13 3 3 13" />
+        <path d="M3 8h10M9 4l4 4-4 4" />
       </svg>
     </a>
 
@@ -42,8 +42,8 @@ const copyInstall = async () => {
 
     <p class="home-hero-lead">
       Write the request once. tanstack-fetch returns the data, throws a typed error, and honors
-      AbortSignal, so it drops straight into TanStack Query. SSR, SSE, upload, refresh-token, and
-      tRPC stay optional.
+      AbortSignal, so it drops straight into TanStack Query. SSR, SSE, upload, refresh-token, tRPC,
+      and DevTools stay optional.
     </p>
 
     <div class="home-actions">

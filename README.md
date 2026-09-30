@@ -50,6 +50,16 @@ That’s it: returns data, throws `FetchError` on HTTP errors, honors Query’s 
 
 > Not an official TanStack package — built to match the `@tanstack/react-query` mental model.
 
+**Try it in the browser (no install):** [TanStack Query](https://stackblitz.com/github/mohamadgarmabi/tanstack-fetch/tree/main/examples/tanstack-query) · [Next.js SSR](https://stackblitz.com/github/mohamadgarmabi/tanstack-fetch/tree/main/examples/next-ssr) · [SSE](https://stackblitz.com/github/mohamadgarmabi/tanstack-fetch/tree/main/examples/sse-live) · [tRPC](https://stackblitz.com/github/mohamadgarmabi/tanstack-fetch/tree/main/examples/trpc) · [Auth / refresh](https://stackblitz.com/github/mohamadgarmabi/tanstack-fetch/tree/main/examples/auth-status) · [Live DevTools demo](https://mohamadgarmabi.github.io/tanstack-fetch/examples/devtools)
+
+## What's new (1.3 → 1.4.2)
+
+- **1.3.0: `createRefreshTokenInterceptor`**: refreshes before expiry or on the first `401`, sends a single refresh for parallel failures, then retries. [Recipe](./docs/recipes/refresh-token.md)
+- **1.4.0: DevTools**: `setupDevtools(api)` adds a request dock for HTTP, SSE, SSR and tRPC with status, duration, attempts and caller file. [Details](#devtools)
+- **1.4.1 / 1.4.2: `useSse`**: returns `status` (`connecting` / `connected` / `disconnected` / `error`) and no longer needs `FetchProvider`. **Breaking:** replace `isConnected` with `status === 'connected'`.
+
+Full write-up: [tanstack-fetch 1.3 → 1.4.2](https://mohamadgarmabi.github.io/tanstack-fetch/blog/tanstack-fetch-1-4) · [CHANGELOG](./CHANGELOG.md)
+
 ---
 
 ## Why tanstack-fetch
@@ -155,16 +165,18 @@ Full setup (Router loaders, TanStack Start SSR): [`docs/recipes/trpc.md`](./docs
 
 ## Compared to axios / ky / ofetch
 
-| Need                               | tanstack-fetch                                    |
-| ---------------------------------- | ------------------------------------------------- |
-| Drop into TanStack Query `queryFn` | Returns data, throws `FetchError`, takes `signal` |
-| Next.js SSR cookies                | `ssr-forward` plugin                              |
-| Interceptors without axios weight  | Named, ordered, ejectable plugins                 |
-| SSE with Authorization             | `tanstack-fetch/sse` (not `EventSource`)          |
-| File upload + progress             | `api.upload()` + `onUploadProgress`               |
-| Bundle                             | ~3.5KB gzip HTTP core                             |
+| Need                                | tanstack-fetch                                    |
+| ----------------------------------- | ------------------------------------------------- |
+| Drop into TanStack Query `queryFn`  | Returns data, throws `FetchError`, takes `signal` |
+| Next.js SSR cookies                 | `ssr-forward` plugin                              |
+| Interceptors without axios weight   | Named, ordered, ejectable plugins                 |
+| SSE with Authorization              | `tanstack-fetch/sse` (not `EventSource`)          |
+| File upload + progress              | `api.upload()` + `onUploadProgress`               |
+| Refresh token (before expiry + 401) | `createRefreshTokenInterceptor`, single-flight    |
+| Request DevTools                    | `setupDevtools(api)`: HTTP, SSE, SSR, tRPC        |
+| Bundle                              | ~3.5KB gzip HTTP core                             |
 
-**Recipes:** [refresh token on 401](./docs/recipes/refresh-token.md) · [examples](./examples) · [social post draft](./docs/social-post.md)
+**Recipes:** [refresh token on 401](./docs/recipes/refresh-token.md) · [examples](./examples)
 
 ---
 
@@ -1057,6 +1069,35 @@ for await (const event of api.sse<OrderEvent>('/orders/stream', { signal })) {
   event.id
 }
 ```
+
+---
+
+## DevTools
+
+A bottom dock that shows every request: HTTP, SSE, SSR and tRPC.
+
+```ts
+import { createFetch } from 'tanstack-fetch'
+import { setupDevtools } from 'tanstack-fetch/devtools'
+
+const api = createFetch({ plugins: ['trace'] })
+setupDevtools(api) // registers interceptor + mounts dock
+```
+
+Toggle with **Alt+Shift+F** (macOS: **⌥⇧F**).
+
+- **HTTP**: status, duration, attempts, and the caller file (e.g. `profile.hook.ts`)
+- **SSE**: event list and live state; the `onSseClose` hook marks a stream as finished
+- **SSR / tRPC**: server requests and tRPC calls show up too
+- **Call graph**: click a node to open the source in Cursor, Zed or VS Code
+
+Use `plugins: ['trace']` so each entry (and its retries) shares a stable `requestId`. Each section can be switched off:
+
+```ts
+setupDevtools(api, { http: true, sse: true, ssr: true, trpc: true, open: true })
+```
+
+Live demo: [mohamadgarmabi.github.io/tanstack-fetch/examples/devtools](https://mohamadgarmabi.github.io/tanstack-fetch/examples/devtools)
 
 ---
 
