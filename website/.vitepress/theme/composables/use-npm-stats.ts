@@ -41,6 +41,16 @@ const fetchJson = async <T>(url: string): Promise<T> => {
   return response.json() as Promise<T>
 }
 
+const compareSemver = (left: string, right: string) => {
+  const leftParts = left.split('.').map((part) => Number(part) || 0)
+  const rightParts = right.split('.').map((part) => Number(part) || 0)
+  for (let index = 0; index < 3; index += 1) {
+    const delta = (leftParts[index] ?? 0) - (rightParts[index] ?? 0)
+    if (delta !== 0) return delta
+  }
+  return 0
+}
+
 const fetchPackageRow = async (pkg: NpmPackageRow): Promise<NpmPackageRow> => {
   const [weekly, monthly, meta] = await Promise.all([
     fetchJson<DownloadsPoint>(`https://api.npmjs.org/downloads/point/last-week/${pkg.name}`),
@@ -48,9 +58,13 @@ const fetchPackageRow = async (pkg: NpmPackageRow): Promise<NpmPackageRow> => {
     fetchJson<RegistryMeta>(`https://registry.npmjs.org/${pkg.name}`),
   ])
 
+  const registryLatest = meta['dist-tags']?.latest ?? pkg.version
+  // Keep local snapshot when it is ahead of npm (pre-publish docs).
+  const version = compareSemver(pkg.version, registryLatest) > 0 ? pkg.version : registryLatest
+
   return {
     name: pkg.name,
-    version: meta['dist-tags']?.latest ?? pkg.version,
+    version,
     weekly: weekly.downloads ?? pkg.weekly,
     monthly: monthly.downloads ?? pkg.monthly,
     description: String(meta.description ?? pkg.description).slice(0, 120),

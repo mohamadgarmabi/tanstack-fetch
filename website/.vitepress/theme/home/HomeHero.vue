@@ -1,11 +1,9 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue'
 import { withBase } from 'vitepress'
-import { GITHUB_URL, INSTALL_COMMANDS, RELEASE_POST_URL } from './home.content'
-import { useNpmPackageStats } from '../composables/use-npm-stats'
+import { GITHUB_URL, INSTALL_COMMANDS, PACKAGE_VERSION, RELEASE_POST_URL } from './home.content'
 
-const { pkg } = useNpmPackageStats('tanstack-fetch')
-const releaseVersion = computed(() => `v${pkg.value?.version ?? '1.5.0'}`)
+const releaseVersion = `v${PACKAGE_VERSION}`
 
 const activeId = ref<(typeof INSTALL_COMMANDS)[number]['id']>('npm')
 const copied = ref(false)

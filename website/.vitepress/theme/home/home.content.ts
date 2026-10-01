@@ -9,7 +9,9 @@ import type {
   TestimonialItem,
   WhyItem,
 } from './home.type'
+import rootPackage from '../../../../package.json'
 
+const PACKAGE_VERSION = rootPackage.version as string
 const GITHUB_URL = 'https://github.com/mohamadgarmabi/tanstack-fetch'
 const CHANGELOG_URL = `${GITHUB_URL}/blob/main/CHANGELOG.md`
 const NPM_URL = 'https://www.npmjs.com/package/tanstack-fetch'
@@ -842,6 +844,7 @@ export {
   INSTALL_COMMANDS,
   LINKEDIN_URL,
   NPM_URL,
+  PACKAGE_VERSION,
   RELEASE_POST_URL,
   compareRows,
   features,

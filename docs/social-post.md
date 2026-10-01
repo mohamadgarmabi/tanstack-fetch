@@ -1,30 +1,29 @@
-# Social post draft — tanstack-fetch
+# Social posts — tanstack-fetch
 
-Use with `assets/tanstack-fetch-linkedin.gif` (or recreate via `scripts/make-linkedin-gif.py`).
+## 1.5.0 (Vue & Nuxt) — ready to publish
 
-## LinkedIn / X
+Cover: [`assets/blog-1-5-cover.jpg`](./assets/blog-1-5-cover.jpg)
+
+| Platform | File |
+| --- | --- |
+| Medium | [`social/1.5.0-medium.md`](./social/1.5.0-medium.md) |
+| Dev.to | [`social/1.5.0-devto.md`](./social/1.5.0-devto.md) |
+| [Hashnode](https://hashnode.com/) | [`social/1.5.0-hashnode.md`](./social/1.5.0-hashnode.md) |
+| ویرگول (فارسی) | [`social/1.5.0-virgool.md`](./social/1.5.0-virgool.md) |
+
+Index: [`social/README.md`](./social/README.md)
+
+---
+
+## LinkedIn / X (short)
 
 ```
-Shipped tanstack-fetch — a typed Fetch client designed for TanStack Query (React Query).
+Shipped tanstack-fetch 1.5.0 — Vue & Nuxt helpers (createFetchPlugin, useFetch, useSse).
 
-Tiny HTTP core (4.81KB gzip) · typed errors · 401/403/404/5xx · AbortSignal · SSE · SSR · plugins · React · Vue
+Same Query mental model: return data, throw FetchError, honor AbortSignal.
 
-Start simple:
-api.get('/users', { signal })
-
-Go advanced when you need it: auth, status handlers, SSR cookies, interceptors.
-
+📘 https://mohamadgarmabi.github.io/tanstack-fetch/blog/tanstack-fetch-1-5
 📦 https://www.npmjs.com/package/tanstack-fetch
-⭐ https://github.com/mohamadgarmabi/tanstack-fetch
-📘 Example: examples/tanstack-query
 
-Not an official TanStack package — shaped for the same mental model.
-
-#TypeScript #React #TanStackQuery #ReactQuery #OpenSource #npm
+#TypeScript #Vue #Nuxt #TanStackQuery #OpenSource
 ```
-
-## Dev.to / Hashnode title ideas
-
-- Build a TanStack Query–ready fetch client in TypeScript
-- Axios alternative for React Query: AbortSignal, typed errors, SSR
-- Stop rewriting fetch wrappers for every queryFn

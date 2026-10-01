@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import { withBase } from 'vitepress'
-import { CHANGELOG_URL, NPM_URL, integrations, runtimes } from './home.content'
+import { CHANGELOG_URL, NPM_URL, PACKAGE_VERSION, integrations, runtimes } from './home.content'
 import { formatCount, useNpmPackageStats } from '../composables/use-npm-stats'
 
 const { pkg } = useNpmPackageStats('tanstack-fetch')
@@ -25,7 +25,7 @@ const stats = computed(() => [
     href: NPM_URL,
   },
   {
-    value: `v${pkg.value?.version ?? '1.5.0'}`,
+    value: `v${PACKAGE_VERSION}`,
     label: 'current release',
     href: CHANGELOG_URL,
   },
