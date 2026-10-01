@@ -88,13 +88,15 @@ export const api = createFetch({
 
 ```ts
 import { createFetch, isFetchError } from 'tanstack-fetch'
+import type { NoParams } from 'tanstack-fetch'
 
 const api = createFetch({
   baseUrl: import.meta.env.VITE_API_URL,
   getToken: () => localStorage.getItem('access_token'),
 })
 
-const user = await api.get<User, '/users/:id'>('/users/:id', { params: { id: '1' } })
+const user = await api.get<User, { id: string | number }>('/users/:id', { params: { id: '1' } })
+await api.post<User, NoParams, { name: string }>('/users', { body: { name: 'Ada' } })
 
 try {
   await api.get('/missing')
@@ -102,6 +104,13 @@ try {
   if (isFetchError(error)) console.log(error.status, error.message)
 }
 ```
+
+::: tip Types
+
+- No generics → `params` from the URL (`:id` / `{id}`)
+- `<Data, Params>` → response + params map (path must contain those keys)
+- `post` / `put` / `patch`: optional third generic for `body` (`NoParams` skips params)
+  :::
 
 ## Next steps
 

@@ -33,7 +33,8 @@ export const usersQueryOptions = queryOptions({
 export const userQueryOptions = (id: string) =>
   queryOptions({
     queryKey: ['users', id],
-    queryFn: ({ signal }) => api.get<User, '/users/:id'>('/users/:id', { params: { id }, signal }),
+    queryFn: ({ signal }) =>
+      api.get<User, { id: string | number }>('/users/:id', { params: { id }, signal }),
   })
 ```
 
@@ -51,7 +52,7 @@ const { data, error, isPending } = useQuery({
   queryKey: ['users', userId],
   enabled: Boolean(userId),
   queryFn: ({ signal }) =>
-    api.get<User, '/users/:id'>('/users/:id', {
+    api.get<User, { id: string | number }>('/users/:id', {
       params: { id: userId! },
       signal,
     }),
@@ -62,12 +63,14 @@ const { data, error, isPending } = useQuery({
 
 ```tsx
 import { useMutation, useQueryClient } from '@tanstack/react-query'
+import type { NoParams } from 'tanstack-fetch'
 import { api } from '../lib/api'
 
 const queryClient = useQueryClient()
 
 const createUser = useMutation({
-  mutationFn: (body: { name: string; email: string }) => api.post('/users', { body }),
+  mutationFn: (body: { name: string; email: string }) =>
+    api.post<User, NoParams, { name: string; email: string }>('/users', { body }),
   onSuccess: () => {
     void queryClient.invalidateQueries({ queryKey: ['users'] })
   },

@@ -1,6 +1,6 @@
 import { describe, expectTypeOf, it } from 'vitest'
 import { createFetch, pathParams } from '../src'
-import type { ExtractPathParamKeys, PathParamsOf } from '../src'
+import type { ExtractPathParamKeys, NoParams, PathParamsOf } from '../src'
 import { createFetch as createSseFetch } from '../src/sse'
 
 describe('path params types', () => {
@@ -17,7 +17,8 @@ describe('path params types', () => {
 
   it('types createFetch params from the path pattern', () => {
     const api = createFetch({ baseUrl: 'https://api.example.com' })
-    type PostDto = { id: number; title: string; body: string; userId?: number }
+    type UserType = { id: number; name: string }
+    type Params = { id: number }
 
     // Compile-only checks — never invoke (would hit the network)
     const typeCheck = async () => {
@@ -31,17 +32,18 @@ describe('path params types', () => {
       const unknownUser = await api.get('/users/:id', { params: { id: '1' } })
       expectTypeOf(unknownUser).toBeUnknown()
 
-      const user = await api.get<PostDto, '/users/:id'>('/users/:id', { params: { id: 1 } })
-      expectTypeOf(user).toEqualTypeOf<PostDto>()
+      // <Data, Params> — response + params map; path must contain :id / {id}
+      const user = await api.get<UserType, Params>('/users/:id', { params: { id: 1 } })
+      expectTypeOf(user).toEqualTypeOf<UserType>()
 
-      const post = await api.get<PostDto, 'new/old/:id'>('new/old/:id', { params: { id: 1 } })
-      expectTypeOf(post).toEqualTypeOf<PostDto>()
+      const post = await api.get<UserType, Params>('new/old/:id', { params: { id: 1 } })
+      expectTypeOf(post).toEqualTypeOf<UserType>()
 
-      // paths without placeholders — response generic alone is enough
-      const list = await api.get<PostDto[]>('/users')
-      expectTypeOf(list).toEqualTypeOf<PostDto[]>()
+      // <Data> only — options argument required (path literal is lost by TS)
+      const list = await api.get<UserType[]>('/users', {})
+      expectTypeOf(list).toEqualTypeOf<UserType[]>()
 
-      // @ts-expect-error missing params for patterned path
+      // @ts-expect-error missing params for patterned path (no generics)
       void api.get('/users/:id')
 
       // @ts-expect-error wrong param key
@@ -50,11 +52,53 @@ describe('path params types', () => {
       // @ts-expect-error empty params without generic
       void api.get('new/old/:id', { params: {} })
 
-      // @ts-expect-error empty params with response + path generics
-      void api.get<PostDto, 'new/old/:id'>('new/old/:id', { params: {} })
+      // @ts-expect-error <Data> only without params argument
+      void api.get<UserType>('/new/user/:id')
 
-      // @ts-expect-error missing params with response + path generics
-      void api.get<PostDto, 'new/old/:id'>('new/old/:id')
+      // @ts-expect-error <Data, Params> without options
+      void api.get<UserType, Params>('/new/user/:id')
+
+      // @ts-expect-error <Data, Params> missing id in params object
+      void api.get<UserType, Params>('/new/user/:id', { params: {} })
+
+      // @ts-expect-error path missing :id / {id} for Params keys
+      void api.get<UserType, Params>('/users', { params: { id: 1 } })
+
+      // @ts-expect-error Params key does not appear in path
+      void api.get<UserType, { userId: number }>('/users/:id', { params: { userId: 1 } })
+    }
+
+    expectTypeOf(typeCheck).toBeFunction()
+  })
+
+  it('types post body when Body generic is set', () => {
+    const api = createFetch({ baseUrl: 'https://api.example.com' })
+    type UserType = { id: number; name: string }
+    type CreateUser = { name: string }
+    type Params = { id: number }
+
+    const typeCheck = async () => {
+      const created = await api.post<UserType, NoParams, CreateUser>('/users', {
+        body: { name: 'Ada' },
+      })
+      expectTypeOf(created).toEqualTypeOf<UserType>()
+
+      const updated = await api.put<UserType, Params, CreateUser>('/users/:id', {
+        params: { id: 1 },
+        body: { name: 'Ada' },
+      })
+      expectTypeOf(updated).toEqualTypeOf<UserType>()
+
+      // @ts-expect-error missing body when Body generic is set
+      void api.post<UserType, NoParams, CreateUser>('/users', {})
+
+      // @ts-expect-error wrong body shape
+      void api.post<UserType, NoParams, CreateUser>('/users', { body: { title: 'x' } })
+
+      // @ts-expect-error missing body field
+      void api.post<UserType, Params, CreateUser>('/users/:id', {
+        params: { id: 1 },
+      })
     }
 
     expectTypeOf(typeCheck).toBeFunction()

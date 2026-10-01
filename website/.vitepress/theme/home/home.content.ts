@@ -76,7 +76,7 @@ const api = createFetch({
 })
 
 try {
-  await api.get<User, '/users/:id'>('/users/:id', {
+  await api.get<User, { id: string | number }>('/users/:id', {
     params: { id: 'missing' },
   })
 } catch (error) {

@@ -7,7 +7,7 @@ describe('tanstack-fetch request', () => {
     const fetchImpl = vi.fn().mockResolvedValue(jsonResponse({ body: { id: '1', name: 'Ada' } }))
     const http = createTestClient(fetchImpl)
 
-    const data = await http.get<{ id: string; name: string }, '/users/:id'>('/users/:id', {
+    const data = await http.get<{ id: string; name: string }, { id: string }>('/users/:id', {
       params: { id: '1' },
       query: { include: 'posts' },
     })

@@ -9,7 +9,17 @@ import type {
 } from './common.type'
 import type { AuthConfig, StatusHandler, StatusHandlers } from './config.type'
 import type { HttpInterceptor } from './interceptor.type'
-import type { PathRequestArgs, WithPathParams } from './path-params.type'
+import type {
+  PathRequestArgs,
+  WithPathParams,
+  FetchMethodArgs,
+  FetchMethodPath,
+  FetchParamsConstraint,
+  InferFetchData,
+  UnsetFetchParams,
+  UnsetFetchBody,
+  ResolveFetchData,
+} from './path-params.type'
 import type { SseEvent, SseHandlers, SseSubscription } from './sse.type'
 import type { UploadOptions, UploadProgressHandler } from './upload.type'
 
@@ -89,29 +99,54 @@ type RequestBase = Omit<RequestOptions, 'params'>
 type UploadBase = Omit<UploadCallOptions, 'params'>
 
 /**
- * Path params are typed from the URL literal.
- *
- * - `api.get('/users/:id', { params })` — params from the path, response `unknown`
- * - `api.get<User, '/users/:id'>('/users/:id', { params })` — typed response + params
- *
- * Pass the path as the second type argument when you also set a response generic
- * (TypeScript cannot partially infer it). Paths without placeholders only need `<User>`.
+ * - `api.get('/users/:id', { params })` — params from the URL
+ * - `api.get<User>('/users/:id', { params })` — options required (path literal is lost by TS)
+ * - `api.get<User, { id: number }>('/users/:id', { params })` — params typed as your map;
+ *   path must include those keys as `:id` / `{id}`
  */
-type FetchMethod = <TData = unknown, TPath extends string = string>(
-  path: TPath,
-  ...args: PathRequestArgs<TPath, RequestBase>
-) => Promise<TData>
+type FetchMethod = <
+  TData = InferFetchData,
+  TParams extends FetchParamsConstraint = UnsetFetchParams,
+  TPath extends string = string,
+>(
+  path: FetchMethodPath<NoInfer<TParams>, TPath>,
+  ...args: FetchMethodArgs<TData, NoInfer<TParams>, TPath, RequestBase>
+) => Promise<ResolveFetchData<TData>>
 
-type FetchRequest = <TData = unknown, TPath extends string = string>(
+/**
+ * Like `FetchMethod`, plus optional body typing:
+ * - `api.post<User, NoParams, CreateUser>('/users', { body })`
+ * - `api.post<User, { id: number }, CreateUser>('/users/:id', { params, body })`
+ */
+type BodyFetchMethod = <
+  TData = InferFetchData,
+  TParams extends FetchParamsConstraint = UnsetFetchParams,
+  TBody = UnsetFetchBody,
+  TPath extends string = string,
+>(
+  path: FetchMethodPath<NoInfer<TParams>, TPath>,
+  ...args: FetchMethodArgs<TData, NoInfer<TParams>, TPath, RequestBase, NoInfer<TBody>>
+) => Promise<ResolveFetchData<TData>>
+
+type FetchRequest = <
+  TData = InferFetchData,
+  TParams extends FetchParamsConstraint = UnsetFetchParams,
+  TBody = UnsetFetchBody,
+  TPath extends string = string,
+>(
   method: HttpMethod,
-  path: TPath,
-  ...args: PathRequestArgs<TPath, RequestBase>
-) => Promise<TData>
+  path: FetchMethodPath<NoInfer<TParams>, TPath>,
+  ...args: FetchMethodArgs<TData, NoInfer<TParams>, TPath, RequestBase, NoInfer<TBody>>
+) => Promise<ResolveFetchData<TData>>
 
-type UploadMethod = <TData = unknown, TPath extends string = string>(
-  path: TPath,
-  ...args: PathRequestArgs<TPath, UploadBase>
-) => Promise<TData>
+type UploadMethod = <
+  TData = InferFetchData,
+  TParams extends FetchParamsConstraint = UnsetFetchParams,
+  TPath extends string = string,
+>(
+  path: FetchMethodPath<NoInfer<TParams>, TPath>,
+  ...args: FetchMethodArgs<TData, NoInfer<TParams>, TPath, UploadBase>
+) => Promise<ResolveFetchData<TData>>
 
 type SseCallOptions<T = unknown, TPath extends string = string> = Omit<RequestOptions, 'params'> &
   WithPathParams<TPath> &
@@ -128,9 +163,9 @@ type FetchClient = {
   eject: (name: string) => void
   request: FetchRequest
   get: FetchMethod
-  post: FetchMethod
-  put: FetchMethod
-  patch: FetchMethod
+  post: BodyFetchMethod
+  put: BodyFetchMethod
+  patch: BodyFetchMethod
   delete: FetchMethod
   /** Multipart / file upload — returns the same typed response body as `post`. */
   upload: UploadMethod
@@ -168,6 +203,7 @@ export type {
   FetchClient,
   HttpClient,
   FetchMethod,
+  BodyFetchMethod,
   FetchRequest,
   UploadCallOptions,
   UploadMethod,

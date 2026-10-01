@@ -53,7 +53,7 @@ const runQuery = async (path = '/users') => {
   queryError.value = ''
   try {
     // same shape as TanStack Query queryFn
-    users.value = await api.get<User[]>(path)
+    users.value = await api.get<User[]>(path, {})
     queryState.value = 'success'
   } catch (error) {
     users.value = []

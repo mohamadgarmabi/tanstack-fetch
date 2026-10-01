@@ -48,7 +48,7 @@ export const usersQueryOptions = queryOptions({
 export const userQueryOptions = (id: number) =>
   queryOptions({
     queryKey: ['users', id],
-    queryFn: ({ signal }) => api.get<User, '/users/:id'>('/users/:id', { params: { id }, signal }),
+    queryFn: ({ signal }) => api.get<User, { id: string | number }>('/users/:id', { params: { id }, signal }),
   })
 ```
 
