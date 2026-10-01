@@ -17,7 +17,7 @@ const CHANGELOG_URL = `${GITHUB_URL}/blob/main/CHANGELOG.md`
 const NPM_URL = 'https://www.npmjs.com/package/tanstack-fetch'
 const AUTHOR_URL = 'https://github.com/mohamadgarmabi'
 const LINKEDIN_URL = 'https://www.linkedin.com/in/mohammad-garmabi/'
-const RELEASE_POST_URL = '/blog/tanstack-fetch-1-5'
+const RELEASE_POST_URL = '/blog/tanstack-fetch-1-6'
 const STACKBLITZ_BASE =
   'https://stackblitz.com/github/mohamadgarmabi/tanstack-fetch/tree/main/examples'
 
@@ -46,7 +46,7 @@ const api = createFetch({ baseUrl: 'https://api.example.com' })
 useQuery({
   queryKey: ['users'],
   queryFn: ({ signal }) =>
-    api.get<User[]>('/users', { signal }),
+    api.get<User[]>()('/users', { signal }),
 })`,
       },
     ],
@@ -76,7 +76,7 @@ const api = createFetch({
 })
 
 try {
-  await api.get<User>('/users/:id', {
+  await api.get<User>()('/users/:id', {
     params: { id: 'missing' },
   })
 } catch (error) {
@@ -178,7 +178,7 @@ api.use(
       const body = await api.post<{
         accessToken: string
         expiresIn: number
-      }>('/auth/refresh', {
+      }>()('/auth/refresh', {
         interceptors: {
           eject: ['refresh-token', 'auth'],
         },

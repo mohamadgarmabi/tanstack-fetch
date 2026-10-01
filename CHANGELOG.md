@@ -1,16 +1,22 @@
 # Changelog
 
+## 1.6.1
+
+### Fixes
+
+- **Path-typed `params` always**: `api.get('/users/:id', { params })` and `api.get<User>()('/users/:id', { params })` both require keys inferred from `:param` / `{param}` URL patterns.
+- Dropped the experimental `createFetch<Routes>()` route map from 1.6.0 in favor of the simpler curry form for response generics.
+
+### Breaking
+
+- Removed `throwOnError` — HTTP helpers always return data on success and throw `FetchError` on failure.
+- Response generics use curry so path `params` stay typed: `api.get<User>()('/users/:id', { params: { id } })` (TypeScript cannot partially infer generics). Prefer `api.get(path, …)` when you only need params checking.
+
 ## 1.6.0
 
 ### Features
 
-- **Typed routes**: `createFetch<Routes>()` takes an optional route map (`'/users/:id': User`, `'POST /users': User`). `get` / `post` / `put` / `patch` / `delete` / `request` / `upload` infer the response type from the path, and `params` stay typed from the URL, so no explicit generic is needed.
-- Route-map paths autocomplete in the `path` argument; any other string is still accepted.
-- New exported type: `FetchRoutes`.
-
-### Notes
-
-- `api.get<User>('/users/:id')` behaves the same as before. TypeScript has no partial type-argument inference, so an explicit `TData` makes the path `string` and `params` loose. Use a route map to get both typed.
+- **Typed routes** (superseded in 1.6.1): optional `createFetch<Routes>()` route map.
 
 ## 1.5.0
 

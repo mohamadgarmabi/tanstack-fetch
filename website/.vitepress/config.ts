@@ -75,7 +75,7 @@ const buildJsonLd = (pageUrl: string, title: string, description: string) => {
       description: DEFAULT_DESCRIPTION,
       url: `${SITE_URL}/`,
       downloadUrl: NPM_URL,
-      softwareVersion: '1.6.0',
+      softwareVersion: '1.6.1',
       license: 'https://opensource.org/licenses/MIT',
       codeRepository: GITHUB_URL,
       programmingLanguage: ['TypeScript', 'JavaScript'],
@@ -241,7 +241,6 @@ const config = defineConfig({
           text: 'Core',
           items: [
             { text: 'Configuration', link: '/guide/configuration' },
-            { text: 'Typed routes', link: '/guide/typed-routes' },
             { text: 'Errors', link: '/guide/errors' },
             { text: 'TanStack Query', link: '/guide/tanstack-query' },
             { text: 'Plugins & interceptors', link: '/guide/plugins' },
@@ -289,6 +288,7 @@ const config = defineConfig({
           text: 'Blog',
           items: [
             { text: 'All posts', link: '/blog/' },
+            { text: 'tanstack-fetch 1.6.1 — path params', link: '/blog/tanstack-fetch-1-6' },
             { text: 'tanstack-fetch 1.5.0 — Vue & Nuxt', link: '/blog/tanstack-fetch-1-5' },
             { text: 'tanstack-fetch 1.3 → 1.4.2', link: '/blog/tanstack-fetch-1-4' },
           ],

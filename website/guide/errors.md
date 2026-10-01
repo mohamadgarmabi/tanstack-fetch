@@ -2,7 +2,7 @@
 
 ![FetchError with status, code, message, body](/images/docs-errors.png)
 
-By default (`throwOnError: true`) failed HTTP calls throw a **`FetchError`**.
+Failed HTTP calls throw a **`FetchError`**.
 
 ```ts
 import { createFetch, isFetchError } from 'tanstack-fetch'
@@ -58,17 +58,6 @@ if (isFetchError(error) && error.status === 404) {
 
 if (isFetchError(error) && error.status === 429) {
   return <p>Slow down — try again shortly</p>
-}
-```
-
-## Opt into `FetchResult`
-
-```ts
-const result = await api.get<User>('/users/1', { throwOnError: false })
-if (!result.ok) {
-  console.log(result.error)
-} else {
-  console.log(result.data)
 }
 ```
 

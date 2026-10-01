@@ -25,10 +25,10 @@ const UsersPage = () => {
   const queryClient = useQueryClient()
   const { data, error, isPending } = useQuery({
     queryKey: ['users'],
-    queryFn: ({ signal }) => api.get<User[]>('/users', { signal }),
+    queryFn: ({ signal }) => api.get<User[]>()('/users', { signal }),
   })
   const createUser = useMutation({
-    mutationFn: (body: { name: string }) => api.post<User>('/users', { body }),
+    mutationFn: (body: { name: string }) => api.post<User>()('/users', { body }),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ['users'] }),
   })
 

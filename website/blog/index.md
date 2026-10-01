@@ -5,6 +5,14 @@ description: Release notes and write-ups about tanstack-fetch, a typed fetch cli
 
 # Blog
 
+## [tanstack-fetch 1.6.1: path params that stay typed](/blog/tanstack-fetch-1-6)
+
+<p class="blog-meta">October 1, 2026</p>
+
+Strict URL `params` from `:id` / `{id}`, response generics via `api.get<T>()(…)`, and a simpler client without `throwOnError` or route maps.
+
+[Read the post →](/blog/tanstack-fetch-1-6)
+
 ## [tanstack-fetch 1.5.0: Vue and Nuxt](/blog/tanstack-fetch-1-5)
 
 <p class="blog-meta">October 1, 2026</p>

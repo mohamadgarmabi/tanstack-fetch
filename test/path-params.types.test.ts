@@ -1,6 +1,6 @@
 import { describe, expectTypeOf, it } from 'vitest'
 import { createFetch, pathParams } from '../src'
-import type { ExtractPathParamKeys, FetchClient, FetchResult, PathParamsOf } from '../src'
+import type { ExtractPathParamKeys, PathParamsOf } from '../src'
 import { createFetch as createSseFetch } from '../src/sse'
 
 describe('path params types', () => {
@@ -17,83 +17,48 @@ describe('path params types', () => {
 
   it('types createFetch params from the path pattern', () => {
     const api = createFetch({ baseUrl: 'https://api.example.com' })
+    type PostDto = { id: number; title: string; body: string; userId?: number }
 
     // Compile-only checks — never invoke (would hit the network)
-    const typeCheck = () => {
+    const typeCheck = async () => {
       void api.get('/users')
       void api.get('/users/:id', { params: { id: '1' } })
       void api.get('/users/{id}', { params: pathParams('/users/{id}', { id: 2 }) })
       void api.get('/users/:id/posts/:postId', {
         params: { id: '1', postId: '2' },
       })
-      void api.get<{ id: string }>('/users/:id', { params: { id: '1' } })
+
+      const unknownUser = await api.get('/users/:id', { params: { id: '1' } })
+      expectTypeOf(unknownUser).toBeUnknown()
+
+      const user = await api.get<PostDto>()('/users/:id', { params: { id: 1 } })
+      expectTypeOf(user).toEqualTypeOf<PostDto>()
+
+      const post = await api.get<PostDto>()('new/old/:id', { params: { id: 1 } })
+      expectTypeOf(post).toEqualTypeOf<PostDto>()
 
       // @ts-expect-error missing params for patterned path
       void api.get('/users/:id')
 
       // @ts-expect-error wrong param key
       void api.get('/users/:id', { params: { userId: '1' } })
+
+      // @ts-expect-error empty params without generic
+      void api.get('new/old/:id', { params: {} })
+
+      // @ts-expect-error empty params with response generic (curry form)
+      void api.get<PostDto>()('new/old/:id', { params: {} })
+
+      // @ts-expect-error missing params with response generic
+      void api.get<PostDto>()('new/old/:id')
     }
 
     expectTypeOf(typeCheck).toBeFunction()
   })
 
-  it('infers response and params from a route map', () => {
-    type User = { id: string; name: string }
-    type Routes = {
-      '/users': User[]
-      '/users/:id': User
-      'POST /users': { created: true }
-    }
-    const api = createFetch<Routes>({ baseUrl: 'https://api.example.com' })
-
-    const typeCheck = async () => {
-      expectTypeOf(await api.get('/users/:id', { params: { id: 1 } })).toEqualTypeOf<User>()
-      expectTypeOf(await api.get('/users')).toEqualTypeOf<User[]>()
-      expectTypeOf(await api.post('/users', { body: {} })).toEqualTypeOf<{ created: true }>()
-      expectTypeOf(await api.put('/users')).toEqualTypeOf<User[]>()
-      expectTypeOf(await api.get('/unknown')).toBeUnknown()
-      expectTypeOf(
-        await api.get('/users/:id', { params: { id: 1 }, throwOnError: false }),
-      ).toEqualTypeOf<FetchResult<User>>()
-      expectTypeOf(
-        await api.request('GET', '/users/:id', { params: { id: 1 } }),
-      ).toEqualTypeOf<User>()
-
-      // explicit generic still wins
-      expectTypeOf(
-        await api.get<{ custom: 1 }>('/users/:id', { params: { id: 1 } }),
-      ).toEqualTypeOf<{ custom: 1 }>()
-
-      // @ts-expect-error missing params for patterned path
-      void api.get('/users/:id')
-
-      // @ts-expect-error wrong param key
-      void api.get('/users/:id', { params: { userId: '1' } })
-    }
-
-    expectTypeOf(typeCheck).toBeFunction()
-  })
-
-  it('accepts an interface as the route map', () => {
-    interface Routes {
-      'GET /users/:id': { id: string }
-    }
-    const api = createFetch<Routes>()
-    const typeCheck = async () => {
-      expectTypeOf(await api.get('/users/:id', { params: { id: 1 } })).toEqualTypeOf<{
-        id: string
-      }>()
-      expectTypeOf(await api.post('/users/:id', { params: { id: 1 } })).toBeUnknown()
-    }
-    expectTypeOf(typeCheck).toBeFunction()
-  })
-
-  it('keeps typed clients assignable to the default client type', () => {
-    type Routes = { '/users/:id': { id: string } }
-    const http: Omit<FetchClient, 'sse'> = createFetch<Routes>()
-    const full: FetchClient = createSseFetch<Routes>()
-    expectTypeOf(http).not.toBeAny()
-    expectTypeOf(full).not.toBeAny()
+  it('keeps sse client assignable', () => {
+    const full = createSseFetch()
+    expectTypeOf(full.get).toBeFunction()
+    expectTypeOf(full.sse).toBeFunction()
   })
 })

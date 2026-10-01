@@ -1,6 +1,6 @@
 # FetchClient
 
-Methods on the client returned by `createFetch`. Pass a route map, `createFetch<Routes>()`, to infer response types from the path. See [Typed routes](/guide/typed-routes).
+Methods on the client returned by `createFetch`.
 
 | Method                                      | Description                    |
 | ------------------------------------------- | ------------------------------ |
@@ -21,7 +21,6 @@ Methods on the client returned by `createFetch`. Pass a route map, `createFetch<
 | `headers`          | Per-request headers                                                |
 | `signal`           | AbortSignal (pass Query’s)                                         |
 | `timeoutMs`        | Override client timeout                                            |
-| `throwOnError`     | Override client default                                            |
 | `parseAs`          | `json` \| `text` \| `blob`                                         |
 | `operation`        | Name for interceptor match                                         |
 | `interceptors`     | Per-request `use` / `eject`                                        |

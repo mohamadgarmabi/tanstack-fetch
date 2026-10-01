@@ -11,7 +11,7 @@ const useAuthStatusApp = () => {
     let cancelled = false
     const load = async () => {
       try {
-        const data = await api.get<Profile>('/me')
+        const data = await api.get<Profile>()('/me')
         if (!cancelled) {
           setProfile(data)
           setMessage('')
