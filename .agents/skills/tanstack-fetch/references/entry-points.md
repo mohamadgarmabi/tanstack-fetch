@@ -1,12 +1,13 @@
 # Entry points
 
-| Import                   | What you get                                                  | Typical gzip |
-| ------------------------ | ------------------------------------------------------------- | ------------ |
-| `tanstack-fetch`         | HTTP (`get` / `post` / `put` / `patch` / `delete` / `upload`) | ~3.5KB       |
-| `tanstack-fetch/sse`     | Same + `api.sse()`                                            | ~4.7KB       |
-| `tanstack-fetch/plugins` | Plugin / interceptor factories                                | ~0.9KB       |
-| `tanstack-fetch/react`   | `FetchProvider`, `useFetch`, `useSse`                         | ~1KB         |
-| `tanstack-fetch/vue`     | `createFetchPlugin`, `useFetch`, `useSse`                     | ~0.8KB       |
-| `tanstack-fetch/trpc`    | `createTRPCFetchClient`                                       | ~3.1KB       |
+| Import                    | What you get                                                  | gzip     |
+| ------------------------- | ------------------------------------------------------------- | -------- |
+| `tanstack-fetch`          | HTTP (`get` / `post` / `put` / `patch` / `delete` / `upload`) | 4.81KB   |
+| `tanstack-fetch/sse`      | Same + `api.sse()`                                            | 5.94KB   |
+| `tanstack-fetch/plugins`  | Plugin / interceptor factories                                | 1.13KB   |
+| `tanstack-fetch/react`    | `FetchProvider`, `useFetch`, `useSse`                         | 0.81KB   |
+| `tanstack-fetch/vue`      | `createFetchPlugin`, `useFetch`, `useSse`                     | 0.78KB   |
+| `tanstack-fetch/trpc`     | `createTRPCFetchClient`                                       | 3.16KB   |
+| `tanstack-fetch/devtools` | Request dock                                                  | 8.32KB   |
 
-Peers: `@tanstack/react-query` or `@tanstack/vue-query` (typical), `yaml` only for OpenAPI CLI, React only for `/react`, Vue only for `/vue`.
+Prefer `tanstack-fetch` until you need streams; then switch the import to `tanstack-fetch/sse` (same `createFetch` API).

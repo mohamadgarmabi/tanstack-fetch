@@ -55,13 +55,13 @@ useQuery({
 
 ## Entry points
 
-- `tanstack-fetch` — HTTP core (~3.5KB gzip)
-- `tanstack-fetch/sse` — fetch-based SSE
-- `tanstack-fetch/plugins` — named interceptors
-- `tanstack-fetch/react` — FetchProvider / useFetch / useSse
-- `tanstack-fetch/vue` — createFetchPlugin / useFetch / useSse (Vue 3 / Nuxt)
-- `tanstack-fetch/trpc` — tRPC link via createFetch
-- `tanstack-fetch/devtools` — request dock for HTTP / SSE / SSR / tRPC (`setupDevtools(api)`)
+- `tanstack-fetch` — HTTP core (4.81KB gzip)
+- `tanstack-fetch/sse` — fetch-based SSE (5.94KB gzip)
+- `tanstack-fetch/plugins` — named interceptors (1.13KB gzip)
+- `tanstack-fetch/react` — FetchProvider / useFetch / useSse (0.81KB gzip)
+- `tanstack-fetch/vue` — createFetchPlugin / useFetch / useSse (0.78KB gzip)
+- `tanstack-fetch/trpc` — tRPC link via createFetch (3.16KB gzip)
+- `tanstack-fetch/devtools` — request dock (`setupDevtools(api)`) (8.32KB gzip)
 
 ## Key guides
 

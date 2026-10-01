@@ -10,7 +10,7 @@ const toHref = (href: string) => (href.startsWith('http') ? href : withBase(href
 
 const stats = computed(() => [
   {
-    value: '~3.5KB',
+    value: '4.81KB',
     label: 'gzip HTTP core',
     href: 'https://bundlephobia.com/package/tanstack-fetch',
   },

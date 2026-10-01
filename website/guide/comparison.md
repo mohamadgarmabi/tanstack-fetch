@@ -16,7 +16,7 @@ tanstack-fetch is an HTTP client shaped for TanStack Query. axios, ky, and ofetc
 | SSE with Authorization             | `tanstack-fetch/sse`                              | No      | No      | No      |
 | File upload + progress             | `api.upload()`                                    | Yes     | Limited | Limited |
 | tRPC transport                     | `tanstack-fetch/trpc`                             | No      | No      | No      |
-| Bundle                             | ~3.5KB gzip HTTP core                             | Larger  | Small   | Small   |
+| Bundle                             | **4.81KB** gzip HTTP core                         | Larger  | Small   | Small   |
 
 ## Before / after
 
