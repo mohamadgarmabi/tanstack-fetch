@@ -5,6 +5,10 @@ description: Live tanstack-fetch DevTools — SSE event list, call graph, one-li
 
 # DevTools
 
+::: tip Framework
+**Core** (works with React, Vue, Nuxt, Next.js)
+:::
+
 Bottom dock with request list, **SSE event list**, **caller file** (e.g. `profile.hook.ts`), and a **call graph**.
 
 Click a graph node → pick **Cursor / Zed / VS Code** → opens via deep link (last choice remembered).

@@ -22,10 +22,10 @@ import { FetchProvider, useFetch, useSse } from 'tanstack-fetch/react'
 
 ### `useSse` options
 
-| Option   | Role                                      |
-| -------- | ----------------------------------------- |
-| `client` | SSE client from `tanstack-fetch/sse` (**preferred** — no provider) |
-| `enabled` | When `false`, stays `disconnected`       |
+| Option    | Role                                                               |
+| --------- | ------------------------------------------------------------------ |
+| `client`  | SSE client from `tanstack-fetch/sse` (**preferred** — no provider) |
+| `enabled` | When `false`, stays `disconnected`                                 |
 
 ### Example (no provider)
 

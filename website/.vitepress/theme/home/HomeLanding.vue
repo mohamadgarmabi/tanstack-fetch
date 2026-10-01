@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import HomeBand from './HomeBand.vue'
+import HomeBeam from './HomeBeam.vue'
 import HomeBlitz from './HomeBlitz.vue'
 import HomeClose from './HomeClose.vue'
 import HomeCompare from './HomeCompare.vue'
@@ -18,6 +19,7 @@ import HomeWhy from './HomeWhy.vue'
     <div class="home-wrap">
       <HomeHero />
       <HomeShowcase />
+      <HomeBeam />
       <HomeBand />
       <HomeWhy />
       <HomeQuick />

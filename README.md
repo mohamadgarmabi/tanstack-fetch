@@ -52,13 +52,14 @@ That’s it: returns data, throws `FetchError` on HTTP errors, honors Query’s 
 
 **Try it in the browser (no install):** [TanStack Query](https://stackblitz.com/github/mohamadgarmabi/tanstack-fetch/tree/main/examples/tanstack-query) · [Next.js SSR](https://stackblitz.com/github/mohamadgarmabi/tanstack-fetch/tree/main/examples/next-ssr) · [SSE](https://stackblitz.com/github/mohamadgarmabi/tanstack-fetch/tree/main/examples/sse-live) · [tRPC](https://stackblitz.com/github/mohamadgarmabi/tanstack-fetch/tree/main/examples/trpc) · [Auth / refresh](https://stackblitz.com/github/mohamadgarmabi/tanstack-fetch/tree/main/examples/auth-status) · [Live DevTools demo](https://mohamadgarmabi.github.io/tanstack-fetch/examples/devtools)
 
-## What's new (1.3 → 1.4.2)
+## What's new (1.5.0)
 
-- **1.3.0: `createRefreshTokenInterceptor`**: refreshes before expiry or on the first `401`, sends a single refresh for parallel failures, then retries. [Recipe](./docs/recipes/refresh-token.md)
-- **1.4.0: DevTools**: `setupDevtools(api)` adds a request dock for HTTP, SSE, SSR and tRPC with status, duration, attempts and caller file. [Details](#devtools)
-- **1.4.1 / 1.4.2: `useSse`**: returns `status` (`connecting` / `connected` / `disconnected` / `error`) and no longer needs `FetchProvider`. **Breaking:** replace `isConnected` with `status === 'connected'`.
+- **1.5.0: Vue & Nuxt**: `tanstack-fetch/vue` — `createFetchPlugin`, `useFetch`, `useSse` (same `status` model as React). [Guide](https://mohamadgarmabi.github.io/tanstack-fetch/guide/vue) · [Blog](https://mohamadgarmabi.github.io/tanstack-fetch/blog/tanstack-fetch-1-5)
+- **1.4.0: DevTools**: `setupDevtools(api)` request dock for HTTP, SSE, SSR and tRPC. [Details](#devtools)
+- **1.4.1 / 1.4.2: `useSse`**: `status` instead of `isConnected`; no `FetchProvider` required when passing `{ client }`.
+- **1.3.0: `createRefreshTokenInterceptor`**: refresh before expiry or on first `401`. [Recipe](./docs/recipes/refresh-token.md)
 
-Full write-up: [tanstack-fetch 1.3 → 1.4.2](https://mohamadgarmabi.github.io/tanstack-fetch/blog/tanstack-fetch-1-4) · [CHANGELOG](./CHANGELOG.md)
+[CHANGELOG](./CHANGELOG.md)
 
 ---
 
@@ -76,6 +77,7 @@ Built for the way TanStack Query actually works: return data, throw on failure, 
 | **SSR**             | Next.js-ready cookie / header forwarding (`ssr-forward`)            |
 | **Plugins**         | Named interceptors: retry, trace, mocks, eject per request          |
 | **React**           | Optional `FetchProvider`, `useFetch`, `useSse`                      |
+| **Vue / Nuxt**      | `createFetchPlugin`, `useFetch`, `useSse` via `tanstack-fetch/vue`  |
 | **tRPC**            | `tanstack-fetch/trpc` — same auth/plugins with Router & Start       |
 
 Also: multipart **upload** + progress, OpenAPI codegen CLI, Edge-friendly.
@@ -117,6 +119,7 @@ try {
 | `tanstack-fetch/sse`     | + `api.sse()`               | **~4.7KB**   |
 | `tanstack-fetch/plugins` | plugin factories            | **~0.9KB**   |
 | `tanstack-fetch/react`   | `FetchProvider` / hooks     | **~1KB**     |
+| `tanstack-fetch/vue`     | plugin / composables        | **~1KB**     |
 | `tanstack-fetch/trpc`    | tRPC link via `createFetch` | **~3.1KB**   |
 
 ```ts
@@ -124,7 +127,7 @@ import { createFetch } from 'tanstack-fetch' // HTTP only
 import { createFetch } from 'tanstack-fetch/sse' // + streams
 ```
 
-`yaml` and React are optional peers. Run `npm run size` after build for local gzip numbers.
+`yaml`, React, and Vue are optional peers. Run `npm run size` after build for local gzip numbers.
 
 ---
 

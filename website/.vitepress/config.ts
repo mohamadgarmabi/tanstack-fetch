@@ -12,7 +12,7 @@ const GITHUB_PROFILE_URL = 'https://github.com/mohamadgarmabi'
 const NPM_URL = 'https://www.npmjs.com/package/tanstack-fetch'
 const OG_IMAGE = `${SITE_URL}/images/docs-og-banner.png`
 const DEFAULT_DESCRIPTION =
-  'tanstack-fetch by Mohammad Garmabi — typed Fetch client for TanStack Query. Tiny HTTP core, SSR, SSE, upload, and tRPC. Axios alternative for React Query.'
+  'tanstack-fetch by Mohammad Garmabi — typed Fetch client for TanStack Query. Tiny HTTP core, SSR, SSE, upload, tRPC, React and Vue/Nuxt. Axios alternative for React Query.'
 
 const KEYWORDS = [
   'tanstack-fetch',
@@ -21,6 +21,7 @@ const KEYWORDS = [
   'TanStack Query',
   'react-query',
   '@tanstack/react-query',
+  '@tanstack/vue-query',
   'fetch client',
   'typed fetch',
   'axios alternative',
@@ -29,6 +30,8 @@ const KEYWORDS = [
   'SSE',
   'tRPC',
   'Next.js',
+  'Vue',
+  'Nuxt',
   'createFetch',
   'Mohammad Garmabi LinkedIn',
   'mohammad garmabi linkedin',
@@ -72,7 +75,7 @@ const buildJsonLd = (pageUrl: string, title: string, description: string) => {
       description: DEFAULT_DESCRIPTION,
       url: `${SITE_URL}/`,
       downloadUrl: NPM_URL,
-      softwareVersion: '1.4.2',
+      softwareVersion: '1.5.0',
       license: 'https://opensource.org/licenses/MIT',
       codeRepository: GITHUB_URL,
       programmingLanguage: ['TypeScript', 'JavaScript'],
@@ -247,7 +250,8 @@ const config = defineConfig({
           text: 'Integrations',
           items: [
             { text: 'React', link: '/guide/react' },
-            { text: 'SSR & Next.js', link: '/guide/ssr' },
+            { text: 'Vue & Nuxt', link: '/guide/vue' },
+            { text: 'SSR (Next.js & Nuxt)', link: '/guide/ssr' },
             { text: 'SSE', link: '/guide/sse' },
             { text: 'Upload', link: '/guide/upload' },
             { text: 'tRPC', link: '/guide/trpc' },
@@ -263,6 +267,7 @@ const config = defineConfig({
             { text: 'FetchClient', link: '/api/fetch-client' },
             { text: 'Errors', link: '/api/errors' },
             { text: 'React', link: '/api/react' },
+            { text: 'Vue', link: '/api/vue' },
             { text: 'tRPC helpers', link: '/api/trpc' },
             { text: 'Plugins', link: '/api/plugins' },
           ],
@@ -283,6 +288,7 @@ const config = defineConfig({
           text: 'Blog',
           items: [
             { text: 'All posts', link: '/blog/' },
+            { text: 'tanstack-fetch 1.5.0 — Vue & Nuxt', link: '/blog/tanstack-fetch-1-5' },
             { text: 'tanstack-fetch 1.3 → 1.4.2', link: '/blog/tanstack-fetch-1-4' },
           ],
         },
@@ -295,6 +301,7 @@ const config = defineConfig({
             { text: 'Live playground', link: '/examples/playground' },
             { text: 'React Query', link: '/examples/react' },
             { text: 'Next.js SSR', link: '/examples/next-ssr' },
+            { text: 'Nuxt SSR', link: '/examples/nuxt-ssr' },
             { text: 'Upload', link: '/examples/upload' },
             { text: 'SSE', link: '/examples/sse' },
             { text: 'DevTools', link: '/examples/devtools' },
@@ -309,6 +316,7 @@ const config = defineConfig({
       alias: {
         'tanstack-fetch/sse': fileURLToPath(new URL('../../src/sse/index.ts', import.meta.url)),
         'tanstack-fetch/react': fileURLToPath(new URL('../../src/react/index.ts', import.meta.url)),
+        'tanstack-fetch/vue': fileURLToPath(new URL('../../src/vue/index.ts', import.meta.url)),
         'tanstack-fetch/plugins': fileURLToPath(
           new URL('../../src/plugins/index.ts', import.meta.url),
         ),

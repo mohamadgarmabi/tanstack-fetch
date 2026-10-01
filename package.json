@@ -1,7 +1,7 @@
 {
   "name": "tanstack-fetch",
-  "version": "1.4.2",
-  "description": "React Query / TanStack Query fetch client — typed errors, AbortSignal, SSR, SSE, upload. Lightweight axios/ky alternative (~3.5KB).",
+  "version": "1.5.0",
+  "description": "TanStack Query fetch client — typed errors, AbortSignal, SSR, SSE, upload. React + Vue/Nuxt. Lightweight axios/ky alternative (~3.5KB).",
   "license": "MIT",
   "author": {
     "name": "Mohammad Garmabi",
@@ -32,6 +32,10 @@
     "@tanstack/react-query",
     "queryfn",
     "react",
+    "vue",
+    "nuxt",
+    "vue3",
+    "nuxt3",
     "nextjs",
     "next.js",
     "ssr",
@@ -92,6 +96,11 @@
       "import": "./dist/react.js",
       "require": "./dist/react.cjs"
     },
+    "./vue": {
+      "types": "./dist/vue.d.ts",
+      "import": "./dist/vue.js",
+      "require": "./dist/vue.cjs"
+    },
     "./trpc": {
       "types": "./dist/trpc.d.ts",
       "import": "./dist/trpc.js",
@@ -135,12 +144,16 @@
   },
   "peerDependencies": {
     "@trpc/client": ">=10",
+    "@trpc/server": ">=10",
     "react": ">=18",
-    "yaml": "^2.0.0",
-    "@trpc/server": ">=10"
+    "vue": ">=3.3",
+    "yaml": "^2.0.0"
   },
   "peerDependenciesMeta": {
     "react": {
+      "optional": true
+    },
+    "vue": {
       "optional": true
     },
     "yaml": {
@@ -156,9 +169,11 @@
   "devDependencies": {
     "@eslint/js": "^9.36.0",
     "@trpc/client": "^11.19.0",
+    "@trpc/server": "^11.19.0",
     "@types/node": "^24.5.2",
     "@types/react": "^19.1.13",
     "eslint": "^9.36.0",
+    "happy-dom": "^20.14.5",
     "prettier": "^3.6.2",
     "react": "^19.1.1",
     "tsup": "^8.5.0",
@@ -166,7 +181,7 @@
     "typescript": "^5.9.2",
     "typescript-eslint": "^8.44.0",
     "vitest": "^3.2.4",
-    "yaml": "^2.8.1",
-    "@trpc/server": "^11.19.0"
+    "vue": "^3.5.43",
+    "yaml": "^2.8.1"
   }
 }

@@ -5,6 +5,10 @@ description: Live api.upload multipart demo with createFetch.
 
 # Upload
 
+::: tip Framework
+**Core** (framework-agnostic)
+:::
+
 Pick a file and run **`api.upload()`** — real FormData + `createFetch` (mock response).
 
 <UploadDemo />

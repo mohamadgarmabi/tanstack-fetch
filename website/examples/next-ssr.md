@@ -1,9 +1,13 @@
 ---
 title: Next.js SSR live demo
-description: Live ssr-forward demo — cookies and auth headers on the server, skipped in the browser.
+description: Live ssr-forward demo for Next.js — cookies and auth headers on the server, skipped in the browser.
 ---
 
 # Next.js SSR
+
+::: tip Framework
+**React** · Next.js App Router · `ssr-forward`
+:::
 
 Click **Server prefetch** and inspect the request log — `ssr-forward` attaches Cookie / Authorization / `x-request-id`. In the browser the plugin **skips**.
 
@@ -24,4 +28,4 @@ export const createServerApi = async () =>
   })
 ```
 
-Guide: [SSR & Next.js](/guide/ssr) · example: [`examples/next-ssr`](https://github.com/mohamadgarmabi/tanstack-fetch/tree/main/examples/next-ssr)
+Guide: [SSR — Next.js](/guide/ssr#nextjs) · Nuxt twin: [Nuxt SSR](/examples/nuxt-ssr) · example: [`examples/next-ssr`](https://github.com/mohamadgarmabi/tanstack-fetch/tree/main/examples/next-ssr)

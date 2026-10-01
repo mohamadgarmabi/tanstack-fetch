@@ -27,6 +27,7 @@ It is **not** an official TanStack package — it matches the same mental model 
 | `tanstack-fetch/sse`     | + `api.sse()`                        | **~4.7KB**   |
 | `tanstack-fetch/plugins` | plugin factories                     | **~0.9KB**   |
 | `tanstack-fetch/react`   | `FetchProvider` / hooks              | **~1KB**     |
+| `tanstack-fetch/vue`     | plugin / composables (Vue 3 / Nuxt)  | **~0.8KB**   |
 | `tanstack-fetch/trpc`    | tRPC link via `createFetch`          | **~3.1KB**   |
 
 ```ts

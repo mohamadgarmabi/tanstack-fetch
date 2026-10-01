@@ -15,7 +15,7 @@ const CHANGELOG_URL = `${GITHUB_URL}/blob/main/CHANGELOG.md`
 const NPM_URL = 'https://www.npmjs.com/package/tanstack-fetch'
 const AUTHOR_URL = 'https://github.com/mohamadgarmabi'
 const LINKEDIN_URL = 'https://www.linkedin.com/in/mohammad-garmabi/'
-const RELEASE_POST_URL = '/blog/tanstack-fetch-1-4'
+const RELEASE_POST_URL = '/blog/tanstack-fetch-1-5'
 const STACKBLITZ_BASE =
   'https://stackblitz.com/github/mohamadgarmabi/tanstack-fetch/tree/main/examples'
 
@@ -250,10 +250,10 @@ tRPC  user.list          200  112ms
   {
     id: 'ssr',
     label: 'SSR',
-    lead: 'Forward the incoming cookie jar on the server. The browser client stays the same.',
+    lead: 'Forward the incoming cookie jar on the server. Same client in Next.js and Nuxt.',
     files: [
       {
-        name: 'api.ts',
+        name: 'next.ts',
         code: `import { createFetch } from 'tanstack-fetch'
 import { cookies } from 'next/headers'
 
@@ -267,6 +267,26 @@ export const api = createFetch({
   },
 })`,
       },
+      {
+        name: 'nuxt.ts',
+        code: `import { createFetch } from 'tanstack-fetch'
+import { createFetchPlugin } from 'tanstack-fetch/vue'
+
+export default defineNuxtPlugin((nuxtApp) => {
+  const api = createFetch({
+    baseUrl: useRuntimeConfig().public.apiBase,
+    source: import.meta.server ? 'ssr' : 'client',
+    plugins: ['ssr-forward'],
+    incoming: () => {
+      if (!import.meta.server) return
+      const headers = useRequestHeaders(['cookie'])
+      return { cookie: headers.cookie }
+    },
+  })
+
+  nuxtApp.vueApp.use(createFetchPlugin({ client: api }))
+})`,
+      },
     ],
     output: {
       name: 'forwarded',
@@ -274,17 +294,19 @@ export const api = createFetch({
 Cookie: session=abc; theme=dark
 
 // same api.get('/me') works
-// in RSC and in the browser`,
+// in RSC / Nuxt SSR and browser`,
     },
   },
   {
     id: 'sse',
     label: 'SSE',
-    lead: 'Streams go over fetch, so Authorization and cookies travel with the request.',
+    lead: 'Streams go over fetch, so Authorization and cookies travel with the request. Same client in a loop, React, or Vue.',
     files: [
       {
         name: 'orders.ts',
         code: `import { createFetch } from 'tanstack-fetch/sse'
+
+type OrderEvent = { id: string; status: string }
 
 const api = createFetch({
   baseUrl: 'https://api.example.com',
@@ -298,15 +320,84 @@ for await (const event of api.sse<OrderEvent>(
   console.log(event.data)
 }`,
       },
+      {
+        name: 'OrdersLive.tsx',
+        code: `import { createFetch } from 'tanstack-fetch/sse'
+import { useSse } from 'tanstack-fetch/react'
+
+type OrderEvent = { id: string; status: string }
+
+const api = createFetch({
+  baseUrl: 'https://api.example.com',
+  plugins: ['sse-resume'],
+  getToken: () => localStorage.getItem('token'),
+})
+
+const OrdersLive = () => {
+  const { data, status, error, close } = useSse<OrderEvent>(
+    '/orders/stream',
+    { client: api },
+  )
+
+  if (status === 'error') {
+    return <p>{error?.message}</p>
+  }
+
+  return (
+    <div>
+      <p>{status}</p>
+      <p>{data?.id ?? 'waiting…'}</p>
+      <button type="button" onClick={close}>
+        Disconnect
+      </button>
+    </div>
+  )
+}`,
+      },
+      {
+        name: 'OrdersLive.vue',
+        code: `<script setup lang="ts">
+import { createFetch } from 'tanstack-fetch/sse'
+import { useSse } from 'tanstack-fetch/vue'
+
+type OrderEvent = { id: string; status: string }
+
+const api = createFetch({
+  baseUrl: 'https://api.example.com',
+  plugins: ['sse-resume'],
+  getToken: () => localStorage.getItem('token'),
+})
+
+const { data, status, error, close } = useSse<OrderEvent>(
+  '/orders/stream',
+  { client: api },
+)
+</script>
+
+<template>
+  <p v-if="status === 'error'">{{ error?.message }}</p>
+  <div v-else>
+    <p>{{ status }}</p>
+    <p>{{ data?.id ?? 'waiting…' }}</p>
+    <button type="button" @click="close">
+      Disconnect
+    </button>
+  </div>
+</template>`,
+      },
     ],
     output: {
       name: 'stream',
-      code: `{ id: 'o1', status: 'paid' }
+      code: `status → connecting
+status → connected
+
+{ id: 'o1', status: 'paid' }
 { id: 'o2', status: 'shipped' }
 { id: 'o3', status: 'delivered' }
 
 // Authorization: Bearer … is sent
-// EventSource cannot do that`,
+// EventSource cannot do that
+// plugin / FetchProvider optional`,
     },
   },
   {
@@ -453,6 +544,10 @@ const features: FeatureItem[] = [
     title: 'React helpers',
     text: 'FetchProvider, useFetch, and useSse when a component tree should share one client.',
   },
+  {
+    title: 'Vue & Nuxt helpers',
+    text: 'createFetchPlugin, useFetch, and useSse for Vue 3 and Nuxt apps.',
+  },
 ]
 
 const packages: PackageItem[] = [
@@ -483,6 +578,13 @@ const packages: PackageItem[] = [
     text: 'Provider and hooks for a shared client.',
     tags: ['~1KB'],
     href: '/guide/react',
+  },
+  {
+    title: 'Vue & Nuxt',
+    spec: 'tanstack-fetch/vue',
+    text: 'Plugin and composables for Vue 3 and Nuxt.',
+    tags: ['~0.8KB'],
+    href: '/guide/vue',
   },
   {
     title: 'tRPC',
@@ -620,7 +722,7 @@ const testimonials: TestimonialItem[] = [
     role: 'Same mental model',
   },
   {
-    quote: 'About 3.5KB core. Pull SSE, React, plugins, or tRPC only when you need them.',
+    quote: 'About 3.5KB core. Pull SSE, React, Vue, plugins, or tRPC only when you need them.',
     author: 'For bundle-conscious teams',
     role: 'Tree-shakeable entries',
   },
@@ -665,13 +767,16 @@ const runtimes: PillLink[] = [
   { label: 'Deno', href: '/guide/getting-started' },
   { label: 'Cloudflare Workers', href: '/guide/getting-started' },
   { label: 'Browsers', href: '/guide/getting-started' },
-  { label: 'Next.js', href: '/guide/ssr' },
+  { label: 'Next.js', href: '/guide/ssr#nextjs' },
+  { label: 'Nuxt', href: '/guide/ssr#nuxt' },
   { label: 'Edge', href: '/guide/ssr' },
 ]
 
 const integrations: PillLink[] = [
   { label: 'TanStack Query', href: '/guide/tanstack-query' },
   { label: 'React', href: '/guide/react' },
+  { label: 'Vue', href: '/guide/vue' },
+  { label: 'Nuxt', href: '/guide/vue' },
   { label: 'Next.js', href: '/guide/ssr' },
   { label: 'tRPC', href: '/guide/trpc' },
   { label: 'TanStack Router', href: '/recipes/trpc' },
@@ -694,7 +799,9 @@ const footerColumns: FooterColumn[] = [
   {
     title: 'Guides',
     links: [
-      { label: 'SSR and Next.js', href: '/guide/ssr' },
+      { label: 'SSR (Next.js & Nuxt)', href: '/guide/ssr' },
+      { label: 'React', href: '/guide/react' },
+      { label: 'Vue & Nuxt', href: '/guide/vue' },
       { label: 'SSE', href: '/guide/sse' },
       { label: 'Upload', href: '/guide/upload' },
       { label: 'tRPC', href: '/guide/trpc' },
@@ -708,6 +815,7 @@ const footerColumns: FooterColumn[] = [
       { label: 'Playground', href: '/examples/playground' },
       { label: 'React Query', href: '/examples/react' },
       { label: 'Next.js SSR', href: '/examples/next-ssr' },
+      { label: 'Nuxt SSR', href: '/examples/nuxt-ssr' },
       { label: 'Upload', href: '/examples/upload' },
       { label: 'SSE', href: '/examples/sse' },
       { label: 'DevTools', href: '/examples/devtools' },
