@@ -89,6 +89,14 @@ await api.get<User>('/users/:id', { params: { id } })
 await api.get<User[]>('/users', { query: { page: 1 } })
 ```
 
+An explicit generic (`api.get<User>`) makes the path `string`, so `params` are no longer checked (TS has no partial inference). Since v1.6.0, prefer a route map so both the response and `params` are inferred:
+
+```ts
+type Routes = { '/users/:id': User; 'POST /users': User } // 'METHOD /path' wins over '/path'
+const api = createFetch<Routes>({ baseUrl })
+await api.get('/users/:id', { params: { id } }) // User, params checked
+```
+
 ## TanStack Query
 
 ```ts

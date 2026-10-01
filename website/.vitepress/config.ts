@@ -241,6 +241,7 @@ const config = defineConfig({
           text: 'Core',
           items: [
             { text: 'Configuration', link: '/guide/configuration' },
+            { text: 'Typed routes', link: '/guide/typed-routes' },
             { text: 'Errors', link: '/guide/errors' },
             { text: 'TanStack Query', link: '/guide/tanstack-query' },
             { text: 'Plugins & interceptors', link: '/guide/plugins' },

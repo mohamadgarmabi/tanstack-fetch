@@ -95,7 +95,7 @@ const api = createFetch({
 })
 
 const user = await api.get<User>('/users/:id', { params: { id: '1' } })
-// Fully typed params + response: createFetch<Routes>() — see API → createFetch → Typed routes
+// Fully typed params + response with no generic: see /guide/typed-routes
 
 try {
   await api.get('/missing')
