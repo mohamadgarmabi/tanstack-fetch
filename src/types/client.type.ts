@@ -11,6 +11,7 @@ import type { AuthConfig, StatusHandler, StatusHandlers } from './config.type'
 import type { HttpInterceptor } from './interceptor.type'
 import type { PathRequestArgs, WithPathParams } from './path-params.type'
 import type { FetchErrorInfo, FetchResult } from './result.type'
+import type { FetchRoutes, InferData, NoRoutes, ResolveData, RoutePath } from './routes.type'
 import type { SseEvent, SseHandlers, SseSubscription } from './sse.type'
 import type { UploadOptions, UploadProgressHandler } from './upload.type'
 
@@ -97,39 +98,47 @@ type ThrowingBase = Omit<ThrowingOptions, 'params'>
 type ResultBase = Omit<ResultOptions, 'params'>
 type UploadBase = Omit<UploadCallOptions, 'params'>
 
-type FetchMethod = {
-  <TData, TPath extends string = string>(
+type FetchMethod<
+  TRoutes extends FetchRoutes = NoRoutes,
+  TMethod extends HttpMethod = HttpMethod,
+> = {
+  <TData = InferData, TPath extends RoutePath<TRoutes, TMethod> = string>(
     path: TPath,
     ...args: PathRequestArgs<TPath, ThrowingBase>
-  ): Promise<TData>
-  <TData, TPath extends string = string, E = FetchErrorInfo>(
+  ): Promise<ResolveData<TData, TRoutes, TMethod, TPath>>
+  <TData = InferData, TPath extends RoutePath<TRoutes, TMethod> = string, E = FetchErrorInfo>(
     path: TPath,
     ...args: PathRequestArgs<TPath, ResultBase & { throwOnError: false }>
-  ): Promise<FetchResult<TData, E>>
+  ): Promise<FetchResult<ResolveData<TData, TRoutes, TMethod, TPath>, E>>
 }
 
-type FetchRequest = {
-  <TData, TPath extends string = string>(
-    method: HttpMethod,
+type FetchRequest<TRoutes extends FetchRoutes = NoRoutes> = {
+  <TData = InferData, TPath extends string = string, TMethod extends HttpMethod = HttpMethod>(
+    method: TMethod,
     path: TPath,
     ...args: PathRequestArgs<TPath, ThrowingBase>
-  ): Promise<TData>
-  <TData, TPath extends string = string, E = FetchErrorInfo>(
-    method: HttpMethod,
+  ): Promise<ResolveData<TData, TRoutes, TMethod, TPath>>
+  <
+    TData = InferData,
+    TPath extends string = string,
+    E = FetchErrorInfo,
+    TMethod extends HttpMethod = HttpMethod,
+  >(
+    method: TMethod,
     path: TPath,
     ...args: PathRequestArgs<TPath, ResultBase & { throwOnError: false }>
-  ): Promise<FetchResult<TData, E>>
+  ): Promise<FetchResult<ResolveData<TData, TRoutes, TMethod, TPath>, E>>
 }
 
-type UploadMethod = {
-  <TData, TPath extends string = string>(
+type UploadMethod<TRoutes extends FetchRoutes = NoRoutes> = {
+  <TData = InferData, TPath extends RoutePath<TRoutes, 'POST'> = string>(
     path: TPath,
     ...args: PathRequestArgs<TPath, UploadBase & { throwOnError?: true }>
-  ): Promise<TData>
-  <TData, TPath extends string = string, E = FetchErrorInfo>(
+  ): Promise<ResolveData<TData, TRoutes, 'POST', TPath>>
+  <TData = InferData, TPath extends RoutePath<TRoutes, 'POST'> = string, E = FetchErrorInfo>(
     path: TPath,
     ...args: PathRequestArgs<TPath, UploadBase & { throwOnError: false }>
-  ): Promise<FetchResult<TData, E>>
+  ): Promise<FetchResult<ResolveData<TData, TRoutes, 'POST', TPath>, E>>
 }
 
 type SseCallOptions<T = unknown, TPath extends string = string> = Omit<RequestOptions, 'params'> &
@@ -138,21 +147,22 @@ type SseCallOptions<T = unknown, TPath extends string = string> = Omit<RequestOp
     lastEventId?: string
   }
 
-type FetchClient = {
+/** Pass a route map (`createFetch<Routes>()`) to infer response types from the path. */
+type FetchClient<TRoutes extends FetchRoutes = NoRoutes> = {
   use: (
     name: string,
     interceptor: Omit<HttpInterceptor, 'name'> & { name?: string },
     config?: { order?: number },
   ) => void
   eject: (name: string) => void
-  request: FetchRequest
-  get: FetchMethod
-  post: FetchMethod
-  put: FetchMethod
-  patch: FetchMethod
-  delete: FetchMethod
+  request: FetchRequest<TRoutes>
+  get: FetchMethod<TRoutes, 'GET'>
+  post: FetchMethod<TRoutes, 'POST'>
+  put: FetchMethod<TRoutes, 'PUT'>
+  patch: FetchMethod<TRoutes, 'PATCH'>
+  delete: FetchMethod<TRoutes, 'DELETE'>
   /** Multipart / file upload — returns the same typed response body as `post`. */
-  upload: UploadMethod
+  upload: UploadMethod<TRoutes>
   /**
    * Simple: pass `onMessage` / `onEvent` → returns `{ close }`.
    * Advanced: no handlers → `AsyncIterable` for `for await`.

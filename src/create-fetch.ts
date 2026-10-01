@@ -9,8 +9,10 @@ import type {
   FetchClient,
   FetchErrorInfo,
   FetchResult,
+  FetchRoutes,
   HttpInterceptor,
   HttpMethod,
+  NoRoutes,
   RequestOptions,
   UploadCallOptions,
 } from './types'
@@ -113,8 +115,10 @@ const createHttpClient = (context: FetchContext): Omit<FetchClient, 'sse'> => {
 }
 
 /** Tiny HTTP client (no SSE). For streams use `tanstack-fetch/sse`. */
-const createFetch = (options?: CreateFetchOptions): Omit<FetchClient, 'sse'> =>
-  createHttpClient(createFetchContext(options))
+const createFetch = <TRoutes extends FetchRoutes = NoRoutes>(
+  options?: CreateFetchOptions,
+): Omit<FetchClient<TRoutes>, 'sse'> =>
+  createHttpClient(createFetchContext(options)) as Omit<FetchClient<TRoutes>, 'sse'>
 
 /** @deprecated Use createFetch */
 const createClient = createFetch
