@@ -19,13 +19,13 @@ const api = createFetch({
 })
 
 const main = async () => {
-  const users = await api.get<User[]>()('/users', { query: { _limit: 3 } })
+  const users = await api.get<User[]>('/users', { query: { _limit: 3 } })
   console.log(
     'users',
     users.map((user) => user.name),
   )
 
-  const created = await api.post<User>()('/users', {
+  const created = await api.post<User>('/users', {
     body: { name: 'Ada', email: 'ada@example.com' },
   })
   console.log('created', created.id, created.name)

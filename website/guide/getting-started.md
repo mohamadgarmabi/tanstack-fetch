@@ -35,7 +35,7 @@ const api = createFetch({ baseUrl: 'https://api.example.com' })
 
 useQuery({
   queryKey: ['users'],
-  queryFn: ({ signal }) => api.get<User[]>()('/users', { signal }),
+  queryFn: ({ signal }) => api.get<User[]>('/users', { signal }),
 })
 ```
 
@@ -57,7 +57,7 @@ const api = createFetch({ baseUrl: 'https://api.example.com' })
 
 useQuery({
   queryKey: ['users'],
-  queryFn: ({ signal }) => api.get<User[]>()('/users', { signal }),
+  queryFn: ({ signal }) => api.get<User[]>('/users', { signal }),
 })
 ```
 
@@ -94,7 +94,7 @@ const api = createFetch({
   getToken: () => localStorage.getItem('access_token'),
 })
 
-const user = await api.get<User>()('/users/:id', { params: { id: '1' } })
+const user = await api.get<User, '/users/:id'>('/users/:id', { params: { id: '1' } })
 
 try {
   await api.get('/missing')

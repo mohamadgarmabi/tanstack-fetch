@@ -27,13 +27,13 @@ type User = { id: string; name: string }
 
 export const usersQueryOptions = queryOptions({
   queryKey: ['users'],
-  queryFn: ({ signal }) => api.get<User[]>()('/users', { signal }),
+  queryFn: ({ signal }) => api.get<User[]>('/users', { signal }),
 })
 
 export const userQueryOptions = (id: string) =>
   queryOptions({
     queryKey: ['users', id],
-    queryFn: ({ signal }) => api.get<User>()('/users/:id', { params: { id }, signal }),
+    queryFn: ({ signal }) => api.get<User, '/users/:id'>('/users/:id', { params: { id }, signal }),
   })
 ```
 
@@ -51,7 +51,7 @@ const { data, error, isPending } = useQuery({
   queryKey: ['users', userId],
   enabled: Boolean(userId),
   queryFn: ({ signal }) =>
-    api.get<User>()('/users/:id', {
+    api.get<User, '/users/:id'>('/users/:id', {
       params: { id: userId! },
       signal,
     }),
@@ -94,7 +94,7 @@ const api = createFetch({
 
 const { data, error, isPending } = useQuery({
   queryKey: ['users'],
-  queryFn: ({ signal }) => api.get<User[]>()('/users', { signal }),
+  queryFn: ({ signal }) => api.get<User[]>('/users', { signal }),
 })
 ```
 
@@ -111,11 +111,11 @@ const queryClient = useQueryClient()
 
 const { data, error, isPending } = useQuery({
   queryKey: ['users'],
-  queryFn: ({ signal }) => api.get<User[]>()('/users', { signal }),
+  queryFn: ({ signal }) => api.get<User[]>('/users', { signal }),
 })
 
 const createUser = useMutation({
-  mutationFn: (body: { name: string }) => api.post<User>()('/users', { body }),
+  mutationFn: (body: { name: string }) => api.post<User>('/users', { body }),
   onSuccess: () => {
     void queryClient.invalidateQueries({ queryKey: ['users'] })
   },

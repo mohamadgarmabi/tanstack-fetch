@@ -31,11 +31,15 @@ describe('path params types', () => {
       const unknownUser = await api.get('/users/:id', { params: { id: '1' } })
       expectTypeOf(unknownUser).toBeUnknown()
 
-      const user = await api.get<PostDto>()('/users/:id', { params: { id: 1 } })
+      const user = await api.get<PostDto, '/users/:id'>('/users/:id', { params: { id: 1 } })
       expectTypeOf(user).toEqualTypeOf<PostDto>()
 
-      const post = await api.get<PostDto>()('new/old/:id', { params: { id: 1 } })
+      const post = await api.get<PostDto, 'new/old/:id'>('new/old/:id', { params: { id: 1 } })
       expectTypeOf(post).toEqualTypeOf<PostDto>()
+
+      // paths without placeholders — response generic alone is enough
+      const list = await api.get<PostDto[]>('/users')
+      expectTypeOf(list).toEqualTypeOf<PostDto[]>()
 
       // @ts-expect-error missing params for patterned path
       void api.get('/users/:id')
@@ -46,11 +50,11 @@ describe('path params types', () => {
       // @ts-expect-error empty params without generic
       void api.get('new/old/:id', { params: {} })
 
-      // @ts-expect-error empty params with response generic (curry form)
-      void api.get<PostDto>()('new/old/:id', { params: {} })
+      // @ts-expect-error empty params with response + path generics
+      void api.get<PostDto, 'new/old/:id'>('new/old/:id', { params: {} })
 
-      // @ts-expect-error missing params with response generic
-      void api.get<PostDto>()('new/old/:id')
+      // @ts-expect-error missing params with response + path generics
+      void api.get<PostDto, 'new/old/:id'>('new/old/:id')
     }
 
     expectTypeOf(typeCheck).toBeFunction()

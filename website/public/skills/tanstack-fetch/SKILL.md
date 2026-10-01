@@ -10,13 +10,13 @@ license: MIT
 metadata:
   author: Mohammad Garmabi
   package: tanstack-fetch
-  version: '1.6.1'
+  version: '1.6.2'
   docs: https://mohamadgarmabi.github.io/tanstack-fetch/
   npm: https://www.npmjs.com/package/tanstack-fetch
   llm: https://mohamadgarmabi.github.io/tanstack-fetch/llms.txt
 ---
 
-# tanstack-fetch (v1.6.1)
+# tanstack-fetch (v1.6.2)
 
 Typed Fetch client shaped for TanStack Query. Not an official TanStack package.
 
@@ -86,8 +86,8 @@ export const api = createFetch({
 
 ```ts
 await api.get('/users/:id', { params: { id } })
-await api.get<User>()('/users/:id', { params: { id } })
-await api.get<User[]>()('/users', { query: { page: 1 } })
+await api.get<User, '/users/:id'>('/users/:id', { params: { id } })
+await api.get<User[]>('/users', { query: { page: 1 } })
 ```
 
 ## TanStack Query
@@ -95,11 +95,11 @@ await api.get<User[]>()('/users', { query: { page: 1 } })
 ```ts
 useQuery({
   queryKey: ['users'],
-  queryFn: ({ signal }) => api.get<User[]>()('/users', { signal }),
+  queryFn: ({ signal }) => api.get<User[]>('/users', { signal }),
 })
 
 useMutation({
-  mutationFn: (body: CreateUser) => api.post<User>()('/users', { body }),
+  mutationFn: (body: CreateUser) => api.post<User>('/users', { body }),
 })
 ```
 
@@ -155,7 +155,7 @@ createApp(App).use(createFetchPlugin({ client: api })).mount('#app')
 
 // in a component
 const api = useFetch()
-await api.get<User[]>()('/users')
+await api.get<User[]>('/users')
 ```
 
 `provideFetchClient(api)` only works in a **parent** setup for child `useFetch` (same-component provide+inject does not work in Vue). Prefer the plugin for app-wide / Nuxt setup.
@@ -248,7 +248,7 @@ api.use(
   'refresh-token',
   createRefreshTokenInterceptor({
     refresh: async () => {
-      const body = await api.post<{ accessToken: string }>()('/auth/refresh', {
+      const body = await api.post<{ accessToken: string }>('/auth/refresh', {
         interceptors: { eject: ['refresh-token', 'auth'] },
       })
       /* store body.accessToken */
@@ -295,4 +295,4 @@ const trpcClient = createTRPCFetchClient<AppRouter>({ url: '/api/trpc', client: 
 - Entry points & sizes: [references/entry-points.md](references/entry-points.md)
 - Status handlers map: [references/status-handlers.md](references/status-handlers.md)
 - Vue guide: https://mohamadgarmabi.github.io/tanstack-fetch/guide/vue
-- Changelog 1.6.1: https://mohamadgarmabi.github.io/tanstack-fetch/blog/tanstack-fetch-1-6
+- Changelog 1.6.2: https://mohamadgarmabi.github.io/tanstack-fetch/blog/tanstack-fetch-1-6

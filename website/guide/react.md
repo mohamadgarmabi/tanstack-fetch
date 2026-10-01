@@ -37,7 +37,7 @@ const UsersPage = () => {
   const api = useFetch()
   const { data, error, isPending } = useQuery({
     queryKey: ['users'],
-    queryFn: ({ signal }) => api.get<User[]>()('/users', { signal }),
+    queryFn: ({ signal }) => api.get<User[]>('/users', { signal }),
   })
 
   if (isPending) return <p>Loading…</p>

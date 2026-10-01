@@ -37,7 +37,7 @@ useQuery({
 ```ts
 useQuery({
   queryKey: ['users'],
-  queryFn: ({ signal }) => api.get<User[]>()('/users', { signal }),
+  queryFn: ({ signal }) => api.get<User[]>('/users', { signal }),
 })
 ```
 
@@ -55,7 +55,7 @@ api.use(
       const body = await api.post<{
         accessToken: string
         expiresIn: number
-      }>()('/auth/refresh', {
+      }>('/auth/refresh', {
         interceptors: { eject: ['refresh-token', 'auth'] },
       })
       /* persist body.accessToken + expiresAt */

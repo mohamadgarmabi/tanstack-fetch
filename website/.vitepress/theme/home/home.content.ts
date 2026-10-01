@@ -46,7 +46,7 @@ const api = createFetch({ baseUrl: 'https://api.example.com' })
 useQuery({
   queryKey: ['users'],
   queryFn: ({ signal }) =>
-    api.get<User[]>()('/users', { signal }),
+    api.get<User[]>('/users', { signal }),
 })`,
       },
     ],
@@ -76,7 +76,7 @@ const api = createFetch({
 })
 
 try {
-  await api.get<User>()('/users/:id', {
+  await api.get<User, '/users/:id'>('/users/:id', {
     params: { id: 'missing' },
   })
 } catch (error) {
@@ -178,7 +178,7 @@ api.use(
       const body = await api.post<{
         accessToken: string
         expiresIn: number
-      }>()('/auth/refresh', {
+      }>('/auth/refresh', {
         interceptors: {
           eject: ['refresh-token', 'auth'],
         },
