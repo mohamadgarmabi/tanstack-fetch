@@ -1,23 +1,27 @@
 ---
 name: tanstack-fetch
 description: >-
-  Build and wire tanstack-fetch (typed Fetch client for TanStack Query): createFetch,
-  path params, FetchError, status handlers, plugins, SSR, SSE, upload, React hooks,
-  Vue/Nuxt composables, and tRPC. Use when adding or changing HTTP clients, queryFn,
-  axios alternatives, SSE streams, Vue, Nuxt, or when the user mentions tanstack-fetch.
+  Build and wire tanstack-fetch v1.5 (typed Fetch client for TanStack Query): createFetch,
+  path params, FetchError, status handlers, plugins, SSR, SSE, upload, DevTools, React hooks,
+  Vue/Nuxt composables (createFetchPlugin, useFetch, useSse), and tRPC. Use when adding or
+  changing HTTP clients, queryFn, axios alternatives, SSE streams, Vue, Nuxt, or when the
+  user mentions tanstack-fetch.
 license: MIT
 metadata:
   author: Mohammad Garmabi
   package: tanstack-fetch
+  version: '1.5.0'
   docs: https://mohamadgarmabi.github.io/tanstack-fetch/
   npm: https://www.npmjs.com/package/tanstack-fetch
+  llm: https://mohamadgarmabi.github.io/tanstack-fetch/llms.txt
 ---
 
-# tanstack-fetch
+# tanstack-fetch (v1.5.0)
 
 Typed Fetch client shaped for TanStack Query. Not an official TanStack package.
 
 Docs: https://mohamadgarmabi.github.io/tanstack-fetch/  
+LLM context: https://mohamadgarmabi.github.io/tanstack-fetch/llms.txt  
 npm: `tanstack-fetch`
 
 ## Mental model (always)
@@ -31,29 +35,24 @@ Never wrap responses as `{ data }` like axios. Prefer one shared `api` module.
 ## Install
 
 ```bash
-# npm
+# React + Query
 npm install tanstack-fetch @tanstack/react-query
 
-# pnpm
-pnpm add tanstack-fetch @tanstack/react-query
-
-# yarn
-yarn add tanstack-fetch @tanstack/react-query
-
-# bun
-bun add tanstack-fetch @tanstack/react-query
+# Vue / Nuxt (vue is optional peer >=3.3)
+npm install tanstack-fetch vue
 ```
 
-## Entry points
+## Entry points (gzip, minified ESM)
 
-| Import                   | Use when                                       |
-| ------------------------ | ---------------------------------------------- |
-| `tanstack-fetch`         | HTTP only (`get` / `post` / `upload` / …)      |
-| `tanstack-fetch/sse`     | Need `api.sse()` (fetch-based streams + auth)  |
-| `tanstack-fetch/plugins` | Factories (`createRefreshTokenInterceptor`, …) |
-| `tanstack-fetch/react`   | `FetchProvider`, `useFetch`, `useSse`          |
-| `tanstack-fetch/vue`     | `createFetchPlugin`, `useFetch`, `useSse`      |
-| `tanstack-fetch/trpc`    | tRPC link via the same client                  |
+| Import                    | Use when                                       | gzip   |
+| ------------------------- | ---------------------------------------------- | ------ |
+| `tanstack-fetch`          | HTTP only (`get` / `post` / `upload` / …)      | 4.81KB |
+| `tanstack-fetch/sse`      | Need `api.sse()` (fetch-based streams + auth)  | 5.94KB |
+| `tanstack-fetch/plugins`  | Factories (`createRefreshTokenInterceptor`, …) | 1.13KB |
+| `tanstack-fetch/react`    | `FetchProvider`, `useFetch`, `useSse`          | 0.81KB |
+| `tanstack-fetch/vue`      | `createFetchPlugin`, `useFetch`, `useSse`      | 0.78KB |
+| `tanstack-fetch/trpc`     | tRPC link via the same client                  | 3.16KB |
+| `tanstack-fetch/devtools` | `setupDevtools(api)` request dock              | 8.32KB |
 
 ```ts
 import { createFetch } from 'tanstack-fetch' // HTTP
@@ -119,7 +118,81 @@ try {
 
 For `FetchResult` instead of throw: `{ throwOnError: false }`.
 
-## SSE
+## React
+
+```ts
+import { FetchProvider, useFetch, useSse } from 'tanstack-fetch/react'
+import { createFetch } from 'tanstack-fetch/sse'
+
+const api = createFetch({ plugins: ['sse-resume'] })
+
+// tree
+;<FetchProvider client={api}>{children}</FetchProvider>
+
+const client = useFetch() // injects shared client — does NOT fetch data
+const { data, status, close } = useSse<OrderEvent>('/orders/stream', { client: api })
+// status: 'connecting' | 'connected' | 'disconnected' | 'error'
+```
+
+Prefer `useSse({ client: api })` — `FetchProvider` is optional when `client` is passed.
+
+## Vue / Nuxt (1.5.0)
+
+`useFetch` from this package **injects the shared client** — it does not run an HTTP request. In Nuxt, rename to avoid clashing with core `useFetch`:
+
+```ts
+import { useFetch as useFetchClient, useSse, createFetchPlugin } from 'tanstack-fetch/vue'
+```
+
+### Vue app
+
+```ts
+import { createApp } from 'vue'
+import { createFetch } from 'tanstack-fetch'
+import { createFetchPlugin, useFetch } from 'tanstack-fetch/vue'
+
+const api = createFetch({ baseUrl: import.meta.env.VITE_API_URL })
+createApp(App).use(createFetchPlugin({ client: api })).mount('#app')
+
+// in a component
+const api = useFetch()
+await api.get<User[]>('/users')
+```
+
+`provideFetchClient(api)` only works in a **parent** setup for child `useFetch` (same-component provide+inject does not work in Vue). Prefer the plugin for app-wide / Nuxt setup.
+
+### Nuxt plugin
+
+```ts
+// plugins/tanstack-fetch.ts
+import { createFetch } from 'tanstack-fetch/sse'
+import { createFetchPlugin } from 'tanstack-fetch/vue'
+
+export default defineNuxtPlugin((nuxtApp) => {
+  const api = createFetch({
+    baseUrl: useRuntimeConfig().public.apiBase,
+    plugins: ['sse-resume', 'ssr-forward'],
+    getToken: () => useCookie('access_token').value,
+  })
+  nuxtApp.vueApp.use(createFetchPlugin({ client: api }))
+  return { provide: { api } }
+})
+```
+
+### Vue `useSse` (plugin optional)
+
+```ts
+import { createFetch } from 'tanstack-fetch/sse'
+import { useSse } from 'tanstack-fetch/vue'
+
+const api = createFetch({ plugins: ['sse-resume'] })
+const { data, status, error, close } = useSse<OrderEvent>('/orders/stream', {
+  client: api,
+})
+// status Ref: 'connecting' | 'connected' | 'disconnected' | 'error'
+```
+
+## SSE (core)
 
 Import from `tanstack-fetch/sse`. Prefer handlers → `{ close }`. Or omit handlers and `for await`.
 
@@ -136,18 +209,11 @@ const stream = api.sse<OrderEvent>('/orders/stream', {
   onError: (error) => console.error(error),
 })
 stream.close()
-
-for await (const event of api.sse<OrderEvent>('/orders/stream', { signal })) {
-  console.log(event.data)
-}
 ```
 
-React: `FetchProvider` + `useSse` from `tanstack-fetch/react`.  
-Vue / Nuxt: `createFetchPlugin` + `useSse` from `tanstack-fetch/vue` (pass `{ client: api }` — plugin optional).
+## SSR
 
-## SSR (Next.js)
-
-Use absolute `baseUrl`. Forward cookies with `ssr-forward`:
+Use absolute `baseUrl`. Forward cookies with `ssr-forward` (Next.js `cookies()` / Nuxt `useRequestHeaders`).
 
 ```ts
 import { createFetch } from 'tanstack-fetch'
@@ -176,8 +242,6 @@ await api.upload('/files', {
 
 Named plugins on `createFetch({ plugins })`: `trace` · `ssr-forward` · `retry-idempotent` · `sse-resume`.
 
-Refresh via factory + `api.use`:
-
 ```ts
 import { createRefreshTokenInterceptor } from 'tanstack-fetch/plugins'
 
@@ -194,6 +258,15 @@ api.use(
     after: { enabled: true },
   }),
 )
+```
+
+## DevTools
+
+```ts
+import { setupDevtools } from 'tanstack-fetch/devtools'
+
+setupDevtools(api) // toggle: Alt+Shift+F (macOS ⌥⇧F)
+// options: { http, sse, ssr, trpc, open }
 ```
 
 ## tRPC
@@ -215,8 +288,12 @@ const trpcClient = createTRPCFetchClient<AppRouter>({ url: '/api/trpc', client: 
 | `isFetchError` for branches           | Catch and swallow blindly                  |
 | `tanstack-fetch/sse` for auth streams | Browser `EventSource` when you need Bearer |
 | `params` for `:id` paths              | String-concat URLs                         |
+| Alias Vue `useFetch` in Nuxt          | Clash with Nuxt core `useFetch`            |
+| `useSse({ client })` without provider | Assume `useFetch` performs HTTP            |
 
 ## More detail
 
 - Entry points & sizes: [references/entry-points.md](references/entry-points.md)
 - Status handlers map: [references/status-handlers.md](references/status-handlers.md)
+- Vue guide: https://mohamadgarmabi.github.io/tanstack-fetch/guide/vue
+- Changelog 1.5.0: https://mohamadgarmabi.github.io/tanstack-fetch/blog/tanstack-fetch-1-5
