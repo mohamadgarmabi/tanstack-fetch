@@ -1,11 +1,9 @@
 <script setup lang="ts">
-import { computed } from 'vue'
 import { withBase } from 'vitepress'
 import NpmDownloadBadges from './NpmDownloadBadges.vue'
-import { useNpmPackageStats } from '../composables/use-npm-stats'
+import { PACKAGE_VERSION } from '../home/home.content'
 
-const { pkg } = useNpmPackageStats('tanstack-fetch')
-const versionLabel = computed(() => `Featured · v${pkg.value?.version ?? '1.5.0'}`)
+const versionLabel = `Featured · v${PACKAGE_VERSION}`
 </script>
 
 <template>

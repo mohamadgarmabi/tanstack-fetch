@@ -7,6 +7,8 @@ description: createFetchPlugin, useFetch, and useSse for Vue 3 and Nuxt — same
 
 <p class="blog-meta">October 1, 2026</p>
 
+![tanstack-fetch 1.5.0: Vue and Nuxt](/images/blog-1-5-cover.jpg)
+
 `tanstack-fetch/vue` mirrors the React helpers for Vue 3 and Nuxt.
 
 ## What you get
