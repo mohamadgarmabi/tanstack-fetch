@@ -8,7 +8,7 @@
       "version": "1.5.0",
       "weekly": 445,
       "monthly": 1721,
-      "description": "TanStack Query fetch client — typed errors, AbortSignal, SSR, SSE, upload. React + Vue/Nuxt. Lightweight axios/ky alternative (~3.5KB)."
+      "description": "TanStack Query fetch client — typed errors, AbortSignal, SSR, SSE, upload. React + Vue/Nuxt. Lightweight axios/ky alternative (4.81KB gzip HTTP core)."
     },
     {
       "name": "vite-plugin-react-splash",

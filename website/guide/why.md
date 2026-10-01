@@ -24,7 +24,7 @@ No wrapping `if (!res.ok)`, no Result-object dance unless you opt in with `throw
 
 ## Tiny by default
 
-Import only what you need. The HTTP core stays around **~3.5KB gzip**. SSE, React, plugins, and tRPC are separate entries.
+Import only what you need. The HTTP core is **4.81KB gzip**. SSE, React, Vue, plugins, and tRPC are separate entries.
 
 ## First-class status handling
 

@@ -7,7 +7,7 @@ Use with `assets/tanstack-fetch-linkedin.gif` (or recreate via `scripts/make-lin
 ```
 Shipped tanstack-fetch — a typed Fetch client designed for TanStack Query (React Query).
 
-Tiny HTTP core (~3.5KB) · typed errors · 401/403/404/5xx · AbortSignal · SSE · SSR · plugins · React
+Tiny HTTP core (4.81KB gzip) · typed errors · 401/403/404/5xx · AbortSignal · SSE · SSR · plugins · React · Vue
 
 Start simple:
 api.get('/users', { signal })

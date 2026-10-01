@@ -21,14 +21,15 @@ It is **not** an official TanStack package — it matches the same mental model 
 
 ![Entry points](/images/docs-entry-points.png)
 
-| Import                   | What you get                         | Typical gzip |
-| ------------------------ | ------------------------------------ | ------------ |
-| `tanstack-fetch`         | HTTP (`get` / `post` / `upload` / …) | **~3.5KB**   |
-| `tanstack-fetch/sse`     | + `api.sse()`                        | **~4.7KB**   |
-| `tanstack-fetch/plugins` | plugin factories                     | **~0.9KB**   |
-| `tanstack-fetch/react`   | `FetchProvider` / hooks              | **~1KB**     |
-| `tanstack-fetch/vue`     | plugin / composables (Vue 3 / Nuxt)  | **~0.8KB**   |
-| `tanstack-fetch/trpc`    | tRPC link via `createFetch`          | **~3.1KB**   |
+| Import                   | What you get                         | gzip     |
+| ------------------------ | ------------------------------------ | -------- |
+| `tanstack-fetch`         | HTTP (`get` / `post` / `upload` / …) | **4.81KB** |
+| `tanstack-fetch/sse`     | + `api.sse()`                        | **5.94KB** |
+| `tanstack-fetch/plugins` | plugin factories                     | **1.13KB** |
+| `tanstack-fetch/react`   | `FetchProvider` / hooks              | **0.81KB** |
+| `tanstack-fetch/vue`     | plugin / composables (Vue 3 / Nuxt)  | **0.78KB** |
+| `tanstack-fetch/trpc`    | tRPC link via `createFetch`          | **3.16KB** |
+| `tanstack-fetch/devtools`| request dock                         | **8.32KB** |
 
 ```ts
 import { createFetch } from 'tanstack-fetch' // HTTP only

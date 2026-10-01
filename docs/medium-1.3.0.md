@@ -24,7 +24,7 @@ The mental model is small:
 
 That is exactly what `queryFn` already expects. No `.data` unwrap. No axios adapter glue.
 
-HTTP core is about **3.5KB gzip**. SSR, SSE, upload, React helpers, and tRPC are optional entry points.
+HTTP core is **4.81KB gzip**. SSR, SSE, upload, React helpers, and tRPC are optional entry points.
 
 Not an official TanStack package — just shaped for the same call site.
 
