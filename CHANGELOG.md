@@ -1,5 +1,17 @@
 # Changelog
 
+## 1.5.0
+
+### Features
+
+- **`tanstack-fetch/vue`**: Vue 3 / Nuxt helpers — `createFetchPlugin`, `provideFetchClient`, `useFetch`, `useSse`
+- Same SSE `status` model as React (`connecting` | `connected` | `disconnected` | `error`)
+- Prefer `useSse({ client: api })` without a plugin; Nuxt: `nuxtApp.vueApp.use(createFetchPlugin({ client: api }))`
+
+### Docs
+
+- Guide + API: Vue & Nuxt (`/guide/vue`, `/api/vue`)
+
 ## 1.4.2
 
 ### Fixes

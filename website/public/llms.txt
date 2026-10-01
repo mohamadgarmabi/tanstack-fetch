@@ -1,6 +1,6 @@
 # tanstack-fetch
 
-> Typed Fetch client designed for TanStack Query. Tiny HTTP core, typed errors, AbortSignal, SSR, SSE, upload, tRPC.
+> Typed Fetch client designed for TanStack Query. Tiny HTTP core, typed errors, AbortSignal, SSR, SSE, upload, tRPC, React and Vue/Nuxt.
 
 Docs: https://mohamadgarmabi.github.io/tanstack-fetch/
 Repo: https://github.com/mohamadgarmabi/tanstack-fetch
@@ -10,6 +10,8 @@ npm: https://www.npmjs.com/package/tanstack-fetch
 
 ```bash
 npm install tanstack-fetch @tanstack/react-query
+# or Vue / Nuxt
+npm install tanstack-fetch vue
 ```
 
 ## Agent skill (Cursor / Claude / Codex)
@@ -57,6 +59,7 @@ useQuery({
 - `tanstack-fetch/sse` — fetch-based SSE
 - `tanstack-fetch/plugins` — named interceptors
 - `tanstack-fetch/react` — FetchProvider / useFetch / useSse
+- `tanstack-fetch/vue` — createFetchPlugin / useFetch / useSse (Vue 3 / Nuxt)
 - `tanstack-fetch/trpc` — tRPC link via createFetch
 - `tanstack-fetch/devtools` — request dock for HTTP / SSE / SSR / tRPC (`setupDevtools(api)`)
 
@@ -67,6 +70,8 @@ useQuery({
 - Configuration / status handlers: /guide/configuration
 - Errors: /guide/errors
 - TanStack Query: /guide/tanstack-query
+- React: /guide/react
+- Vue & Nuxt: /guide/vue
 - SSR: /guide/ssr
 - SSE: /guide/sse
 - Upload: /guide/upload
@@ -76,6 +81,7 @@ useQuery({
 - Comparison: /guide/comparison
 - Playground: /examples/playground
 - DevTools: /examples/devtools
+- Release 1.5.0 (Vue & Nuxt): /blog/tanstack-fetch-1-5
 - Release 1.3 → 1.4.2: /blog/tanstack-fetch-1-4
 
 ## Refresh token recipe (summary)
@@ -100,3 +106,21 @@ setupDevtools(api) // toggle: Alt+Shift+F (macOS ⌥⇧F)
 - Shows status, duration, attempts, and caller file per request
 - SSE events + live state (`onSseClose` marks stream end)
 - Options: `{ http, sse, ssr, trpc, open }`
+
+## Vue / Nuxt (summary)
+
+```ts
+import { createFetch } from 'tanstack-fetch/sse'
+import { createFetchPlugin, useSse } from 'tanstack-fetch/vue'
+
+// Nuxt plugin
+export default defineNuxtPlugin((nuxtApp) => {
+  const api = createFetch({ plugins: ['sse-resume'] })
+  nuxtApp.vueApp.use(createFetchPlugin({ client: api }))
+})
+
+// or pass client directly
+const { data, status, close } = useSse('/orders/stream', { client: api })
+```
+
+Nuxt already has a core `useFetch` — import ours as `useFetchClient` when names clash.

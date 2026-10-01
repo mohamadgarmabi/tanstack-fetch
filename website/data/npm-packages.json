@@ -5,10 +5,10 @@
   "packages": [
     {
       "name": "tanstack-fetch",
-      "version": "1.4.2",
+      "version": "1.5.0",
       "weekly": 445,
       "monthly": 1721,
-      "description": "React Query / TanStack Query fetch client — typed errors, AbortSignal, SSR, SSE, upload. Lightweight axios/ky alternativ"
+      "description": "TanStack Query fetch client — typed errors, AbortSignal, SSR, SSE, upload. React + Vue/Nuxt. Lightweight axios/ky alternative (~3.5KB)."
     },
     {
       "name": "vite-plugin-react-splash",

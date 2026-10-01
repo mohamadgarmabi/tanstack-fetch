@@ -5,7 +5,7 @@ import NpmDownloadBadges from './NpmDownloadBadges.vue'
 import { useNpmPackageStats } from '../composables/use-npm-stats'
 
 const { pkg } = useNpmPackageStats('tanstack-fetch')
-const versionLabel = computed(() => `Featured · v${pkg.value?.version ?? '1.4.2'}`)
+const versionLabel = computed(() => `Featured · v${pkg.value?.version ?? '1.5.0'}`)
 </script>
 
 <template>

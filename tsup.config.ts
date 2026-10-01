@@ -7,6 +7,7 @@ const config = defineConfig([
       sse: 'src/sse/index.ts',
       plugins: 'src/plugins-entry.ts',
       react: 'src/react/index.ts',
+      vue: 'src/vue/index.ts',
       trpc: 'src/trpc/index.ts',
       devtools: 'src/devtools/index.ts',
     },
@@ -21,6 +22,7 @@ const config = defineConfig([
     external: [
       'react',
       'react/jsx-runtime',
+      'vue',
       'yaml',
       '@trpc/client',
       '@trpc/server',

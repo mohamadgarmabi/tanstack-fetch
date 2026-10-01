@@ -1,9 +1,13 @@
 ---
 title: React Query live demo
-description: Live createFetch demo matching TanStack Query useQuery and useMutation.
+description: Live createFetch demo matching TanStack Query useQuery and useMutation — React.
 ---
 
 # React / TanStack Query
+
+::: tip Framework
+**React** · `@tanstack/react-query`
+:::
 
 Same contract as your React app: **return data, throw on error, honor `signal`**.
 
@@ -45,4 +49,4 @@ const UsersPage = () => {
 }
 ```
 
-Optional context: [React FetchProvider](/guide/react) · repo example: [`examples/tanstack-query`](https://github.com/mohamadgarmabi/tanstack-fetch/tree/main/examples/tanstack-query)
+Optional context: [React FetchProvider](/guide/react) · Vue twin: [TanStack Query — Vue](/guide/tanstack-query#vue) · repo: [`examples/tanstack-query`](https://github.com/mohamadgarmabi/tanstack-fetch/tree/main/examples/tanstack-query)

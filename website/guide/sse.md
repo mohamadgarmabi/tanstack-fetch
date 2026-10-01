@@ -2,7 +2,13 @@
 
 ![Server-Sent Events over fetch with Authorization](/images/docs-sse.png)
 
-## Live demo
+## Core — `api.sse`
+
+::: tip Framework
+**Core** (framework-agnostic) · `tanstack-fetch/sse`
+:::
+
+### Live demo
 
 <SseDemo />
 
@@ -38,6 +44,10 @@ for await (const event of api.sse<OrderEvent>('/orders/stream', { signal })) {
 
 ## React `useSse`
 
+::: tip Framework
+**React** · `tanstack-fetch/react`
+:::
+
 ### Live demo
 
 <UseSseDemo />
@@ -70,4 +80,36 @@ const LiveFeed = () => {
 }
 ```
 
-Example: [`examples/sse-live`](https://github.com/mohamadgarmabi/tanstack-fetch/tree/main/examples/sse-live)
+Example: [`examples/sse-live`](https://github.com/mohamadgarmabi/tanstack-fetch/tree/main/examples/sse-live) · [React guide](/guide/react#usesse)
+
+## Vue `useSse`
+
+::: tip Framework
+**Vue 3 / Nuxt** · `tanstack-fetch/vue`
+:::
+
+Same hook shape as React — returns **refs**. Pass `{ client: api }` (plugin optional).
+
+```vue
+<script setup lang="ts">
+import { createFetch } from 'tanstack-fetch/sse'
+import { useSse } from 'tanstack-fetch/vue'
+
+const api = createFetch({ plugins: ['sse-resume'] })
+
+const { data, status, error, close } = useSse<OrderEvent>('/orders/stream', {
+  client: api,
+})
+</script>
+
+<template>
+  <p v-if="status === 'error'">{{ error?.message }}</p>
+  <div v-else>
+    <p>{{ status }}</p>
+    <p>{{ data?.id }}</p>
+    <button type="button" @click="close">Stop</button>
+  </div>
+</template>
+```
+
+Guide: [Vue & Nuxt](/guide/vue#usesse)

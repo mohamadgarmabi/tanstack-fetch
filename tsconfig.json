@@ -21,7 +21,8 @@
       "tanstack-fetch": ["./src/index.ts"],
       "tanstack-fetch/sse": ["./src/sse/index.ts"],
       "tanstack-fetch/plugins": ["./src/plugins-entry.ts"],
-      "tanstack-fetch/react": ["./src/react/index.ts"]
+      "tanstack-fetch/react": ["./src/react/index.ts"],
+      "tanstack-fetch/vue": ["./src/vue/index.ts"]
     }
   },
   "include": ["src", "test", "example", "vitest.config.ts"]

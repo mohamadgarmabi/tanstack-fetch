@@ -3,8 +3,8 @@ name: tanstack-fetch
 description: >-
   Build and wire tanstack-fetch (typed Fetch client for TanStack Query): createFetch,
   path params, FetchError, status handlers, plugins, SSR, SSE, upload, React hooks,
-  and tRPC. Use when adding or changing HTTP clients, queryFn, axios alternatives,
-  SSE streams, or when the user mentions tanstack-fetch.
+  Vue/Nuxt composables, and tRPC. Use when adding or changing HTTP clients, queryFn,
+  axios alternatives, SSE streams, Vue, Nuxt, or when the user mentions tanstack-fetch.
 license: MIT
 metadata:
   author: Mohammad Garmabi
@@ -52,6 +52,7 @@ bun add tanstack-fetch @tanstack/react-query
 | `tanstack-fetch/sse`     | Need `api.sse()` (fetch-based streams + auth)  |
 | `tanstack-fetch/plugins` | Factories (`createRefreshTokenInterceptor`, …) |
 | `tanstack-fetch/react`   | `FetchProvider`, `useFetch`, `useSse`          |
+| `tanstack-fetch/vue`     | `createFetchPlugin`, `useFetch`, `useSse`      |
 | `tanstack-fetch/trpc`    | tRPC link via the same client                  |
 
 ```ts
@@ -141,7 +142,8 @@ for await (const event of api.sse<OrderEvent>('/orders/stream', { signal })) {
 }
 ```
 
-React: `FetchProvider` + `useSse` from `tanstack-fetch/react`.
+React: `FetchProvider` + `useSse` from `tanstack-fetch/react`.  
+Vue / Nuxt: `createFetchPlugin` + `useSse` from `tanstack-fetch/vue` (pass `{ client: api }` — plugin optional).
 
 ## SSR (Next.js)
 

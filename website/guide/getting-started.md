@@ -6,11 +6,26 @@
 
 <NpmDownloadBadges package-name="tanstack-fetch" />
 
+Peers are optional. Pick the stack you use:
+
 <InstallTabs packages="tanstack-fetch @tanstack/react-query" />
 
-React / YAML peers are optional. For SSE, React helpers, or tRPC, import the matching entry — same package.
+```bash
+# Vue / Nuxt
+npm install tanstack-fetch vue
+# optional Query
+npm install @tanstack/vue-query
+```
 
-## 30-second quickstart
+For SSE, React, Vue/Nuxt, or tRPC, import the matching entry — same package.
+
+---
+
+## React quickstart
+
+::: tip Framework
+**React** · `@tanstack/react-query`
+:::
 
 ```ts
 import { createFetch } from 'tanstack-fetch'
@@ -26,9 +41,33 @@ useQuery({
 
 That’s it: returns data, throws `FetchError` on HTTP errors, honors Query’s `signal`.
 
+---
+
+## Vue quickstart
+
+::: tip Framework
+**Vue 3** · optional `@tanstack/vue-query` · Nuxt-ready
+:::
+
+```ts
+import { createFetch } from 'tanstack-fetch'
+import { useQuery } from '@tanstack/vue-query'
+
+const api = createFetch({ baseUrl: 'https://api.example.com' })
+
+useQuery({
+  queryKey: ['users'],
+  queryFn: ({ signal }) => api.get<User[]>('/users', { signal }),
+})
+```
+
+Or inject a shared client with [`tanstack-fetch/vue`](/guide/vue).
+
 ![Hero](/images/tanstack-fetch-hero.gif)
 
 ## Shared client (recommended)
+
+Framework-agnostic — works in React, Vue, Nuxt, and Next.js.
 
 ```ts
 // src/lib/api.ts
@@ -66,11 +105,13 @@ try {
 
 ## Next steps
 
-| Goal                        | Page                               |
-| --------------------------- | ---------------------------------- |
-| Cursor / agent skill        | [Agent skill](./skill)             |
-| Token + 401 / 403 / 404     | [Configuration](./configuration)   |
-| `useQuery` / `queryOptions` | [TanStack Query](./tanstack-query) |
-| Next.js cookies             | [SSR & Next.js](./ssr)             |
-| Streams                     | [SSE](./sse)                       |
-| tRPC                        | [tRPC](./trpc)                     |
+| Goal                    | Page                               |
+| ----------------------- | ---------------------------------- |
+| Cursor / agent skill    | [Agent skill](./skill)             |
+| Token + 401 / 403 / 404 | [Configuration](./configuration)   |
+| React / Vue Query       | [TanStack Query](./tanstack-query) |
+| React helpers           | [React](./react)                   |
+| Vue / Nuxt helpers      | [Vue & Nuxt](./vue)                |
+| Next.js / Nuxt cookies  | [SSR](./ssr)                       |
+| Streams                 | [SSE](./sse)                       |
+| tRPC                    | [tRPC](./trpc)                     |

@@ -147,9 +147,9 @@ const OrdersLive = () => {
         <p class="status-playground-eyebrow">Live demo · useSse</p>
         <h2>React <code>useSse</code> + status</h2>
         <p class="status-playground-lead">
-          Pass <code>{'{ client: api }'}</code> — no <code>FetchProvider</code> required.
-          Status: <code>connecting</code> → <code>connected</code> →
-          <code>disconnected</code> / <code>error</code>.
+          Pass <code>{'{ client: api }'}</code> — no <code>FetchProvider</code> required. Status:
+          <code>connecting</code> → <code>connected</code> → <code>disconnected</code> /
+          <code>error</code>.
         </p>
       </div>
     </header>

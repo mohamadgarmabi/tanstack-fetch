@@ -5,7 +5,7 @@ import { GITHUB_URL, INSTALL_COMMANDS, RELEASE_POST_URL } from './home.content'
 import { useNpmPackageStats } from '../composables/use-npm-stats'
 
 const { pkg } = useNpmPackageStats('tanstack-fetch')
-const releaseVersion = computed(() => `v${pkg.value?.version ?? '1.4.2'}`)
+const releaseVersion = computed(() => `v${pkg.value?.version ?? '1.5.0'}`)
 
 const activeId = ref<(typeof INSTALL_COMMANDS)[number]['id']>('npm')
 const copied = ref(false)
@@ -32,7 +32,7 @@ const copyInstall = async () => {
   <header class="home-hero">
     <a class="home-badge" :href="withBase(RELEASE_POST_URL)">
       <span>{{ releaseVersion }}</span>
-      New: DevTools + automatic token refresh
+      New: Vue & Nuxt helpers
       <svg viewBox="0 0 16 16" aria-hidden="true">
         <path d="M3 8h10M9 4l4 4-4 4" />
       </svg>
@@ -43,7 +43,7 @@ const copyInstall = async () => {
     <p class="home-hero-lead">
       Write the request once. tanstack-fetch returns the data, throws a typed error, and honors
       AbortSignal, so it drops straight into TanStack Query. SSR, SSE, upload, refresh-token, tRPC,
-      and DevTools stay optional.
+      DevTools, React, and Vue/Nuxt stay optional.
     </p>
 
     <div class="home-actions">
