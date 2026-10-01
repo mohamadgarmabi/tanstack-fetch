@@ -56,7 +56,7 @@ const createHttpClient = (context: FetchContext): Omit<FetchClient, 'sse'> => {
     }
   }
 
-  const request = async <T, E = FetchErrorInfo>(
+  const request = (async <T, E = FetchErrorInfo>(
     method: HttpMethod,
     path: string,
     requestOptions?: RequestOptions,
@@ -72,52 +72,27 @@ const createHttpClient = (context: FetchContext): Omit<FetchClient, 'sse'> => {
       throw createFetchError(result as FetchResult<never, FetchErrorInfo>)
     }
     return result.data
-  }
-
-  const bindRequest = (): FetchClient['request'] => {
-    const bound = ((...args: unknown[]) => {
-      if (args.length === 0) {
-        return (method: HttpMethod, path: string, requestOptions?: RequestOptions) =>
-          request(method, path, requestOptions)
-      }
-      const [method, path, requestOptions] = args as [HttpMethod, string, RequestOptions?]
-      return request(method, path, requestOptions)
-    }) as FetchClient['request']
-    return bound
-  }
+  }) as FetchClient['request']
 
   const bindMethod = (httpMethod: HttpMethod): FetchClient['get'] => {
-    const bound = ((...args: unknown[]) => {
-      if (args.length === 0) {
-        return (path: string, requestOptions?: RequestOptions) =>
-          request(httpMethod, path, requestOptions)
-      }
-      const [path, requestOptions] = args as [string, RequestOptions?]
-      return request(httpMethod, path, requestOptions)
-    }) as FetchClient['get']
-    return bound
+    const bound = (path: string, requestOptions?: RequestOptions) =>
+      request(httpMethod, path, requestOptions as never)
+    return bound as FetchClient['get']
   }
 
-  const upload: FetchClient['upload'] = ((...args: unknown[]) => {
-    const run = (path: string, uploadOptions?: UploadCallOptions) => {
-      const { method = 'POST', file, files, fields, fieldName, body, ...rest } = uploadOptions ?? {}
-      return request(method, path, {
-        ...rest,
-        body: resolveUploadBody({ body, file, files, fields, fieldName }),
-        onUploadProgress: uploadOptions?.onUploadProgress,
-      })
-    }
-    if (args.length === 0) {
-      return run
-    }
-    const [path, uploadOptions] = args as [string, UploadCallOptions?]
-    return run(path, uploadOptions)
+  const upload: FetchClient['upload'] = ((path: string, uploadOptions?: UploadCallOptions) => {
+    const { method = 'POST', file, files, fields, fieldName, body, ...rest } = uploadOptions ?? {}
+    return request(method, path, {
+      ...rest,
+      body: resolveUploadBody({ body, file, files, fields, fieldName }),
+      onUploadProgress: uploadOptions?.onUploadProgress,
+    } as never)
   }) as FetchClient['upload']
 
   const client = {
     use,
     eject,
-    request: bindRequest(),
+    request,
     get: bindMethod('GET'),
     post: bindMethod('POST'),
     put: bindMethod('PUT'),

@@ -42,13 +42,13 @@ export type User = { id: number; name: string; email: string }
 
 export const usersQueryOptions = queryOptions({
   queryKey: ['users'],
-  queryFn: ({ signal }) => api.get<User[]>()('/users', { signal }),
+  queryFn: ({ signal }) => api.get<User[]>('/users', { signal }),
 })
 
 export const userQueryOptions = (id: number) =>
   queryOptions({
     queryKey: ['users', id],
-    queryFn: ({ signal }) => api.get<User>()('/users/:id', { params: { id }, signal }),
+    queryFn: ({ signal }) => api.get<User, '/users/:id'>('/users/:id', { params: { id }, signal }),
   })
 ```
 

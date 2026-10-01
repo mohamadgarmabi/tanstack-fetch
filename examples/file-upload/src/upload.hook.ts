@@ -20,7 +20,7 @@ const useUploadApp = () => {
     setResultUrl('')
 
     try {
-      const uploaded = await api.upload<UploadResponse>()('/files', {
+      const uploaded = await api.upload<UploadResponse>('/files', {
         file,
         fieldName: 'avatar',
         fields: { folder: 'avatars' },

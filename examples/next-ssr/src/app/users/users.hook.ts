@@ -8,7 +8,7 @@ const usersQueryKey = ['users'] as const
 const useUsersClient = () => {
   const { data, error, isPending } = useQuery({
     queryKey: usersQueryKey,
-    queryFn: ({ signal }) => api.get<User[]>()('/users', { signal }),
+    queryFn: ({ signal }) => api.get<User[]>('/users', { signal }),
   })
 
   const errorMessage = isFetchError(error)

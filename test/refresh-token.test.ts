@@ -16,7 +16,7 @@ describe('createRefreshTokenInterceptor', () => {
     const http = createTestClient(fetchImpl, { getToken: () => token })
     http.use('refresh-token', createRefreshTokenInterceptor({ refresh }))
 
-    const data = await http.get<{ ok: boolean }>()('/secure')
+    const data = await http.get<{ ok: boolean }>('/secure')
     expect(data.ok).toBe(true)
     expect(refresh).toHaveBeenCalledTimes(1)
     expect(fetchImpl).toHaveBeenCalledTimes(2)
@@ -67,8 +67,8 @@ describe('createRefreshTokenInterceptor', () => {
     const http = createTestClient(fetchImpl, { getToken: () => token })
     http.use('refresh-token', createRefreshTokenInterceptor({ refresh }))
 
-    const first = http.get<{ ok: boolean }>()('/a')
-    const second = http.get<{ ok: boolean }>()('/b')
+    const first = http.get<{ ok: boolean }>('/a')
+    const second = http.get<{ ok: boolean }>('/b')
     await vi.waitFor(() => {
       expect(refresh).toHaveBeenCalledTimes(1)
     })
@@ -96,7 +96,7 @@ describe('createRefreshTokenInterceptor', () => {
       }),
     )
 
-    const data = await http.get<{ ok: boolean }>()('/secure')
+    const data = await http.get<{ ok: boolean }>('/secure')
     expect(data.ok).toBe(true)
     expect(refresh).toHaveBeenCalledTimes(1)
     expect(fetchImpl).toHaveBeenCalledTimes(1)
@@ -166,8 +166,7 @@ describe('createRefreshTokenInterceptor', () => {
       'refresh-token',
       createRefreshTokenInterceptor({
         refresh: async () => {
-          const body = await http.post<{ accessToken: string; expiresIn: number }>()(
-            '/auth/refresh',
+          const body = await http.post<{ accessToken: string; expiresIn: number }>('/auth/refresh',
             { interceptors: { eject: ['refresh-token', 'auth'] } },
           )
           token = body.accessToken
@@ -175,7 +174,7 @@ describe('createRefreshTokenInterceptor', () => {
       }),
     )
 
-    const data = await http.get<{ ok: boolean }>()('/secure')
+    const data = await http.get<{ ok: boolean }>('/secure')
     expect(data.ok).toBe(true)
     expect(fetchImpl.mock.calls.some(([url]) => String(url).endsWith('/auth/refresh'))).toBe(true)
   })

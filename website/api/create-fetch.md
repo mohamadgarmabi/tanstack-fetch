@@ -59,8 +59,8 @@ const api = createFetch({ baseUrl: 'https://api.example.com' })
 // params required — keys inferred from the path
 await api.get('/users/:id', { params: { id: '1' } })
 
-// response generic — empty `()` keeps path (and params) typed
-await api.get<User>()('/users/:id', { params: { id: '1' } })
+// response + params — path as the second type argument
+await api.get<User, '/users/:id'>('/users/:id', { params: { id: '1' } })
 
 await api.get('/users/{id}/posts/{postId}', {
   params: pathParams('/users/{id}/posts/{postId}', { id: 1, postId: 2 }),

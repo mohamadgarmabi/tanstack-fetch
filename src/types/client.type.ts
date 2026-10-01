@@ -89,47 +89,29 @@ type RequestBase = Omit<RequestOptions, 'params'>
 type UploadBase = Omit<UploadCallOptions, 'params'>
 
 /**
- * Dual-callable HTTP helper:
- * - `api.get('/users/:id', { params })` — params typed from the path
- * - `api.get<User>()('/users/:id', { params })` — same params check + typed response
+ * Path params are typed from the URL literal.
  *
- * TypeScript has no partial type-argument inference, so an explicit response
- * generic needs the empty `()` call to keep the path literal (and params) inferred.
+ * - `api.get('/users/:id', { params })` — params from the path, response `unknown`
+ * - `api.get<User, '/users/:id'>('/users/:id', { params })` — typed response + params
+ *
+ * Pass the path as the second type argument when you also set a response generic
+ * (TypeScript cannot partially infer it). Paths without placeholders only need `<User>`.
  */
-type FetchMethod = {
-  <TPath extends string>(
-    path: TPath,
-    ...args: PathRequestArgs<TPath, RequestBase>
-  ): Promise<unknown>
-  <TData>(): <TPath extends string>(
-    path: TPath,
-    ...args: PathRequestArgs<TPath, RequestBase>
-  ) => Promise<TData>
-}
+type FetchMethod = <TData = unknown, TPath extends string = string>(
+  path: TPath,
+  ...args: PathRequestArgs<TPath, RequestBase>
+) => Promise<TData>
 
-type FetchRequest = {
-  <TPath extends string>(
-    method: HttpMethod,
-    path: TPath,
-    ...args: PathRequestArgs<TPath, RequestBase>
-  ): Promise<unknown>
-  <TData>(): <TPath extends string>(
-    method: HttpMethod,
-    path: TPath,
-    ...args: PathRequestArgs<TPath, RequestBase>
-  ) => Promise<TData>
-}
+type FetchRequest = <TData = unknown, TPath extends string = string>(
+  method: HttpMethod,
+  path: TPath,
+  ...args: PathRequestArgs<TPath, RequestBase>
+) => Promise<TData>
 
-type UploadMethod = {
-  <TPath extends string>(
-    path: TPath,
-    ...args: PathRequestArgs<TPath, UploadBase>
-  ): Promise<unknown>
-  <TData>(): <TPath extends string>(
-    path: TPath,
-    ...args: PathRequestArgs<TPath, UploadBase>
-  ) => Promise<TData>
-}
+type UploadMethod = <TData = unknown, TPath extends string = string>(
+  path: TPath,
+  ...args: PathRequestArgs<TPath, UploadBase>
+) => Promise<TData>
 
 type SseCallOptions<T = unknown, TPath extends string = string> = Omit<RequestOptions, 'params'> &
   WithPathParams<TPath> &

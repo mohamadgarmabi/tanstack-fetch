@@ -32,7 +32,7 @@ const api = createFetch({ baseUrl: 'https://api.example.com' })
 
 useQuery({
   queryKey: ['users'],
-  queryFn: ({ signal }) => api.get<User[]>()('/users', { signal }),
+  queryFn: ({ signal }) => api.get<User[]>('/users', { signal }),
 })
 ```
 

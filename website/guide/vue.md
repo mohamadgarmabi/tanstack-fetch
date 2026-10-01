@@ -53,7 +53,7 @@ import { isFetchError } from 'tanstack-fetch'
 
 const api = useFetch()
 
-const users = await api.get<User[]>()('/users')
+const users = await api.get<User[]>('/users')
 </script>
 ```
 
@@ -154,7 +154,7 @@ const api = useFetch()
 
 const { data, error, isPending } = useQuery({
   queryKey: ['users'],
-  queryFn: ({ signal }) => api.get<User[]>()('/users', { signal }),
+  queryFn: ({ signal }) => api.get<User[]>('/users', { signal }),
 })
 ```
 

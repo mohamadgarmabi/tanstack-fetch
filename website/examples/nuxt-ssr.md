@@ -54,7 +54,7 @@ const api = useFetchClient()
 
 const { data, isPending, error } = useQuery({
   queryKey: ['users'],
-  queryFn: ({ signal }) => api.get<User[]>()('/users', { signal }),
+  queryFn: ({ signal }) => api.get<User[]>('/users', { signal }),
 })
 </script>
 

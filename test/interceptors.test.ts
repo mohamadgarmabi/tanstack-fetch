@@ -42,7 +42,7 @@ describe('tanstack-fetch interceptors', () => {
       },
     })
 
-    const data = await http.get<{ ok: boolean }>()('/secure')
+    const data = await http.get<{ ok: boolean }>('/secure')
     expect(data.ok).toBe(true)
     expect(fetchImpl).toHaveBeenCalledTimes(2)
     const secondHeaders = new Headers((fetchImpl.mock.calls[1]?.[1] as RequestInit).headers)
@@ -65,7 +65,7 @@ describe('tanstack-fetch interceptors', () => {
       }),
     })
 
-    const users = await http.get<Array<{ id: string }>>()('/users')
+    const users = await http.get<Array<{ id: string }>>('/users')
     expect(users).toEqual([{ id: '1' }])
     expect(fetchImpl).not.toHaveBeenCalled()
   })

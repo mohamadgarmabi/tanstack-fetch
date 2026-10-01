@@ -45,7 +45,7 @@ api.use(
       const body = await api.post<{
         accessToken: string
         expiresIn: number
-      }>()('/auth/refresh', {
+      }>('/auth/refresh', {
         // Avoid infinite 401 → refresh → 401 loops
         interceptors: { eject: ['refresh-token', 'auth'] },
       })
@@ -77,7 +77,7 @@ api.use(
       const body = await api.post<{
         accessToken: string
         expiresIn: number
-      }>()('/auth/refresh', {
+      }>('/auth/refresh', {
         interceptors: { eject: ['refresh-token', 'auth'] },
       })
       persist(body.accessToken, body.expiresIn)
@@ -98,7 +98,7 @@ api.use(
       const body = await api.post<{
         accessToken: string
         expiresIn: number
-      }>()('/auth/refresh', {
+      }>('/auth/refresh', {
         interceptors: { eject: ['refresh-token', 'auth'] },
       })
       persist(body.accessToken, body.expiresIn)
