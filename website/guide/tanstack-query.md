@@ -44,6 +44,10 @@ import { usersQueryOptions } from '../queries/users'
 const { data } = useQuery(usersQueryOptions)
 ```
 
+::: tip Typed routes
+With `createFetch<Routes>()` you can drop the generic: `api.get('/users/:id', { params: { id }, signal })` infers `User` **and** checks `params` against the URL. An explicit `api.get<User>(…)` turns that check off. See [Typed routes](/guide/typed-routes).
+:::
+
 ### Params + `enabled`
 
 ```tsx

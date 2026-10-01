@@ -92,4 +92,6 @@ await api.get('/users/:id') // ❌ params required
 - An explicit generic (`api.get<Other>(…)`) still overrides the map.
 - Works the same with `createFetch<Routes>()` from `tanstack-fetch/sse` (HTTP methods only, not `sse`).
 
+Full guide: [Typed routes](/guide/typed-routes).
+
 Deprecated alias: `createClient` → `createFetch`.
