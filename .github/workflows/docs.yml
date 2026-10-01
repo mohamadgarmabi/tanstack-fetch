@@ -71,8 +71,9 @@ jobs:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: dist
           force_orphan: true
-          user_name: github-actions[bot]
-          user_email: 41898282+github-actions[bot]@users.noreply.github.com
+          # Use human author so github-actions[bot] does not appear in Contributors.
+          user_name: m.garmabi
+          user_email: m.garmabi@charismacredits.com
 
   # Optional: works when Settings → Pages → Source is "GitHub Actions".
   deploy-actions:
