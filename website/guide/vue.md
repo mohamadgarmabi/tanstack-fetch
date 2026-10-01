@@ -53,7 +53,7 @@ import { isFetchError } from 'tanstack-fetch'
 
 const api = useFetch()
 
-const users = await api.get<User[]>('/users')
+const users = await api.get<User[]>('/users', {})
 </script>
 ```
 

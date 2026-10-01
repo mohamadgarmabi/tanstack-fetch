@@ -57,7 +57,20 @@ const methodLine = (operation: CollectedOperation) => {
   }
   const method = operation.method.toLowerCase()
   const call = method === 'delete' ? 'delete' : method
-  return `    ${operation.operationId}: (options${optional}: ${options}) => api.${call}<${response}, '${clientPath(operation.path)}'>('${clientPath(operation.path)}', options),`
+  const pathType = paramsType(operation, 'path')
+  const bodyType = operation.bodySchema
+    ? schemaToTs(operation.bodySchema as JsonSchema | undefined)
+    : undefined
+  const hasBody = Boolean(bodyType) && method !== 'get' && method !== 'delete'
+  const generics =
+    pathType && hasBody
+      ? `<${response}, ${pathType}, ${bodyType}>`
+      : pathType
+        ? `<${response}, ${pathType}>`
+        : hasBody
+          ? `<${response}, NoParams, ${bodyType}>`
+          : `<${response}>`
+  return `    ${operation.operationId}: (options${optional}: ${options}) => api.${call}${generics}('${clientPath(operation.path)}', options),`
 }
 
 const generateClientFile = (spec: OpenApiSpec, operations: CollectedOperation[]) => {
@@ -70,11 +83,25 @@ const generateClientFile = (spec: OpenApiSpec, operations: CollectedOperation[])
   const typesImport =
     schemaNames.length > 0 ? `import type { ${schemaNames.join(', ')} } from './types'\n` : ''
   const hasSse = operations.some((item) => item.isSse)
+  const needsNoParams = operations.some((item) => {
+    if (item.isSse || !item.bodySchema) {
+      return false
+    }
+    const method = item.method.toLowerCase()
+    if (method === 'get' || method === 'delete') {
+      return false
+    }
+    return !paramsType(item, 'path')
+  })
+  const typeImports = ['CreateFetchOptions', 'RequestOptions']
+  if (needsNoParams) {
+    typeImports.push('NoParams')
+  }
   const fetchImport = hasSse
     ? `import { createFetch } from 'tanstack-fetch/sse'
-import type { CreateFetchOptions, RequestOptions } from 'tanstack-fetch'`
+import type { ${typeImports.join(', ')} } from 'tanstack-fetch'`
     : `import { createFetch } from 'tanstack-fetch'
-import type { CreateFetchOptions, RequestOptions } from 'tanstack-fetch'`
+import type { ${typeImports.join(', ')} } from 'tanstack-fetch'`
 
   return `${fetchImport}
 ${typesImport}

@@ -51,6 +51,7 @@ Path placeholders make `params` required and typed (`:id` or `{id}`):
 
 ```ts
 import { createFetch, pathParams } from 'tanstack-fetch'
+import type { NoParams } from 'tanstack-fetch'
 
 type User = { id: string; name: string }
 
@@ -59,8 +60,11 @@ const api = createFetch({ baseUrl: 'https://api.example.com' })
 // params required — keys inferred from the path
 await api.get('/users/:id', { params: { id: '1' } })
 
-// response + params — path as the second type argument
-await api.get<User, '/users/:id'>('/users/:id', { params: { id: '1' } })
+// response + params map — path must contain matching :id / {id}
+await api.get<User, { id: string | number }>('/users/:id', { params: { id: '1' } })
+
+// post / put / patch — optional body type (use `NoParams` when there are no path params)
+await api.post<User, NoParams, { name: string }>('/users', { body: { name: 'Ada' } })
 
 await api.get('/users/{id}/posts/{postId}', {
   params: pathParams('/users/{id}/posts/{postId}', { id: 1, postId: 2 }),
@@ -70,6 +74,6 @@ await api.get('/users/{id}/posts/{postId}', {
 await api.get('/users')
 ```
 
-Helpers / types: `pathParams()`, `PathParamsOf`, `ExtractPathParamKeys`.
+Helpers / types: `pathParams()`, `PathParamsOf`, `ExtractPathParamKeys`, `NoParams`.
 
 Deprecated alias: `createClient` → `createFetch`.

@@ -101,7 +101,7 @@ const runStatus = async (status: number) => {
   busy.value = true
   lastResult.value = `Calling GET /status/${status}…`
   try {
-    const data = await api.get<{ ok: boolean }>(`/status/${status}`)
+    const data = await api.get<{ ok: boolean }>(`/status/${status}`, {})
     lastResult.value = `Success · ${JSON.stringify(data)}`
     pushLog('result', `get(/status/${status}) → data`)
   } catch (error) {

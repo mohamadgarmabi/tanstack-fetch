@@ -10,13 +10,13 @@ license: MIT
 metadata:
   author: Mohammad Garmabi
   package: tanstack-fetch
-  version: '1.6.2'
+  version: '1.6.1'
   docs: https://mohamadgarmabi.github.io/tanstack-fetch/
   npm: https://www.npmjs.com/package/tanstack-fetch
   llm: https://mohamadgarmabi.github.io/tanstack-fetch/llms.txt
 ---
 
-# tanstack-fetch (v1.6.2)
+# tanstack-fetch (v1.6.1)
 
 Typed Fetch client shaped for TanStack Query. Not an official TanStack package.
 
@@ -86,7 +86,8 @@ export const api = createFetch({
 
 ```ts
 await api.get('/users/:id', { params: { id } })
-await api.get<User, '/users/:id'>('/users/:id', { params: { id } })
+await api.get<User, { id: string | number }>('/users/:id', { params: { id } })
+await api.post<User, NoParams, CreateUser>('/users', { body })
 await api.get<User[]>('/users', { query: { page: 1 } })
 ```
 
@@ -99,7 +100,7 @@ useQuery({
 })
 
 useMutation({
-  mutationFn: (body: CreateUser) => api.post<User>('/users', { body }),
+  mutationFn: (body: CreateUser) => api.post<User, NoParams, CreateUser>('/users', { body }),
 })
 ```
 
@@ -155,7 +156,7 @@ createApp(App).use(createFetchPlugin({ client: api })).mount('#app')
 
 // in a component
 const api = useFetch()
-await api.get<User[]>('/users')
+await api.get<User[]>('/users', {})
 ```
 
 `provideFetchClient(api)` only works in a **parent** setup for child `useFetch` (same-component provide+inject does not work in Vue). Prefer the plugin for app-wide / Nuxt setup.
@@ -295,4 +296,4 @@ const trpcClient = createTRPCFetchClient<AppRouter>({ url: '/api/trpc', client: 
 - Entry points & sizes: [references/entry-points.md](references/entry-points.md)
 - Status handlers map: [references/status-handlers.md](references/status-handlers.md)
 - Vue guide: https://mohamadgarmabi.github.io/tanstack-fetch/guide/vue
-- Changelog 1.6.2: https://mohamadgarmabi.github.io/tanstack-fetch/blog/tanstack-fetch-1-6
+- Changelog 1.6.1: https://mohamadgarmabi.github.io/tanstack-fetch/blog/tanstack-fetch-1-6

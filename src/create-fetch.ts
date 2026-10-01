@@ -94,9 +94,9 @@ const createHttpClient = (context: FetchContext): Omit<FetchClient, 'sse'> => {
     eject,
     request,
     get: bindMethod('GET'),
-    post: bindMethod('POST'),
-    put: bindMethod('PUT'),
-    patch: bindMethod('PATCH'),
+    post: bindMethod('POST') as FetchClient['post'],
+    put: bindMethod('PUT') as FetchClient['put'],
+    patch: bindMethod('PATCH') as FetchClient['patch'],
     delete: bindMethod('DELETE'),
     upload,
   }

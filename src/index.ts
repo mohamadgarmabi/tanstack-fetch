@@ -47,6 +47,7 @@ export type {
   PathParamsOf,
   PathParamValue,
   ExtractPathParamKeys,
+  NoParams,
   WithPathParams,
   QueryParams,
 } from './types'

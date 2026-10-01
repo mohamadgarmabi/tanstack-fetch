@@ -1,24 +1,23 @@
 # Changelog
 
-## 1.6.2
+## 1.6.1
 
 ### Changes
 
-- Response + path params: pass the path as the **second type argument** instead of curry.
-  - `api.get<User, '/users/:id'>('/users/:id', { params: { id } })`
-  - Paths without placeholders still work with one generic: `api.get<User[]>('/users')`
-
-## 1.6.1
-
-### Fixes
-
 - **Path-typed `params`**: keys inferred from `:param` / `{param}` URL patterns (no route map).
+- Response + params: pass a **params map** as the second type argument.
+  - `api.get<User, { id: number }>('/users/:id', { params: { id } })`
+  - Path must contain matching `:id` / `{id}` for every key in the map
+- `<Data>` only requires an options argument (path literal is lost by TypeScript)
+- **Optional body typing** on `post` / `put` / `patch` / `request`:
+  - `api.post<User, NoParams, CreateUser>('/users', { body })`
+  - `api.post<User, { id: number }, CreateUser>('/users/:id', { params, body })`
 - Dropped the experimental `createFetch<Routes>()` route map from 1.6.0.
 
 ### Breaking
 
 - Removed `throwOnError` — HTTP helpers always return data on success and throw `FetchError` on failure.
-- Response generics needed an extra inference site so path `params` stay typed (see 1.6.2 for the final `get<Data, Path>` form).
+- `api.get<User[]>('/users')` → `api.get<User[]>('/users', {})` (or pass real options) when using a response generic
 
 ## 1.6.0
 

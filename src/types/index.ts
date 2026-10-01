@@ -51,6 +51,7 @@ import type {
 import type { SseEvent, SseHandlers, SseStatus, SseSubscription } from './sse.type'
 import type {
   ExtractPathParamKeys,
+  NoParams,
   PathParamsOf,
   PathParamValue,
   WithPathParams,
@@ -105,6 +106,7 @@ export type {
   SseStatus,
   SseSubscription,
   ExtractPathParamKeys,
+  NoParams,
   PathParamsOf,
   PathParamValue,
   WithPathParams,

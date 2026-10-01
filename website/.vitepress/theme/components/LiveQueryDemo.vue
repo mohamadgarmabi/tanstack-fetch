@@ -40,7 +40,7 @@ const api = createFetch({
 const runSuccess = async () => {
   loading.value = true
   try {
-    users.value = await api.get<User[]>('/users')
+    users.value = await api.get<User[]>('/users', {})
     output.value = `queryFn-style success · ${users.value.length} users`
   } catch (error) {
     users.value = []
@@ -69,7 +69,7 @@ const snippet = computed(
   () => `const api = createFetch({ baseUrl, fetch: mockFetch })
 
 // same shape as TanStack Query queryFn
-const users = await api.get<User[]>('/users')
+const users = await api.get<User[]>('/users', {})
 `,
 )
 </script>
