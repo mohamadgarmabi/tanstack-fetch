@@ -10,7 +10,7 @@ const UsersPage = async () => {
 
   await queryClient.prefetchQuery({
     queryKey: usersQueryKey,
-    queryFn: () => api.get<User[]>('/users'),
+    queryFn: () => api.get<User[]>()('/users'),
   })
 
   return (

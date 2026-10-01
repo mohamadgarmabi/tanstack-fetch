@@ -35,7 +35,7 @@ api.use(
       const body = await api.post<{
         accessToken: string
         expiresIn: number
-      }>('/auth/refresh', {
+      }>()('/auth/refresh', {
         // don't run the refresh request through these interceptors
         interceptors: { eject: ['refresh-token', 'auth'] },
       })

@@ -16,7 +16,6 @@ export type {
   CreateFetchOptions,
   CreateClientOptions,
   FetchClient,
-  FetchRoutes,
   HttpClient,
   FetchErrorInfo,
   HttpError,

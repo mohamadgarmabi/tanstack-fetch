@@ -9,10 +9,8 @@ import type {
   FetchClient,
   FetchErrorInfo,
   FetchResult,
-  FetchRoutes,
   HttpInterceptor,
   HttpMethod,
-  NoRoutes,
   RequestOptions,
   UploadCallOptions,
 } from './types'
@@ -23,10 +21,7 @@ type FetchContext = {
 }
 
 const createFetchContext = (options: CreateFetchOptions = {}): FetchContext => {
-  const clientOptions: CreateFetchOptions = {
-    throwOnError: true,
-    ...options,
-  }
+  const clientOptions: CreateFetchOptions = { ...options }
 
   const interceptors: HttpInterceptor[] = [
     ...createConfigInterceptors(clientOptions),
@@ -61,11 +56,11 @@ const createHttpClient = (context: FetchContext): Omit<FetchClient, 'sse'> => {
     }
   }
 
-  const request = (async <T, E = FetchErrorInfo>(
+  const request = async <T, E = FetchErrorInfo>(
     method: HttpMethod,
     path: string,
     requestOptions?: RequestOptions,
-  ): Promise<T | FetchResult<T, E>> => {
+  ): Promise<T> => {
     const result = await sendRequest<T, E>({
       method,
       path,
@@ -73,35 +68,56 @@ const createHttpClient = (context: FetchContext): Omit<FetchClient, 'sse'> => {
       client: clientOptions,
       interceptors,
     })
-    const shouldThrow = requestOptions?.throwOnError ?? clientOptions.throwOnError ?? true
-    if (!result.ok && shouldThrow) {
+    if (!result.ok) {
       throw createFetchError(result as FetchResult<never, FetchErrorInfo>)
     }
-    if (shouldThrow && result.ok) {
-      return result.data
-    }
-    return result
-  }) as FetchClient['request']
-
-  const bindMethod = (httpMethod: HttpMethod): FetchClient['get'] => {
-    const bound = (path: string, requestOptions?: RequestOptions) =>
-      request(httpMethod, path, requestOptions as never)
-    return bound as FetchClient['get']
+    return result.data
   }
 
-  const upload: FetchClient['upload'] = ((path: string, uploadOptions?: UploadCallOptions) => {
-    const { method = 'POST', file, files, fields, fieldName, body, ...rest } = uploadOptions ?? {}
-    return request(method, path, {
-      ...rest,
-      body: resolveUploadBody({ body, file, files, fields, fieldName }),
-      onUploadProgress: uploadOptions?.onUploadProgress,
-    } as never)
+  const bindRequest = (): FetchClient['request'] => {
+    const bound = ((...args: unknown[]) => {
+      if (args.length === 0) {
+        return (method: HttpMethod, path: string, requestOptions?: RequestOptions) =>
+          request(method, path, requestOptions)
+      }
+      const [method, path, requestOptions] = args as [HttpMethod, string, RequestOptions?]
+      return request(method, path, requestOptions)
+    }) as FetchClient['request']
+    return bound
+  }
+
+  const bindMethod = (httpMethod: HttpMethod): FetchClient['get'] => {
+    const bound = ((...args: unknown[]) => {
+      if (args.length === 0) {
+        return (path: string, requestOptions?: RequestOptions) =>
+          request(httpMethod, path, requestOptions)
+      }
+      const [path, requestOptions] = args as [string, RequestOptions?]
+      return request(httpMethod, path, requestOptions)
+    }) as FetchClient['get']
+    return bound
+  }
+
+  const upload: FetchClient['upload'] = ((...args: unknown[]) => {
+    const run = (path: string, uploadOptions?: UploadCallOptions) => {
+      const { method = 'POST', file, files, fields, fieldName, body, ...rest } = uploadOptions ?? {}
+      return request(method, path, {
+        ...rest,
+        body: resolveUploadBody({ body, file, files, fields, fieldName }),
+        onUploadProgress: uploadOptions?.onUploadProgress,
+      })
+    }
+    if (args.length === 0) {
+      return run
+    }
+    const [path, uploadOptions] = args as [string, UploadCallOptions?]
+    return run(path, uploadOptions)
   }) as FetchClient['upload']
 
   const client = {
     use,
     eject,
-    request,
+    request: bindRequest(),
     get: bindMethod('GET'),
     post: bindMethod('POST'),
     put: bindMethod('PUT'),
@@ -115,10 +131,8 @@ const createHttpClient = (context: FetchContext): Omit<FetchClient, 'sse'> => {
 }
 
 /** Tiny HTTP client (no SSE). For streams use `tanstack-fetch/sse`. */
-const createFetch = <TRoutes extends FetchRoutes = NoRoutes>(
-  options?: CreateFetchOptions,
-): Omit<FetchClient<TRoutes>, 'sse'> =>
-  createHttpClient(createFetchContext(options)) as Omit<FetchClient<TRoutes>, 'sse'>
+const createFetch = (options?: CreateFetchOptions): Omit<FetchClient, 'sse'> =>
+  createHttpClient(createFetchContext(options))
 
 /** @deprecated Use createFetch */
 const createClient = createFetch

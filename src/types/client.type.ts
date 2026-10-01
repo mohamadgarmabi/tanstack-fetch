@@ -10,8 +10,6 @@ import type {
 import type { AuthConfig, StatusHandler, StatusHandlers } from './config.type'
 import type { HttpInterceptor } from './interceptor.type'
 import type { PathRequestArgs, WithPathParams } from './path-params.type'
-import type { FetchErrorInfo, FetchResult } from './result.type'
-import type { FetchRoutes, InferData, NoRoutes, ResolveData, RoutePath } from './routes.type'
 import type { SseEvent, SseHandlers, SseSubscription } from './sse.type'
 import type { UploadOptions, UploadProgressHandler } from './upload.type'
 
@@ -27,8 +25,6 @@ type RequestOptions = {
   headers?: HeadersInit
   signal?: AbortSignal
   timeoutMs?: number
-  /** Default `true` — matches TanStack Query `queryFn` (throw on HTTP error). */
-  throwOnError?: boolean
   parseAs?: 'json' | 'text' | 'blob'
   operation?: string
   interceptors?: RequestInterceptorConfig
@@ -42,8 +38,6 @@ type CreateFetchOptions = {
   source?: ClientSource
   incoming?: IncomingHeaders | (() => MaybePromise<IncomingHeaders>)
   timeoutMs?: number
-  /** Default `true` for TanStack Query. Set `false` to get `FetchResult`. */
-  throwOnError?: boolean
   interceptors?: HttpInterceptor[]
   plugins?: PluginName[]
   fetch?: typeof fetch
@@ -89,56 +83,52 @@ type CreateFetchOptions = {
   onStatus?: StatusHandlers
 }
 
-type ThrowingOptions = Omit<RequestOptions, 'throwOnError'> & { throwOnError?: true }
-type ResultOptions = Omit<RequestOptions, 'throwOnError'> & { throwOnError: false }
-
 type UploadCallOptions = Omit<RequestOptions, 'body' | 'onUploadProgress'> & UploadOptions
 
-type ThrowingBase = Omit<ThrowingOptions, 'params'>
-type ResultBase = Omit<ResultOptions, 'params'>
+type RequestBase = Omit<RequestOptions, 'params'>
 type UploadBase = Omit<UploadCallOptions, 'params'>
 
-type FetchMethod<
-  TRoutes extends FetchRoutes = NoRoutes,
-  TMethod extends HttpMethod = HttpMethod,
-> = {
-  <TData = InferData, TPath extends RoutePath<TRoutes, TMethod> = string>(
+/**
+ * Dual-callable HTTP helper:
+ * - `api.get('/users/:id', { params })` — params typed from the path
+ * - `api.get<User>()('/users/:id', { params })` — same params check + typed response
+ *
+ * TypeScript has no partial type-argument inference, so an explicit response
+ * generic needs the empty `()` call to keep the path literal (and params) inferred.
+ */
+type FetchMethod = {
+  <TPath extends string>(
     path: TPath,
-    ...args: PathRequestArgs<TPath, ThrowingBase>
-  ): Promise<ResolveData<TData, TRoutes, TMethod, TPath>>
-  <TData = InferData, TPath extends RoutePath<TRoutes, TMethod> = string, E = FetchErrorInfo>(
+    ...args: PathRequestArgs<TPath, RequestBase>
+  ): Promise<unknown>
+  <TData>(): <TPath extends string>(
     path: TPath,
-    ...args: PathRequestArgs<TPath, ResultBase & { throwOnError: false }>
-  ): Promise<FetchResult<ResolveData<TData, TRoutes, TMethod, TPath>, E>>
+    ...args: PathRequestArgs<TPath, RequestBase>
+  ) => Promise<TData>
 }
 
-type FetchRequest<TRoutes extends FetchRoutes = NoRoutes> = {
-  <TData = InferData, TPath extends string = string, TMethod extends HttpMethod = HttpMethod>(
-    method: TMethod,
+type FetchRequest = {
+  <TPath extends string>(
+    method: HttpMethod,
     path: TPath,
-    ...args: PathRequestArgs<TPath, ThrowingBase>
-  ): Promise<ResolveData<TData, TRoutes, TMethod, TPath>>
-  <
-    TData = InferData,
-    TPath extends string = string,
-    E = FetchErrorInfo,
-    TMethod extends HttpMethod = HttpMethod,
-  >(
-    method: TMethod,
+    ...args: PathRequestArgs<TPath, RequestBase>
+  ): Promise<unknown>
+  <TData>(): <TPath extends string>(
+    method: HttpMethod,
     path: TPath,
-    ...args: PathRequestArgs<TPath, ResultBase & { throwOnError: false }>
-  ): Promise<FetchResult<ResolveData<TData, TRoutes, TMethod, TPath>, E>>
+    ...args: PathRequestArgs<TPath, RequestBase>
+  ) => Promise<TData>
 }
 
-type UploadMethod<TRoutes extends FetchRoutes = NoRoutes> = {
-  <TData = InferData, TPath extends RoutePath<TRoutes, 'POST'> = string>(
+type UploadMethod = {
+  <TPath extends string>(
     path: TPath,
-    ...args: PathRequestArgs<TPath, UploadBase & { throwOnError?: true }>
-  ): Promise<ResolveData<TData, TRoutes, 'POST', TPath>>
-  <TData = InferData, TPath extends RoutePath<TRoutes, 'POST'> = string, E = FetchErrorInfo>(
+    ...args: PathRequestArgs<TPath, UploadBase>
+  ): Promise<unknown>
+  <TData>(): <TPath extends string>(
     path: TPath,
-    ...args: PathRequestArgs<TPath, UploadBase & { throwOnError: false }>
-  ): Promise<FetchResult<ResolveData<TData, TRoutes, 'POST', TPath>, E>>
+    ...args: PathRequestArgs<TPath, UploadBase>
+  ) => Promise<TData>
 }
 
 type SseCallOptions<T = unknown, TPath extends string = string> = Omit<RequestOptions, 'params'> &
@@ -147,22 +137,21 @@ type SseCallOptions<T = unknown, TPath extends string = string> = Omit<RequestOp
     lastEventId?: string
   }
 
-/** Pass a route map (`createFetch<Routes>()`) to infer response types from the path. */
-type FetchClient<TRoutes extends FetchRoutes = NoRoutes> = {
+type FetchClient = {
   use: (
     name: string,
     interceptor: Omit<HttpInterceptor, 'name'> & { name?: string },
     config?: { order?: number },
   ) => void
   eject: (name: string) => void
-  request: FetchRequest<TRoutes>
-  get: FetchMethod<TRoutes, 'GET'>
-  post: FetchMethod<TRoutes, 'POST'>
-  put: FetchMethod<TRoutes, 'PUT'>
-  patch: FetchMethod<TRoutes, 'PATCH'>
-  delete: FetchMethod<TRoutes, 'DELETE'>
+  request: FetchRequest
+  get: FetchMethod
+  post: FetchMethod
+  put: FetchMethod
+  patch: FetchMethod
+  delete: FetchMethod
   /** Multipart / file upload — returns the same typed response body as `post`. */
-  upload: UploadMethod<TRoutes>
+  upload: UploadMethod
   /**
    * Simple: pass `onMessage` / `onEvent` → returns `{ close }`.
    * Advanced: no handlers → `AsyncIterable` for `for await`.
@@ -196,8 +185,6 @@ export type {
   CreateClientOptions,
   FetchClient,
   HttpClient,
-  ThrowingOptions,
-  ResultOptions,
   FetchMethod,
   FetchRequest,
   UploadCallOptions,

@@ -84,7 +84,7 @@ describe('tanstack-fetch generate', () => {
     const client = await readFile(join(out, 'client.ts'), 'utf8')
 
     expect(types).toContain('type User =')
-    expect(client).toContain("api.get<User>('/users/:id'")
+    expect(client).toContain("api.get<User>()('/users/:id'")
     expect(client).toContain("api.sse<OrderEvent>('/events'")
     expect(client).toContain('listUsers')
     expect(client).toContain("from 'tanstack-fetch/sse'")

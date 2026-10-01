@@ -1,6 +1,6 @@
 {
   "name": "tanstack-fetch",
-  "version": "1.6.0",
+  "version": "1.6.1",
   "description": "TanStack Query fetch client — typed errors, AbortSignal, SSR, SSE, upload. React + Vue/Nuxt. Lightweight axios/ky alternative (4.81KB gzip HTTP core).",
   "license": "MIT",
   "author": {

@@ -57,7 +57,7 @@ const methodLine = (operation: CollectedOperation) => {
   }
   const method = operation.method.toLowerCase()
   const call = method === 'delete' ? 'delete' : method
-  return `    ${operation.operationId}: (options${optional}: ${options}) => api.${call}<${response}>('${clientPath(operation.path)}', options),`
+  return `    ${operation.operationId}: (options${optional}: ${options}) => api.${call}<${response}>()('${clientPath(operation.path)}', options),`
 }
 
 const generateClientFile = (spec: OpenApiSpec, operations: CollectedOperation[]) => {

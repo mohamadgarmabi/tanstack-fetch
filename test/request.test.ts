@@ -7,7 +7,7 @@ describe('tanstack-fetch request', () => {
     const fetchImpl = vi.fn().mockResolvedValue(jsonResponse({ body: { id: '1', name: 'Ada' } }))
     const http = createTestClient(fetchImpl)
 
-    const data = await http.get<{ id: string; name: string }>('/users/:id', {
+    const data = await http.get<{ id: string; name: string }>()('/users/:id', {
       params: { id: '1' },
       query: { include: 'posts' },
     })
@@ -29,22 +29,6 @@ describe('tanstack-fetch request', () => {
     await expect(http.get('/users/missing')).rejects.toSatisfy(
       (error: unknown) => isFetchError(error) && error.status === 404 && error.code === 'NOT_FOUND',
     )
-  })
-
-  it('returns FetchResult when throwOnError is false', async () => {
-    const fetchImpl = vi
-      .fn()
-      .mockResolvedValue(
-        jsonResponse({ status: 404, body: { code: 'NOT_FOUND', message: 'missing' } }),
-      )
-    const http = createTestClient(fetchImpl, { throwOnError: false })
-    const result = await http.get('/users/missing', { throwOnError: false })
-
-    expect(result.ok).toBe(false)
-    if (!result.ok) {
-      expect(result.status).toBe(404)
-      expect(result.error.code).toBe('NOT_FOUND')
-    }
   })
 
   it('posts json and sets content-type', async () => {

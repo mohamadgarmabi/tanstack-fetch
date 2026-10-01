@@ -6,7 +6,7 @@ TanStack Query’s contract for a `queryFn` is simple. Most HTTP clients fight i
 
 | TanStack Query needs   | `tanstack-fetch` does                            |
 | ---------------------- | ------------------------------------------------ |
-| `queryFn` returns data | `api.get<T>()` → `Promise<T>`                    |
+| `queryFn` returns data | `api.get<T>()(path)` → `Promise<T>`             |
 | Failures must throw    | HTTP errors throw `FetchError`                   |
 | Cancellation           | Pass `{ signal }` from `queryFn`                 |
 | Typed errors           | `isFetchError(error)` → `status`, `code`, `body` |
@@ -16,11 +16,11 @@ TanStack Query’s contract for a `queryFn` is simple. Most HTTP clients fight i
 ```ts
 useQuery({
   queryKey: ['users'],
-  queryFn: ({ signal }) => api.get<User[]>('/users', { signal }),
+  queryFn: ({ signal }) => api.get<User[]>()('/users', { signal }),
 })
 ```
 
-No wrapping `if (!res.ok)`, no Result-object dance unless you opt in with `throwOnError: false`.
+No wrapping `if (!res.ok)` — success returns data, failure throws `FetchError`.
 
 ## Tiny by default
 

@@ -8,7 +8,7 @@ describe('upload', () => {
     const http = createTestClient(fetchImpl)
     const form = createFormData({ name: 'Ada', count: 2 })
 
-    const data = await http.post<{ id: string }>('/files', { body: form })
+    const data = await http.post<{ id: string }>()('/files', { body: form })
 
     expect(data.id).toBe('f1')
     const init = fetchImpl.mock.calls[0]?.[1] as RequestInit
@@ -25,7 +25,7 @@ describe('upload', () => {
     const http = createTestClient(fetchImpl)
     const file = new Blob(['hello'], { type: 'text/plain' })
 
-    const data = await http.upload<{ url: string }>('/upload', {
+    const data = await http.upload<{ url: string }>()('/upload', {
       file,
       fields: { folder: 'avatars' },
       fieldName: 'avatar',
@@ -125,7 +125,7 @@ describe('upload', () => {
     const http = createTestClient(fetchImpl)
     const progress = vi.fn()
 
-    const data = await http.upload<{ ok: boolean }>('/upload', {
+    const data = await http.upload<{ ok: boolean }>()('/upload', {
       file: new Blob(['x'.repeat(100)]),
       onUploadProgress: progress,
     })

@@ -26,7 +26,7 @@ const runExample = async () => {
     },
   })
 
-  const users = await api.get<Array<{ id: string; name: string }>>('/users', {
+  const users = await api.get<Array<{ id: string; name: string }>>()('/users', {
     query: { page: 1 },
   })
   console.log('users', users)

@@ -17,7 +17,7 @@ api.use(
   'refresh-token',
   createRefreshTokenInterceptor({
     refresh: async () => {
-      const body = await api.post<{ accessToken: string }>('/auth/refresh', {
+      const body = await api.post<{ accessToken: string }>()('/auth/refresh', {
         interceptors: { eject: ['refresh-token', 'auth'] },
       })
       /* update token from body */
