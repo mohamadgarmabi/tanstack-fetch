@@ -55,6 +55,7 @@ import type {
   PathParamValue,
   WithPathParams,
 } from './path-params.type'
+import type { FetchRoutes, NoRoutes } from './routes.type'
 import type {
   RefreshTokenAfterConfig,
   RefreshTokenBeforeConfig,
@@ -108,6 +109,8 @@ export type {
   PathParamsOf,
   PathParamValue,
   WithPathParams,
+  FetchRoutes,
+  NoRoutes,
   RefreshTokenAfterConfig,
   RefreshTokenBeforeConfig,
   RefreshTokenConfig,

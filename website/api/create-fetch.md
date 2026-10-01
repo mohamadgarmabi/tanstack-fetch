@@ -56,7 +56,7 @@ import { createFetch, pathParams } from 'tanstack-fetch'
 const api = createFetch({ baseUrl: 'https://api.example.com' })
 
 // params required — keys inferred from the path
-await api.get<User>('/users/:id', { params: { id: '1' } })
+await api.get('/users/:id', { params: { id: '1' } })
 await api.get('/users/{id}/posts/{postId}', {
   params: pathParams('/users/{id}/posts/{postId}', { id: 1, postId: 2 }),
 })
@@ -66,5 +66,30 @@ await api.get('/users')
 ```
 
 Helpers / types: `pathParams()`, `PathParamsOf`, `ExtractPathParamKeys`.
+
+## Typed routes (response + `params`)
+
+TypeScript can't infer some generics while you pass others. So `api.get<User>('/users/:id', …)` fixes `TData` and the path falls back to `string`, which leaves `params` loose. Declare a route map instead, and every call infers **both** the response and the URL `params`:
+
+```ts
+import { createFetch } from 'tanstack-fetch'
+
+type Routes = {
+  '/users': User[]
+  '/users/:id': User
+  'POST /users': User // method-specific key wins over the bare path
+}
+
+const api = createFetch<Routes>({ baseUrl: 'https://api.example.com' })
+
+const user = await api.get('/users/:id', { params: { id: 1 } }) // User
+await api.get('/users/:id', { params: { userId: 1 } }) // ❌ type error
+await api.get('/users/:id') // ❌ params required
+```
+
+- Keys: `'/path'` (all methods) or `'GET /path'` / `'POST /path'` / … (one method).
+- Paths not in the map still work: the response is `unknown` and `params` is still typed from the URL.
+- An explicit generic (`api.get<Other>(…)`) still overrides the map.
+- Works the same with `createFetch<Routes>()` from `tanstack-fetch/sse` (HTTP methods only, not `sse`).
 
 Deprecated alias: `createClient` → `createFetch`.

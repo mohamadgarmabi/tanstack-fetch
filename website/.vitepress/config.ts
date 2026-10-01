@@ -75,7 +75,7 @@ const buildJsonLd = (pageUrl: string, title: string, description: string) => {
       description: DEFAULT_DESCRIPTION,
       url: `${SITE_URL}/`,
       downloadUrl: NPM_URL,
-      softwareVersion: '1.5.0',
+      softwareVersion: '1.6.0',
       license: 'https://opensource.org/licenses/MIT',
       codeRepository: GITHUB_URL,
       programmingLanguage: ['TypeScript', 'JavaScript'],

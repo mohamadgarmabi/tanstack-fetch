@@ -1,5 +1,17 @@
 # Changelog
 
+## 1.6.0
+
+### Features
+
+- **Typed routes**: `createFetch<Routes>()` takes an optional route map (`'/users/:id': User`, `'POST /users': User`). `get` / `post` / `put` / `patch` / `delete` / `request` / `upload` infer the response type from the path, and `params` stay typed from the URL, so no explicit generic is needed.
+- Route-map paths autocomplete in the `path` argument; any other string is still accepted.
+- New exported type: `FetchRoutes`.
+
+### Notes
+
+- `api.get<User>('/users/:id')` behaves the same as before. TypeScript has no partial type-argument inference, so an explicit `TData` makes the path `string` and `params` loose. Use a route map to get both typed.
+
 ## 1.5.0
 
 ### Features
