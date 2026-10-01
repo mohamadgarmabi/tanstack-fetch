@@ -1,6 +1,6 @@
 ---
 title: 'tanstack-fetch 1.6.1: typed params beside your DTO'
-description: Pass a params map as the second type argument — api.get<User, { id: number }>(…) — and optional body typing on post/put/patch.
+description: 'Pass a params map as the second type argument — api.get<User, { id: number }>(…) — and optional body typing on post/put/patch.'
 ---
 
 # tanstack-fetch 1.6.1: typed params beside your DTO
