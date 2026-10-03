@@ -251,7 +251,8 @@ const config = defineConfig({
           { text: 'Packages', link: '/packages' },
           { text: 'Author', link: '/author' },
           { text: 'Changelog', link: `${GITHUB_URL}/blob/main/CHANGELOG.md` },
-          { text: 'LLM context', link: '/llms.txt' },
+          // Public .txt is not a VitePress route — base is not applied; use absolute URL.
+          { text: 'LLM context', link: `${SITE_URL}/llms.txt` },
           { text: 'npm', link: NPM_URL },
         ],
       },

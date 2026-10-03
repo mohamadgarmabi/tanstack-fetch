@@ -796,7 +796,8 @@ const footerColumns: FooterColumn[] = [
       { label: 'Errors', href: '/guide/errors' },
       { label: 'TanStack Query', href: '/guide/tanstack-query' },
       { label: 'Comparison', href: '/guide/comparison' },
-      { label: 'LLM context', href: '/llms.txt' },
+      // Public .txt — use absolute URL so GitHub Pages base path is never dropped.
+      { label: 'LLM context', href: 'https://mohamadgarmabi.github.io/tanstack-fetch/llms.txt' },
     ],
   },
   {
