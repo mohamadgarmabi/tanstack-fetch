@@ -1,3 +1,8 @@
+---
+title: tRPC helpers
+description: tRPC helpers API — createTRPCFetch, createTRPCFetchLink, and createTRPCFetchClient.
+---
+
 # tRPC helpers
 
 ![tRPC + createFetch](/images/docs-trpc.png)

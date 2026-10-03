@@ -1,3 +1,8 @@
+---
+title: Why this API?
+description: Why tanstack-fetch matches TanStack Query’s queryFn contract better than axios, ky, or ofetch — data in, FetchError out, AbortSignal honored.
+---
+
 # Why this API?
 
 ![Mental model: createFetch → queryFn → data or FetchError](/images/docs-mental-model.png)

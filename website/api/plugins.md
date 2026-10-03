@@ -1,3 +1,8 @@
+---
+title: Plugin API
+description: Plugin and interceptor API for tanstack-fetch — built-in names and createRefreshTokenInterceptor.
+---
+
 # Plugin API
 
 ![Plugin pipeline](/images/docs-plugins.png)

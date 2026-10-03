@@ -1,3 +1,8 @@
+---
+title: Comparison
+description: Compare tanstack-fetch with axios, ky, and ofetch for TanStack Query, SSR cookies, SSE with Authorization, upload progress, and tRPC.
+---
+
 # Comparison
 
 ![Tree-shakeable entry points](/images/docs-entry-points.png)

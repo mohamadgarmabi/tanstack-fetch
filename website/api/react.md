@@ -1,3 +1,8 @@
+---
+title: React API
+description: React API reference for tanstack-fetch — FetchProvider, useFetch, and useSse options and return values.
+---
+
 # React API
 
 ```ts

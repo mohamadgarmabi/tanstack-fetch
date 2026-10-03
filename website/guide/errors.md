@@ -1,3 +1,8 @@
+---
+title: Errors
+description: FetchError shape in tanstack-fetch — status, code, message, body — and how to narrow with isFetchError.
+---
+
 # Errors
 
 ![FetchError with status, code, message, body](/images/docs-errors.png)

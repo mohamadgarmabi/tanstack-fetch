@@ -1,3 +1,8 @@
+---
+title: tRPC
+description: Wire createFetch into tRPC for React, TanStack Router, and TanStack Start — shared auth, plugins, and status handlers.
+---
+
 # tRPC
 
 ![tRPC httpBatchLink powered by createFetch](/images/docs-trpc.png)

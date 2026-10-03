@@ -1,3 +1,8 @@
+---
+title: OpenAPI CLI
+description: Generate a typed tanstack-fetch client from an OpenAPI document with the bundled CLI.
+---
+
 # OpenAPI CLI
 
 Generate typed clients from an OpenAPI spec:

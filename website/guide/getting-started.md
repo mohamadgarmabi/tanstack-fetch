@@ -1,3 +1,8 @@
+---
+title: Getting started
+description: Install tanstack-fetch and make your first typed request with React Query or Vue Query. Shared client setup, errors, and next steps.
+---
+
 # Getting started
 
 ![tanstack-fetch logo](/images/logo.jpg){width=200}

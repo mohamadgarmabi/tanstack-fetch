@@ -1,3 +1,8 @@
+---
+title: tRPC + tanstack-fetch
+description: Recipe for tRPC with createFetch on React, TanStack Router, and TanStack Start.
+---
+
 # tRPC + tanstack-fetch
 
 ![tRPC transport via createFetch](/images/docs-trpc.png)

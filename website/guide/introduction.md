@@ -1,3 +1,8 @@
+---
+title: What is tanstack-fetch?
+description: tanstack-fetch is a typed Fetch client shaped for TanStack Query — return data, throw FetchError, honor AbortSignal. Entry points for HTTP, SSE, React, Vue, tRPC, and DevTools.
+---
+
 # What is tanstack-fetch?
 
 **tanstack-fetch** (by [Mohammad Garmabi](/author)) is a tiny, typed Fetch client shaped for [@tanstack/react-query](https://tanstack.com/query).

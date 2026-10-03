@@ -1,3 +1,8 @@
+---
+title: Vue & Nuxt
+description: Vue 3 and Nuxt helpers for tanstack-fetch — createFetchPlugin, useFetch, useSse, and Vue Query.
+---
+
 # Vue & Nuxt
 
 ::: tip Framework

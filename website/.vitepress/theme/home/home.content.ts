@@ -790,6 +790,7 @@ const footerColumns: FooterColumn[] = [
   {
     title: 'Documentation',
     links: [
+      { label: 'Docs hub', href: '/docs' },
       { label: 'Getting started', href: '/guide/getting-started' },
       { label: 'Configuration', href: '/guide/configuration' },
       { label: 'Errors', href: '/guide/errors' },
@@ -829,6 +830,7 @@ const footerColumns: FooterColumn[] = [
       { label: 'GitHub', href: GITHUB_URL },
       { label: 'npm', href: NPM_URL },
       { label: 'Blog', href: '/blog/' },
+      { label: '1.6.1 release', href: '/blog/tanstack-fetch-1-6' },
       { label: 'Author', href: '/author' },
       { label: 'Packages', href: '/packages' },
       { label: 'Changelog', href: CHANGELOG_URL },

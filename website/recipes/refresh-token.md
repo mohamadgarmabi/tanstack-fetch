@@ -1,3 +1,8 @@
+---
+title: Refresh token
+description: Automatic token refresh with createRefreshTokenInterceptor — before expiry and after the first 401, single-flight.
+---
+
 # Refresh token
 
 ![Auth and 401 status handling](/images/docs-auth-status.png)

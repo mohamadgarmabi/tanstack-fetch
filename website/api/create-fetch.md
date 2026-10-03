@@ -1,3 +1,8 @@
+---
+title: createFetch
+description: API reference for createFetch — options, return type, and how to build a typed tanstack-fetch client.
+---
+
 # createFetch
 
 ![createFetch mental model](/images/docs-mental-model.png)

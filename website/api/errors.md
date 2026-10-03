@@ -1,3 +1,8 @@
+---
+title: Error API
+description: FetchError and isFetchError API reference for tanstack-fetch.
+---
+
 # Error API
 
 ![FetchError shape](/images/docs-errors.png)

@@ -1,3 +1,8 @@
+---
+title: FetchClient
+description: FetchClient methods — get, post, put, patch, delete, upload, request — and typed path params.
+---
+
 # FetchClient
 
 Methods on the client returned by `createFetch`.
