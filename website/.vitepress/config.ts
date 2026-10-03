@@ -153,8 +153,13 @@ const config = defineConfig({
     ['meta', { name: 'twitter:card', content: 'summary_large_image' }],
     ['meta', { name: 'twitter:image', content: OG_IMAGE }],
     ['meta', { name: 'twitter:image:alt', content: `${SITE_NAME} by ${AUTHOR_NAME}` }],
-    // Optional: add your Search Console token later
-    // ['meta', { name: 'google-site-verification', content: 'YOUR_TOKEN' }],
+    [
+      'meta',
+      {
+        name: 'google-site-verification',
+        content: 'WS1yizmm8hIogpaEDEMBMNdoZvxMUEb8-CK_3q2VE60',
+      },
+    ],
   ],
 
   transformPageData: (pageData) => {
