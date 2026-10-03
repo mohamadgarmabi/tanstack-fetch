@@ -1,3 +1,8 @@
+---
+title: Vue API
+description: Vue and Nuxt API reference for tanstack-fetch — createFetchPlugin, useFetch, useSse, and injection key.
+---
+
 # Vue API
 
 ```ts

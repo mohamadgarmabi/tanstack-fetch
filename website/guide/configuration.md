@@ -1,3 +1,8 @@
+---
+title: Configuration
+description: Configure createFetch — baseUrl, getToken, status handlers for 401–429, plugins, and interceptors for tanstack-fetch.
+---
+
 # Configuration
 
 ![Auth, token, and status handlers](/images/docs-auth-status.png)

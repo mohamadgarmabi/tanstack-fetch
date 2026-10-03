@@ -2,10 +2,12 @@
 
 > Typed Fetch client designed for TanStack Query. Return data, throw `FetchError`, honor `AbortSignal`. React + Vue/Nuxt. SSR, SSE, upload, tRPC, DevTools.
 
-Docs: https://mohamadgarmabi.github.io/tanstack-fetch/
+Docs: https://mohamadgarmabi.github.io/tanstack-fetch/docs/
 Repo: https://github.com/mohamadgarmabi/tanstack-fetch
 npm: https://www.npmjs.com/package/tanstack-fetch
 Changelog: https://github.com/mohamadgarmabi/tanstack-fetch/blob/main/CHANGELOG.md
+Sitemap: https://mohamadgarmabi.github.io/tanstack-fetch/sitemap.xml
+Robots: https://mohamadgarmabi.github.io/tanstack-fetch/robots.txt
 
 Not an official TanStack package.
 
@@ -204,6 +206,7 @@ const trpcClient = createTRPCFetchClient<AppRouter>({ url: '/api/trpc', client: 
 
 ## Key guides
 
+- Docs hub: /docs/
 - Getting started: /guide/getting-started
 - Agent skill: /guide/skill
 - Configuration / status handlers: /guide/configuration
@@ -220,6 +223,7 @@ const trpcClient = createTRPCFetchClient<AppRouter>({ url: '/api/trpc', client: 
 - Comparison: /guide/comparison
 - Playground: /examples/playground
 - DevTools: /examples/devtools
+- Blog: /blog/
 - Release 1.6.1 (path params + body types): /blog/tanstack-fetch-1-6
 - Release 1.5.0 (Vue & Nuxt): /blog/tanstack-fetch-1-5
 - Release 1.3 → 1.4.2: /blog/tanstack-fetch-1-4

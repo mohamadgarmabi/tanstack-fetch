@@ -1,3 +1,8 @@
+---
+title: Upload
+description: Multipart file upload with onUploadProgress using createFetch — no second HTTP library.
+---
+
 # Upload
 
 ![Multipart upload with progress](/images/docs-upload.png)

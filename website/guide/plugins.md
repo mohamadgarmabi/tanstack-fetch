@@ -1,3 +1,8 @@
+---
+title: Plugins & interceptors
+description: Built-in tanstack-fetch plugins — trace, ssr-forward, retry, sse-resume — plus custom interceptors and refresh-token.
+---
+
 # Plugins & interceptors
 
 ![Named plugin and interceptor pipeline](/images/docs-plugins.png)

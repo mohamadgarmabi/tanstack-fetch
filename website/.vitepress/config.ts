@@ -114,11 +114,37 @@ const config = defineConfig({
   cleanUrls: true,
   lastUpdated: true,
   ignoreDeadLinks: true,
-  srcExclude: ['**/README.md'],
+  // `public/**` is static assets only — never treat skill markdown as site pages.
+  srcExclude: ['**/README.md', 'public/**'],
   metaChunk: true,
 
   sitemap: {
     hostname: `${SITE_URL}/`,
+    transformItems: (items) => {
+      const normalized = items
+        .filter((item) => {
+          const path = item.url.replace(SITE_URL, '')
+          if (path.includes('/public/')) return false
+          if (path.includes('/skills/')) return false
+          if (path.includes('/404')) return false
+          return true
+        })
+        .map((item) => {
+          const isHome = item.url === SITE_URL || item.url === `${SITE_URL}/`
+          if (isHome) {
+            return { ...item, url: `${SITE_URL}/` }
+          }
+          // Match cleanUrls canonicals (no trailing slash except site root).
+          return { ...item, url: item.url.replace(/\/$/, '') }
+        })
+
+      const seen = new Set<string>()
+      return normalized.filter((item) => {
+        if (seen.has(item.url)) return false
+        seen.add(item.url)
+        return true
+      })
+    },
   },
 
   head: [
@@ -211,7 +237,7 @@ const config = defineConfig({
       copyright: `Copyright © ${new Date().getFullYear()} ${AUTHOR_NAME}`,
     },
     nav: [
-      { text: 'Documentation', link: '/guide/getting-started', activeMatch: '/guide/' },
+      { text: 'Documentation', link: '/docs', activeMatch: '^/(docs|guide)/' },
       { text: 'API', link: '/api/create-fetch', activeMatch: '/api/' },
       { text: 'Comparison', link: '/guide/comparison' },
       { text: 'Playground', link: '/examples/playground', activeMatch: '/examples/' },
@@ -231,6 +257,22 @@ const config = defineConfig({
       },
     ],
     sidebar: {
+      '/docs/': [
+        {
+          text: 'Documentation',
+          items: [
+            { text: 'Docs hub', link: '/docs/' },
+            { text: 'Getting started', link: '/guide/getting-started' },
+            { text: 'Introduction', link: '/guide/introduction' },
+            { text: 'TanStack Query', link: '/guide/tanstack-query' },
+            { text: 'React', link: '/guide/react' },
+            { text: 'Vue & Nuxt', link: '/guide/vue' },
+            { text: 'SSR', link: '/guide/ssr' },
+            { text: 'API reference', link: '/api/create-fetch' },
+            { text: 'Blog', link: '/blog/' },
+          ],
+        },
+      ],
       '/guide/': [
         {
           text: 'Introduction',

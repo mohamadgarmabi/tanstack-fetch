@@ -1,3 +1,8 @@
+---
+title: SSE
+description: Server-Sent Events over fetch with Authorization — api.sse, sse-resume, and React/Vue useSse helpers.
+---
+
 # SSE
 
 ![Server-Sent Events over fetch with Authorization](/images/docs-sse.png)

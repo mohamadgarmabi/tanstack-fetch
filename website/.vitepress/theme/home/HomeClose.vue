@@ -13,8 +13,8 @@ const toHref = (href: string) => (href.startsWith('http') ? href : withBase(href
       The queryFn does not change. The first call is a few lines.
     </p>
     <div class="home-actions">
-      <a class="home-btn home-btn-primary" :href="withBase('/guide/getting-started')">
-        Get started
+      <a class="home-btn home-btn-primary" :href="withBase('/docs')">
+        Documentation
         <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4" /></svg>
       </a>
       <a class="home-btn" :href="withBase('/examples/playground')">Playground</a>
