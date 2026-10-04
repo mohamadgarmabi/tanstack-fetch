@@ -1,5 +1,6 @@
 ---
-title: Documentation
+title: tanstack-fetch Documentation — Typed Fetch Client API Reference
+titleTemplate: false
 description: tanstack-fetch documentation hub — getting started, guides for React and Vue/Nuxt, API reference, SSR, SSE, recipes, and examples.
 ---
 

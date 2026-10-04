@@ -12,7 +12,9 @@ const GITHUB_PROFILE_URL = 'https://github.com/mohamadgarmabi'
 const NPM_URL = 'https://www.npmjs.com/package/tanstack-fetch'
 const OG_IMAGE = `${SITE_URL}/images/docs-og-banner.png`
 const DEFAULT_DESCRIPTION =
-  'tanstack-fetch by Mohammad Garmabi — typed Fetch client for TanStack Query. Tiny HTTP core, SSR, SSE, upload, tRPC, React and Vue/Nuxt. Axios alternative for React Query.'
+  'Typed Fetch client designed for TanStack Query. Tiny HTTP core with SSR, SSE, React, Vue and Nuxt support.'
+const HOME_TITLE =
+  'tanstack-fetch by Mohammad Garmabi — Typed Fetch Client for TanStack Query'
 
 const KEYWORDS = [
   'tanstack-fetch',
@@ -189,14 +191,19 @@ const config = defineConfig({
   ],
 
   transformPageData: (pageData) => {
+    const isHome = pageData.relativePath === 'index.md'
     const title = pageData.frontmatter.title
       ? String(pageData.frontmatter.title)
-      : pageData.title || SITE_NAME
+      : pageData.title || (isHome ? HOME_TITLE : SITE_NAME)
     const description = pageData.frontmatter.description
       ? String(pageData.frontmatter.description)
       : pageData.description || DEFAULT_DESCRIPTION
     const pageUrl = toAbsoluteUrl(pageData.relativePath)
-    const fullTitle = `${title} | ${SITE_NAME} by ${AUTHOR_NAME}`
+    // Keep exact SEO titles when titleTemplate: false (home, docs hub, key posts).
+    const useExactTitle = isHome || pageData.frontmatter.titleTemplate === false
+    const fullTitle = useExactTitle
+      ? title
+      : `${title} | ${SITE_NAME} by ${AUTHOR_NAME}`
 
     pageData.frontmatter.head ??= []
     const head = pageData.frontmatter.head as HeadConfig[]

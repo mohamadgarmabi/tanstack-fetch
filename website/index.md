@@ -1,8 +1,8 @@
 ---
 layout: page
-title: tanstack-fetch by Mohammad Garmabi
-titleTemplate: Typed Fetch for TanStack Query
-description: tanstack-fetch by Mohammad Garmabi — typed Fetch client designed for TanStack Query. Tiny HTTP core, SSR, SSE, upload, tRPC, React and Vue/Nuxt. Lightweight axios alternative for React Query.
+title: tanstack-fetch by Mohammad Garmabi — Typed Fetch Client for TanStack Query
+titleTemplate: false
+description: Typed Fetch client designed for TanStack Query. Tiny HTTP core with SSR, SSE, React, Vue and Nuxt support.
 outline: false
 aside: false
 ---

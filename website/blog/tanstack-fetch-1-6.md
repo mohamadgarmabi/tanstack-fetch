@@ -1,5 +1,6 @@
 ---
-title: 'tanstack-fetch 1.6.1: typed params beside your DTO'
+title: tanstack-fetch 1.6 — Vue, Nuxt and Developer Tools Release
+titleTemplate: false
 description: 'Pass a params map as the second type argument — api.get<User, { id: number }>(…) — and optional body typing on post/put/patch.'
 ---
 
