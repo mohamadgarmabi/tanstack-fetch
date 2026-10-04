@@ -1,3 +1,5 @@
+import { readFileSync, writeFileSync } from 'node:fs'
+import { join } from 'node:path'
 import { fileURLToPath, URL } from 'node:url'
 import { defineConfig, type HeadConfig } from 'vitepress'
 
@@ -43,6 +45,49 @@ const toAbsoluteUrl = (page: string) => {
   const path = page.replace(/(^|\/)index\.md$/, '$1').replace(/\.md$/, '')
   const normalized = path === 'index' || path === '' ? '' : path.replace(/\/$/, '')
   return normalized ? `${SITE_URL}/${normalized}` : `${SITE_URL}/`
+}
+
+const toSitemapDate = (value?: string | Date) => {
+  if (!value) return undefined
+  const iso = value instanceof Date ? value.toISOString() : String(value)
+  return iso.slice(0, 10)
+}
+
+/** Rewrite VitePress sitemap to a minimal urlset Google parses reliably. */
+const writeGoogleFriendlySitemap = (outDir: string) => {
+  const filePath = join(outDir, 'sitemap.xml')
+  const raw = readFileSync(filePath, 'utf8')
+  const entries = [...raw.matchAll(/<url>([\s\S]*?)<\/url>/g)].map((match) => {
+    const block = match[1]
+    const loc = block.match(/<loc>([^<]+)<\/loc>/)?.[1] ?? ''
+    const lastmod = toSitemapDate(block.match(/<lastmod>([^<]+)<\/lastmod>/)?.[1])
+    return { loc, lastmod }
+  })
+
+  const home = `${SITE_URL}/`
+  const sorted = entries
+    .filter((entry) => entry.loc.startsWith(SITE_URL))
+    .sort((left, right) => {
+      if (left.loc === home) return -1
+      if (right.loc === home) return 1
+      return left.loc.localeCompare(right.loc)
+    })
+
+  const body = sorted
+    .map((entry) => {
+      const lastmod = entry.lastmod ? `\n    <lastmod>${entry.lastmod}</lastmod>` : ''
+      return `  <url>\n    <loc>${entry.loc}</loc>${lastmod}\n  </url>`
+    })
+    .join('\n')
+
+  writeFileSync(
+    filePath,
+    `<?xml version="1.0" encoding="UTF-8"?>\n` +
+      `<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n` +
+      `${body}\n` +
+      `</urlset>\n`,
+    'utf8',
+  )
 }
 
 const buildJsonLd = (pageUrl: string, title: string, description: string) => {
@@ -133,11 +178,8 @@ const config = defineConfig({
         })
         .map((item) => {
           const isHome = item.url === SITE_URL || item.url === `${SITE_URL}/`
-          if (isHome) {
-            return { ...item, url: `${SITE_URL}/` }
-          }
-          // Match cleanUrls canonicals (no trailing slash except site root).
-          return { ...item, url: item.url.replace(/\/$/, '') }
+          const url = isHome ? `${SITE_URL}/` : item.url.replace(/\/$/, '')
+          return { ...item, url }
         })
 
       const seen = new Set<string>()
@@ -147,6 +189,10 @@ const config = defineConfig({
         return true
       })
     },
+  },
+
+  buildEnd: ({ outDir }) => {
+    writeGoogleFriendlySitemap(outDir)
   },
 
   head: [
