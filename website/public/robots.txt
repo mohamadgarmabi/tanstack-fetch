@@ -1,4 +1,5 @@
 User-agent: *
 Allow: /
 
+Sitemap: https://mohamadgarmabi.github.io/tanstack-fetch/sitemap-pages.xml
 Sitemap: https://mohamadgarmabi.github.io/tanstack-fetch/sitemap.xml
