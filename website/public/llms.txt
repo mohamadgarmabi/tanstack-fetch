@@ -6,6 +6,7 @@ Docs: https://mohamadgarmabi.github.io/tanstack-fetch/docs/
 Repo: https://github.com/mohamadgarmabi/tanstack-fetch
 npm: https://www.npmjs.com/package/tanstack-fetch
 Changelog: https://github.com/mohamadgarmabi/tanstack-fetch/blob/main/CHANGELOG.md
+Sitemap: https://mohamadgarmabi.github.io/tanstack-fetch/sitemap-pages.xml
 Sitemap: https://mohamadgarmabi.github.io/tanstack-fetch/sitemap.xml
 Robots: https://mohamadgarmabi.github.io/tanstack-fetch/robots.txt
 

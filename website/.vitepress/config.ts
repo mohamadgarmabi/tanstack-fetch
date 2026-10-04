@@ -74,14 +74,16 @@ const writeGoogleFriendlySitemap = (siteConfig: SiteConfig) => {
     )
     .join('\n')
 
-  writeFileSync(
-    join(siteConfig.outDir, 'sitemap.xml'),
+  const xml =
     `<?xml version="1.0" encoding="UTF-8"?>\n` +
-      `<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n` +
-      `${body}\n` +
-      `</urlset>\n`,
-    'utf8',
-  )
+    `<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n` +
+    `${body}\n` +
+    `</urlset>\n`
+
+  // Keep sitemap.xml for convention; also emit an alternate name for a clean GSC submit.
+  for (const fileName of ['sitemap.xml', 'sitemap-pages.xml']) {
+    writeFileSync(join(siteConfig.outDir, fileName), xml, 'utf8')
+  }
 }
 
 const buildJsonLd = (pageUrl: string, title: string, description: string) => {
