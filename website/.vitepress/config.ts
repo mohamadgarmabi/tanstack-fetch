@@ -1,7 +1,7 @@
-import { readFileSync, writeFileSync } from 'node:fs'
+import { writeFileSync } from 'node:fs'
 import { join } from 'node:path'
 import { fileURLToPath, URL } from 'node:url'
-import { defineConfig, type HeadConfig } from 'vitepress'
+import { defineConfig, type HeadConfig, type SiteConfig } from 'vitepress'
 
 const SITE_URL = 'https://mohamadgarmabi.github.io/tanstack-fetch'
 const SITE_NAME = 'tanstack-fetch'
@@ -47,41 +47,35 @@ const toAbsoluteUrl = (page: string) => {
   return normalized ? `${SITE_URL}/${normalized}` : `${SITE_URL}/`
 }
 
-const toSitemapDate = (value?: string | Date) => {
-  if (!value) return undefined
-  const iso = value instanceof Date ? value.toISOString() : String(value)
-  return iso.slice(0, 10)
-}
+/** Minimal urlset Google Search Console parses reliably (no unused namespaces). */
+const writeGoogleFriendlySitemap = (siteConfig: SiteConfig) => {
+  const today = new Date().toISOString().slice(0, 10)
+  const home = `${SITE_URL}/`
 
-/** Rewrite VitePress sitemap to a minimal urlset Google parses reliably. */
-const writeGoogleFriendlySitemap = (outDir: string) => {
-  const filePath = join(outDir, 'sitemap.xml')
-  const raw = readFileSync(filePath, 'utf8')
-  const entries = [...raw.matchAll(/<url>([\s\S]*?)<\/url>/g)].map((match) => {
-    const block = match[1]
-    const loc = block.match(/<loc>([^<]+)<\/loc>/)?.[1] ?? ''
-    const lastmod = toSitemapDate(block.match(/<lastmod>([^<]+)<\/lastmod>/)?.[1])
-    return { loc, lastmod }
+  const urls = siteConfig.pages
+    .map((page) => {
+      const rewritten = siteConfig.rewrites.map[page] || page
+      if (rewritten.includes('/public/') || rewritten.includes('/skills/')) return null
+      if (rewritten.includes('404')) return null
+      return toAbsoluteUrl(rewritten)
+    })
+    .filter((url): url is string => Boolean(url))
+
+  const unique = [...new Set(urls)].sort((left, right) => {
+    if (left === home) return -1
+    if (right === home) return 1
+    return left.localeCompare(right)
   })
 
-  const home = `${SITE_URL}/`
-  const sorted = entries
-    .filter((entry) => entry.loc.startsWith(SITE_URL))
-    .sort((left, right) => {
-      if (left.loc === home) return -1
-      if (right.loc === home) return 1
-      return left.loc.localeCompare(right.loc)
-    })
-
-  const body = sorted
-    .map((entry) => {
-      const lastmod = entry.lastmod ? `\n    <lastmod>${entry.lastmod}</lastmod>` : ''
-      return `  <url>\n    <loc>${entry.loc}</loc>${lastmod}\n  </url>`
-    })
+  const body = unique
+    .map(
+      (loc) =>
+        `  <url>\n    <loc>${loc}</loc>\n    <lastmod>${today}</lastmod>\n  </url>`,
+    )
     .join('\n')
 
   writeFileSync(
-    filePath,
+    join(siteConfig.outDir, 'sitemap.xml'),
     `<?xml version="1.0" encoding="UTF-8"?>\n` +
       `<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n` +
       `${body}\n` +
@@ -165,34 +159,9 @@ const config = defineConfig({
   srcExclude: ['**/README.md', 'public/**'],
   metaChunk: true,
 
-  sitemap: {
-    hostname: `${SITE_URL}/`,
-    transformItems: (items) => {
-      const normalized = items
-        .filter((item) => {
-          const path = item.url.replace(SITE_URL, '')
-          if (path.includes('/public/')) return false
-          if (path.includes('/skills/')) return false
-          if (path.includes('/404')) return false
-          return true
-        })
-        .map((item) => {
-          const isHome = item.url === SITE_URL || item.url === `${SITE_URL}/`
-          const url = isHome ? `${SITE_URL}/` : item.url.replace(/\/$/, '')
-          return { ...item, url }
-        })
-
-      const seen = new Set<string>()
-      return normalized.filter((item) => {
-        if (seen.has(item.url)) return false
-        seen.add(item.url)
-        return true
-      })
-    },
-  },
-
-  buildEnd: ({ outDir }) => {
-    writeGoogleFriendlySitemap(outDir)
+  // Built-in sitemap writer races buildEnd (async stream). We emit sitemap.xml ourselves.
+  buildEnd: (siteConfig) => {
+    writeGoogleFriendlySitemap(siteConfig)
   },
 
   head: [
