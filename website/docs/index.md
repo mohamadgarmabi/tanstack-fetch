@@ -16,6 +16,7 @@ Typed Fetch client for TanStack Query. Start here, then jump to the guide that m
 | [Introduction](/guide/introduction) | Mental model and entry points |
 | [Why this API?](/guide/why) | How it differs from axios / ky / ofetch |
 | [Comparison](/guide/comparison) | Feature matrix |
+| [Migrate](/guide/migrate) | From axios, ky, ofetch, or fetch |
 
 ## Core guides
 
@@ -37,6 +38,7 @@ Typed Fetch client for TanStack Query. Start here, then jump to the guide that m
 | [Upload](/guide/upload) | Multipart + progress |
 | [tRPC](/guide/trpc) | Shared client link |
 | [OpenAPI CLI](/guide/openapi) | Codegen |
+| [Migrate](/guide/migrate) | axios / ky / ofetch / fetch → tanstack-fetch |
 
 ## API · Examples · Blog
 

@@ -1,5 +1,17 @@
 # Changelog
 
+## 1.6.2
+
+### Features
+
+- **`tanstack-fetch migrate`**: scan and safely rewrite HTTP clients for TanStack Query
+  - `--from axios|ky|ofetch|fetch|all`
+  - `--framework react|vue|nuxt|nextjs` scaffold (provider / plugin / SSR)
+  - React: asks whether to include `FetchProvider` (default: no); `--provider` / `--no-provider` skip the prompt
+  - `--write` applies safe transforms; optional `src/lib/api.ts` scaffold
+  - Alias: `tanstack-fetch migrate-axios` → `--from axios`
+- Docs: [Migrate](https://mohamadgarmabi.github.io/tanstack-fetch/guide/migrate)
+
 ## 1.6.1
 
 ### Changes

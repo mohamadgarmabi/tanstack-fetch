@@ -10,13 +10,13 @@ license: MIT
 metadata:
   author: Mohammad Garmabi
   package: tanstack-fetch
-  version: '1.6.1'
+  version: '1.6.2'
   docs: https://mohamadgarmabi.github.io/tanstack-fetch/
   npm: https://www.npmjs.com/package/tanstack-fetch
   llm: https://mohamadgarmabi.github.io/tanstack-fetch/llms.txt
 ---
 
-# tanstack-fetch (v1.6.1)
+# tanstack-fetch (v1.6.2)
 
 Typed Fetch client shaped for TanStack Query. Not an official TanStack package.
 
@@ -297,3 +297,5 @@ const trpcClient = createTRPCFetchClient<AppRouter>({ url: '/api/trpc', client: 
 - Status handlers map: [references/status-handlers.md](references/status-handlers.md)
 - Vue guide: https://mohamadgarmabi.github.io/tanstack-fetch/guide/vue
 - Changelog 1.6.1: https://mohamadgarmabi.github.io/tanstack-fetch/blog/tanstack-fetch-1-6
+- Migrate CLI: `npx tanstack-fetch migrate --from axios|ky|ofetch|fetch|all [--framework react|vue|nuxt|nextjs] [--write]`
+- Migrate guide: https://mohamadgarmabi.github.io/tanstack-fetch/guide/migrate
