@@ -48,6 +48,8 @@ useQuery({
 
 No `.data` unwrap. HTTP failures throw, so Query’s `isError` path stays honest.
 
+**Migrating?** CLI + mapping for axios, ky, ofetch, and raw fetch: [Migrate](/guide/migrate).
+
 ## Refresh token
 
 ```ts

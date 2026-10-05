@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue'
+import { withBase } from 'vitepress'
 import { highlightTypeScript } from './home-highlight'
 import { showcase } from './home.content'
 
@@ -19,6 +20,8 @@ const highlightedOutput = computed(() =>
   active.value ? highlightTypeScript(active.value.output.code) : '',
 )
 
+const migrateHref = withBase('/guide/migrate')
+
 const selectTab = (id: string) => {
   if (id === activeId.value) return
   activeId.value = id
@@ -37,6 +40,14 @@ const selectFile = (index: number) => {
     <div class="home-section-head">
       <p class="home-eyebrow">What you get</p>
       <h2>One client, every call site.</h2>
+      <p class="home-lead">
+        Replace axios, ky, ofetch, or raw fetch with one
+        <code>createFetch</code>
+        client — same
+        <code>queryFn</code>
+        shape everywhere.
+        <a :href="migrateHref">Migrate guide + CLI</a>
+      </p>
     </div>
 
     <div class="home-panel">

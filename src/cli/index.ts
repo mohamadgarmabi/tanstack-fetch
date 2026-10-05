@@ -1,11 +1,16 @@
 import { generateClient } from './generate'
 import { loadSpec } from './load-spec'
+import { runMigrate } from './migrate'
 import { helpText, parseArgs } from './parse-args'
 
 const runCli = async (argv = process.argv.slice(2)) => {
   const args = parseArgs(argv)
   if (args.command === 'help') {
     console.log(helpText)
+    return
+  }
+  if (args.command === 'migrate') {
+    await runMigrate(args)
     return
   }
   const spec = await loadSpec(args.spec)

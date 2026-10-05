@@ -63,6 +63,75 @@ useQuery({
     },
   },
   {
+    id: 'migrate',
+    label: 'Migrate',
+    lead: 'Swap axios, ky, ofetch, or raw fetch for one createFetch client. CLI: npx tanstack-fetch migrate --from all --write',
+    files: [
+      {
+        name: 'axios.ts',
+        code: `// before — axios
+const res = await axios.get('/users', {
+  signal,
+  params: { page: 1 },
+})
+return res.data`,
+      },
+      {
+        name: 'ky.ts',
+        code: `// before — ky
+return ky
+  .get('users', { signal, searchParams: { page: 1 } })
+  .json()`,
+      },
+      {
+        name: 'ofetch.ts',
+        code: `// before — ofetch / $fetch
+return $fetch('/users', {
+  signal,
+  query: { page: 1 },
+})`,
+      },
+      {
+        name: 'fetch.ts',
+        code: `// before — raw fetch
+const res = await fetch('/users?page=1', { signal })
+if (!res.ok) throw new Error(await res.text())
+return res.json()`,
+      },
+      {
+        name: 'after.ts',
+        code: `// after — tanstack-fetch
+import { createFetch } from 'tanstack-fetch'
+
+const api = createFetch({
+  baseUrl: 'https://api.example.com',
+})
+
+// every call site becomes:
+queryFn: ({ signal }) =>
+  api.get<User[]>('/users', {
+    signal,
+    query: { page: 1 },
+  })`,
+      },
+    ],
+    output: {
+      name: 'cli',
+      code: `npx tanstack-fetch migrate --from all --write
+
+# or one source:
+npx tanstack-fetch migrate --from axios --write
+npx tanstack-fetch migrate --from ky --write
+npx tanstack-fetch migrate --from ofetch --write
+npx tanstack-fetch migrate --from fetch --write
+
+# + framework scaffold:
+--framework react|vue|nuxt|nextjs
+
+→ Guide: /guide/migrate`,
+    },
+  },
+  {
     id: 'errors',
     label: 'Typed errors',
     lead: 'HTTP failures throw FetchError. status, code, and body stay on the error.',
@@ -796,6 +865,7 @@ const footerColumns: FooterColumn[] = [
       { label: 'Errors', href: '/guide/errors' },
       { label: 'TanStack Query', href: '/guide/tanstack-query' },
       { label: 'Comparison', href: '/guide/comparison' },
+      { label: 'Migrate', href: '/guide/migrate' },
       // Public .txt — use absolute URL so GitHub Pages base path is never dropped.
       { label: 'LLM context', href: 'https://mohamadgarmabi.github.io/tanstack-fetch/llms.txt' },
     ],
@@ -811,9 +881,9 @@ const footerColumns: FooterColumn[] = [
       { label: 'tRPC', href: '/guide/trpc' },
       { label: 'Refresh token', href: '/recipes/refresh-token' },
       { label: 'OpenAPI', href: '/guide/openapi' },
+      { label: 'Migrate CLI', href: '/guide/migrate' },
     ],
-  },
-  {
+  },  {
     title: 'Examples',
     links: [
       { label: 'Playground', href: '/examples/playground' },

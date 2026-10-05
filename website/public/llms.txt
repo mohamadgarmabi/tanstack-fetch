@@ -1,4 +1,4 @@
-# tanstack-fetch v1.6.1
+# tanstack-fetch v1.6.2
 
 > Typed Fetch client designed for TanStack Query. Return data, throw `FetchError`, honor `AbortSignal`. React + Vue/Nuxt. SSR, SSE, upload, tRPC, DevTools.
 
@@ -13,6 +13,8 @@ Robots: https://mohamadgarmabi.github.io/tanstack-fetch/robots.txt
 Not an official TanStack package.
 
 ## Version
+
+**1.6.2** — `npx tanstack-fetch migrate --from axios|ky|ofetch|fetch|all` (+ guide /guide/migrate).
 
 **1.6.1** — path-typed `params` (`:id` / `{id}`), `api.get<User, { id: number }>(…)`, optional body typing on `post` / `put` / `patch` (`NoParams` to skip params).
 

@@ -118,7 +118,7 @@ const buildJsonLd = (pageUrl: string, title: string, description: string) => {
       description: DEFAULT_DESCRIPTION,
       url: `${SITE_URL}/`,
       downloadUrl: NPM_URL,
-      softwareVersion: '1.6.1',
+      softwareVersion: '1.6.2',
       license: 'https://opensource.org/licenses/MIT',
       codeRepository: GITHUB_URL,
       programmingLanguage: ['TypeScript', 'JavaScript'],
@@ -307,6 +307,7 @@ const config = defineConfig({
             { text: 'Agent skill', link: '/guide/skill' },
             { text: 'Why this API?', link: '/guide/why' },
             { text: 'Comparison', link: '/guide/comparison' },
+            { text: 'Migrate (axios / ky / ofetch / fetch)', link: '/guide/migrate' },
           ],
         },
         {
