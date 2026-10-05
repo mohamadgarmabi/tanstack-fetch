@@ -361,6 +361,7 @@ const config = defineConfig({
           text: 'Blog',
           items: [
             { text: 'All posts', link: '/blog/' },
+            { text: 'tanstack-fetch 1.6.2 — migrate CLI', link: '/blog/tanstack-fetch-1-6-2' },
             { text: 'tanstack-fetch 1.6.1 — path params', link: '/blog/tanstack-fetch-1-6' },
             { text: 'tanstack-fetch 1.5.0 — Vue & Nuxt', link: '/blog/tanstack-fetch-1-5' },
             { text: 'tanstack-fetch 1.3 → 1.4.2', link: '/blog/tanstack-fetch-1-4' },

@@ -71,7 +71,7 @@ Full write-up: [Comparison](https://mohamadgarmabi.github.io/tanstack-fetch/guid
 - [Playground](https://mohamadgarmabi.github.io/tanstack-fetch/examples/playground)
 - [StackBlitz examples](./examples)
 - [Migrate from axios / ky / ofetch / fetch](https://mohamadgarmabi.github.io/tanstack-fetch/guide/migrate)
-- [What's new — 1.6.1 path params](https://mohamadgarmabi.github.io/tanstack-fetch/blog/tanstack-fetch-1-6)
+- [What's new — 1.6.2 migrate CLI](https://mohamadgarmabi.github.io/tanstack-fetch/blog/tanstack-fetch-1-6-2)
 - [Changelog](./CHANGELOG.md)
 
 > Not an official TanStack package — shaped for the same Query mental model.
