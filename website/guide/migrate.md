@@ -31,6 +31,7 @@ npx tanstack-fetch migrate-axios --framework react --write
 | --- | --- |
 | `--from` | `axios` \| `ky` \| `ofetch` \| `fetch` \| `all` |
 | `--framework` | `react` \| `vue` \| `nuxt` \| `nextjs` — scaffold provider/plugin/SSR files |
+| `--provider` / `--no-provider` | React only: include / skip `FetchProvider` (default: ask; answer defaults to no) |
 | `--dir` | Root to scan (default `.`) |
 | `--write` | Apply safe transforms (+ scaffold) |
 | `--scaffold` | Custom path for generic `api.ts` (ignored when `--framework` is set) |
