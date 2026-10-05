@@ -5,6 +5,14 @@ description: Release notes and write-ups about tanstack-fetch, a typed fetch cli
 
 # Blog
 
+## [tanstack-fetch 1.6.2: migrate from axios, ky, ofetch, or fetch](/blog/tanstack-fetch-1-6-2)
+
+<p class="blog-meta">October 5, 2026</p>
+
+CLI to scan HTTP call sites, apply safe rewrites for TanStack Query, and scaffold React, Vue, Nuxt, or Next.js.
+
+[Read the post →](/blog/tanstack-fetch-1-6-2)
+
 ## [tanstack-fetch 1.6.1: typed params beside your DTO](/blog/tanstack-fetch-1-6)
 
 <p class="blog-meta">October 1, 2026</p>

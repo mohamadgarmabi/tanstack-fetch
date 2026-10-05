@@ -1,0 +1,196 @@
+# Migrate axios, ky, ofetch, or fetch to tanstack-fetch in one command
+
+**Subtitle:** One HTTP client shaped for TanStack Query — plus a CLI that finds your call sites and scaffolds React, Vue, Nuxt, or Next.js.
+
+---
+
+If you use TanStack Query, your `queryFn` already wants three things:
+
+1. **Return data** (not a Response wrapper)
+2. **Throw on failure** (so `isError` / `error` work)
+3. **Honor `AbortSignal`** (so cancel and race conditions are correct)
+
+Most HTTP clients were not designed for that shape. You unwrap `.data`, chain `.json()`, or forget `signal`. That is fine — until every screen does it differently.
+
+**tanstack-fetch** is a typed Fetch client built for that Query mental model. In **1.6.2** it ships a migrate CLI: scan axios / ky / ofetch / raw fetch, apply safe rewrites, and optionally scaffold your framework.
+
+> Not an official TanStack package — shaped for the same Query API.
+
+Docs: [Migrate guide](https://mohamadgarmabi.github.io/tanstack-fetch/guide/migrate) · [npm](https://www.npmjs.com/package/tanstack-fetch)
+
+---
+
+## The pain (before)
+
+```ts
+// axios — unwrap data for Query
+queryFn: async ({ signal }) => {
+  const res = await axios.get('/users', { signal, params: { page: 1 } })
+  return res.data
+}
+
+// ky — remember .json()
+queryFn: ({ signal }) =>
+  ky.get('users', { signal, searchParams: { page: 1 } }).json()
+
+// raw fetch — ok check + json every time
+queryFn: async ({ signal }) => {
+  const res = await fetch('/users', { signal })
+  if (!res.ok) throw new Error(await res.text())
+  return res.json()
+}
+```
+
+Three libraries, three rituals. Same Query app.
+
+## The shape (after)
+
+```ts
+import { createFetch } from 'tanstack-fetch'
+import { useQuery } from '@tanstack/react-query'
+
+const api = createFetch({
+  baseUrl: 'https://api.example.com',
+  getToken: () => localStorage.getItem('access_token'),
+  plugins: ['trace', 'retry-idempotent'],
+})
+
+useQuery({
+  queryKey: ['users', 1],
+  queryFn: ({ signal }) =>
+    api.get<User[]>('/users', { signal, query: { page: 1 } }),
+})
+```
+
+One client. Data in, `FetchError` out, `signal` first-class.
+
+---
+
+## CLI: scan, then write
+
+```bash
+npm install tanstack-fetch
+
+# Dry run — report only
+npx tanstack-fetch migrate --from axios --dir ./src
+npx tanstack-fetch migrate --from ky --dir ./src
+npx tanstack-fetch migrate --from ofetch --dir ./src
+npx tanstack-fetch migrate --from fetch --dir ./src
+npx tanstack-fetch migrate --from all --dir ./src
+
+# Apply safe transforms + framework scaffold
+npx tanstack-fetch migrate --from axios --framework react --dir ./src --write
+npx tanstack-fetch migrate --from ofetch --framework nuxt --write
+npx tanstack-fetch migrate --from fetch --framework nextjs --write
+```
+
+| Flag | Meaning |
+| --- | --- |
+| `--from` | `axios` \| `ky` \| `ofetch` \| `fetch` \| `all` |
+| `--framework` | `react` \| `vue` \| `nuxt` \| `nextjs` |
+| `--provider` / `--no-provider` | React: include / skip `FetchProvider` (interactive default: **no**) |
+| `--write` | Apply safe transforms + write scaffold |
+| `--dir` | Root to scan |
+
+`--write` is intentionally conservative. It rewrites safe patterns and **flags** the rest (query params naming, interceptors, manual `res.ok`). Always review the report.
+
+Alias: `npx tanstack-fetch migrate-axios` → `--from axios`.
+
+---
+
+## Mapping cheat sheet
+
+### axios → tanstack-fetch
+
+| axios | tanstack-fetch |
+| --- | --- |
+| `axios.create({ baseURL })` | `createFetch({ baseUrl })` |
+| `await axios.get(url)` → `.data` | `await api.get(url)` |
+| `params` (query string) | `query` |
+| `isAxiosError` | `isFetchError` |
+
+### ky → tanstack-fetch
+
+| ky | tanstack-fetch |
+| --- | --- |
+| `ky.create({ prefixUrl })` | `createFetch({ baseUrl })` |
+| `.json()` | returns data already |
+| `searchParams` | `query` |
+
+### ofetch / `$fetch` → tanstack-fetch
+
+| ofetch | tanstack-fetch |
+| --- | --- |
+| `ofetch.create({ baseURL })` | `createFetch({ baseUrl })` |
+| `$fetch(url)` | `api.get` / `api.post` / … |
+| `query` | `query` (same) |
+
+### raw `fetch` → tanstack-fetch
+
+Raw fetch is **report-first**: the CLI highlights `fetch(`, `res.ok`, and `.json()` so you can replace whole blocks deliberately. Prefer:
+
+```ts
+queryFn: ({ signal }) => api.get<User[]>('/users', { signal })
+```
+
+---
+
+## Framework scaffolds
+
+With `--write --framework …` you get starter files:
+
+| Framework | What you get |
+| --- | --- |
+| **react** | `src/lib/api.ts`, `src/queries/users.ts` (+ optional `fetch-provider.tsx`) |
+| **vue** | `api.ts` + Vue plugin |
+| **nuxt** | `lib/api.ts`, plugin, `composables/useApi.ts` |
+| **nextjs** | client `api.ts` + `api.server.ts` (`ssr-forward` + cookies) |
+
+### React: provider is optional
+
+Recommended path: import `api` into queryFns. For `useSse`, pass `{ client: api }`.
+
+When you run `--framework react --write`, the CLI asks:
+
+```text
+Use FetchProvider for React? [y/N]
+```
+
+Default is **N**. Force it with `--provider` or skip the prompt with `--no-provider`.
+
+---
+
+## Why bother?
+
+| Need | tanstack-fetch |
+| --- | --- |
+| Drop into Query `queryFn` | Returns data, throws, takes `signal` |
+| Typed HTTP errors | `FetchError` + `isFetchError` |
+| 401–429 handlers | First-class |
+| Refresh token (single-flight) | Built-in interceptor |
+| Next.js SSR cookies | `ssr-forward` |
+| SSE + Authorization | `tanstack-fetch/sse` |
+| Bundle (HTTP core) | ~4.8KB gzip |
+
+Full matrix: [Comparison](https://mohamadgarmabi.github.io/tanstack-fetch/guide/comparison)
+
+---
+
+## Try it
+
+```bash
+npx tanstack-fetch migrate --from all --dir ./src
+```
+
+Then, when the report looks right:
+
+```bash
+npx tanstack-fetch migrate --from all --framework react --write --no-provider
+```
+
+- Docs: https://mohamadgarmabi.github.io/tanstack-fetch/
+- Migrate: https://mohamadgarmabi.github.io/tanstack-fetch/guide/migrate
+- GitHub: https://github.com/mohamadgarmabi/tanstack-fetch
+- npm: `tanstack-fetch`
+
+If you migrate a codebase, reply with what the CLI caught and what it missed — that feedback shapes the next safe transforms.
