@@ -297,5 +297,6 @@ const trpcClient = createTRPCFetchClient<AppRouter>({ url: '/api/trpc', client: 
 - Status handlers map: [references/status-handlers.md](references/status-handlers.md)
 - Vue guide: https://mohamadgarmabi.github.io/tanstack-fetch/guide/vue
 - Changelog 1.6.1: https://mohamadgarmabi.github.io/tanstack-fetch/blog/tanstack-fetch-1-6
-- Migrate CLI: `npx tanstack-fetch migrate --from axios|ky|ofetch|fetch|all [--framework react|vue|nuxt|nextjs] [--write]`
+- Migrate CLI: `npx tanstack-fetch migrate --from axios|ky|ofetch|fetch|all [--framework react|vue|nuxt|nextjs] [--provider|--no-provider] [--write]`
+  - React: prompts for FetchProvider (default: no); `--provider` / `--no-provider` skip the prompt
 - Migrate guide: https://mohamadgarmabi.github.io/tanstack-fetch/guide/migrate
