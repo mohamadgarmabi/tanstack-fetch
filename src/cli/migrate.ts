@@ -1,10 +1,20 @@
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs'
-import { dirname, resolve } from 'node:path'
+import { dirname, relative, resolve } from 'node:path'
 import { listSourceFiles, toRelativePath } from './list-source-files'
 import { resolveFrameworkScaffold } from './migrate-frameworks'
 import type { MigrateArgs, MigrateFinding, MigrateResult } from './migrate.type'
 import { resolveMigrateSources } from './migrate-sources'
 import { promptReactProvider } from './prompt-react-provider'
+
+const isPathInsideRoot = (rootDirectory: string, absolutePath: string) => {
+  const relativePath = relative(rootDirectory, absolutePath)
+  return relativePath === '' || !relativePath.startsWith('..')
+}
+
+const isMigrateSelfPath = (absolutePath: string) => {
+  const normalized = absolutePath.split('\\').join('/')
+  return normalized.includes('/cli/migrate')
+}
 
 const DEFAULT_SCAFFOLD = 'src/lib/api.ts'
 
@@ -69,6 +79,9 @@ const formatReport = (result: MigrateResult, write: boolean, from: string, frame
 
 const writeScaffoldFile = (rootDirectory: string, relativePath: string, contents: string) => {
   const absolutePath = resolve(rootDirectory, relativePath)
+  if (!isPathInsideRoot(rootDirectory, absolutePath)) {
+    throw new Error(`tanstack-fetch: scaffold path escapes directory: ${relativePath}`)
+  }
   if (existsSync(absolutePath)) return null
   mkdirSync(dirname(absolutePath), { recursive: true })
   writeFileSync(absolutePath, contents, 'utf8')
@@ -87,7 +100,7 @@ const migrate = (args: MigrateArgs): MigrateResult => {
   const files = listSourceFiles(rootDirectory)
 
   for (const absolutePath of files) {
-    if (absolutePath.includes('/cli/migrate')) continue
+    if (isMigrateSelfPath(absolutePath)) continue
     const sourceText = readFileSync(absolutePath, 'utf8')
     const relativeFile = toRelativePath(rootDirectory, absolutePath)
     const matched = sources.filter((item) => item.detect(sourceText))
@@ -112,8 +125,9 @@ const migrate = (args: MigrateArgs): MigrateResult => {
   const scaffoldsWritten: string[] = []
   let scaffoldWritten: string | null = null
   let frameworkTip: string | null = null
+  const shouldWriteScaffold = args.write && args.scaffold !== null
 
-  if (args.write && args.framework) {
+  if (shouldWriteScaffold && args.framework) {
     const scaffold = resolveFrameworkScaffold(args.framework, {
       provider: args.provider,
     })
@@ -122,7 +136,7 @@ const migrate = (args: MigrateArgs): MigrateResult => {
       const written = writeScaffoldFile(rootDirectory, file.path, file.contents)
       if (written) scaffoldsWritten.push(written)
     }
-  } else if (args.write && args.scaffold !== null) {
+  } else if (shouldWriteScaffold) {
     const relativePath =
       typeof args.scaffold === 'string' ? args.scaffold : DEFAULT_SCAFFOLD
     const written = writeScaffoldFile(rootDirectory, relativePath, GENERIC_SCAFFOLD)

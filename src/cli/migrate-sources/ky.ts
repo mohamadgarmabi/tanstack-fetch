@@ -1,11 +1,17 @@
 import type { MigrateFinding, MigrateSource } from '../migrate.type'
+import {
+  collectHttpClientInstanceNames,
+  ensureTanstackFetchImport,
+  stripJsonChainOnCalls,
+} from './migrate-source.util'
 
 const detect = (source: string) =>
   /from\s*['"]ky['"]/.test(source) ||
   /\brequire\s*\(\s*['"]ky['"]\s*\)/.test(source) ||
-  /\bky\.(create|get|post|put|patch|delete|extend)\s*\(/.test(source)
+  /\bky\.(create|get|post|put|patch|delete|extend|head)\s*\(/.test(source)
 
 const applySafeTransforms = (source: string): string => {
+  const instancesBefore = collectHttpClientInstanceNames(source)
   let next = source.replace(
     /^(\s*)import\s+ky(\s*,\s*\{[^}]*\})?\s*from\s*['"]ky['"]\s*;?\s*$/gm,
     `$1import { createFetch } from 'tanstack-fetch'`,
@@ -16,15 +22,36 @@ const applySafeTransforms = (source: string): string => {
   )
   next = next.replace(/\bky\.create\s*\(/g, 'createFetch(')
   next = next.replace(/\bky\.extend\s*\(/g, 'createFetch(')
-  next = next.replace(/\bprefixUrl\s*:/g, 'baseUrl:')
+  next = next.replace(/(createFetch\s*\(\s*\{[^}]*)\bprefixUrl\s*:/g, '$1baseUrl:')
   next = next.replace(/\bky\.(get|post|put|patch|delete|head)\s*\(/g, 'api.$1(')
-  // .json() after ky calls — drop chaining when on same line
-  next = next.replace(/(\bapi\.(get|post|put|patch|delete|head)\([^)]*\))\s*\.json\s*\(\s*\)/g, '$1')
+
+  const instances = [
+    ...new Set([...instancesBefore, ...collectHttpClientInstanceNames(next), 'api']),
+  ]
+
+  for (const name of instances) {
+    next = next.replace(
+      new RegExp(
+        `(\\b${name}\\.(?:get|post|put|patch|delete|head)\\([^)]*)\\bsearchParams\\s*:`,
+        'g',
+      ),
+      '$1query:',
+    )
+  }
+
+  next = stripJsonChainOnCalls(next, instances)
+
+  if (/\bapi\.(get|post|put|patch|delete|head)\s*\(/.test(next)) {
+    next = ensureTanstackFetchImport(next)
+  }
+
   return next
 }
 
 const collectFindings = (file: string, source: string): MigrateFinding[] => {
   const findings: MigrateFinding[] = []
+  const instances = collectHttpClientInstanceNames(source)
+
   source.split(/\r?\n/).forEach((line, index) => {
     const lineNumber = index + 1
     const trimmed = line.trim()
@@ -50,7 +77,7 @@ const collectFindings = (file: string, source: string): MigrateFinding[] => {
         note: 'ky.create/extend({ prefixUrl }) → createFetch({ baseUrl })',
       })
     }
-    if (/\bky\.(get|post|put|patch|delete)\s*\(/.test(line)) {
+    if (/\bky\.(get|post|put|patch|delete|head)\s*\(/.test(line)) {
       findings.push({
         file,
         line: lineNumber,
@@ -60,7 +87,19 @@ const collectFindings = (file: string, source: string): MigrateFinding[] => {
         note: 'ky.get(url).json() → await api.get(url) (data returned directly)',
       })
     }
-    if (/\.json\s*\(\s*\)/.test(line) && /ky|api\./.test(line)) {
+    for (const name of instances) {
+      if (new RegExp(`\\b${name}\\.(get|post|put|patch|delete|head)\\s*\\(`).test(line)) {
+        findings.push({
+          file,
+          line: lineNumber,
+          source: 'ky',
+          kind: 'call',
+          snippet: trimmed,
+          note: `${name}.get/post works after createFetch — drop .json(); searchParams → query`,
+        })
+      }
+    }
+    if (/\.json\s*\(\s*\)/.test(line) && /ky|api\.|\.get\(|\.post\(/.test(line)) {
       findings.push({
         file,
         line: lineNumber,

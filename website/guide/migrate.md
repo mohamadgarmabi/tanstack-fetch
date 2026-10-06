@@ -47,8 +47,10 @@ npx tanstack-fetch migrate-axios --framework react --write
 | --- | --- |
 | `axios.create({ baseURL })` | `createFetch({ baseUrl })` |
 | `await axios.get(url)` → `response.data` | `await api.get(url)` |
+| `axios(url)` shorthand | `api.get(url)` |
 | `params: { page }` (query string) | `query: { page }` |
 | `isAxiosError` / `AxiosError` | `isFetchError` / `FetchError` |
+| `axios.defaults` / `axios({ url, method })` | reported for manual wiring |
 
 ```ts
 // before
@@ -87,7 +89,8 @@ const data = await api.get<User[]>('/users', { query: { page: 1 } })
 | ofetch | tanstack-fetch |
 | --- | --- |
 | `ofetch.create({ baseURL })` | `createFetch({ baseUrl })` |
-| `$fetch(url)` / `ofetch(url, { method })` | `api.get` / `api.post` / … |
+| `$fetch(url)` / `ofetch(url)` | `api.get(url)` |
+| `$fetch(url, { method: 'POST', body })` | `api.post(url, { body })` |
 | `query` | `query` (same) |
 | ofetch `FetchError` | tanstack-fetch `FetchError` / `isFetchError` |
 

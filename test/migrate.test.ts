@@ -39,11 +39,98 @@ describe('migrate transforms', () => {
     expect(output).toContain('baseUrl:')
   })
 
+  it('detects Nuxt $fetch without ofetch import', () => {
+    const source = `export const getUsers = () => $fetch('/users')\n`
+    expect(ofetchSource.detect(source)).toBe(true)
+    const findings = ofetchSource.collectFindings('a.ts', source)
+    expect(findings.some((item) => item.kind === 'call')).toBe(true)
+  })
+
+  it('keeps FetchError when rewriting ofetch imports', () => {
+    const output = ofetchSource.applySafeTransforms(
+      `import { ofetch, FetchError } from 'ofetch'\n`,
+    )
+    expect(output).toContain('FetchError')
+    expect(output).toContain('isFetchError')
+    expect(output).toContain('createFetch')
+  })
+
+  it('preserves AxiosError import aliases', () => {
+    const output = axiosSource.applySafeTransforms(
+      `import axios, { AxiosError as AE } from 'axios'\n`,
+    )
+    expect(output).toContain('FetchError as AE')
+  })
+
+  it('does not rewrite unrelated baseURL keys', () => {
+    const output = axiosSource.applySafeTransforms(
+      `import axios from 'axios'\nconst other = { baseURL: 'https://other.test' }\nconst c = axios.create({ baseURL: 'https://api.example.com' })\n`,
+    )
+    expect(output).toContain("other = { baseURL: 'https://other.test' }")
+    expect(output).toContain("createFetch({ baseUrl: 'https://api.example.com' })")
+  })
+
   it('detects raw fetch', () => {
     expect(fetchSource.detect(`const res = await fetch('/users')\n`)).toBe(true)
+    expect(fetchSource.detect(`void fetch('/ping')\n`)).toBe(true)
+    expect(fetchSource.detect(`fetch('/users').then((res) => res.json())\n`)).toBe(true)
     const findings = fetchSource.collectFindings('a.ts', `const res = await fetch('/users')\nif (!res.ok) throw new Error()\nreturn res.json()\n`)
     expect(findings.some((item) => item.kind === 'call')).toBe(true)
     expect(findings.some((item) => item.kind === 'data')).toBe(true)
+    expect(
+      fetchSource.collectFindings('b.ts', `const form = { ok: true }\nif (!form.ok) {}\n`).some(
+        (item) => item.kind === 'manual',
+      ),
+    ).toBe(false)
+  })
+
+  it('covers expanded axios patterns', () => {
+    expect(
+      axiosSource.applySafeTransforms(
+        `import * as axios from 'axios'\nawait axios.get('/users', { params: { page: 1 } })\n`,
+      ),
+    ).toContain('query:')
+    expect(
+      axiosSource.applySafeTransforms(`import axios from 'axios'\nawait axios('/users')\n`),
+    ).toContain("api.get('/users')")
+    expect(
+      axiosSource.applySafeTransforms(
+        `import axios from 'axios'\nreturn (await axios.get('/users')).data\n`,
+      ),
+    ).toBe(`import { createFetch } from 'tanstack-fetch'\nreturn await api.get('/users')\n`)
+    const instanceFindings = axiosSource.collectFindings(
+      'i.ts',
+      `import axios from 'axios'\nconst client = axios.create({ baseURL: 'https://api.test' })\nclient.get('/users')\n`,
+    )
+    expect(instanceFindings.some((item) => item.kind === 'call')).toBe(true)
+    expect(
+      axiosSource.collectFindings(
+        'd.ts',
+        `import axios from 'axios'\naxios.defaults.baseURL = 'https://api.test'\n`,
+      ).some((item) => item.kind === 'manual'),
+    ).toBe(true)
+  })
+
+  it('covers expanded ky and ofetch patterns', () => {
+    const kyOut = kySource.applySafeTransforms(
+      `import ky from 'ky'\nconst client = ky.create({ prefixUrl: 'https://api.test' })\nreturn client.get('users', { searchParams: { page: 1 } }).json()\n`,
+    )
+    expect(kyOut).toContain('createFetch(')
+    expect(kyOut).not.toContain('.json()')
+    expect(
+      kySource.applySafeTransforms(
+        `import ky from 'ky'\nawait ky.get('users', { searchParams: { page: 1 } }).json()\n`,
+      ),
+    ).toContain('query:')
+
+    expect(ofetchSource.applySafeTransforms(`export const getUsers = () => $fetch('/users')\n`)).toContain(
+      "api.get('/users')",
+    )
+    expect(
+      ofetchSource.applySafeTransforms(
+        `await $fetch('/users', { method: 'POST', body: { name: 'Ada' } })\n`,
+      ),
+    ).toContain('api.post(')
   })
 })
 
@@ -120,6 +207,35 @@ describe('migrate runner', () => {
       ]),
     )
     expect(result.frameworkTip).toMatch(/useFetch/)
+  })
+
+  it('honors --no-scaffold with --framework', () => {
+    const root = mkdtempSync(join(tmpdir(), 'tf-mig-noscaff-'))
+    const result = migrate({
+      command: 'migrate',
+      from: 'axios',
+      dir: root,
+      write: true,
+      framework: 'react',
+      provider: false,
+      scaffold: null,
+    })
+
+    expect(result.scaffoldsWritten).toEqual([])
+    expect(result.frameworkTip).toBeNull()
+  })
+
+  it('rejects scaffold paths outside the project root', () => {
+    const root = mkdtempSync(join(tmpdir(), 'tf-mig-escape-'))
+    expect(() =>
+      migrate({
+        command: 'migrate',
+        from: 'axios',
+        dir: root,
+        write: true,
+        scaffold: '../../../tmp-evil.ts',
+      }),
+    ).toThrow(/escapes directory/)
   })
 })
 

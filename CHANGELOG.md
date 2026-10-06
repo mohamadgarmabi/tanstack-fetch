@@ -1,5 +1,26 @@
 # Changelog
 
+## 1.6.3
+
+### Fixes
+
+- **migrate / ofetch**: detect and report Nuxt `$fetch` (regex no longer used `\b` before `$`)
+- **migrate / ofetch**: keep `FetchError` (and `isFetchError`) when rewriting ofetch imports
+- **migrate / axios**: preserve `AxiosError as Alias` → `FetchError as Alias`
+- **migrate**: honor `--no-scaffold` when `--framework` is set
+- **migrate**: reject `--scaffold` paths that escape the project root
+- **migrate**: rewrite `baseURL` / `prefixUrl` only inside `createFetch({ … })` options
+- **migrate / fetch**: only flag `res.ok` / `response.ok` (not unrelated `.ok`)
+- **migrate**: skip symlinks + cyclic directory walks; ignore `out` / `.cache` / `vendor` / …; skip files over ~1.5MB
+
+### Changes
+
+- **migrate**: broader call-site coverage
+  - axios: `import *`, `require`, `axios(url)`, `params` → `query`, `(await …).data` unwrap, instance `client.get` findings, `axios.defaults`
+  - ky: instance `.json()` strip, `searchParams` → `query`
+  - ofetch / `$fetch`: rewrite to `api.get/post/…` (incl. `method:`)
+  - fetch: detect `void fetch` and `.then` chains
+
 ## 1.6.2
 
 ### Features
