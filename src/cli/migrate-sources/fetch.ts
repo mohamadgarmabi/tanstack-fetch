@@ -1,23 +1,17 @@
 import type { MigrateFinding, MigrateSource } from '../migrate.type'
+import { ensureTanstackFetchImport } from './migrate-source.util'
 
 /** Native fetch — mostly report + limited safe rewrites (no default import to swap). */
 const detect = (source: string) =>
-  /\bawait\s+fetch\s*\(/.test(source) ||
-  /\breturn\s+fetch\s*\(/.test(source) ||
-  /const\s+\w+\s*=\s*await\s+fetch\s*\(/.test(source)
+  /\b(?:await|return|void)\s+fetch\s*\(/.test(source) ||
+  /\bfetch\s*\([^;]*\)\s*\.then\b/.test(source) ||
+  /(?:const|let|var)\s+\w+\s*=\s*await\s+fetch\s*\(/.test(source)
 
 const applySafeTransforms = (source: string): string => {
-  // Only add createFetch import if file uses raw fetch and has no tanstack-fetch yet.
   if (!detect(source) || /from\s*['"]tanstack-fetch['"]/.test(source)) {
     return source
   }
-  if (/^import\s/m.test(source)) {
-    return source.replace(
-      /^(import\s.+['"].+['"];?\s*\n)/m,
-      `$1import { createFetch } from 'tanstack-fetch'\n`,
-    )
-  }
-  return `import { createFetch } from 'tanstack-fetch'\n\n${source}`
+  return ensureTanstackFetchImport(source)
 }
 
 const collectFindings = (file: string, source: string): MigrateFinding[] => {
@@ -37,7 +31,7 @@ const collectFindings = (file: string, source: string): MigrateFinding[] => {
         note: 'Replace raw fetch with api.get/post/… from a shared createFetch client',
       })
     }
-    if (/!?\s*\w+\.ok\b/.test(line) || /\.ok\s*===/.test(line)) {
+    if (/\b(res|response)\.ok\b/.test(line) || /\b(res|response)\.ok\s*===/.test(line)) {
       findings.push({
         file,
         line: lineNumber,

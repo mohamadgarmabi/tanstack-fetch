@@ -133,7 +133,7 @@ migrate flags:
   --from         axios | ky | ofetch | fetch | all
   --framework    react | vue | nuxt | nextjs  (scaffold provider/plugin/SSR files with --write)
   --provider     React: include FetchProvider scaffold (skips prompt)
-  --no-provider  React: skip FetchProvider (default; skips prompt)
+  --no-provider  React: skip FetchProvider scaffold (skips prompt; interactive default is no)
   --dir          Root directory to scan (default: .)
   --write        Apply safe transforms + write scaffold
   --scaffold     Custom path for generic api.ts (ignored when --framework is set)
