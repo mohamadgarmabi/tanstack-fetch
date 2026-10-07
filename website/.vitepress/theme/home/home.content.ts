@@ -17,7 +17,7 @@ const CHANGELOG_URL = `${GITHUB_URL}/blob/main/CHANGELOG.md`
 const NPM_URL = 'https://www.npmjs.com/package/tanstack-fetch'
 const AUTHOR_URL = 'https://github.com/mohamadgarmabi'
 const LINKEDIN_URL = 'https://www.linkedin.com/in/mohammad-garmabi/'
-const RELEASE_POST_URL = '/blog/tanstack-fetch-1-6-2'
+const RELEASE_POST_URL = '/blog/tanstack-fetch-1-6-3'
 const STACKBLITZ_BASE =
   'https://stackblitz.com/github/mohamadgarmabi/tanstack-fetch/tree/main/examples'
 
@@ -901,7 +901,7 @@ const footerColumns: FooterColumn[] = [
       { label: 'GitHub', href: GITHUB_URL },
       { label: 'npm', href: NPM_URL },
       { label: 'Blog', href: '/blog/' },
-      { label: '1.6.2 migrate', href: '/blog/tanstack-fetch-1-6-2' },
+      { label: '1.6.3 migrate CLI', href: '/blog/tanstack-fetch-1-6-3' },
       { label: 'Author', href: '/author' },
       { label: 'Packages', href: '/packages' },
       { label: 'Changelog', href: CHANGELOG_URL },

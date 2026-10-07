@@ -6,11 +6,11 @@ See also: [`../social-post.md`](../social-post.md) (index + short LinkedIn/X cop
 
 ---
 
-## 1.6.2 — migrate CLI
+## 1.6.3 — migrate CLI
 
-Cover: [`../assets/blog-1-6-2-cover.jpg`](../assets/blog-1-6-2-cover.jpg)  
-Also on the site: `/images/blog-1-6-2-cover.jpg`  
-Canonical: https://mohamadgarmabi.github.io/tanstack-fetch/blog/tanstack-fetch-1-6-2
+Cover: [`../assets/blog-1-6-3-cover.jpg`](../assets/blog-1-6-3-cover.jpg)  
+Also on the site: `/images/blog-1-6-3-cover.jpg`  
+Canonical: https://mohamadgarmabi.github.io/tanstack-fetch/blog/tanstack-fetch-1-6-3
 
 | Platform | File |
 | --- | --- |

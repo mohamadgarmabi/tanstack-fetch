@@ -80,7 +80,7 @@ You should see `tanstack-fetch`. Open **Customize → Skills** in Cursor to conf
 - [Vue & Nuxt](/guide/vue)
 - [Raw skill file](/skills/tanstack-fetch/SKILL.md)
 - [LLM context (`llms.txt`)](https://mohamadgarmabi.github.io/tanstack-fetch/llms.txt)
-- [Release 1.6.2 — migrate](/blog/tanstack-fetch-1-6-2)
+- [Release 1.6.3 — migrate](/blog/tanstack-fetch-1-6-3)
 - [Release 1.6.1](/blog/tanstack-fetch-1-6)
 - [Agent Skills spec](https://agentskills.io/)
 - [`npx skills` CLI](https://github.com/vercel-labs/skills)

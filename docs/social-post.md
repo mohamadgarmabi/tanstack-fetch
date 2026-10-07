@@ -4,10 +4,10 @@ Index of platform drafts. Covers live under [`assets/`](./assets/) and on the si
 
 ---
 
-## 1.6.2 (migrate CLI) — ready to publish
+## 1.6.3 (migrate CLI) — ready to publish
 
-Cover: [`assets/blog-1-6-2-cover.jpg`](./assets/blog-1-6-2-cover.jpg)  
-Canonical: https://mohamadgarmabi.github.io/tanstack-fetch/blog/tanstack-fetch-1-6-2
+Cover: [`assets/blog-1-6-3-cover.jpg`](./assets/blog-1-6-3-cover.jpg)  
+Canonical: https://mohamadgarmabi.github.io/tanstack-fetch/blog/tanstack-fetch-1-6-3
 
 | Platform | File |
 | --- | --- |
@@ -20,11 +20,11 @@ Canonical: https://mohamadgarmabi.github.io/tanstack-fetch/blog/tanstack-fetch-1
 ### LinkedIn / X (short)
 
 ```
-Shipped tanstack-fetch 1.6.2 — migrate CLI for axios / ky / ofetch / fetch → one Query-ready client.
+Shipped tanstack-fetch 1.6.3 — migrate CLI for axios / ky / ofetch / fetch → one Query-ready client.
 
 npx tanstack-fetch migrate --from all --dir ./src
 
-📘 https://mohamadgarmabi.github.io/tanstack-fetch/blog/tanstack-fetch-1-6-2
+📘 https://mohamadgarmabi.github.io/tanstack-fetch/blog/tanstack-fetch-1-6-3
 📦 https://www.npmjs.com/package/tanstack-fetch
 
 #TypeScript #React #TanStackQuery #OpenSource #axios

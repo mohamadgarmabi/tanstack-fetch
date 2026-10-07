@@ -44,5 +44,5 @@ Typed Fetch client for TanStack Query. Start here, then jump to the guide that m
 
 - [API reference](/api/create-fetch)
 - [Examples](/examples/)
-- [Blog](/blog) — latest: [1.6.2 migrate CLI](/blog/tanstack-fetch-1-6-2)
+- [Blog](/blog) — latest: [1.6.3 migrate CLI](/blog/tanstack-fetch-1-6-3)
 - [Agent skill](/guide/skill)
