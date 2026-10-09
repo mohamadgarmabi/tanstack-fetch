@@ -268,6 +268,32 @@
   color: var(--vp-c-brand-1);
 }
 
+.npm-refresh {
+  appearance: none;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--vp-c-brand-1);
+  font: inherit;
+  font-weight: 550;
+  cursor: pointer;
+  text-decoration: underline;
+  text-underline-offset: 0.15em;
+}
+
+.npm-refresh:disabled {
+  opacity: 0.55;
+  cursor: wait;
+  text-decoration: none;
+}
+
+.npm-stats-error {
+  margin: 0.35rem 0 0;
+  color: var(--vp-c-text-2);
+  font-size: 0.85rem;
+}
+
 .npm-author {
   color: var(--vp-c-text-2);
   margin-bottom: 1.25rem !important;
@@ -820,4 +846,75 @@
   margin-top: -0.5rem;
   color: var(--vp-c-text-2);
   font-size: 0.9rem;
+}
+
+.fw-picker {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  margin-left: 0.65rem;
+  font-size: 0.78rem;
+  color: var(--vp-c-text-2);
+}
+
+.fw-picker-label {
+  font-weight: 550;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  opacity: 0.75;
+}
+
+.fw-picker-select {
+  appearance: none;
+  max-width: 9.5rem;
+  padding: 0.28rem 1.5rem 0.28rem 0.55rem;
+  border: 1px solid rgba(255, 122, 24, 0.28);
+  border-radius: 6px;
+  background:
+    linear-gradient(45deg, transparent 50%, var(--vp-c-text-2) 50%) calc(100% - 12px) / 5px 5px
+      no-repeat,
+    linear-gradient(135deg, var(--vp-c-text-2) 50%, transparent 50%) calc(100% - 7px) / 5px 5px
+      no-repeat,
+    rgba(255, 122, 24, 0.08);
+  color: var(--vp-c-text-1);
+  font: inherit;
+  line-height: 1.2;
+  cursor: pointer;
+}
+
+.fw-picker-select:hover,
+.fw-picker-select:focus {
+  border-color: rgba(255, 122, 24, 0.55);
+  outline: none;
+}
+
+.fw-section-hidden,
+.fw-section[hidden],
+.VPSidebarItem[hidden],
+.VPNavBarMenuLink[hidden],
+.VPMenuLink[hidden],
+.VPDocFooter .pager[hidden],
+.VPDocFooter .pager-link[hidden],
+.VPDocFooter .prev-next[hidden] {
+  display: none !important;
+}
+
+.fw-empty-hint {
+  margin: 1rem 0 1.5rem;
+  padding: 0.85rem 1rem;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 122, 24, 0.28);
+  background: rgba(255, 122, 24, 0.08);
+  color: var(--vp-c-text-1);
+  font-size: 0.92rem;
+}
+
+@media (max-width: 768px) {
+  .fw-picker-label {
+    display: none;
+  }
+
+  .fw-picker-select {
+    max-width: 7.5rem;
+  }
 }

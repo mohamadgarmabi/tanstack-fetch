@@ -1,3 +1,4 @@
+import { runDoctor } from './doctor'
 import { generateClient } from './generate'
 import { loadSpec } from './load-spec'
 import { runMigrate } from './migrate'
@@ -7,6 +8,10 @@ const runCli = async (argv = process.argv.slice(2)) => {
   const args = parseArgs(argv)
   if (args.command === 'help') {
     console.log(helpText)
+    return
+  }
+  if (args.command === 'doctor') {
+    await runDoctor(args)
     return
   }
   if (args.command === 'migrate') {

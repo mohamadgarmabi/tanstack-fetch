@@ -2,7 +2,7 @@
 
 **Typed Fetch client designed for TanStack Query.**
 
-Returns data · throws `FetchError` · honors `AbortSignal` · SSR · SSE · React · Vue/Nuxt · tRPC · DevTools
+Returns data · throws `FetchError` · honors `AbortSignal` · SSR · SSE · React · Vue/Nuxt · Solid · Angular · Svelte · tRPC · DevTools
 
 [![npm version](https://img.shields.io/npm/v/tanstack-fetch.svg)](https://www.npmjs.com/package/tanstack-fetch)
 [![npm downloads](https://img.shields.io/npm/dw/tanstack-fetch.svg)](https://www.npmjs.com/package/tanstack-fetch)
@@ -45,6 +45,9 @@ useQuery({
 | `tanstack-fetch/plugins`  | Interceptor factories                     | **1.13KB** |
 | `tanstack-fetch/react`    | `FetchProvider`, `useFetch`, `useSse`     | **0.81KB** |
 | `tanstack-fetch/vue`      | `createFetchPlugin`, `useFetch`, `useSse` | **0.78KB** |
+| `tanstack-fetch/solid`    | `FetchProvider`, `useFetch`, `useSse`     | optional   |
+| `tanstack-fetch/svelte`   | `setFetchClient`, `useFetch`, `useSse`    | optional   |
+| `tanstack-fetch/angular`  | `provideFetchClient`, `injectFetch`, `useSse` | optional |
 | `tanstack-fetch/trpc`     | tRPC link                                 | **3.16KB** |
 | `tanstack-fetch/devtools` | Request dock                              | **8.32KB** |
 
@@ -71,7 +74,8 @@ Full write-up: [Comparison](https://mohamadgarmabi.github.io/tanstack-fetch/guid
 - [Playground](https://mohamadgarmabi.github.io/tanstack-fetch/examples/playground)
 - [StackBlitz examples](./examples)
 - [Migrate from axios / ky / ofetch / fetch](https://mohamadgarmabi.github.io/tanstack-fetch/guide/migrate)
-- [What's new — 1.6.3 migrate CLI](https://mohamadgarmabi.github.io/tanstack-fetch/blog/tanstack-fetch-1-6-3)
+- [Doctor CLI](https://mohamadgarmabi.github.io/tanstack-fetch/guide/migrate#doctor) — `npx tanstack-fetch doctor`
+- [What's new — 1.7.0](https://mohamadgarmabi.github.io/tanstack-fetch/blog/tanstack-fetch-1-7-0)
 - [Changelog](./CHANGELOG.md)
 
 > Not an official TanStack package — shaped for the same Query mental model.

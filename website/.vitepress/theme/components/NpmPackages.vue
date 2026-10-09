@@ -16,7 +16,7 @@ const props = withDefaults(
   },
 )
 
-const { data, loading, live } = useNpmPackages()
+const { data, loading, live, error, refresh } = useNpmPackages()
 const badgeNonce = ref('')
 
 onMounted(() => {
@@ -26,6 +26,12 @@ onMounted(() => {
 const format = (n: number) => n.toLocaleString('en-US')
 
 const updatedLabel = computed(() => formatUpdatedAt(data.value.updatedAt))
+
+const statusLabel = computed(() => {
+  if (loading.value) return 'fetching from npm…'
+  if (live.value) return 'live from npm'
+  return 'snapshot'
+})
 
 const packages = computed(() => {
   const list = [...data.value.packages].sort((a, b) => b.monthly - a.monthly)
@@ -75,8 +81,13 @@ const badgeSrc = (kind: 'dw' | 'dm' | 'v', name: string) => {
         >LinkedIn</a
       >
       ·
-      <span>{{ live ? 'live' : loading ? 'updating…' : 'snapshot' }} · {{ updatedLabel }}</span>
+      <span>{{ statusLabel }} · {{ updatedLabel }}</span>
+      ·
+      <button type="button" class="npm-refresh" :disabled="loading" @click="refresh">
+        {{ loading ? 'Refreshing…' : 'Refresh' }}
+      </button>
     </p>
+    <p v-if="error" class="npm-stats-error">{{ error }}</p>
 
     <div class="npm-grid">
       <article

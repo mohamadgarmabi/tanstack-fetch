@@ -1,11 +1,18 @@
-type UploadProgressEvent = {
+type TransferProgressEvent = {
   loaded: number
   total?: number
   /** `loaded / total` when `total` is known (0–1). */
   progress?: number
 }
 
-type UploadProgressHandler = (event: UploadProgressEvent) => void
+/** @deprecated Prefer `TransferProgressEvent` — same shape for upload and download. */
+type UploadProgressEvent = TransferProgressEvent
+
+type DownloadProgressEvent = TransferProgressEvent
+
+type UploadProgressHandler = (event: TransferProgressEvent) => void
+
+type DownloadProgressHandler = (event: TransferProgressEvent) => void
 
 type FormDataPrimitive = string | number | boolean | Blob
 
@@ -32,8 +39,11 @@ type UploadOptions = {
 }
 
 export type {
+  TransferProgressEvent,
   UploadProgressEvent,
+  DownloadProgressEvent,
   UploadProgressHandler,
+  DownloadProgressHandler,
   FormDataPrimitive,
   FormDataFieldValue,
   FormDataFields,

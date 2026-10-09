@@ -1,5 +1,6 @@
+import type { DoctorArgs } from './doctor.type'
 import type { MigrateArgs, MigrateFrom } from './migrate.type'
-import { parseMigrateFramework } from './migrate-frameworks'
+import { FRAMEWORK_LIST, parseMigrateFramework } from './migrate-frameworks'
 
 type GenerateArgs = {
   command: 'generate'
@@ -7,7 +8,7 @@ type GenerateArgs = {
   out: string
 }
 
-type CliArgs = GenerateArgs | MigrateArgs | { command: 'help' }
+type CliArgs = GenerateArgs | MigrateArgs | DoctorArgs | { command: 'help' }
 
 const MIGRATE_FROM_VALUES = new Set<MigrateFrom>(['axios', 'ky', 'ofetch', 'fetch', 'all'])
 
@@ -28,10 +29,31 @@ const parseMigrateFrom = (value: string): MigrateFrom => {
   return value as MigrateFrom
 }
 
+const parseDoctorArgs = (rest: string[]): DoctorArgs => {
+  let dir = '.'
+  for (let index = 0; index < rest.length; index += 1) {
+    const token = rest[index]
+    if (token === '--dir') {
+      dir = readFlagValue(rest, index, 'dir')
+      index += 1
+      continue
+    }
+    if (token.startsWith('--')) {
+      throw new Error(`tanstack-fetch: unknown flag "${token}"`)
+    }
+    dir = token
+  }
+  return { command: 'doctor', dir }
+}
+
 const parseArgs = (argv: string[]): CliArgs => {
   const [command, ...rest] = argv
   if (!command || command === '--help' || command === 'help' || command === '-h') {
     return { command: 'help' }
+  }
+
+  if (command === 'doctor' || command === '--doctor') {
+    return parseDoctorArgs(rest)
   }
 
   if (command === 'generate') {
@@ -121,23 +143,29 @@ const helpText = `tanstack-fetch
 
 Usage:
   tanstack-fetch generate --spec ./openapi.json --out ./src/api
-  tanstack-fetch migrate --from <axios|ky|ofetch|fetch|all> [--framework react|vue|nuxt|nextjs] [--dir ./src] [--write]
+  tanstack-fetch migrate --from <axios|ky|ofetch|fetch|all> [--framework ${FRAMEWORK_LIST}] [--dir ./src] [--write]
   tanstack-fetch migrate-axios [--framework react] [--dir ./src] [--write]
+  tanstack-fetch doctor [--dir ./src]
+  tanstack-fetch --doctor [--dir ./src]
 
 Commands:
   generate        Generate a typed client from an OpenAPI document
   migrate         Scan/rewrite axios / ky / ofetch / fetch (+ optional framework scaffold)
   migrate-axios   Alias for migrate --from axios
+  doctor          Health-check deps, createFetch usage, legacy clients, missing signal
 
 migrate flags:
   --from         axios | ky | ofetch | fetch | all
-  --framework    react | vue | nuxt | nextjs  (scaffold provider/plugin/SSR files with --write)
+  --framework    ${FRAMEWORK_LIST}  (scaffold with --write)
   --provider     React: include FetchProvider scaffold (skips prompt)
   --no-provider  React: skip FetchProvider scaffold (skips prompt; interactive default is no)
   --dir          Root directory to scan (default: .)
   --write        Apply safe transforms + write scaffold
   --scaffold     Custom path for generic api.ts (ignored when --framework is set)
   --no-scaffold  Skip scaffold files
+
+doctor flags:
+  --dir          Root directory to scan (default: .)
 
 Guide: https://mohamadgarmabi.github.io/tanstack-fetch/guide/migrate
 `

@@ -1,8 +1,9 @@
 # tRPC + tanstack-fetch
 
-Use the same `createFetch` auth, plugins, and status handlers as your REST client — with tRPC over React, TanStack Router, or TanStack Start.
+Use the same `createFetch` auth, plugins, and status handlers as your REST client — with tRPC on React, Vue/Nuxt, Solid, Angular, Svelte/SvelteKit, Next.js, TanStack Router, or TanStack Start.
 
-Copy-paste app: [`examples/trpc`](../../examples/trpc).
+Copy-paste React app: [`examples/trpc`](../../examples/trpc).  
+Per-framework snippets: https://mohamadgarmabi.github.io/tanstack-fetch/guide/trpc
 
 ```bash
 npm install tanstack-fetch @trpc/client @trpc/tanstack-react-query @tanstack/react-query

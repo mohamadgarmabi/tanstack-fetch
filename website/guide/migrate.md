@@ -12,6 +12,11 @@ tanstack-fetch matches TanStack Query: **return data**, **throw `FetchError`**, 
 ```bash
 npm install tanstack-fetch
 
+# Health-check before migrating
+npx tanstack-fetch doctor --dir ./src
+# alias:
+npx tanstack-fetch --doctor --dir ./src
+
 # Scan (dry run)
 npx tanstack-fetch migrate --from axios --dir ./src
 npx tanstack-fetch migrate --from ky --dir ./src
@@ -24,13 +29,17 @@ npx tanstack-fetch migrate --from axios --framework react --dir ./src --write
 npx tanstack-fetch migrate --from axios --framework vue --write
 npx tanstack-fetch migrate --from ofetch --framework nuxt --write
 npx tanstack-fetch migrate --from fetch --framework nextjs --write
+npx tanstack-fetch migrate --from axios --framework solid --write
+npx tanstack-fetch migrate --from axios --framework angular --write
+npx tanstack-fetch migrate --from fetch --framework svelte --write
+npx tanstack-fetch migrate --from fetch --framework sveltekit --write
 npx tanstack-fetch migrate-axios --framework react --write
 ```
 
 | Flag | Meaning |
 | --- | --- |
 | `--from` | `axios` \| `ky` \| `ofetch` \| `fetch` \| `all` |
-| `--framework` | `react` \| `vue` \| `nuxt` \| `nextjs` — scaffold provider/plugin/SSR files |
+| `--framework` | `react` \| `vue` \| `nuxt` \| `nextjs` \| `solid` \| `angular` \| `svelte` \| `sveltekit` |
 | `--provider` / `--no-provider` | React only: include / skip `FetchProvider` (default: ask; answer defaults to no) |
 | `--dir` | Root to scan (default `.`) |
 | `--write` | Apply safe transforms (+ scaffold) |
@@ -140,6 +149,12 @@ With `--write --framework <name>` the CLI writes ready-to-wire files:
 | `vue` | `src/lib/api.ts`, `src/plugins/tanstack-fetch.ts`, `src/queries/users.ts` |
 | `nuxt` | `lib/api.ts`, `plugins/tanstack-fetch.ts`, `composables/useApi.ts`, `queries/users.ts` |
 | `nextjs` | `src/lib/api.ts`, `src/lib/api.server.ts` (cookies + `ssr-forward`), `src/lib/fetch-provider.tsx`, `src/queries/users.ts` |
+| `solid` | `src/lib/api.ts`, `src/queries/users.ts` (for `@tanstack/solid-query`) |
+| `angular` | `src/app/api.ts`, `src/app/queries/users.ts` (for `@tanstack/angular-query-experimental`) |
+| `svelte` | `src/lib/api.ts`, `src/lib/queries/users.ts` (for `@tanstack/svelte-query`) |
+| `sveltekit` | `src/lib/api.ts`, `src/lib/api.server.ts` (`ssr-forward` + cookies), `src/lib/queries/users.ts` |
+
+Solid / Angular / Svelte work with the **core** `createFetch` client plus optional adapters: `tanstack-fetch/solid`, `/angular`, `/svelte` (`useFetch` / `useSse`). Wire Query the same way: return data, throw `FetchError`, pass `{ signal }`.
 
 ### React
 
@@ -207,7 +222,44 @@ Do **not** confuse with Nuxt core `useFetch` — ours only injects the shared cl
 - Client: `src/lib/api.ts` + optional `FetchProvider`
 - Server Components / Route Handlers: `const api = await createServerApi()` from `api.server.ts`
 
+### Solid
+
+```ts
+import { createQuery } from '@tanstack/solid-query'
+import { usersQueryOptions } from './queries/users'
+
+const query = createQuery(() => usersQueryOptions)
+```
+
+### Angular
+
+```ts
+import { injectQuery } from '@tanstack/angular-query-experimental'
+import { usersQueryOptions } from './queries/users'
+
+readonly users = injectQuery(() => usersQueryOptions)
+```
+
+### Svelte / SvelteKit
+
+```ts
+import { createQuery } from '@tanstack/svelte-query'
+import { usersQueryOptions } from '$lib/queries/users'
+
+const query = createQuery(() => usersQueryOptions)
+```
+
+SvelteKit server load: `const api = createServerApi(cookies)` from `$lib/api.server`.
+
 Without `--framework`, `--write` still creates a generic `src/lib/api.ts`.
+
+## Doctor
+
+```bash
+npx tanstack-fetch doctor --dir ./src
+```
+
+Reports: `tanstack-fetch` / legacy deps, detected frameworks, `createFetch` count, leftover axios/ky/ofetch imports, and `queryFn` call sites that may be missing `signal`.
 
 ## Related
 

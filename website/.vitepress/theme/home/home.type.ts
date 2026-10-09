@@ -63,7 +63,8 @@ type TestimonialItem = {
 
 type StackBlitzLink = {
   label: string
-  href: string
+  /** External StackBlitz URL — omit for docs-only rows (Nuxt, migrate scaffolds, …). */
+  href?: string
   docs: string
 }
 

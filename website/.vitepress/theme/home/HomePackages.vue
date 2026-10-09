@@ -6,10 +6,12 @@ import { packages } from './home.content'
 <template>
   <section class="home-packages">
     <div class="home-section-head">
-      <p class="home-eyebrow">Entry points</p>
+      <p class="home-eyebrow">Entry points · v1.7.0</p>
       <h2>Import only the piece you call.</h2>
       <p class="home-lead">
-        None of these are required on day one. Add an entry when the feature shows up.
+        None of these are required on day one. Add an entry when the feature shows up —
+        Solid, Angular, and Svelte stay on the HTTP core; React / Vue adapters and CLIs are
+        optional.
       </p>
     </div>
 

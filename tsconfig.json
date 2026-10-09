@@ -22,7 +22,10 @@
       "tanstack-fetch/sse": ["./src/sse/index.ts"],
       "tanstack-fetch/plugins": ["./src/plugins-entry.ts"],
       "tanstack-fetch/react": ["./src/react/index.ts"],
-      "tanstack-fetch/vue": ["./src/vue/index.ts"]
+      "tanstack-fetch/vue": ["./src/vue/index.ts"],
+      "tanstack-fetch/solid": ["./src/solid/index.ts"],
+      "tanstack-fetch/svelte": ["./src/svelte/index.ts"],
+      "tanstack-fetch/angular": ["./src/angular/index.ts"]
     }
   },
   "include": ["src", "test", "example", "vitest.config.ts"]

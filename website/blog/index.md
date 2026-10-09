@@ -5,6 +5,14 @@ description: Release notes and write-ups about tanstack-fetch, a typed fetch cli
 
 # Blog
 
+## [tanstack-fetch 1.7.0: doctor CLI + Solid, Angular, Svelte scaffolds](/blog/tanstack-fetch-1-7-0)
+
+<p class="blog-meta">October 9, 2026</p>
+
+`tanstack-fetch doctor`, plus migrate scaffolds for Solid, Angular, Svelte, and SvelteKit.
+
+[Read the post →](/blog/tanstack-fetch-1-7-0)
+
 ## [tanstack-fetch 1.6.3: migrate from axios, ky, ofetch, or fetch](/blog/tanstack-fetch-1-6-3)
 
 <p class="blog-meta">October 7, 2026</p>
