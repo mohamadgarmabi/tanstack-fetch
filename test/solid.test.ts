@@ -23,13 +23,18 @@ describe('tanstack-fetch/solid', () => {
     let seen: ReturnType<typeof useFetch> | undefined
 
     const dispose = createRoot((disposeRoot) => {
-      FetchProvider({
-        client: api,
-        get children() {
+      const props = { client: api } as {
+        client: typeof api
+        children: null
+      }
+      Object.defineProperty(props, 'children', {
+        enumerable: true,
+        get: () => {
           seen = useFetch()
           return null
         },
       })
+      FetchProvider(props)
       return disposeRoot
     })
 
