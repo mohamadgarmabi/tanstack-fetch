@@ -1,9 +1,11 @@
 ---
-title: Upload live demo
-description: Live api.upload multipart demo with createFetch.
+title: Upload & download live demo
+description: Live api.upload multipart demo plus onDownloadProgress example with createFetch.
 ---
 
-# Upload
+# Upload & download
+
+:::: framework core
 
 ::: tip Framework
 **Core** (framework-agnostic)
@@ -13,7 +15,7 @@ Pick a file and run **`api.upload()`** — real FormData + `createFetch` (mock r
 
 <UploadDemo />
 
-## In your app
+## Upload
 
 ```ts
 await api.upload('/files', {
@@ -23,4 +25,18 @@ await api.upload('/files', {
 })
 ```
 
-Guide: [Upload](/guide/upload) · example: [`examples/file-upload`](https://github.com/mohamadgarmabi/tanstack-fetch/tree/main/examples/file-upload)
+## Download with progress
+
+```ts
+const blob = await api.get('/files/report.pdf', {
+  parseAs: 'blob',
+  onDownloadProgress: ({ progress, loaded, total }) => {
+    setProgress(progress ?? 0)
+    console.log(`${loaded} / ${total}`)
+  },
+})
+```
+
+Guide: [Upload & download](/guide/upload) · example: [`examples/file-upload`](https://github.com/mohamadgarmabi/tanstack-fetch/tree/main/examples/file-upload)
+
+::::

@@ -17,7 +17,7 @@ const CHANGELOG_URL = `${GITHUB_URL}/blob/main/CHANGELOG.md`
 const NPM_URL = 'https://www.npmjs.com/package/tanstack-fetch'
 const AUTHOR_URL = 'https://github.com/mohamadgarmabi'
 const LINKEDIN_URL = 'https://www.linkedin.com/in/mohammad-garmabi/'
-const RELEASE_POST_URL = '/blog/tanstack-fetch-1-6-3'
+const RELEASE_POST_URL = '/blog/tanstack-fetch-1-7-0'
 const STACKBLITZ_BASE =
   'https://stackblitz.com/github/mohamadgarmabi/tanstack-fetch/tree/main/examples'
 
@@ -65,7 +65,7 @@ useQuery({
   {
     id: 'migrate',
     label: 'Migrate',
-    lead: 'Swap axios, ky, ofetch, or raw fetch for one createFetch client. CLI: npx tanstack-fetch migrate --from all --write',
+    lead: 'Swap axios, ky, ofetch, or raw fetch for one createFetch client — React, Vue, Nuxt, Next.js, Solid, Angular, Svelte, SvelteKit. CLI: npx tanstack-fetch migrate --from all --write',
     files: [
       {
         name: 'axios.ts',
@@ -126,7 +126,7 @@ npx tanstack-fetch migrate --from ofetch --write
 npx tanstack-fetch migrate --from fetch --write
 
 # + framework scaffold:
---framework react|vue|nuxt|nextjs
+--framework react|vue|nuxt|nextjs|solid|angular|svelte|sveltekit
 
 → Guide: /guide/migrate`,
     },
@@ -601,7 +601,7 @@ const features: FeatureItem[] = [
   },
   {
     title: 'Upload progress',
-    text: 'Multipart upload with onUploadProgress, without a second HTTP library.',
+    text: 'Multipart upload + download progress (onUploadProgress / onDownloadProgress).',
   },
   {
     title: 'tRPC link',
@@ -625,7 +625,7 @@ const packages: PackageItem[] = [
   {
     title: 'HTTP core',
     spec: 'tanstack-fetch',
-    text: 'get, post, put, patch, delete, and upload.',
+    text: 'get, post, put, patch, delete, and upload — also Solid, Angular, Svelte, SvelteKit.',
     tags: ['4.81KB'],
     href: '/api/create-fetch',
   },
@@ -658,6 +658,27 @@ const packages: PackageItem[] = [
     href: '/guide/vue',
   },
   {
+    title: 'Solid',
+    spec: 'tanstack-fetch/solid',
+    text: 'Provider, useFetch, and useSse for Solid.',
+    tags: ['1.7.0'],
+    href: '/guide/solid',
+  },
+  {
+    title: 'Angular',
+    spec: 'tanstack-fetch/angular',
+    text: 'provideFetchClient, injectFetch, and useSse signals.',
+    tags: ['1.7.0'],
+    href: '/guide/angular',
+  },
+  {
+    title: 'Svelte',
+    spec: 'tanstack-fetch/svelte',
+    text: 'setFetchClient, getFetchClient, and useSse stores.',
+    tags: ['1.7.0'],
+    href: '/guide/svelte',
+  },
+  {
     title: 'tRPC',
     spec: 'tanstack-fetch/trpc',
     text: 'A tRPC link that reuses createFetch.',
@@ -670,6 +691,20 @@ const packages: PackageItem[] = [
     text: 'A request dock for HTTP, SSE, SSR, and tRPC.',
     tags: ['8.32KB'],
     href: '/examples/devtools',
+  },
+  {
+    title: 'Migrate CLI',
+    spec: 'tanstack-fetch migrate',
+    text: 'Rewrite axios / ky / ofetch / fetch — scaffold React, Vue, Nuxt, Next, Solid, Angular, Svelte.',
+    tags: ['CLI', '1.7.0'],
+    href: '/guide/migrate',
+  },
+  {
+    title: 'Doctor CLI',
+    spec: 'tanstack-fetch doctor',
+    text: 'Health-check deps, createFetch usage, legacy clients, and missing signal.',
+    tags: ['CLI', '1.7.0'],
+    href: '/guide/migrate#doctor',
   },
   {
     title: 'OpenAPI CLI',
@@ -801,7 +836,7 @@ const testimonials: TestimonialItem[] = [
 
 const stackBlitzLinks: StackBlitzLink[] = [
   {
-    label: 'TanStack Query',
+    label: 'TanStack Query · React',
     href: `${STACKBLITZ_BASE}/tanstack-query`,
     docs: '/examples/react',
   },
@@ -811,24 +846,48 @@ const stackBlitzLinks: StackBlitzLink[] = [
     docs: '/examples/next-ssr',
   },
   {
+    label: 'Nuxt SSR',
+    docs: '/examples/nuxt-ssr',
+  },
+  {
     label: 'Upload',
     href: `${STACKBLITZ_BASE}/file-upload`,
     docs: '/examples/upload',
   },
   {
-    label: 'SSE',
+    label: 'SSE · React',
     href: `${STACKBLITZ_BASE}/sse-live`,
     docs: '/examples/sse',
   },
   {
-    label: 'tRPC',
+    label: 'SSE · Start / Remix / SolidStart / Vue / Solid',
+    docs: '/guide/sse',
+  },
+  {
+    label: 'tRPC · TanStack Start + Query + Router context',
+    docs: '/recipes/trpc',
+  },
+  {
+    label: 'tRPC · React',
     href: `${STACKBLITZ_BASE}/trpc`,
     docs: '/recipes/trpc',
+  },
+  {
+    label: 'tRPC · SolidStart / Remix / Vue / Solid',
+    docs: '/guide/trpc',
   },
   {
     label: 'Auth status',
     href: `${STACKBLITZ_BASE}/auth-status`,
     docs: '/recipes/refresh-token',
+  },
+  {
+    label: 'Live playground',
+    docs: '/examples/playground',
+  },
+  {
+    label: 'Migrate · Solid / Angular / Svelte',
+    docs: '/guide/migrate',
   },
 ]
 
@@ -845,13 +904,16 @@ const runtimes: PillLink[] = [
 
 const integrations: PillLink[] = [
   { label: 'TanStack Query', href: '/guide/tanstack-query' },
+  { label: 'TanStack Start', href: '/recipes/trpc' },
+  { label: 'TanStack Router', href: '/recipes/trpc' },
   { label: 'React', href: '/guide/react' },
+  { label: 'Remix', href: '/recipes/trpc' },
   { label: 'Vue', href: '/guide/vue' },
   { label: 'Nuxt', href: '/guide/vue' },
   { label: 'Next.js', href: '/guide/ssr' },
+  { label: 'Solid', href: '/guide/solid' },
+  { label: 'SolidStart', href: '/recipes/trpc' },
   { label: 'tRPC', href: '/guide/trpc' },
-  { label: 'TanStack Router', href: '/recipes/trpc' },
-  { label: 'TanStack Start', href: '/recipes/trpc' },
   { label: 'OpenAPI', href: '/guide/openapi' },
 ]
 
@@ -901,6 +963,7 @@ const footerColumns: FooterColumn[] = [
       { label: 'GitHub', href: GITHUB_URL },
       { label: 'npm', href: NPM_URL },
       { label: 'Blog', href: '/blog/' },
+      { label: '1.7.0 doctor · Solid · Svelte', href: '/blog/tanstack-fetch-1-7-0' },
       { label: '1.6.3 migrate CLI', href: '/blog/tanstack-fetch-1-6-3' },
       { label: 'Author', href: '/author' },
       { label: 'Packages', href: '/packages' },

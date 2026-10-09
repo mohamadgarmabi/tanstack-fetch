@@ -1,6 +1,6 @@
-# tanstack-fetch v1.6.3
+# tanstack-fetch v1.7.0
 
-> Typed Fetch client designed for TanStack Query. Return data, throw `FetchError`, honor `AbortSignal`. React + Vue/Nuxt. SSR, SSE, upload, tRPC, DevTools.
+> Typed Fetch client designed for TanStack Query. Return data, throw `FetchError`, honor `AbortSignal`. TanStack Start, React, Remix, Vue/Nuxt, Solid, SolidStart, Angular, Svelte/SvelteKit. SSR, SSE, upload, tRPC, DevTools.
 
 Docs: https://mohamadgarmabi.github.io/tanstack-fetch/docs/
 Repo: https://github.com/mohamadgarmabi/tanstack-fetch
@@ -13,6 +13,8 @@ Robots: https://mohamadgarmabi.github.io/tanstack-fetch/robots.txt
 Not an official TanStack package.
 
 ## Version
+
+**1.7.0** — `tanstack-fetch/solid|svelte|angular`, `npx tanstack-fetch doctor`, migrate `--framework solid|angular|svelte|sveltekit`, docs Framework picker (/blog/tanstack-fetch-1-7-0).
 
 **1.6.3** — `npx tanstack-fetch migrate --from axios|ky|ofetch|fetch|all` (broader call sites + safer scan; /blog/tanstack-fetch-1-6-3, guide /guide/migrate).
 
@@ -67,6 +69,9 @@ useQuery({
 | `tanstack-fetch/plugins` | interceptor factories | 1.13KB |
 | `tanstack-fetch/react` | `FetchProvider` / `useFetch` / `useSse` | 0.81KB |
 | `tanstack-fetch/vue` | `createFetchPlugin` / `useFetch` / `useSse` | 0.78KB |
+| `tanstack-fetch/solid` | `FetchProvider` / `useFetch` / `useSse` | — |
+| `tanstack-fetch/svelte` | `setFetchClient` / `useFetch` / `useSse` | — |
+| `tanstack-fetch/angular` | `provideFetchClient` / `injectFetch` / `useSse` | — |
 | `tanstack-fetch/trpc` | tRPC link via `createFetch` | 3.16KB |
 | `tanstack-fetch/devtools` | `setupDevtools(api)` | 8.32KB |
 
@@ -197,6 +202,11 @@ await api.upload('/files', {
   body: { file },
   onUploadProgress: ({ progress }) => console.log(progress),
 })
+
+await api.get('/files/report.pdf', {
+  parseAs: 'blob',
+  onDownloadProgress: ({ progress, loaded, total }) => console.log(progress, loaded, total),
+})
 ```
 
 ## tRPC
@@ -215,18 +225,24 @@ const trpcClient = createTRPCFetchClient<AppRouter>({ url: '/api/trpc', client: 
 - Configuration / status handlers: /guide/configuration
 - Errors: /guide/errors
 - TanStack Query: /guide/tanstack-query
+- TanStack Query (Start + Router context first): /guide/tanstack-query
 - React: /guide/react
 - Vue & Nuxt: /guide/vue
+- Solid: /guide/solid
+- Angular: /guide/angular
+- Svelte & SvelteKit: /guide/svelte
 - SSR: /guide/ssr
 - SSE: /guide/sse
 - Upload: /guide/upload
-- tRPC: /guide/trpc
+- tRPC (Start / SolidStart / Remix): /guide/trpc
+- tRPC recipe: /recipes/trpc
 - OpenAPI CLI: /guide/openapi
 - Refresh token: /recipes/refresh-token
 - Comparison: /guide/comparison
 - Playground: /examples/playground
 - DevTools: /examples/devtools
 - Blog: /blog/
+- Release 1.7.0 (doctor · Solid · Svelte): /blog/tanstack-fetch-1-7-0
 - Release 1.6.3 (migrate CLI): /blog/tanstack-fetch-1-6-3
 - Release 1.6.1 (path params + body types): /blog/tanstack-fetch-1-6
 - Release 1.5.0 (Vue & Nuxt): /blog/tanstack-fetch-1-5

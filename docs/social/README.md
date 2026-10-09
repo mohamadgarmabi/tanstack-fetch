@@ -6,6 +6,22 @@ See also: [`../social-post.md`](../social-post.md) (index + short LinkedIn/X cop
 
 ---
 
+## 1.7.0 — Solid / Angular / Svelte + doctor
+
+Cover: [`../assets/blog-1-7-0-cover.jpg`](../assets/blog-1-7-0-cover.jpg)  
+Also on the site: `/images/blog-1-7-0-cover.jpg`  
+Canonical: https://mohamadgarmabi.github.io/tanstack-fetch/blog/tanstack-fetch-1-7-0
+
+| Platform | File |
+| --- | --- |
+| Medium | [`1.7.0-medium.md`](./1.7.0-medium.md) |
+| Dev.to | [`1.7.0-devto.md`](./1.7.0-devto.md) |
+| Hashnode | [`1.7.0-hashnode.md`](./1.7.0-hashnode.md) |
+| ویرگول (فارسی) | [`1.7.0-virgool.md`](./1.7.0-virgool.md) |
+| Reddit | [`1.7.0-reddit.md`](./1.7.0-reddit.md) |
+
+---
+
 ## 1.6.3 — migrate CLI
 
 Cover: [`../assets/blog-1-6-3-cover.jpg`](../assets/blog-1-6-3-cover.jpg)  

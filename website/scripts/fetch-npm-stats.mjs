@@ -18,28 +18,45 @@ const packages = [
 const root = join(dirname(fileURLToPath(import.meta.url)), '..')
 const out = join(root, 'data', 'npm-packages.json')
 
+const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms))
+
 const fetchJson = async (url) => {
   const response = await fetch(url)
   if (!response.ok) throw new Error(`${url} → ${response.status}`)
   return response.json()
 }
 
+const fetchPackage = async (name) => {
+  let attempt = 0
+  for (;;) {
+    try {
+      const [weekly, monthly, meta] = await Promise.all([
+        fetchJson(`https://api.npmjs.org/downloads/point/last-week/${name}`),
+        fetchJson(`https://api.npmjs.org/downloads/point/last-month/${name}`),
+        fetchJson(`https://registry.npmjs.org/${name}`),
+      ])
+      return {
+        name,
+        version: meta['dist-tags']?.latest ?? '?',
+        weekly: weekly.downloads ?? 0,
+        monthly: monthly.downloads ?? 0,
+        description: String(meta.description ?? '').slice(0, 120),
+      }
+    } catch (error) {
+      attempt += 1
+      if (attempt > 5) throw error
+      await sleep(1500 * attempt)
+    }
+  }
+}
+
 try {
   const rows = []
   for (const name of packages) {
-    const [weekly, monthly, meta] = await Promise.all([
-      fetchJson(`https://api.npmjs.org/downloads/point/last-week/${name}`),
-      fetchJson(`https://api.npmjs.org/downloads/point/last-month/${name}`),
-      fetchJson(`https://registry.npmjs.org/${name}`),
-    ])
-    rows.push({
-      name,
-      version: meta['dist-tags']?.latest ?? '?',
-      weekly: weekly.downloads ?? 0,
-      monthly: monthly.downloads ?? 0,
-      description: String(meta.description ?? '').slice(0, 120),
-    })
-    console.log(`${name} week=${weekly.downloads} month=${monthly.downloads}`)
+    const row = await fetchPackage(name)
+    rows.push(row)
+    console.log(`${name} week=${row.weekly} month=${row.monthly}`)
+    await sleep(350)
   }
 
   mkdirSync(dirname(out), { recursive: true })
@@ -79,7 +96,6 @@ try {
       )}\n`,
     )
   } else {
-    // touch-read to ensure file remains
     readFileSync(out)
   }
 }

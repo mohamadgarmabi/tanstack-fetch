@@ -209,6 +209,47 @@ describe('migrate runner', () => {
     expect(result.frameworkTip).toMatch(/useFetch/)
   })
 
+  it('writes solid framework scaffold', () => {
+    const root = mkdtempSync(join(tmpdir(), 'tf-mig-solid-'))
+    const result = migrate({
+      command: 'migrate',
+      from: 'axios',
+      dir: root,
+      write: true,
+      framework: 'solid',
+    })
+
+    expect(result.scaffoldsWritten).toEqual(
+      expect.arrayContaining(['src/lib/api.ts', 'src/queries/users.ts']),
+    )
+    expect(result.frameworkTip).toMatch(/solid-query/)
+  })
+
+  it('writes sveltekit framework scaffold with server api', () => {
+    const root = mkdtempSync(join(tmpdir(), 'tf-mig-sk-'))
+    const result = migrate({
+      command: 'migrate',
+      from: 'fetch',
+      dir: root,
+      write: true,
+      framework: 'sveltekit',
+    })
+
+    expect(result.scaffoldsWritten).toEqual(
+      expect.arrayContaining(['src/lib/api.ts', 'src/lib/api.server.ts', 'src/lib/queries/users.ts']),
+    )
+    expect(result.frameworkTip).toMatch(/ssr-forward/)
+  })
+
+  it('parses --framework solid|angular|svelte', () => {
+    expect(
+      parseArgs(['migrate', '--from', 'axios', '--framework', 'angular', '--write']),
+    ).toMatchObject({ framework: 'angular' })
+    expect(
+      parseArgs(['migrate', '--from', 'ky', '--framework', 'svelte']),
+    ).toMatchObject({ framework: 'svelte' })
+  })
+
   it('honors --no-scaffold with --framework', () => {
     const root = mkdtempSync(join(tmpdir(), 'tf-mig-noscaff-'))
     const result = migrate({

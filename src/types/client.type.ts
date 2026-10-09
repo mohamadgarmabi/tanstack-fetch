@@ -21,7 +21,11 @@ import type {
   ResolveFetchData,
 } from './path-params.type'
 import type { SseEvent, SseHandlers, SseSubscription } from './sse.type'
-import type { UploadOptions, UploadProgressHandler } from './upload.type'
+import type {
+  DownloadProgressHandler,
+  UploadOptions,
+  UploadProgressHandler,
+} from './upload.type'
 
 type RequestInterceptorConfig = {
   use?: HttpInterceptor[]
@@ -40,6 +44,8 @@ type RequestOptions = {
   interceptors?: RequestInterceptorConfig
   /** Browser-only — uses XHR under the hood when set (fetch has no upload progress). */
   onUploadProgress?: UploadProgressHandler
+  /** Browser-only — uses XHR under the hood when set (reliable download progress). */
+  onDownloadProgress?: DownloadProgressHandler
 }
 
 type CreateFetchOptions = {

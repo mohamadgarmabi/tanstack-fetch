@@ -5,7 +5,11 @@ description: Compare tanstack-fetch with axios, ky, and ofetch for TanStack Quer
 
 # Comparison
 
-![Tree-shakeable entry points](/images/docs-entry-points.png)
+![tanstack-fetch vs axios, ky, and ofetch](/images/docs-comparison.jpg)
+
+Use the **Framework** picker — the matrix below is **core**; stack-specific notes appear under each framework.
+
+:::: framework core
 
 tanstack-fetch is an HTTP client shaped for TanStack Query. axios, ky, and ofetch can do the same network work — the difference is the call site.
 
@@ -84,3 +88,69 @@ Full recipe: [Refresh token](/recipes/refresh-token).
 - You need axios-specific adapters that are not fetch-based
 
 Otherwise, if TanStack Query is the source of truth for loading and errors, tanstack-fetch matches that model with less glue.
+
+::::
+
+:::: framework react
+
+## React / Query
+
+Use `@tanstack/react-query` + `tanstack-fetch/react`. Guide: [React](/guide/react) · [TanStack Query](/guide/tanstack-query).
+
+::::
+
+:::: framework vue
+
+## Vue / Nuxt
+
+Use `@tanstack/vue-query` + `tanstack-fetch/vue`. Guide: [Vue](/guide/vue).
+
+::::
+
+:::: framework solid
+
+## Solid
+
+Use `@tanstack/solid-query` + `tanstack-fetch/solid`. Guide: [Solid](/guide/solid).
+
+::::
+
+:::: framework angular
+
+## Angular
+
+Use `@tanstack/angular-query-experimental` + `tanstack-fetch/angular`. Guide: [Angular](/guide/angular).
+
+::::
+
+:::: framework svelte
+
+## Svelte
+
+Use `@tanstack/svelte-query` + `tanstack-fetch/svelte`. Guide: [Svelte](/guide/svelte).
+
+::::
+
+:::: framework nextjs
+
+## Next.js
+
+SSR cookies via `ssr-forward`. Guide: [SSR · Next.js](/guide/ssr#nextjs).
+
+::::
+
+:::: framework tanstack-start
+
+## TanStack Start
+
+Router context + Query. [TanStack Query](/guide/tanstack-query) · [tRPC recipe](/recipes/trpc).
+
+::::
+
+:::: framework remix
+
+## Remix
+
+Loaders + optional Query hydration. [tRPC · Remix](/recipes/trpc#4-remix--tanstack-query).
+
+::::

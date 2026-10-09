@@ -33,10 +33,13 @@ Typed Fetch client for TanStack Query. Start here, then jump to the guide that m
 | --- | --- |
 | [React](/guide/react) | `FetchProvider`, `useFetch`, `useSse` |
 | [Vue & Nuxt](/guide/vue) | Plugin, composables, Nuxt |
+| [Solid](/guide/solid) | `FetchProvider`, `useFetch`, `useSse` |
+| [Angular](/guide/angular) | `provideFetchClient`, `injectFetch`, `useSse` |
+| [Svelte & SvelteKit](/guide/svelte) | `setFetchClient`, `useFetch`, `useSse` |
 | [SSR](/guide/ssr) | Next.js and Nuxt cookie forwarding |
-| [SSE](/guide/sse) | Auth-capable streams |
+| [SSE](/guide/sse) | Auth-capable streams (all frameworks) |
 | [Upload](/guide/upload) | Multipart + progress |
-| [tRPC](/guide/trpc) | Shared client link |
+| [tRPC](/guide/trpc) | Shared client link (all frameworks) |
 | [OpenAPI CLI](/guide/openapi) | Codegen |
 | [Migrate](/guide/migrate) | axios / ky / ofetch / fetch → tanstack-fetch |
 
@@ -44,5 +47,5 @@ Typed Fetch client for TanStack Query. Start here, then jump to the guide that m
 
 - [API reference](/api/create-fetch)
 - [Examples](/examples/)
-- [Blog](/blog) — latest: [1.6.3 migrate CLI](/blog/tanstack-fetch-1-6-3)
+- [Blog](/blog) — latest: [1.7.0 doctor · Solid · Svelte](/blog/tanstack-fetch-1-7-0)
 - [Agent skill](/guide/skill)

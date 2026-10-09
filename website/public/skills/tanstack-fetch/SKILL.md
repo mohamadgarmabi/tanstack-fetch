@@ -10,13 +10,13 @@ license: MIT
 metadata:
   author: Mohammad Garmabi
   package: tanstack-fetch
-  version: '1.6.3'
+  version: '1.7.0'
   docs: https://mohamadgarmabi.github.io/tanstack-fetch/
   npm: https://www.npmjs.com/package/tanstack-fetch
   llm: https://mohamadgarmabi.github.io/tanstack-fetch/llms.txt
 ---
 
-# tanstack-fetch (v1.6.3)
+# tanstack-fetch (v1.7.0)
 
 Typed Fetch client shaped for TanStack Query. Not an official TanStack package.
 
@@ -51,6 +51,9 @@ npm install tanstack-fetch vue
 | `tanstack-fetch/plugins`  | Factories (`createRefreshTokenInterceptor`, …) | 1.13KB |
 | `tanstack-fetch/react`    | `FetchProvider`, `useFetch`, `useSse`          | 0.81KB |
 | `tanstack-fetch/vue`      | `createFetchPlugin`, `useFetch`, `useSse`      | 0.78KB |
+| `tanstack-fetch/solid`    | `FetchProvider`, `useFetch`, `useSse`          | —      |
+| `tanstack-fetch/svelte`   | `setFetchClient`, `useFetch`, `useSse`         | —      |
+| `tanstack-fetch/angular`  | `provideFetchClient`, `injectFetch`, `useSse`  | —      |
 | `tanstack-fetch/trpc`     | tRPC link via the same client                  | 3.16KB |
 | `tanstack-fetch/devtools` | `setupDevtools(api)` request dock              | 8.32KB |
 
@@ -236,6 +239,11 @@ await api.upload('/files', {
   body: { file },
   onUploadProgress: ({ progress }) => console.log(progress),
 })
+
+await api.get('/files/report.pdf', {
+  parseAs: 'blob',
+  onDownloadProgress: ({ progress, loaded, total }) => console.log(progress, loaded, total),
+})
 ```
 
 ## Plugins & refresh token
@@ -296,8 +304,12 @@ const trpcClient = createTRPCFetchClient<AppRouter>({ url: '/api/trpc', client: 
 - Entry points & sizes: [references/entry-points.md](references/entry-points.md)
 - Status handlers map: [references/status-handlers.md](references/status-handlers.md)
 - Vue guide: https://mohamadgarmabi.github.io/tanstack-fetch/guide/vue
-- Release 1.6.3: https://mohamadgarmabi.github.io/tanstack-fetch/blog/tanstack-fetch-1-6-3
+- Solid: https://mohamadgarmabi.github.io/tanstack-fetch/guide/solid
+- Angular: https://mohamadgarmabi.github.io/tanstack-fetch/guide/angular
+- Svelte: https://mohamadgarmabi.github.io/tanstack-fetch/guide/svelte
+- Release 1.7.0: https://mohamadgarmabi.github.io/tanstack-fetch/blog/tanstack-fetch-1-7-0
 - Changelog 1.6.1: https://mohamadgarmabi.github.io/tanstack-fetch/blog/tanstack-fetch-1-6
-- Migrate CLI: `npx tanstack-fetch migrate --from axios|ky|ofetch|fetch|all [--framework react|vue|nuxt|nextjs] [--provider|--no-provider] [--write]`
+- Doctor: `npx tanstack-fetch doctor [--dir ./src]` (alias `--doctor`)
+- Migrate CLI: `npx tanstack-fetch migrate --from axios|ky|ofetch|fetch|all [--framework react|vue|nuxt|nextjs|solid|angular|svelte|sveltekit] [--provider|--no-provider] [--write]`
   - React: prompts for FetchProvider (default: no); `--provider` / `--no-provider` skip the prompt
 - Migrate guide: https://mohamadgarmabi.github.io/tanstack-fetch/guide/migrate

@@ -1,5 +1,6 @@
 import DefaultTheme from 'vitepress/theme'
 import type { Theme } from 'vitepress'
+import Layout from './Layout.vue'
 import NpmPackages from './components/NpmPackages.vue'
 import NpmDownloadBadges from './components/NpmDownloadBadges.vue'
 import HomePackagesLink from './components/HomePackagesLink.vue'
@@ -20,6 +21,7 @@ import './home/home.css'
 
 const theme: Theme = {
   extends: DefaultTheme,
+  Layout,
   enhanceApp({ app }) {
     app.component('NpmPackages', NpmPackages)
     app.component('NpmDownloadBadges', NpmDownloadBadges)

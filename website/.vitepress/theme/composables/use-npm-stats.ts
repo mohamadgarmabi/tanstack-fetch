@@ -34,7 +34,7 @@ type RegistryMeta = {
 const snapshot = fallback as NpmPackagesSnapshot
 
 const fetchJson = async <T>(url: string): Promise<T> => {
-  const response = await fetch(url)
+  const response = await fetch(url, { cache: 'no-store' })
   if (!response.ok) {
     throw new Error(`${url} → ${response.status}`)
   }
@@ -51,15 +51,25 @@ const compareSemver = (left: string, right: string) => {
   return 0
 }
 
-const fetchPackageRow = async (pkg: NpmPackageRow): Promise<NpmPackageRow> => {
-  const [weekly, monthly, meta] = await Promise.all([
-    fetchJson<DownloadsPoint>(`https://api.npmjs.org/downloads/point/last-week/${pkg.name}`),
-    fetchJson<DownloadsPoint>(`https://api.npmjs.org/downloads/point/last-month/${pkg.name}`),
-    fetchJson<RegistryMeta>(`https://registry.npmjs.org/${pkg.name}`),
-  ])
+const sumTotals = (packages: NpmPackageRow[]) => ({
+  weekly: packages.reduce((sum, row) => sum + row.weekly, 0),
+  monthly: packages.reduce((sum, row) => sum + row.monthly, 0),
+})
 
-  const registryLatest = meta['dist-tags']?.latest ?? pkg.version
-  // Keep local snapshot when it is ahead of npm (pre-publish docs).
+const fetchPackageRow = async (pkg: NpmPackageRow): Promise<NpmPackageRow> => {
+  const weeklyPromise = fetchJson<DownloadsPoint>(
+    `https://api.npmjs.org/downloads/point/last-week/${pkg.name}`,
+  )
+  const monthlyPromise = fetchJson<DownloadsPoint>(
+    `https://api.npmjs.org/downloads/point/last-month/${pkg.name}`,
+  )
+  const metaPromise = fetchJson<RegistryMeta>(`https://registry.npmjs.org/${pkg.name}`).catch(
+    () => null,
+  )
+
+  const [weekly, monthly, meta] = await Promise.all([weeklyPromise, monthlyPromise, metaPromise])
+
+  const registryLatest = meta?.['dist-tags']?.latest ?? pkg.version
   const version = compareSemver(pkg.version, registryLatest) > 0 ? pkg.version : registryLatest
 
   return {
@@ -67,12 +77,15 @@ const fetchPackageRow = async (pkg: NpmPackageRow): Promise<NpmPackageRow> => {
     version,
     weekly: weekly.downloads ?? pkg.weekly,
     monthly: monthly.downloads ?? pkg.monthly,
-    description: String(meta.description ?? pkg.description).slice(0, 120),
+    description: String(meta?.description ?? pkg.description).slice(0, 120),
   }
 }
 
 const useNpmPackages = () => {
-  const data = shallowRef<NpmPackagesSnapshot>(snapshot)
+  const data = shallowRef<NpmPackagesSnapshot>({
+    ...snapshot,
+    totals: sumTotals(snapshot.packages),
+  })
   const loading = ref(false)
   const live = ref(false)
   const error = ref<string | null>(null)
@@ -84,18 +97,23 @@ const useNpmPackages = () => {
     error.value = null
 
     try {
-      const packages = await Promise.all(snapshot.packages.map((pkg) => fetchPackageRow(pkg)))
+      const results = await Promise.allSettled(snapshot.packages.map((pkg) => fetchPackageRow(pkg)))
+      const packages = results.map((result, index) => {
+        if (result.status === 'fulfilled') return result.value
+        return snapshot.packages[index]
+      })
+      const failed = results.filter((result) => result.status === 'rejected').length
 
       data.value = {
         ...snapshot,
         updatedAt: new Date().toISOString(),
         packages,
-        totals: {
-          weekly: packages.reduce((sum, row) => sum + row.weekly, 0),
-          monthly: packages.reduce((sum, row) => sum + row.monthly, 0),
-        },
+        totals: sumTotals(packages),
       }
-      live.value = true
+      live.value = failed < results.length
+      if (failed > 0) {
+        error.value = `Updated ${results.length - failed}/${results.length} packages from npm`
+      }
     } catch (err) {
       error.value = err instanceof Error ? err.message : 'Failed to refresh npm stats'
     } finally {

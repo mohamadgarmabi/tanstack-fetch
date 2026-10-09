@@ -2,6 +2,7 @@ import { writeFileSync } from 'node:fs'
 import { join } from 'node:path'
 import { fileURLToPath, URL } from 'node:url'
 import { defineConfig, type HeadConfig, type SiteConfig } from 'vitepress'
+import { frameworkContainer } from './markdown/framework-container'
 
 const SITE_URL = 'https://mohamadgarmabi.github.io/tanstack-fetch'
 const SITE_NAME = 'tanstack-fetch'
@@ -14,7 +15,7 @@ const GITHUB_PROFILE_URL = 'https://github.com/mohamadgarmabi'
 const NPM_URL = 'https://www.npmjs.com/package/tanstack-fetch'
 const OG_IMAGE = `${SITE_URL}/images/docs-og-banner.png`
 const DEFAULT_DESCRIPTION =
-  'Typed Fetch client designed for TanStack Query. Tiny HTTP core with SSR, SSE, React, Vue and Nuxt support.'
+  'Typed Fetch client designed for TanStack Query. Tiny HTTP core with SSR, SSE, TanStack Start, React, Remix, Vue, Solid, SolidStart, Angular, Svelte and Nuxt support.'
 const HOME_TITLE =
   'tanstack-fetch by Mohammad Garmabi — Typed Fetch Client for TanStack Query'
 
@@ -36,6 +37,13 @@ const KEYWORDS = [
   'Next.js',
   'Vue',
   'Nuxt',
+  'Solid',
+  'SolidStart',
+  'TanStack Start',
+  'Remix',
+  'Angular',
+  'Svelte',
+  'SvelteKit',
   'createFetch',
   'Mohammad Garmabi LinkedIn',
   'mohammad garmabi linkedin',
@@ -118,7 +126,7 @@ const buildJsonLd = (pageUrl: string, title: string, description: string) => {
       description: DEFAULT_DESCRIPTION,
       url: `${SITE_URL}/`,
       downloadUrl: NPM_URL,
-      softwareVersion: '1.6.3',
+      softwareVersion: '1.7.0',
       license: 'https://opensource.org/licenses/MIT',
       codeRepository: GITHUB_URL,
       programmingLanguage: ['TypeScript', 'JavaScript'],
@@ -160,6 +168,12 @@ const config = defineConfig({
   // `public/**` is static assets only — never treat skill markdown as site pages.
   srcExclude: ['**/README.md', 'public/**'],
   metaChunk: true,
+
+  markdown: {
+    config: (md) => {
+      md.use(frameworkContainer)
+    },
+  },
 
   // Built-in sitemap writer races buildEnd (async stream). We emit sitemap.xml ourselves.
   buildEnd: (siteConfig) => {
@@ -292,6 +306,9 @@ const config = defineConfig({
             { text: 'TanStack Query', link: '/guide/tanstack-query' },
             { text: 'React', link: '/guide/react' },
             { text: 'Vue & Nuxt', link: '/guide/vue' },
+            { text: 'Solid', link: '/guide/solid' },
+            { text: 'Angular', link: '/guide/angular' },
+            { text: 'Svelte & SvelteKit', link: '/guide/svelte' },
             { text: 'SSR', link: '/guide/ssr' },
             { text: 'API reference', link: '/api/create-fetch' },
             { text: 'Blog', link: '/blog/' },
@@ -324,6 +341,9 @@ const config = defineConfig({
           items: [
             { text: 'React', link: '/guide/react' },
             { text: 'Vue & Nuxt', link: '/guide/vue' },
+            { text: 'Solid', link: '/guide/solid' },
+            { text: 'Angular', link: '/guide/angular' },
+            { text: 'Svelte & SvelteKit', link: '/guide/svelte' },
             { text: 'SSR (Next.js & Nuxt)', link: '/guide/ssr' },
             { text: 'SSE', link: '/guide/sse' },
             { text: 'Upload', link: '/guide/upload' },
@@ -339,10 +359,15 @@ const config = defineConfig({
             { text: 'createFetch', link: '/api/create-fetch' },
             { text: 'FetchClient', link: '/api/fetch-client' },
             { text: 'Errors', link: '/api/errors' },
+            { text: 'Plugins', link: '/api/plugins' },
+            { text: 'tRPC helpers', link: '/api/trpc' },
+          ],
+        },
+        {
+          text: 'Framework adapters',
+          items: [
             { text: 'React', link: '/api/react' },
             { text: 'Vue', link: '/api/vue' },
-            { text: 'tRPC helpers', link: '/api/trpc' },
-            { text: 'Plugins', link: '/api/plugins' },
           ],
         },
       ],
@@ -361,6 +386,7 @@ const config = defineConfig({
           text: 'Blog',
           items: [
             { text: 'All posts', link: '/blog/' },
+            { text: 'tanstack-fetch 1.7.0 — doctor · Solid · Svelte', link: '/blog/tanstack-fetch-1-7-0' },
             { text: 'tanstack-fetch 1.6.3 — migrate CLI', link: '/blog/tanstack-fetch-1-6-3' },
             { text: 'tanstack-fetch 1.6.1 — path params', link: '/blog/tanstack-fetch-1-6' },
             { text: 'tanstack-fetch 1.5.0 — Vue & Nuxt', link: '/blog/tanstack-fetch-1-5' },

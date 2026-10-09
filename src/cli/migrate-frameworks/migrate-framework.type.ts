@@ -1,4 +1,12 @@
-type MigrateFramework = 'react' | 'vue' | 'nuxt' | 'nextjs'
+type MigrateFramework =
+  | 'react'
+  | 'vue'
+  | 'nuxt'
+  | 'nextjs'
+  | 'solid'
+  | 'angular'
+  | 'svelte'
+  | 'sveltekit'
 
 type FrameworkScaffoldFile = {
   path: string

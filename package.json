@@ -1,7 +1,7 @@
 {
   "name": "tanstack-fetch",
-  "version": "1.6.3",
-  "description": "TanStack Query fetch client — typed errors, AbortSignal, SSR, SSE, upload. React + Vue/Nuxt. Lightweight axios/ky alternative (4.81KB gzip HTTP core).",
+  "version": "1.7.0",
+  "description": "TanStack Query fetch client — typed errors, AbortSignal, SSR, SSE, upload. React, Vue/Nuxt, Solid, Angular, Svelte/SvelteKit. Lightweight axios/ky alternative (4.81KB gzip HTTP core).",
   "license": "MIT",
   "author": {
     "name": "Mohammad Garmabi",
@@ -36,6 +36,11 @@
     "nuxt",
     "vue3",
     "nuxt3",
+    "solid",
+    "solidjs",
+    "angular",
+    "svelte",
+    "sveltekit",
     "nextjs",
     "next.js",
     "ssr",
@@ -101,6 +106,21 @@
       "import": "./dist/vue.js",
       "require": "./dist/vue.cjs"
     },
+    "./solid": {
+      "types": "./dist/solid.d.ts",
+      "import": "./dist/solid.js",
+      "require": "./dist/solid.cjs"
+    },
+    "./svelte": {
+      "types": "./dist/svelte.d.ts",
+      "import": "./dist/svelte.js",
+      "require": "./dist/svelte.cjs"
+    },
+    "./angular": {
+      "types": "./dist/angular.d.ts",
+      "import": "./dist/angular.js",
+      "require": "./dist/angular.cjs"
+    },
     "./trpc": {
       "types": "./dist/trpc.d.ts",
       "import": "./dist/trpc.js",
@@ -143,9 +163,12 @@
     "skills:sync": "rm -rf website/public/skills/tanstack-fetch && mkdir -p website/public/skills && cp -R .agents/skills/tanstack-fetch website/public/skills/"
   },
   "peerDependencies": {
+    "@angular/core": ">=17",
     "@trpc/client": ">=10",
     "@trpc/server": ">=10",
     "react": ">=18",
+    "solid-js": ">=1.8",
+    "svelte": ">=4",
     "vue": ">=3.3",
     "yaml": "^2.0.0"
   },
@@ -154,6 +177,15 @@
       "optional": true
     },
     "vue": {
+      "optional": true
+    },
+    "solid-js": {
+      "optional": true
+    },
+    "svelte": {
+      "optional": true
+    },
+    "@angular/core": {
       "optional": true
     },
     "yaml": {
@@ -167,6 +199,7 @@
     }
   },
   "devDependencies": {
+    "@angular/core": "^19.2.25",
     "@eslint/js": "^9.36.0",
     "@trpc/client": "^11.19.0",
     "@trpc/server": "^11.19.0",
@@ -176,6 +209,9 @@
     "happy-dom": "^20.14.5",
     "prettier": "^3.6.2",
     "react": "^19.1.1",
+    "rxjs": "^7.8.2",
+    "solid-js": "^1.9.17",
+    "svelte": "^5.57.2",
     "tsup": "^8.5.0",
     "tsx": "^4.20.5",
     "typescript": "^5.9.2",

@@ -7,6 +7,10 @@ description: API reference for createFetch — options, return type, and how to 
 
 ![createFetch mental model](/images/docs-mental-model.png)
 
+Shared HTTP API — always available with any Framework filter (tagged **core**).
+
+:::: framework core
+
 ```ts
 import { createFetch } from 'tanstack-fetch'
 
@@ -82,3 +86,45 @@ await api.get('/users')
 Helpers / types: `pathParams()`, `PathParamsOf`, `ExtractPathParamKeys`, `NoParams`.
 
 Deprecated alias: `createClient` → `createFetch`.
+
+::::
+
+:::: framework react
+
+## With React
+
+Inject the client via [`tanstack-fetch/react`](/guide/react) (`FetchProvider` / `useFetch`). API reference: [React](/api/react).
+
+::::
+
+:::: framework vue
+
+## With Vue / Nuxt
+
+Inject via [`tanstack-fetch/vue`](/guide/vue) (`createFetchPlugin` / `useFetch`). API: [Vue](/api/vue).
+
+::::
+
+:::: framework solid
+
+## With Solid
+
+Inject via [`tanstack-fetch/solid`](/guide/solid).
+
+::::
+
+:::: framework angular
+
+## With Angular
+
+Inject via [`tanstack-fetch/angular`](/guide/angular) (`provideFetchClient` / `injectFetch`).
+
+::::
+
+:::: framework svelte
+
+## With Svelte
+
+Inject via [`tanstack-fetch/svelte`](/guide/svelte) (`setFetchClient` / `useFetch`).
+
+::::

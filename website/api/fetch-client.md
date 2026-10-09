@@ -29,4 +29,5 @@ Methods on the client returned by `createFetch`.
 | `parseAs`          | `json` \| `text` \| `blob`                                         |
 | `operation`        | Name for interceptor match                                         |
 | `interceptors`     | Per-request `use` / `eject`                                        |
-| `onUploadProgress` | Browser upload progress                                            |
+| `onUploadProgress` | Browser upload progress (XHR)                                      |
+| `onDownloadProgress` | Browser download progress (XHR)                                  |

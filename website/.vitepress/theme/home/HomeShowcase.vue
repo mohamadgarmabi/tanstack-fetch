@@ -45,7 +45,7 @@ const selectFile = (index: number) => {
         <code>createFetch</code>
         client — same
         <code>queryFn</code>
-        shape everywhere.
+        shape on React, Vue, Nuxt, Next.js, Solid, Angular, Svelte, and SvelteKit.
         <a :href="migrateHref">Migrate guide + CLI</a>
       </p>
     </div>

@@ -1,5 +1,20 @@
 # Changelog
 
+## 1.7.0
+
+### Features
+
+- **`onDownloadProgress`**: browser download progress on any request (`get` / `post` / …), same event shape as upload (`loaded` / `total` / `progress`) via XHR
+- **`tanstack-fetch/solid`**, **`/svelte`**, **`/angular`**: inject client + `useSse` (parity with React/Vue)
+- **`tanstack-fetch doctor`** (alias `--doctor`): health-check package.json + sources
+  - Legacy clients (`axios` / `ky` / `ofetch`), `createFetch` count, missing `signal` in `queryFn`
+  - Framework stack hints (react, vue, nuxt, nextjs, solid, angular, svelte, sveltekit)
+- **migrate `--framework`**: `solid` · `angular` · `svelte` · `sveltekit` scaffolds
+  - Works with `@tanstack/solid-query`, `@tanstack/angular-query-experimental`, `@tanstack/svelte-query`
+  - `sveltekit` also scaffolds `api.server.ts` with `ssr-forward` + cookies
+- **Docs**: Framework picker in the header (default All) filters framework sections on SSE / tRPC / Query / examples
+  - Picker includes TanStack Start, SolidStart, Remix; Start + Query + Router context examples lead the tRPC / Query guides
+
 ## 1.6.3
 
 ### Fixes

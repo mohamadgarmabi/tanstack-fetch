@@ -138,6 +138,84 @@ describe('upload', () => {
     vi.unstubAllGlobals()
   })
 
+  it('tracks download progress via XHR when onDownloadProgress is set', async () => {
+    type XhrInstance = {
+      upload: { onprogress: ((event: ProgressEvent) => void) | null }
+      onprogress: ((event: ProgressEvent) => void) | null
+      onload: (() => void) | null
+      onerror: (() => void) | null
+      onabort: (() => void) | null
+      status: number
+      statusText: string
+      response: ArrayBuffer
+      open: ReturnType<typeof vi.fn>
+      setRequestHeader: ReturnType<typeof vi.fn>
+      send: ReturnType<typeof vi.fn>
+      abort: ReturnType<typeof vi.fn>
+      getAllResponseHeaders: ReturnType<typeof vi.fn>
+    }
+
+    let lastXhr: XhrInstance | undefined
+
+    class XhrMock {
+      upload: XhrInstance['upload'] = { onprogress: null }
+      onprogress: XhrInstance['onprogress'] = null
+      onload: XhrInstance['onload'] = null
+      onerror: XhrInstance['onerror'] = null
+      onabort: XhrInstance['onabort'] = null
+      status = 200
+      statusText = 'OK'
+      response = new TextEncoder().encode(JSON.stringify({ ok: true })).buffer
+      open = vi.fn()
+      setRequestHeader = vi.fn()
+      abort = vi.fn()
+      getAllResponseHeaders = vi.fn(() => 'content-type: application/json\r\n')
+      send = vi.fn(() => {
+        this.onprogress?.({
+          loaded: 25,
+          total: 100,
+          lengthComputable: true,
+        } as ProgressEvent)
+        this.onprogress?.({
+          loaded: 100,
+          total: 100,
+          lengthComputable: true,
+        } as ProgressEvent)
+        this.onload?.()
+      })
+    }
+
+    const XhrProxy = new Proxy(XhrMock, {
+      construct: (target, args, newTarget) => {
+        const instance = Reflect.construct(target, args, newTarget) as XhrInstance
+        lastXhr = instance
+        return instance
+      },
+    })
+
+    vi.stubGlobal('XMLHttpRequest', XhrProxy)
+
+    const fetchImpl = vi.fn()
+    const http = createTestClient(fetchImpl)
+    const progress = vi.fn()
+
+    const data = await http.get<{ ok: boolean }>('/files/report.json', {
+      onDownloadProgress: progress,
+    })
+
+    expect(data.ok).toBe(true)
+    expect(fetchImpl).not.toHaveBeenCalled()
+    expect(lastXhr?.open).toHaveBeenCalledWith(
+      'GET',
+      'https://api.example.com/files/report.json',
+      true,
+    )
+    expect(progress).toHaveBeenNthCalledWith(1, { loaded: 25, total: 100, progress: 0.25 })
+    expect(progress).toHaveBeenNthCalledWith(2, { loaded: 100, total: 100, progress: 1 })
+
+    vi.unstubAllGlobals()
+  })
+
   it('rejects immediately when upload signal is already aborted', async () => {
     class XhrMock {
       upload = { onprogress: null }

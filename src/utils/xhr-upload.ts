@@ -1,15 +1,16 @@
-import type { UploadProgressHandler } from '../types/upload.type'
+import type { DownloadProgressHandler, UploadProgressHandler } from '../types/upload.type'
 
 type XhrUploadBody = XMLHttpRequestBodyInit | null | undefined
 
-type XhrUploadArgs = {
+type XhrProgressArgs = {
   url: URL
   method: string
   headers: Headers
   body?: XhrUploadBody
   signal?: AbortSignal
   credentials?: RequestCredentials
-  onUploadProgress: UploadProgressHandler
+  onUploadProgress?: UploadProgressHandler
+  onDownloadProgress?: DownloadProgressHandler
 }
 
 const parseResponseHeaders = (raw: string): Headers => {
@@ -33,8 +34,11 @@ const toProgressEvent = (event: ProgressEvent) => {
   }
 }
 
-/** Browser upload via XHR so `upload.onprogress` works (fetch has no upload progress). */
-const uploadWithProgress = (args: XhrUploadArgs): Promise<Response> =>
+/**
+ * Browser request via XHR so upload / download `onprogress` works
+ * (fetch has no upload progress and limited download progress APIs).
+ */
+const uploadWithProgress = (args: XhrProgressArgs): Promise<Response> =>
   new Promise((resolve, reject) => {
     if (args.signal?.aborted) {
       reject(new DOMException('The operation was aborted.', 'AbortError'))
@@ -53,8 +57,16 @@ const uploadWithProgress = (args: XhrUploadArgs): Promise<Response> =>
       xhr.setRequestHeader(key, value)
     })
 
-    xhr.upload.onprogress = (event) => {
-      args.onUploadProgress(toProgressEvent(event))
+    if (args.onUploadProgress) {
+      xhr.upload.onprogress = (event) => {
+        args.onUploadProgress?.(toProgressEvent(event))
+      }
+    }
+
+    if (args.onDownloadProgress) {
+      xhr.onprogress = (event) => {
+        args.onDownloadProgress?.(toProgressEvent(event))
+      }
     }
 
     const onAbort = () => xhr.abort()
@@ -86,4 +98,6 @@ const uploadWithProgress = (args: XhrUploadArgs): Promise<Response> =>
 
 const canTrackUploadProgress = () => typeof XMLHttpRequest !== 'undefined'
 
-export { uploadWithProgress, canTrackUploadProgress }
+const canTrackDownloadProgress = () => typeof XMLHttpRequest !== 'undefined'
+
+export { uploadWithProgress, canTrackUploadProgress, canTrackDownloadProgress }

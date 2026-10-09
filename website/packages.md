@@ -14,7 +14,7 @@ Live download badges and stats for packages by **[Mohammad Garmabi](/author)**
 [LinkedIn](https://www.linkedin.com/in/mohammad-garmabi/) ·
 [GitHub](https://github.com/mohamadgarmabi)).
 
-Counts refresh from the npm API whenever you open this page.
+Weekly / monthly totals load from the **npm downloads API** when you open this page (and via **Refresh**). A build-time snapshot is the fallback offline.
 
 <InstallTabs packages="tanstack-fetch @tanstack/react-query" />
 

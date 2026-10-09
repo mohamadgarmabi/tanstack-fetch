@@ -1,6 +1,6 @@
 ---
 title: Examples
-description: Live createFetch demos for React, Vue, Next.js, Nuxt, upload, SSE, and status handlers.
+description: Live createFetch demos for React, Vue, Next.js, Nuxt, Solid, Angular, Svelte, upload, SSE, tRPC, and status handlers.
 ---
 
 # Examples
@@ -16,7 +16,8 @@ These widgets run **`createFetch` in your browser** (mock `fetch` / streams) —
 | [Next.js SSR](/examples/next-ssr)    | **React** · Next.js        | `ssr-forward` cookies        |
 | [Nuxt SSR](/examples/nuxt-ssr)       | **Vue** · Nuxt             | `ssr-forward` + Vue plugin   |
 | [Upload](/examples/upload)           | Core                       | `api.upload` multipart       |
-| [SSE](/examples/sse)                 | Core + **React** / **Vue** | `api.sse` + `useSse`         |
+| [SSE](/examples/sse)                 | Core + **all frameworks**  | `api.sse` · React/Vue `useSse` · [guide](/guide/sse) |
+| [tRPC](/guide/trpc)                  | **React** StackBlitz + all | `createTRPCFetchClient` · [recipe](/recipes/trpc) |
 | [DevTools](/examples/devtools)       | Core                       | HTTP / SSE / SSR / tRPC dock |
 
 ### React

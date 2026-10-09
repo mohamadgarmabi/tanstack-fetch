@@ -3,7 +3,11 @@ import { encodeBody, isBodyParseError, parseBody } from './utils/parse-body'
 import { toErrResult, toFetchErrorInfo, toOkResult } from './utils/result'
 import { runHook } from './interceptors/run-interceptors'
 import { createFetchError, isAbortError } from './fetch-error'
-import { canTrackUploadProgress, uploadWithProgress } from './utils/xhr-upload'
+import {
+  canTrackDownloadProgress,
+  canTrackUploadProgress,
+  uploadWithProgress,
+} from './utils/xhr-upload'
 import type { FetchResult, RequestOptions } from './types'
 
 type AttemptOutcome<T, E> =
@@ -20,8 +24,12 @@ type ExecuteArgs = {
 const sendHttp = async (input: ExecuteArgs, body: BodyInit | null | undefined) => {
   const { context, fetchImpl, client, requestOptions } = input
   const onUploadProgress = requestOptions?.onUploadProgress
+  const onDownloadProgress = requestOptions?.onDownloadProgress
+  const useXhrProgress =
+    (Boolean(onUploadProgress) && canTrackUploadProgress()) ||
+    (Boolean(onDownloadProgress) && canTrackDownloadProgress())
 
-  if (onUploadProgress && canTrackUploadProgress()) {
+  if (useXhrProgress) {
     return uploadWithProgress({
       url: context.request.url,
       method: context.request.method,
@@ -30,6 +38,7 @@ const sendHttp = async (input: ExecuteArgs, body: BodyInit | null | undefined) =
       signal: context.request.signal,
       credentials: client.credentials,
       onUploadProgress,
+      onDownloadProgress,
     })
   }
 
