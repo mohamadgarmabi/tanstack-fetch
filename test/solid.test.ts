@@ -27,12 +27,13 @@ describe('tanstack-fetch/solid', () => {
         client: typeof api
         children: null
       }
+      const readChildren = () => {
+        seen = useFetch()
+        return null
+      }
       Object.defineProperty(props, 'children', {
         enumerable: true,
-        get: () => {
-          seen = useFetch()
-          return null
-        },
+        get: readChildren,
       })
       FetchProvider(props)
       return disposeRoot
