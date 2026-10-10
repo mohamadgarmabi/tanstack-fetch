@@ -1,0 +1,261 @@
+# tanstack-fetch v1.7.0
+
+> Typed Fetch client designed for TanStack Query. Return data, throw `FetchError`, honor `AbortSignal`. TanStack Start, React, Remix, Vue/Nuxt, Solid, SolidStart, Angular, Svelte/SvelteKit. SSR, SSE, upload, tRPC, DevTools.
+
+Docs: https://mohamadgarmabi.github.io/tanstack-fetch/docs/
+Repo: https://github.com/mohamadgarmabi/tanstack-fetch
+npm: https://www.npmjs.com/package/tanstack-fetch
+Changelog: https://github.com/mohamadgarmabi/tanstack-fetch/blob/main/CHANGELOG.md
+Sitemap: https://mohamadgarmabi.github.io/tanstack-fetch/sitemap-pages.xml
+Sitemap: https://mohamadgarmabi.github.io/tanstack-fetch/sitemap.xml
+Robots: https://mohamadgarmabi.github.io/tanstack-fetch/robots.txt
+
+Not an official TanStack package.
+
+## Version
+
+**1.7.0** — `tanstack-fetch/solid|svelte|angular`, `npx tanstack-fetch doctor`, migrate `--framework solid|angular|svelte|sveltekit`, docs Framework picker (/blog/tanstack-fetch-1-7-0).
+
+**1.6.3** — `npx tanstack-fetch migrate --from axios|ky|ofetch|fetch|all` (broader call sites + safer scan; /blog/tanstack-fetch-1-6-3, guide /guide/migrate).
+
+**1.6.1** — path-typed `params` (`:id` / `{id}`), `api.get<User, { id: number }>(…)`, optional body typing on `post` / `put` / `patch` (`NoParams` to skip params).
+
+## Install
+
+```bash
+npm install tanstack-fetch @tanstack/react-query
+# Vue / Nuxt
+npm install tanstack-fetch vue
+```
+
+## Agent skill (Cursor / Claude / Codex)
+
+```bash
+npx skills add mohamadgarmabi/tanstack-fetch --skill tanstack-fetch
+# or: pnpm dlx / yarn dlx / bunx skills add …
+```
+
+Skill page: https://mohamadgarmabi.github.io/tanstack-fetch/guide/skill  
+Raw skill: https://mohamadgarmabi.github.io/tanstack-fetch/skills/tanstack-fetch/SKILL.md
+
+## Mental model
+
+1. Return data on success
+2. Throw `FetchError` on HTTP failure (default)
+3. Honor `AbortSignal` — pass Query’s `signal`
+4. Never wrap as `{ data }` like axios
+5. Prefer one shared `api` module
+
+## Quickstart
+
+```ts
+import { createFetch } from 'tanstack-fetch'
+import { useQuery } from '@tanstack/react-query'
+
+const api = createFetch({ baseUrl: 'https://api.example.com' })
+
+useQuery({
+  queryKey: ['users'],
+  queryFn: ({ signal }) => api.get<User[]>('/users', { signal }),
+})
+```
+
+## Entry points (gzip, minified ESM)
+
+| Import | Role | gzip |
+| --- | --- | ---: |
+| `tanstack-fetch` | HTTP (`get` / `post` / `upload` / …) | 4.81KB |
+| `tanstack-fetch/sse` | + `api.sse()` (auth + cookies work) | 5.94KB |
+| `tanstack-fetch/plugins` | interceptor factories | 1.13KB |
+| `tanstack-fetch/react` | `FetchProvider` / `useFetch` / `useSse` | 0.81KB |
+| `tanstack-fetch/vue` | `createFetchPlugin` / `useFetch` / `useSse` | 0.78KB |
+| `tanstack-fetch/solid` | `FetchProvider` / `useFetch` / `useSse` | — |
+| `tanstack-fetch/svelte` | `setFetchClient` / `useFetch` / `useSse` | — |
+| `tanstack-fetch/angular` | `provideFetchClient` / `injectFetch` / `useSse` | — |
+| `tanstack-fetch/trpc` | tRPC link via `createFetch` | 3.16KB |
+| `tanstack-fetch/devtools` | `setupDevtools(api)` | 8.32KB |
+
+```ts
+import { createFetch } from 'tanstack-fetch' // HTTP only
+import { createFetch } from 'tanstack-fetch/sse' // + streams
+```
+
+## Important: `useFetch` does not fetch
+
+In React and Vue, `useFetch()` **injects the shared client** from context/plugin. It returns `api` — it does not perform an HTTP request.
+
+Nuxt already has a core `useFetch`. Alias ours:
+
+```ts
+import { useFetch as useFetchClient } from 'tanstack-fetch/vue'
+```
+
+## Vue / Nuxt
+
+```ts
+import { createFetch } from 'tanstack-fetch/sse'
+import { createFetchPlugin, useSse, useFetch } from 'tanstack-fetch/vue'
+
+const api = createFetch({
+  baseUrl: import.meta.env.VITE_API_URL,
+  plugins: ['sse-resume'],
+  getToken: () => localStorage.getItem('access_token'),
+})
+
+// Vue
+createApp(App).use(createFetchPlugin({ client: api })).mount('#app')
+const client = useFetch()
+
+// Nuxt plugin
+export default defineNuxtPlugin((nuxtApp) => {
+  nuxtApp.vueApp.use(createFetchPlugin({ client: api }))
+  return { provide: { api } }
+})
+
+// SSE — plugin optional when passing client
+const { data, status, error, close } = useSse<OrderEvent>('/orders/stream', {
+  client: api,
+})
+// status: 'connecting' | 'connected' | 'disconnected' | 'error'
+```
+
+`provideFetchClient(api)` must run in a **parent** setup for child inject. Prefer `createFetchPlugin` app-wide.
+
+## React
+
+```ts
+import { FetchProvider, useFetch, useSse } from 'tanstack-fetch/react'
+import { createFetch } from 'tanstack-fetch/sse'
+
+const api = createFetch({ plugins: ['sse-resume'] })
+// <FetchProvider client={api}>…</FetchProvider>
+const { data, status, close } = useSse('/orders/stream', { client: api })
+```
+
+## Path params
+
+```ts
+await api.get('/users/:id', { params: { id } })
+await api.get<User, { id: number }>('/users/:id', { params: { id } })
+await api.post<User, NoParams, { name: string }>('/users', { body: { name: 'Ada' } })
+await api.get<User[]>('/users', { query: { page: 1 } })
+```
+
+## Errors
+
+```ts
+import { isFetchError } from 'tanstack-fetch'
+
+try {
+  await api.get('/missing')
+} catch (error) {
+  if (isFetchError(error)) {
+    // error.status, error.code, error.body, error.message
+  }
+}
+```
+
+## Status handlers
+
+Shortcuts on `createFetch`: `onUnauthorized` (401), `onForbidden` (403), `onNotFound` (404), `onTooManyRequests` (429), `onClientError`, `onServerError`, plus `onStatus` map. Use `parseRetryAfter` for 429.
+
+## Refresh token
+
+```ts
+import { createRefreshTokenInterceptor } from 'tanstack-fetch/plugins'
+
+api.use(
+  'refresh-token',
+  createRefreshTokenInterceptor({
+    refresh: async () => {
+      const body = await api.post<{ accessToken: string }>('/auth/refresh', {
+        interceptors: { eject: ['refresh-token', 'auth'] },
+      })
+      /* persist body.accessToken */
+    },
+    before: { getExpiresAt: () => expiresAt, skewMs: 60_000 },
+    after: { enabled: true },
+  }),
+)
+```
+
+- **before** — refresh near expiry
+- **after** — on first 401, single-flight, then `{ action: 'retry' }`
+
+## DevTools
+
+```ts
+import { setupDevtools } from 'tanstack-fetch/devtools'
+
+setupDevtools(api) // Alt+Shift+F / ⌥⇧F
+// options: { http, sse, ssr, trpc, open }
+```
+
+## SSR
+
+`plugins: ['ssr-forward']` + `incoming` cookies/headers. Absolute `baseUrl` on the server. Guides: Next.js and Nuxt.
+
+## Upload
+
+```ts
+await api.upload('/files', {
+  body: { file },
+  onUploadProgress: ({ progress }) => console.log(progress),
+})
+
+await api.get('/files/report.pdf', {
+  parseAs: 'blob',
+  onDownloadProgress: ({ progress, loaded, total }) => console.log(progress, loaded, total),
+})
+```
+
+## tRPC
+
+```ts
+import { createTRPCFetchClient } from 'tanstack-fetch/trpc'
+
+const trpcClient = createTRPCFetchClient<AppRouter>({ url: '/api/trpc', client: api })
+```
+
+## Key guides
+
+- Docs hub: /docs/
+- Getting started: /guide/getting-started
+- Agent skill: /guide/skill
+- Configuration / status handlers: /guide/configuration
+- Errors: /guide/errors
+- TanStack Query: /guide/tanstack-query
+- TanStack Query (Start + Router context first): /guide/tanstack-query
+- React: /guide/react
+- Vue & Nuxt: /guide/vue
+- Solid: /guide/solid
+- Angular: /guide/angular
+- Svelte & SvelteKit: /guide/svelte
+- SSR: /guide/ssr
+- SSE: /guide/sse
+- Upload: /guide/upload
+- tRPC (Start / SolidStart / Remix): /guide/trpc
+- tRPC recipe: /recipes/trpc
+- OpenAPI CLI: /guide/openapi
+- Refresh token: /recipes/refresh-token
+- Comparison: /guide/comparison
+- Playground: /examples/playground
+- DevTools: /examples/devtools
+- Blog: /blog/
+- Release 1.7.0 (doctor · Solid · Svelte): /blog/tanstack-fetch-1-7-0
+- Release 1.6.3 (migrate CLI): /blog/tanstack-fetch-1-6-3
+- Release 1.6.1 (path params + body types): /blog/tanstack-fetch-1-6
+- Release 1.5.0 (Vue & Nuxt): /blog/tanstack-fetch-1-5
+- Release 1.3 → 1.4.2: /blog/tanstack-fetch-1-4
+
+## Do / don’t
+
+| Do | Don’t |
+| --- | --- |
+| One shared `api` | `createFetch()` per call site |
+| Pass `{ signal }` from Query | Ignore abort |
+| `isFetchError` for branches | Swallow errors |
+| `tanstack-fetch/sse` for auth streams | `EventSource` when you need Bearer |
+| `params` for `:id` paths | String-concat URLs |
+| Alias Vue `useFetch` in Nuxt | Clash with Nuxt core `useFetch` |
+| Treat `useFetch()` as client inject | Assume it performs HTTP |
