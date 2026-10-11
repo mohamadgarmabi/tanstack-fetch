@@ -853,6 +853,8 @@
   align-items: center;
   gap: 0.35rem;
   margin-left: 0.65rem;
+  min-width: 0;
+  flex: 0 1 auto;
   font-size: 0.78rem;
   color: var(--vp-c-text-2);
 }
@@ -862,11 +864,15 @@
   letter-spacing: 0.02em;
   text-transform: uppercase;
   opacity: 0.75;
+  white-space: nowrap;
 }
 
 .fw-picker-select {
   appearance: none;
+  box-sizing: border-box;
   max-width: 9.5rem;
+  min-width: 0;
+  width: auto;
   padding: 0.28rem 1.5rem 0.28rem 0.55rem;
   border: 1px solid rgba(255, 122, 24, 0.28);
   border-radius: 6px;
@@ -910,11 +916,29 @@
 }
 
 @media (max-width: 768px) {
+  /* Logo stays; drop brand text so the stack select fits the nav row. */
+  .VPNavBarTitle .title > span {
+    display: none;
+  }
+
+  .VPNavBar .content,
+  .VPNavBar .content-body {
+    min-width: 0;
+  }
+
+  .fw-picker {
+    margin-left: 0.25rem;
+    max-width: 6.25rem;
+  }
+
   .fw-picker-label {
     display: none;
   }
 
   .fw-picker-select {
-    max-width: 7.5rem;
+    max-width: 6.25rem;
+    width: 6.25rem;
+    padding: 0.24rem 1.25rem 0.24rem 0.4rem;
+    font-size: 0.72rem;
   }
 }

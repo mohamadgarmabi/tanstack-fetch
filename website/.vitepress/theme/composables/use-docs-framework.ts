@@ -18,7 +18,7 @@ type DocsFramework =
 const STORAGE_KEY = 'tf-docs-framework'
 
 const FRAMEWORK_OPTIONS: { id: DocsFramework; label: string }[] = [
-  { id: 'all', label: 'All frameworks' },
+  { id: 'all', label: 'All' },
   { id: 'core', label: 'Core' },
   { id: 'tanstack-start', label: 'TanStack Start' },
   { id: 'react', label: 'React' },
