@@ -9,20 +9,17 @@
   --home-accent-2: #ff5a1f;
   --home-card: rgba(255, 255, 255, 0.03);
   color: var(--home-text);
+  overflow-x: clip;
   background:
-    radial-gradient(ellipse 70% 40% at 50% -10%, rgba(255, 122, 24, 0.16), transparent 55%),
-    radial-gradient(rgba(255, 255, 255, 0.055) 1px, transparent 1px), var(--home-bg);
-  background-size:
-    auto,
-    22px 22px,
-    auto;
+    radial-gradient(rgba(255, 255, 255, 0.045) 1px, transparent 1px), var(--home-bg);
+  background-size: 22px 22px;
   font-family: Inter, ui-sans-serif, system-ui, sans-serif;
 }
 
 .home-wrap {
   width: min(1120px, calc(100% - 2.5rem));
   margin: 0 auto;
-  padding: 2.75rem 0 0;
+  padding: 1.25rem 0 0;
 }
 
 .home-hero,
@@ -39,28 +36,34 @@
   display: inline-flex;
   align-items: center;
   gap: 0.55rem;
-  margin-bottom: 1.35rem;
-  padding: 0.32rem 0.8rem 0.32rem 0.32rem;
-  border: 1px solid rgba(255, 176, 106, 0.28);
+  margin-bottom: 1.1rem;
+  padding: 0.3rem 0.75rem 0.3rem 0.3rem;
+  border: 1px solid rgba(255, 176, 106, 0.22);
   border-radius: 999px;
-  color: #e4e4e7 !important;
+  color: #d4d4d8 !important;
   text-decoration: none !important;
-  font-size: 0.86rem;
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.08), rgba(0, 0, 0, 0.35));
-  box-shadow:
-    0 0 0 1px rgba(255, 122, 24, 0.08),
-    0 10px 30px rgba(0, 0, 0, 0.28);
-  backdrop-filter: blur(10px);
+  font-size: 0.84rem;
+  background: rgba(9, 9, 11, 0.55);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
+  backdrop-filter: blur(12px);
 }
 
 .home-badge span {
-  padding: 0.14rem 0.55rem;
+  padding: 0.12rem 0.5rem;
   border-radius: 999px;
   background: linear-gradient(180deg, #ff9a4a, var(--home-accent));
   color: #1a0b04;
-  font-size: 0.75rem;
+  font-size: 0.72rem;
   font-weight: 750;
-  box-shadow: 0 0 18px rgba(255, 122, 24, 0.35);
+}
+
+.home-hero-brand {
+  margin: 0 0 0.65rem !important;
+  color: var(--home-accent) !important;
+  font-size: 0.92rem;
+  font-weight: 650;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
 }
 
 .home-badge svg,
@@ -97,16 +100,21 @@
 }
 
 .home-hero h1 {
-  font-size: clamp(3.1rem, 7.2vw, 5.35rem);
+  font-size: clamp(2.85rem, 6.6vw, 4.85rem);
   font-weight: 680;
-  letter-spacing: -0.058em;
-  line-height: 0.96;
+  letter-spacing: -0.055em;
+  line-height: 0.98;
   text-wrap: balance;
-  background: linear-gradient(180deg, #ffffff 18%, #f4f4f5 48%, #d6d6db 100%);
+  color: #fafafa !important;
+  text-shadow: 0 12px 40px rgba(0, 0, 0, 0.45);
+}
+
+.home-hero h1 em {
+  font-style: normal;
+  background: linear-gradient(90deg, #ffe2c0, #ff9a4a 45%, #ff7a18);
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
-  filter: drop-shadow(0 10px 30px rgba(0, 0, 0, 0.35));
 }
 
 .home-hero-lead,
@@ -118,11 +126,19 @@
 }
 
 .home-hero-lead {
-  max-width: 40rem;
-  margin: 1.2rem auto 0 !important;
-  font-size: 1.08rem;
-  color: #b7b7c0;
+  max-width: 36rem;
+  margin: 1.05rem auto 0 !important;
+  font-size: 1.05rem;
+  color: #a8a8b3;
   text-wrap: pretty;
+}
+
+.home-hero-lead code {
+  padding: 0.08rem 0.35rem;
+  border-radius: 0.35rem;
+  background: rgba(255, 122, 24, 0.12);
+  color: #ffd2a8;
+  font-size: 0.92em;
 }
 
 .home-actions {

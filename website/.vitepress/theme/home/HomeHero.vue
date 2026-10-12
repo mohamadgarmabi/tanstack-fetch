@@ -32,18 +32,18 @@ const copyInstall = async () => {
     <LampEffect class-name="home-hero-lamp">
       <a class="home-badge" :href="withBase(RELEASE_POST_URL)">
         <span>{{ releaseVersion }}</span>
-        New: doctor · Solid · Svelte
+        doctor · Solid · Angular · Svelte
         <svg viewBox="0 0 16 16" aria-hidden="true">
           <path d="M3 8h10M9 4l4 4-4 4" />
         </svg>
       </a>
 
-      <h1>Typed fetch,<br />made simple.</h1>
+      <p class="home-hero-brand">tanstack-fetch</p>
+      <h1>Typed fetch,<br /><em>made simple.</em></h1>
 
       <p class="home-hero-lead">
-        Write the request once. tanstack-fetch returns the data, throws a typed error, and honors
-        AbortSignal, so it drops straight into TanStack Query. SSR, SSE, upload, refresh-token, tRPC,
-        DevTools, React, and Vue/Nuxt stay optional.
+        One request. Data back on success, typed <code>FetchError</code> on failure, AbortSignal
+        honored — shaped for TanStack Query. SSR, SSE, upload, refresh-token, and tRPC stay optional.
       </p>
 
       <div class="home-actions">
