@@ -164,3 +164,8 @@ const { data, error, isPending } = useQuery({
 ```
 
 API reference: [Vue API](/api/vue) · [SSE](/guide/sse) · [React twin](/guide/react)
+
+## Related
+
+- [Blog · Vue ofetch vs tanstack-fetch](/blog/vue-ofetch-tanstack-fetch)
+- [Blog · Nuxt $fetch vs tanstack-fetch](/blog/nuxt-ofetch-tanstack-fetch)

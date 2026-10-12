@@ -386,6 +386,23 @@ const config = defineConfig({
           text: 'Blog',
           items: [
             { text: 'All posts', link: '/blog/' },
+            { text: 'React · axios vs tanstack-fetch', link: '/blog/react-axios-tanstack-fetch' },
+            { text: 'Vue · ofetch vs tanstack-fetch', link: '/blog/vue-ofetch-tanstack-fetch' },
+            { text: 'Next.js · fetch vs tanstack-fetch', link: '/blog/nextjs-fetch-tanstack-fetch' },
+            { text: 'Nuxt · $fetch vs tanstack-fetch', link: '/blog/nuxt-ofetch-tanstack-fetch' },
+            { text: 'Solid · fetch vs tanstack-fetch', link: '/blog/solid-fetch-tanstack-fetch' },
+            {
+              text: 'TanStack Start / Router',
+              link: '/blog/tanstack-start-router-tanstack-fetch',
+            },
+            {
+              text: 'Svelte / SvelteKit · fetch vs tanstack-fetch',
+              link: '/blog/sveltekit-fetch-tanstack-fetch',
+            },
+            {
+              text: 'Angular · HttpClient vs tanstack-fetch',
+              link: '/blog/angular-http-client-tanstack-fetch',
+            },
             { text: 'tanstack-fetch 1.7.0 — doctor · Solid · Svelte', link: '/blog/tanstack-fetch-1-7-0' },
             { text: 'tanstack-fetch 1.6.3 — migrate CLI', link: '/blog/tanstack-fetch-1-6-3' },
             { text: 'tanstack-fetch 1.6.1 — path params', link: '/blog/tanstack-fetch-1-6' },

@@ -96,6 +96,7 @@ npx tanstack-fetch migrate --from axios --framework solid --write
 
 ## Related
 
+- [Blog · Solid fetch vs tanstack-fetch](/blog/solid-fetch-tanstack-fetch)
 - [SSE · Solid](/guide/sse#solid)
 - [tRPC · Solid](/guide/trpc#solid)
 - [Migrate](/guide/migrate)

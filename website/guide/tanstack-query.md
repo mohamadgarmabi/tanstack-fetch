@@ -114,6 +114,8 @@ export const Route = createFileRoute('/account')({
 
 tRPC with the same context pattern: [tRPC recipe](/recipes/trpc#1-tanstack-start--tanstack-query-recommended).
 
+Deep dive: [TanStack Start / Router + tanstack-fetch](/blog/tanstack-start-router-tanstack-fetch).
+
 ::::
 
 :::: framework react

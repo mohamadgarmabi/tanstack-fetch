@@ -119,7 +119,7 @@ Use `@tanstack/solid-query` + `tanstack-fetch/solid`. Guide: [Solid](/guide/soli
 
 ## Angular
 
-Use `@tanstack/angular-query-experimental` + `tanstack-fetch/angular`. Guide: [Angular](/guide/angular).
+Use `@tanstack/angular-query-experimental` + `tanstack-fetch/angular`. Guide: [Angular](/guide/angular). Deep dive: [HttpClient vs tanstack-fetch](/blog/angular-http-client-tanstack-fetch).
 
 ::::
 
