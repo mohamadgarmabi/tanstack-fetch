@@ -22,7 +22,7 @@
 .home-wrap {
   width: min(1120px, calc(100% - 2.5rem));
   margin: 0 auto;
-  padding: 4.5rem 0 0;
+  padding: 2.75rem 0 0;
 }
 
 .home-hero,
@@ -31,27 +31,36 @@
   text-align: center;
 }
 
+.home-hero-lamp {
+  width: 100%;
+}
+
 .home-badge {
   display: inline-flex;
   align-items: center;
   gap: 0.55rem;
-  margin-bottom: 1.6rem;
-  padding: 0.3rem 0.7rem 0.3rem 0.3rem;
-  border: 1px solid var(--home-line-strong);
+  margin-bottom: 1.35rem;
+  padding: 0.32rem 0.8rem 0.32rem 0.32rem;
+  border: 1px solid rgba(255, 176, 106, 0.28);
   border-radius: 999px;
-  color: var(--home-muted) !important;
+  color: #e4e4e7 !important;
   text-decoration: none !important;
   font-size: 0.86rem;
-  background: rgba(0, 0, 0, 0.35);
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.08), rgba(0, 0, 0, 0.35));
+  box-shadow:
+    0 0 0 1px rgba(255, 122, 24, 0.08),
+    0 10px 30px rgba(0, 0, 0, 0.28);
+  backdrop-filter: blur(10px);
 }
 
 .home-badge span {
-  padding: 0.12rem 0.5rem;
+  padding: 0.14rem 0.55rem;
   border-radius: 999px;
-  background: var(--home-accent);
+  background: linear-gradient(180deg, #ff9a4a, var(--home-accent));
   color: #1a0b04;
   font-size: 0.75rem;
-  font-weight: 700;
+  font-weight: 750;
+  box-shadow: 0 0 18px rgba(255, 122, 24, 0.35);
 }
 
 .home-badge svg,
@@ -88,10 +97,16 @@
 }
 
 .home-hero h1 {
-  font-size: clamp(3rem, 7vw, 5.1rem);
-  font-weight: 650;
-  letter-spacing: -0.055em;
-  line-height: 0.98;
+  font-size: clamp(3.1rem, 7.2vw, 5.35rem);
+  font-weight: 680;
+  letter-spacing: -0.058em;
+  line-height: 0.96;
+  text-wrap: balance;
+  background: linear-gradient(180deg, #ffffff 18%, #f4f4f5 48%, #d6d6db 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  filter: drop-shadow(0 10px 30px rgba(0, 0, 0, 0.35));
 }
 
 .home-hero-lead,
@@ -103,9 +118,11 @@
 }
 
 .home-hero-lead {
-  max-width: 44rem;
-  margin: 1.35rem auto 0 !important;
-  font-size: 1.12rem;
+  max-width: 40rem;
+  margin: 1.2rem auto 0 !important;
+  font-size: 1.08rem;
+  color: #b7b7c0;
+  text-wrap: pretty;
 }
 
 .home-actions {
@@ -113,37 +130,50 @@
   flex-wrap: wrap;
   justify-content: center;
   gap: 0.7rem;
-  margin-top: 1.8rem;
+  margin-top: 1.9rem;
 }
 
 .home-btn {
   display: inline-flex;
   align-items: center;
   gap: 0.45rem;
-  min-height: 2.75rem;
-  padding: 0 1rem;
-  border-radius: 0.8rem;
+  min-height: 2.85rem;
+  padding: 0 1.05rem;
+  border-radius: 0.9rem;
   border: 1px solid var(--home-line-strong);
-  background: rgba(255, 255, 255, 0.03);
+  background: rgba(255, 255, 255, 0.035);
   color: var(--home-text) !important;
   text-decoration: none !important;
   font-weight: 600;
   font-size: 0.95rem;
+  transition:
+    border-color 160ms ease,
+    background 160ms ease,
+    transform 160ms ease,
+    box-shadow 160ms ease;
 }
 
 .home-btn:hover {
-  border-color: rgba(255, 255, 255, 0.28);
+  border-color: rgba(255, 255, 255, 0.3);
+  background: rgba(255, 255, 255, 0.06);
+  transform: translateY(-1px);
 }
 
 .home-btn-primary {
-  background: var(--home-accent);
-  border-color: var(--home-accent);
+  background: linear-gradient(180deg, #ff9a4a, var(--home-accent) 55%, var(--home-accent-2));
+  border-color: transparent;
   color: #1a0b04 !important;
+  box-shadow:
+    0 0 0 1px rgba(255, 176, 106, 0.35),
+    0 12px 28px rgba(255, 90, 31, 0.28);
 }
 
 .home-btn-primary:hover {
-  background: var(--home-accent-2);
-  border-color: var(--home-accent-2);
+  background: linear-gradient(180deg, #ffb06a, #ff7a18 55%, #ff5018);
+  border-color: transparent;
+  box-shadow:
+    0 0 0 1px rgba(255, 176, 106, 0.45),
+    0 14px 34px rgba(255, 90, 31, 0.38);
 }
 
 .home-install {
@@ -151,33 +181,43 @@
   align-items: center;
   gap: 0.7rem;
   margin-top: 0;
-  padding: 0.55rem 0.7rem 0.55rem 0.9rem;
-  border-radius: 0.75rem;
-  border: 1px solid var(--home-line);
-  background: rgba(0, 0, 0, 0.45);
+  padding: 0.6rem 0.75rem 0.6rem 0.95rem;
+  border-radius: 0.85rem;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.05), rgba(0, 0, 0, 0.5));
   color: #d4d4d8;
   font-family: 'JetBrains Mono', ui-monospace, monospace;
   font-size: 0.84rem;
   cursor: pointer;
   max-width: 100%;
+  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.28);
+  transition:
+    border-color 160ms ease,
+    transform 160ms ease;
+}
+
+.home-install:hover {
+  border-color: rgba(255, 176, 106, 0.35);
+  transform: translateY(-1px);
 }
 
 .home-install-wrap {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 0.55rem;
-  margin-top: 1.35rem;
+  gap: 0.6rem;
+  margin-top: 1.5rem;
   max-width: 100%;
 }
 
 .home-install-managers {
   display: flex;
   gap: 0.2rem;
-  padding: 0.2rem;
-  border-radius: 0.65rem;
-  border: 1px solid var(--home-line);
-  background: rgba(0, 0, 0, 0.35);
+  padding: 0.22rem;
+  border-radius: 0.75rem;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(8px);
 }
 
 .home-install-manager {

@@ -59,7 +59,7 @@ export default async function Page() {
 }
 ```
 
-Example: [Next.js SSR](/examples/next-ssr) · repo: [`examples/next-ssr`](https://github.com/mohamadgarmabi/tanstack-fetch/tree/main/examples/next-ssr)
+Example: [Next.js SSR](/examples/next-ssr) · repo: [`examples/next-ssr`](https://github.com/mohamadgarmabi/tanstack-fetch/tree/main/examples/next-ssr) · Blog: [Next.js fetch vs tanstack-fetch](/blog/nextjs-fetch-tanstack-fetch)
 
 ---
 
@@ -143,4 +143,4 @@ export default defineNuxtPlugin((nuxtApp) => {
 })
 ```
 
-Example: [Nuxt SSR](/examples/nuxt-ssr) · Vue helpers: [Vue & Nuxt](/guide/vue)
+Example: [Nuxt SSR](/examples/nuxt-ssr) · Vue helpers: [Vue & Nuxt](/guide/vue) · Blog: [Nuxt $fetch vs tanstack-fetch](/blog/nuxt-ofetch-tanstack-fetch)

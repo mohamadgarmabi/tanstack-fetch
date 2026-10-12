@@ -111,3 +111,9 @@ const OrdersLive = () => {
 If the tree already has `<FetchProvider client={api}>`, you can omit `client` and `useSse` reads it from context.
 
 Cloneable app: [`examples/sse-live`](https://github.com/mohamadgarmabi/tanstack-fetch/tree/main/examples/sse-live) · [SSE guide](./sse)
+
+## Related
+
+- [Blog · React axios vs tanstack-fetch](/blog/react-axios-tanstack-fetch)
+- [Blog · TanStack Start / Router](/blog/tanstack-start-router-tanstack-fetch)
+- [Blog · Next.js fetch vs tanstack-fetch](/blog/nextjs-fetch-tanstack-fetch)

@@ -106,6 +106,7 @@ npx tanstack-fetch migrate --from axios --framework angular --write
 
 ## Related
 
+- [Blog · Angular HttpClient vs tanstack-fetch](/blog/angular-http-client-tanstack-fetch)
 - [SSE · Angular](/guide/sse#angular)
 - [tRPC · Angular](/guide/trpc#angular)
 - [Migrate](/guide/migrate)
