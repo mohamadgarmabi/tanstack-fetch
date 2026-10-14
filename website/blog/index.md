@@ -7,6 +7,14 @@ description: Release notes and write-ups about tanstack-fetch, a typed fetch cli
 
 ## Framework deep dives
 
+## [TanStack Start 1.0 + tanstack-fetch: 6 Real-World Data Fetching Patterns](/blog/tanstack-start-1-0-transtack-fetch-6-real-world-patterns)
+
+<p class="blog-meta">October 12, 2026</p>
+
+TanStack Start 1.0 is here. Explore six production-ready patterns: direct fetching, shared loaders, SSR auth, mutations, centralized error handling, and live SSE updates with tanstack-fetch.
+
+[Read the post →](/blog/tanstack-start-1-0-transtack-fetch-6-real-world-patterns)
+
 ## [React axios vs tanstack-fetch](/blog/react-axios-tanstack-fetch)
 
 <p class="blog-meta">October 12, 2026</p>
