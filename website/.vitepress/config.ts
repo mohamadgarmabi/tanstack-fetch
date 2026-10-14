@@ -51,7 +51,7 @@ const KEYWORDS = [
 
 const toAbsoluteUrl = (page: string) => {
   const path = page.replace(/(^|\/)index\.md$/, '$1').replace(/\.md$/, '')
-  const normalized = path === 'index' || path === '' ? '' : path.replace(/\/$/, '')
+  const normalized = path === 'index' || path === '' ? '' : path.replace(/$/, '')
   return normalized ? `${SITE_URL}/${normalized}` : `${SITE_URL}/`
 }
 
@@ -394,6 +394,10 @@ const config = defineConfig({
             {
               text: 'TanStack Start / Router',
               link: '/blog/tanstack-start-router-tanstack-fetch',
+            },
+            {
+              text: 'TanStack Start 1.0 + tanstack-fetch: 6 Real-World Data Fetching Patterns',
+              link: '/blog/tanstack-start-1-0-transtack-fetch-6-real-world-patterns',
             },
             {
               text: 'Svelte / SvelteKit · fetch vs tanstack-fetch',
