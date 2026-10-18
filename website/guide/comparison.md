@@ -82,6 +82,45 @@ api.use(
 
 Full recipe: [Refresh token](/recipes/refresh-token).
 
+## SSR cookies
+
+Next.js App Router `fetch` does not forward cookies automatically. `ssr-forward` plugin reads `cookies()` on the server and attaches them.
+
+```ts
+// server
+import { cookies } from 'next/headers'
+export const api = createFetch({
+  baseUrl: process.env.API_URL,
+  source: 'ssr',
+  plugins: ['ssr-forward'],
+  incoming: () => ({ cookie: (await cookies()).toString() }),
+})
+
+// client
+const api = createFetch({ baseUrl: '/api', plugins: ['ssr-forward'] })
+```
+
+Guide: [SSR](/guide/ssr) · Blog: [Next.js fetch vs tanstack-fetch](/blog/nextjs-fetch-tanstack-fetch) · Example: [/examples/next-ssr](/examples/next-ssr).
+
+## SSE with Authorization
+
+Browser `EventSource` cannot set `Authorization`. Use `tanstack-fetch/sse` (`api.sse`) instead.
+
+```ts
+const api = createFetch({
+  baseUrl: import.meta.env.VITE_API_URL,
+  getToken: () => localStorage.getItem('access_token'),
+})
+
+api.sse<OrderEvent>('/orders/stream', {
+  onMessage: (data) => queryClient.setQueryData(['orders'], (prev) => [...prev, data]),
+})
+```
+
+- Full recipe: [EventSource auth headers](/recipes/eventsource-auth-headers)
+- Reconnect with `Last-Event-ID`: [`sse-resume`](/guide/plugins)
+- [SSE guide](/guide/sse) · [Blog posts](/blog) for framework-specific SSE
+
 ## When to keep axios
 
 - You already have a large axios interceptor stack and no Query migration planned

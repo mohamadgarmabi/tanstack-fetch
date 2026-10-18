@@ -9,6 +9,8 @@ description: Server-Sent Events over fetch with Authorization — api.sse plus u
 
 `tanstack-fetch/sse` is **framework-agnostic**. Optional `useSse` helpers live in `tanstack-fetch/react`, `/vue`, `/solid`, `/angular`, and `/svelte`.
 
+`EventSource` cannot set `Authorization`. Use `tanstack-fetch/sse` (`api.sse`) for authenticated streams — see [`/recipes/eventsource-auth-headers`](/recipes/eventsource-auth-headers).
+
 Use the **Framework** picker in the header to show one stack at a time.
 
 :::: framework core
@@ -368,6 +370,22 @@ Guide: [Angular](/guide/angular#usesse)
 Keep streams in browser components. Guide: [Svelte](/guide/svelte#usesse)
 
 ::::
+
+## Why not EventSource for auth
+
+`EventSource` cannot set custom headers (`Authorization`). Use `tanstack-fetch/sse` (`api.sse`) instead. See [`/recipes/eventsource-auth-headers`](/recipes/eventsource-auth-headers) (problem tutorial) and [`/guide/plugins`](/guide/plugins) (`sse-resume`).
+
+## Cache updates with Query
+
+Inside `onMessage`, update Query state directly so the stream feeds your UI without a second fetch:
+
+```ts
+const stream = api.sse<OrderEvent>('/orders/stream', {
+  onMessage: (data) => queryClient.setQueryData(['orders'], (prev) => ...),
+})
+```
+
+Link to [`/guide/tanstack-query`](/guide/tanstack-query) for full `useQuery` / `useMutation` wiring.
 
 ## Related
 

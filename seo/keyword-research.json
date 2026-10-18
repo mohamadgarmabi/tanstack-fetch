@@ -2173,7 +2173,10 @@
     {
       "proposed_url": "/guide/typed-params",
       "primary_keyword": "type safe URL parameters TypeScript",
-      "secondary_keywords": ["typed request body TypeScript", "fetch wrapper with generics TypeScript"],
+      "secondary_keywords": [
+        "typed request body TypeScript",
+        "fetch wrapper with generics TypeScript"
+      ],
       "rationale": "Practical type-safety walkthrough beyond API reference; only if getting-started cannot absorb it without bloat.",
       "effort": "low",
       "priority": "P1",

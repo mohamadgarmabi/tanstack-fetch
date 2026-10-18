@@ -36,15 +36,15 @@ npx tanstack-fetch migrate --from fetch --framework sveltekit --write
 npx tanstack-fetch migrate-axios --framework react --write
 ```
 
-| Flag | Meaning |
-| --- | --- |
-| `--from` | `axios` \| `ky` \| `ofetch` \| `fetch` \| `all` |
-| `--framework` | `react` \| `vue` \| `nuxt` \| `nextjs` \| `solid` \| `angular` \| `svelte` \| `sveltekit` |
-| `--provider` / `--no-provider` | React only: include / skip `FetchProvider` (default: ask; answer defaults to no) |
-| `--dir` | Root to scan (default `.`) |
-| `--write` | Apply safe transforms (+ scaffold) |
-| `--scaffold` | Custom path for generic `api.ts` (ignored when `--framework` is set) |
-| `--no-scaffold` | Skip creating scaffold files |
+| Flag                           | Meaning                                                                                   |
+| ------------------------------ | ----------------------------------------------------------------------------------------- |
+| `--from`                       | `axios` \| `ky` \| `ofetch` \| `fetch` \| `all`                                           |
+| `--framework`                  | `react` \| `vue` \| `nuxt` \| `nextjs` \| `solid` \| `angular` \| `svelte` \| `sveltekit` |
+| `--provider` / `--no-provider` | React only: include / skip `FetchProvider` (default: ask; answer defaults to no)          |
+| `--dir`                        | Root to scan (default `.`)                                                                |
+| `--write`                      | Apply safe transforms (+ scaffold)                                                        |
+| `--scaffold`                   | Custom path for generic `api.ts` (ignored when `--framework` is set)                      |
+| `--no-scaffold`                | Skip creating scaffold files                                                              |
 
 `--write` never fully rewrites every edge case. Always review **query params**, **interceptors**, and **manual `res.ok` / `.json()`** findings.
 
@@ -52,14 +52,14 @@ npx tanstack-fetch migrate-axios --framework react --write
 
 ## From axios
 
-| axios | tanstack-fetch |
-| --- | --- |
-| `axios.create({ baseURL })` | `createFetch({ baseUrl })` |
-| `await axios.get(url)` → `response.data` | `await api.get(url)` |
-| `axios(url)` shorthand | `api.get(url)` |
-| `params: { page }` (query string) | `query: { page }` |
-| `isAxiosError` / `AxiosError` | `isFetchError` / `FetchError` |
-| `axios.defaults` / `axios({ url, method })` | reported for manual wiring |
+| axios                                       | tanstack-fetch                |
+| ------------------------------------------- | ----------------------------- |
+| `axios.create({ baseURL })`                 | `createFetch({ baseUrl })`    |
+| `await axios.get(url)` → `response.data`    | `await api.get(url)`          |
+| `axios(url)` shorthand                      | `api.get(url)`                |
+| `params: { page }` (query string)           | `query: { page }`             |
+| `isAxiosError` / `AxiosError`               | `isFetchError` / `FetchError` |
+| `axios.defaults` / `axios({ url, method })` | reported for manual wiring    |
 
 ```ts
 // before
@@ -76,12 +76,12 @@ queryFn: ({ signal }) => api.get<User[]>('/users', { signal, query: { page: 1 } 
 
 ## From ky
 
-| ky | tanstack-fetch |
-| --- | --- |
-| `ky.create({ prefixUrl })` | `createFetch({ baseUrl })` |
-| `await ky.get(url).json()` | `await api.get(url)` |
-| `searchParams` | `query` |
-| `HTTPError` | `FetchError` / `isFetchError` |
+| ky                         | tanstack-fetch                |
+| -------------------------- | ----------------------------- |
+| `ky.create({ prefixUrl })` | `createFetch({ baseUrl })`    |
+| `await ky.get(url).json()` | `await api.get(url)`          |
+| `searchParams`             | `query`                       |
+| `HTTPError`                | `FetchError` / `isFetchError` |
 
 ```ts
 // before
@@ -95,13 +95,13 @@ const data = await api.get<User[]>('/users', { query: { page: 1 } })
 
 ## From ofetch / $fetch
 
-| ofetch | tanstack-fetch |
-| --- | --- |
-| `ofetch.create({ baseURL })` | `createFetch({ baseUrl })` |
-| `$fetch(url)` / `ofetch(url)` | `api.get(url)` |
-| `$fetch(url, { method: 'POST', body })` | `api.post(url, { body })` |
-| `query` | `query` (same) |
-| ofetch `FetchError` | tanstack-fetch `FetchError` / `isFetchError` |
+| ofetch                                  | tanstack-fetch                               |
+| --------------------------------------- | -------------------------------------------- |
+| `ofetch.create({ baseURL })`            | `createFetch({ baseUrl })`                   |
+| `$fetch(url)` / `ofetch(url)`           | `api.get(url)`                               |
+| `$fetch(url, { method: 'POST', body })` | `api.post(url, { body })`                    |
+| `query`                                 | `query` (same)                               |
+| ofetch `FetchError`                     | tanstack-fetch `FetchError` / `isFetchError` |
 
 ```ts
 // before
@@ -117,11 +117,11 @@ Nuxt tip: keep Nuxt’s `$fetch` for Nitro routes if you want; use a shared `cre
 
 ## From raw `fetch`
 
-| fetch | tanstack-fetch |
-| --- | --- |
-| `fetch(url)` + `res.ok` + `res.json()` | `api.get(url)` |
-| Manual `Authorization` header | `getToken` on `createFetch` |
-| Manual timeout / abort | `{ signal }` / `timeoutMs` |
+| fetch                                  | tanstack-fetch              |
+| -------------------------------------- | --------------------------- |
+| `fetch(url)` + `res.ok` + `res.json()` | `api.get(url)`              |
+| Manual `Authorization` header          | `getToken` on `createFetch` |
+| Manual timeout / abort                 | `{ signal }` / `timeoutMs`  |
 
 ```ts
 // before
@@ -143,16 +143,16 @@ Raw fetch migration is **report-first**: the CLI flags `fetch(`, `res.ok`, and `
 
 With `--write --framework <name>` the CLI writes ready-to-wire files:
 
-| Framework | Files |
-| --- | --- |
-| `react` | `src/lib/api.ts`, `src/queries/users.ts` (+ optional `src/lib/fetch-provider.tsx`) |
-| `vue` | `src/lib/api.ts`, `src/plugins/tanstack-fetch.ts`, `src/queries/users.ts` |
-| `nuxt` | `lib/api.ts`, `plugins/tanstack-fetch.ts`, `composables/useApi.ts`, `queries/users.ts` |
-| `nextjs` | `src/lib/api.ts`, `src/lib/api.server.ts` (cookies + `ssr-forward`), `src/lib/fetch-provider.tsx`, `src/queries/users.ts` |
-| `solid` | `src/lib/api.ts`, `src/queries/users.ts` (for `@tanstack/solid-query`) |
-| `angular` | `src/app/api.ts`, `src/app/queries/users.ts` (for `@tanstack/angular-query-experimental`) |
-| `svelte` | `src/lib/api.ts`, `src/lib/queries/users.ts` (for `@tanstack/svelte-query`) |
-| `sveltekit` | `src/lib/api.ts`, `src/lib/api.server.ts` (`ssr-forward` + cookies), `src/lib/queries/users.ts` |
+| Framework   | Files                                                                                                                     |
+| ----------- | ------------------------------------------------------------------------------------------------------------------------- |
+| `react`     | `src/lib/api.ts`, `src/queries/users.ts` (+ optional `src/lib/fetch-provider.tsx`)                                        |
+| `vue`       | `src/lib/api.ts`, `src/plugins/tanstack-fetch.ts`, `src/queries/users.ts`                                                 |
+| `nuxt`      | `lib/api.ts`, `plugins/tanstack-fetch.ts`, `composables/useApi.ts`, `queries/users.ts`                                    |
+| `nextjs`    | `src/lib/api.ts`, `src/lib/api.server.ts` (cookies + `ssr-forward`), `src/lib/fetch-provider.tsx`, `src/queries/users.ts` |
+| `solid`     | `src/lib/api.ts`, `src/queries/users.ts` (for `@tanstack/solid-query`)                                                    |
+| `angular`   | `src/app/api.ts`, `src/app/queries/users.ts` (for `@tanstack/angular-query-experimental`)                                 |
+| `svelte`    | `src/lib/api.ts`, `src/lib/queries/users.ts` (for `@tanstack/svelte-query`)                                               |
+| `sveltekit` | `src/lib/api.ts`, `src/lib/api.server.ts` (`ssr-forward` + cookies), `src/lib/queries/users.ts`                           |
 
 Solid / Angular / Svelte work with the **core** `createFetch` client plus optional adapters: `tanstack-fetch/solid`, `/angular`, `/svelte` (`useFetch` / `useSse`). Wire Query the same way: return data, throw `FetchError`, pass `{ signal }`.
 
@@ -261,8 +261,13 @@ npx tanstack-fetch doctor --dir ./src
 
 Reports: `tanstack-fetch` / legacy deps, detected frameworks, `createFetch` count, leftover axios/ky/ofetch imports, and `queryFn` call sites that may be missing `signal`.
 
+## Migration checklist
+
+Use [`/guide/migrate/checklist`](/guide/migrate/checklist) after the CLI scan to verify `signal`, interceptor, and error-shape rewrites.
+
 ## Related
 
+- [Migration checklist](/guide/migrate/checklist)
 - [React](/guide/react)
 - [Vue & Nuxt](/guide/vue)
 - [SSR](/guide/ssr)

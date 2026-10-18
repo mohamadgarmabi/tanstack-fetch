@@ -89,7 +89,7 @@ export const api = createFetch({
 })
 ```
 
-## Quick taste
+## Quick taste — typed params & body
 
 ```ts
 import { createFetch, isFetchError } from 'tanstack-fetch'
@@ -110,22 +110,24 @@ try {
 }
 ```
 
-::: tip Types
+::: tip Types — one sentence
 
-- No generics → `params` from the URL (`:id` / `{id}`)
-- `<Data, Params>` → response + params map (path must contain those keys)
-- `post` / `put` / `patch`: optional third generic for `body` (`NoParams` skips params)
-  :::
+- No generics → `params` inferred from the URL (`:id` / `{id}`)
+- `get<T, Params>` → response type + params map (path must contain those keys)
+- `post<T, Params, Body>` → optional third generic for the request body (`NoParams` skips params)
 
 ## Next steps
 
-| Goal                    | Page                               |
-| ----------------------- | ---------------------------------- |
-| Cursor / agent skill    | [Agent skill](./skill)             |
-| Token + 401 / 403 / 404 | [Configuration](./configuration)   |
-| React / Vue Query       | [TanStack Query](./tanstack-query) |
-| React helpers           | [React](./react)                   |
-| Vue / Nuxt helpers      | [Vue & Nuxt](./vue)                |
-| Next.js / Nuxt cookies  | [SSR](./ssr)                       |
-| Streams                 | [SSE](./sse)                       |
-| tRPC                    | [tRPC](./trpc)                     |
+| Goal                    | Page                                                           |
+| ----------------------- | -------------------------------------------------------------- |
+| Typed URL params / body | (see Quick taste above)                                        |
+| Cursor / agent skill    | [Agent skill](./skill)                                         |
+| Token + 401 / 403 / 404 | [Configuration](./configuration)                               |
+| Refresh token           | [Refresh token](./refresh-token)                               |
+| React / Vue Query       | [TanStack Query](./tanstack-query)                             |
+| React helpers           | [React](./react)                                               |
+| Vue / Nuxt helpers      | [Vue & Nuxt](./vue)                                            |
+| Next.js / Nuxt cookies  | [SSR](./ssr)                                                   |
+| Streams                 | [SSE](./sse)                                                   |
+| SSE auth                | [EventSource auth headers](./recipes/eventsource-auth-headers) |
+| tRPC                    | [tRPC](./trpc)                                                 |

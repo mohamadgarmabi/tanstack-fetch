@@ -74,3 +74,10 @@ if (isFetchError(error) && error.status === 429) {
 | `isAbortError(error)`      | Abort / timeout — usually not an HTTP failure |
 | `createFetchError(result)` | Build a `FetchError` from a failed result     |
 | `parseRetryAfter(headers)` | `Retry-After` → delay ms (for **429**)        |
+
+## Related
+
+- [Configuration](./configuration) · status handlers and interceptors
+- [Plugins](./plugins) · `refresh-token`, `sse-resume`, custom interceptors
+- [Refresh token](./refresh-token) · single-flight 401 refresh
+- [Rate limit (429)](./rate-limit) · `parseRetryAfter` in practice

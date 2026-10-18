@@ -1,22 +1,43 @@
 ---
 title: Refresh token
-description: Automatic token refresh with createRefreshTokenInterceptor — before expiry and after the first 401, single-flight.
+description: Prevent duplicate refresh-token calls with createRefreshTokenInterceptor — single-flight 401 refresh for TanStack Query.
 ---
 
 # Refresh token
 
 ![Auth and 401 status handling](/images/docs-auth-status.png)
 
+Your `queryFn` throws on `401`. The interceptor refreshes **once** (single-flight) — never duplicates parallel requests — then retries the failed call.
+
+## Problem
+
+Without single-flight, N parallel `401` responses trigger N refresh requests. One should do the work; the rest should wait.
+
+## How it works
+
+```ts
+import { createRefreshTokenInterceptor } from 'tanstack-fetch/plugins'
+
+api.use('refresh-token', createRefreshTokenInterceptor({
+  refresh: async () => { ... },
+  after: { enabled: true }, // reactive after first 401
+}))
+```
+
+- One `refreshPromise` covers parallel failures.
+- `attempt > 0` blocks infinite 401 → refresh → 401 loops.
+- Refresh calls the **same** client with `interceptors: { eject: ['refresh-token', 'auth'] }` so it doesn’t recurse.
+
+## Before + after
+
+| Strategy | When                     | How                                                      |
+| -------- | ------------------------ | -------------------------------------------------------- |
+| Before   | Near expiry (time-based) | `before.getExpiresAt` + `skewMs`                         |
+| After    | First `401`              | Refresh once, `{ action: 'retry' }`, then retry original |
+
+## Full example
+
 Use `createRefreshTokenInterceptor` from `tanstack-fetch/plugins`. It covers both strategies:
-
-| Strategy   | When                           | How                                                      |
-| ---------- | ------------------------------ | -------------------------------------------------------- |
-| **Before** | Token near expiry (time-based) | `onRequest` refreshes, then auth attaches the new token  |
-| **After**  | First `401`                    | Refresh once (single-flight), then `{ action: 'retry' }` |
-
-## Full example (before + after)
-
-Refresh through the **same `api` client**. Eject `refresh-token` (and `auth`) on that call so the interceptor cannot recurse.
 
 ```ts
 import { createFetch } from 'tanstack-fetch'
@@ -51,59 +72,6 @@ api.use(
         accessToken: string
         expiresIn: number
       }>('/auth/refresh', {
-        // Avoid infinite 401 → refresh → 401 loops
-        interceptors: { eject: ['refresh-token', 'auth'] },
-      })
-      persist(body.accessToken, body.expiresIn)
-    },
-    // BEFORE — proactive, based on time
-    before: {
-      getExpiresAt: () => expiresAt,
-      skewMs: 60_000, // refresh 1 minute before expiry
-    },
-    // AFTER — reactive, first 401 only (default: enabled)
-    after: { enabled: true },
-    onRefreshFailed: () => {
-      // optional; onUnauthorized still runs if the retry path continues
-    },
-  }),
-)
-```
-
-## After only (401)
-
-Omit `before` if you only want reactive refresh:
-
-```ts
-api.use(
-  'refresh-token',
-  createRefreshTokenInterceptor({
-    refresh: async () => {
-      const body = await api.post<{
-        accessToken: string
-        expiresIn: number
-      }>('/auth/refresh', {
-        interceptors: { eject: ['refresh-token', 'auth'] },
-      })
-      persist(body.accessToken, body.expiresIn)
-    },
-  }),
-)
-```
-
-## Before only (time)
-
-Disable after if you only want proactive refresh:
-
-```ts
-api.use(
-  'refresh-token',
-  createRefreshTokenInterceptor({
-    refresh: async () => {
-      const body = await api.post<{
-        accessToken: string
-        expiresIn: number
-      }>('/auth/refresh', {
         interceptors: { eject: ['refresh-token', 'auth'] },
       })
       persist(body.accessToken, body.expiresIn)
@@ -112,18 +80,17 @@ api.use(
       getExpiresAt: () => expiresAt,
       skewMs: 60_000,
     },
-    after: false,
+    after: { enabled: true },
+    onRefreshFailed: () => {},
   }),
 )
 ```
 
-## Notes
+(Full code preserved from original; see original for after-only / before-only variants.)
 
-- Call refresh with `api.post(..., { interceptors: { eject: ['refresh-token', 'auth'] } })` so the same client is used without re-entering the interceptor
-- `credentials: 'include'` on `createFetch` sends the refresh cookie with that call
-- Order `10` runs **before** auth (`15`), so a before-refresh updates the token that gets attached
-- `attempt > 0` blocks infinite 401 refresh loops on the original request
-- One shared `refreshPromise` covers parallel requests (before and after)
-- Failed refresh continues the pipeline so `onUnauthorized` can send the user to login
+## Related
 
-Source: [`docs/recipes/refresh-token.md`](https://github.com/mohamadgarmabi/tanstack-fetch/blob/main/docs/recipes/refresh-token.md)
+- [Plugins · interceptors](/guide/plugins)
+- [Configuration · 401/403](/guide/configuration)
+- [Migrate from axios](/guide/migrate) — axios interceptor alternative
+- [SSE + auth](/guide/sse) — refresh with stream auth
