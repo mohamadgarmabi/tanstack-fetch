@@ -26,14 +26,17 @@ const resolveIncoming = async (
   return typeof client.incoming === 'function' ? client.incoming() : client.incoming
 }
 
-const createContext = async (args: SendRequestArgs, attempt: number): Promise<RequestContext> => {
+const createContext = async (
+  args: SendRequestArgs,
+  attempt: number,
+  timeoutSignal: AbortSignal | undefined,
+): Promise<RequestContext> => {
   const { method, path, requestOptions, client } = args
   const source = client.source ?? 'browser'
   assertAbsoluteUrl(client.baseUrl, source)
   const url = buildUrl(client.baseUrl, path, requestOptions?.params, requestOptions?.query)
   const headers = mergeHeaders(await resolveHeaders(client.headers), requestOptions?.headers)
-  const timeoutMs = requestOptions?.timeoutMs ?? client.timeoutMs ?? DEFAULT_TIMEOUT_MS
-  const signal = combineSignals([requestOptions?.signal, createTimeoutSignal(timeoutMs)])
+  const signal = combineSignals([requestOptions?.signal, timeoutSignal])
 
   return {
     request: { method, url, headers, body: requestOptions?.body, signal },
@@ -81,13 +84,30 @@ const sendRequest = async <T, E = FetchErrorInfo>(
   )
 }
 
-const runAttempt = async <T, E>(input: {
+type AttemptInput = {
   args: SendRequestArgs
   interceptors: HttpInterceptor[]
   fetchImpl: typeof fetch
   attempt: number
-}) => {
-  let context = await createContext(input.args, input.attempt)
+}
+
+const runAttempt = async <T, E>(input: AttemptInput) => {
+  const { requestOptions, client } = input.args
+  const timeout = createTimeoutSignal(
+    requestOptions?.timeoutMs ?? client.timeoutMs ?? DEFAULT_TIMEOUT_MS,
+  )
+  try {
+    return await runAttemptWithSignal<T, E>(input, timeout?.signal)
+  } finally {
+    timeout?.clear()
+  }
+}
+
+const runAttemptWithSignal = async <T, E>(
+  input: AttemptInput,
+  timeoutSignal: AbortSignal | undefined,
+) => {
+  let context = await createContext(input.args, input.attempt, timeoutSignal)
   const before = await runHook(input.interceptors, (item) => item.onRequest, context)
   if (before.type === 'short-circuit') {
     return { kind: 'result' as const, result: before.result as FetchResult<T, E> }

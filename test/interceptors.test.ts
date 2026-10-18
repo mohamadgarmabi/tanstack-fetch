@@ -88,6 +88,28 @@ describe('tanstack-fetch interceptors', () => {
     expect(fetchImpl).toHaveBeenCalledTimes(2)
   })
 
+  it('keeps the HTTP error and runs onResponseError when an error body is invalid JSON', async () => {
+    const fetchImpl = vi.fn().mockResolvedValue(
+      new Response('<html>Bad Gateway</html>', {
+        status: 502,
+        headers: { 'content-type': 'application/json' },
+      }),
+    )
+    const onResponseError = vi.fn((context) => ({ action: 'continue' as const, context }))
+    const http = createTestClient(fetchImpl, {
+      interceptors: [{ name: 'spy', onResponseError }],
+    })
+
+    await expect(http.get('/gateway')).rejects.toSatisfy(
+      (error: unknown) =>
+        isFetchError(error) &&
+        error.status === 502 &&
+        error.code === 'HTTP_ERROR' &&
+        error.body === '<html>Bad Gateway</html>',
+    )
+    expect(onResponseError).toHaveBeenCalledTimes(1)
+  })
+
   it('surfaces invalid JSON as PARSE_ERROR with HTTP status', async () => {
     const fetchImpl = vi.fn().mockResolvedValue(
       new Response('{not-json', {

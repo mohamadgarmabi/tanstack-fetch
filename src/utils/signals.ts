@@ -22,17 +22,33 @@ const combineSignals = (signals: Array<AbortSignal | undefined>) => {
   return controller.signal
 }
 
-const createTimeoutSignal = (timeoutMs: number | undefined) => {
+type TimeoutSignal = {
+  signal: AbortSignal
+  clear: () => void
+}
+
+const createTimeoutError = () => {
+  const message = 'tanstack-fetch: request timed out'
+  if (typeof DOMException === 'function') {
+    return new DOMException(message, 'TimeoutError')
+  }
+  const error = new Error(message)
+  error.name = 'TimeoutError'
+  return error
+}
+
+const createTimeoutSignal = (timeoutMs: number | undefined): TimeoutSignal | undefined => {
   if (!timeoutMs || timeoutMs <= 0) {
     return undefined
   }
   const controller = new AbortController()
-  const timer = setTimeout(
-    () => controller.abort(new Error('tanstack-fetch: request timed out')),
-    timeoutMs,
-  )
-  controller.signal.addEventListener('abort', () => clearTimeout(timer), { once: true })
-  return controller.signal
+  const timer = setTimeout(() => controller.abort(createTimeoutError()), timeoutMs)
+  // Never keep a Node/SSR process alive just for a pending timeout.
+  ;(timer as { unref?: () => void }).unref?.()
+  const clear = () => clearTimeout(timer)
+  controller.signal.addEventListener('abort', clear, { once: true })
+  return { signal: controller.signal, clear }
 }
 
 export { wait, combineSignals, createTimeoutSignal }
+export type { TimeoutSignal }

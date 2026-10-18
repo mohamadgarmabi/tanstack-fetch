@@ -27,6 +27,36 @@ try {
 }
 ```
 
+## Error codes
+
+| Case                                    | What you get                                                           |
+| --------------------------------------- | ---------------------------------------------------------------------- |
+| Non-2xx response                        | `FetchError` · `code` from the body, else `HTTP_ERROR`                 |
+| Non-2xx with a non-JSON body (502 HTML) | `FetchError` · real `status`, `code: 'HTTP_ERROR'`, raw text in `body` |
+| 2xx with invalid JSON                   | `FetchError` · `code: 'PARSE_ERROR'`, raw text in `body`               |
+| Connection failed                       | `FetchError` · `status: 0`, `code: 'NETWORK_ERROR'`                    |
+| `signal` aborted                        | `AbortError` — not a `FetchError`, check with `isAbortError`           |
+| `timeoutMs` elapsed                     | `TimeoutError` — not a `FetchError`, check with `isAbortError`         |
+
+Interceptors' `onResponseError` (refresh-token, retry, status handlers) runs for every non-2xx response, even when its body is not valid JSON.
+
+```ts
+import { isAbortError, isFetchError } from 'tanstack-fetch'
+
+try {
+  await api.get('/slow', { timeoutMs: 5_000 })
+} catch (error) {
+  if (isAbortError(error)) {
+    if ((error as Error).name === 'TimeoutError') {
+      toast.error('Request timed out')
+    }
+    // plain AbortError = user cancelled — usually not worth a toast
+  } else if (isFetchError(error)) {
+    // HTTP or network failure
+  }
+}
+```
+
 ## Status handlers (4xx + 5xx)
 
 Handlers run **before** the error is thrown (Query still gets `isError` / `FetchError`):

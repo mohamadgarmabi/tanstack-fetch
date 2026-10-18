@@ -81,6 +81,14 @@ DI adapters, TanStack Angular Query, SSE signals, migrate CLI, graphs, and HttpC
 
 ## Releases
 
+## [tanstack-fetch 1.7.1: timeouts, URLs, binary bodies, and honest error statuses](/blog/tanstack-fetch-1-7-1)
+
+<p class="blog-meta">October 18, 2026</p>
+
+Patch release: ports and query colons no longer break path params, timeouts reject with `TimeoutError`, no leaked timers, `Uint8Array` / `ReadableStream` bodies, and HTML 502s keep their status.
+
+[Read the post →](/blog/tanstack-fetch-1-7-1)
+
 ## [tanstack-fetch 1.7.0: doctor CLI + Solid, Angular, Svelte scaffolds](/blog/tanstack-fetch-1-7-0)
 
 <p class="blog-meta">October 9, 2026</p>

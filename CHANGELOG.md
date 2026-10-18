@@ -1,5 +1,25 @@
 # Changelog
 
+## 1.7.1
+
+### Fixes
+
+- **URLs**: a port (`http://localhost:8080/...`) or a colon in the query / hash (`?t=10:30`) is no longer read as a path param — only the pathname is scanned for `:id` / `{id}`
+- **Timeouts**: a timed-out request now rejects with a `TimeoutError` that `isAbortError` recognizes, instead of a `FetchError` with code `NETWORK_ERROR`
+- **Timeouts**: the timeout timer is cleared when the request finishes and never keeps a Node / SSR process alive
+- **Body**: typed arrays (`Uint8Array`, `DataView`, …) and `ReadableStream` are sent as-is instead of being JSON-encoded; stream bodies set `duplex: 'half'` for Node
+- **Errors**: a non-2xx response whose body is not valid JSON (e.g. an HTML 502 page) keeps its HTTP status and runs `onResponseError` interceptors (refresh-token, retry); the raw text is in `error.body`. `PARSE_ERROR` is now only thrown for 2xx responses
+
+### Docs
+
+- **Errors guide**: new "Error codes" table (HTTP / parse / network / abort / timeout) + timeout-vs-cancel example
+- **API reference**: `FetchError.body` raw-text case, `isAbortError` + `TimeoutError`, error `code` table, every `body` type sent as-is, pathname-only `params`, `timeoutMs` default (30 000)
+- **Blog**: [tanstack-fetch 1.7.1](https://mohamadgarmabi.github.io/tanstack-fetch/blog/tanstack-fetch-1-7-1)
+
+### Breaking-ish
+
+- Timeouts no longer go through `onRequestError` interceptors, so custom retry interceptors stop retrying them. Code that checked `code === 'NETWORK_ERROR'` to detect timeouts should use `isAbortError(error)`
+
 ## 1.7.0
 
 ### Features

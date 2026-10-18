@@ -64,7 +64,7 @@ const createTRPCFetch = (source?: CreateTRPCFetchSource): typeof fetch => {
           url: parts.url,
           headers: mergeHeaders(await resolveHeaders(clientOptions.headers), parts.headers),
           body: parts.body,
-          signal: combineSignals([parts.signal ?? undefined, createTimeoutSignal(timeoutMs)]),
+          signal: combineSignals([parts.signal ?? undefined, createTimeoutSignal(timeoutMs)?.signal]),
         },
         incoming: await resolveIncomingHeaders(clientOptions),
         meta: {

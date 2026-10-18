@@ -126,7 +126,7 @@ const buildJsonLd = (pageUrl: string, title: string, description: string) => {
       description: DEFAULT_DESCRIPTION,
       url: `${SITE_URL}/`,
       downloadUrl: NPM_URL,
-      softwareVersion: '1.7.0',
+      softwareVersion: '1.7.1',
       license: 'https://opensource.org/licenses/MIT',
       codeRepository: GITHUB_URL,
       programmingLanguage: ['TypeScript', 'JavaScript'],
@@ -386,6 +386,11 @@ const config = defineConfig({
           text: 'Blog',
           items: [
             { text: 'All posts', link: '/blog/' },
+            { text: 'tanstack-fetch 1.7.1 — timeouts · URLs · errors', link: '/blog/tanstack-fetch-1-7-1' },
+            {
+              text: 'TanStack Start 1.0 + tanstack-fetch: 6 Real-World Data Fetching Patterns',
+              link: '/blog/tanstack-start-1-0-transtack-fetch-6-real-world-patterns',
+            },
             { text: 'React · axios vs tanstack-fetch', link: '/blog/react-axios-tanstack-fetch' },
             { text: 'Vue · ofetch vs tanstack-fetch', link: '/blog/vue-ofetch-tanstack-fetch' },
             { text: 'Next.js · fetch vs tanstack-fetch', link: '/blog/nextjs-fetch-tanstack-fetch' },
@@ -394,10 +399,6 @@ const config = defineConfig({
             {
               text: 'TanStack Start / Router',
               link: '/blog/tanstack-start-router-tanstack-fetch',
-            },
-            {
-              text: 'TanStack Start 1.0 + tanstack-fetch: 6 Real-World Data Fetching Patterns',
-              link: '/blog/tanstack-start-1-0-transtack-fetch-6-real-world-patterns',
             },
             {
               text: 'Svelte / SvelteKit · fetch vs tanstack-fetch',

@@ -75,7 +75,7 @@ Full write-up: [Comparison](https://mohamadgarmabi.github.io/tanstack-fetch/guid
 - [StackBlitz examples](./examples)
 - [Migrate from axios / ky / ofetch / fetch](https://mohamadgarmabi.github.io/tanstack-fetch/guide/migrate)
 - [Doctor CLI](https://mohamadgarmabi.github.io/tanstack-fetch/guide/migrate#doctor) — `npx tanstack-fetch doctor`
-- [What's new — 1.7.0](https://mohamadgarmabi.github.io/tanstack-fetch/blog/tanstack-fetch-1-7-0)
+- [What's new — 1.7.1](https://mohamadgarmabi.github.io/tanstack-fetch/blog/tanstack-fetch-1-7-1)
 - [Changelog](./CHANGELOG.md)
 
 > Not an official TanStack package — shaped for the same Query mental model.

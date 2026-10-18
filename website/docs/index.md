@@ -47,5 +47,5 @@ Typed Fetch client for TanStack Query. Start here, then jump to the guide that m
 
 - [API reference](/api/create-fetch)
 - [Examples](/examples/)
-- [Blog](/blog) — latest: [1.7.0 doctor · Solid · Svelte](/blog/tanstack-fetch-1-7-0)
+- [Blog](/blog) — latest: [1.7.1 timeouts · URLs · errors](/blog/tanstack-fetch-1-7-1)
 - [Agent skill](/guide/skill)

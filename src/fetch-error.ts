@@ -44,9 +44,14 @@ const isFetchError = (error: unknown): error is FetchError =>
     'code' in error,
   )
 
+const ABORT_ERROR_NAMES = new Set(['AbortError', 'TimeoutError'])
+
+/** True for user aborts and request timeouts. */
 const isAbortError = (error: unknown): boolean =>
-  (error instanceof DOMException && error.name === 'AbortError') ||
-  (error instanceof Error && error.name === 'AbortError')
+  (typeof DOMException === 'function' &&
+    error instanceof DOMException &&
+    ABORT_ERROR_NAMES.has(error.name)) ||
+  (error instanceof Error && ABORT_ERROR_NAMES.has(error.name))
 
 export { createFetchError, isFetchError, isAbortError }
 export type { FetchError }

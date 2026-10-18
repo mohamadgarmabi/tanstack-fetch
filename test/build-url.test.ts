@@ -16,4 +16,14 @@ describe('buildUrl', () => {
     const url = buildUrl('https://api.example.com', '/users/{id}', { id: '1' })
     expect(url.pathname).toBe('/users/1')
   })
+
+  it('does not treat a port in an absolute path as a param', () => {
+    const url = buildUrl(undefined, 'http://localhost:8080/users/:id', { id: '1' })
+    expect(url.toString()).toBe('http://localhost:8080/users/1')
+  })
+
+  it('ignores colons in the query string and hash', () => {
+    const url = buildUrl('https://api.example.com', '/search/:id?t=10:30#a:b', { id: '7' })
+    expect(url.toString()).toBe('https://api.example.com/search/7?t=10:30#a:b')
+  })
 })

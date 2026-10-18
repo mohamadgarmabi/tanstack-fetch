@@ -72,9 +72,11 @@ const encodeBody = (body: unknown, headers: Headers) => {
     body instanceof FormData ||
     body instanceof Blob ||
     body instanceof URLSearchParams ||
-    body instanceof ArrayBuffer
+    body instanceof ArrayBuffer ||
+    ArrayBuffer.isView(body) ||
+    (typeof ReadableStream !== 'undefined' && body instanceof ReadableStream)
   ) {
-    return body
+    return body as BodyInit
   }
   if (!headers.has('content-type')) {
     headers.set('content-type', 'application/json')

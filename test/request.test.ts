@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from 'vitest'
-import { isFetchError } from '../src'
+import { isAbortError, isFetchError } from '../src'
 import { createTestClient, jsonResponse } from './helpers'
 
 describe('tanstack-fetch request', () => {
@@ -58,5 +58,46 @@ describe('tanstack-fetch request', () => {
         expect(error.status).toBe(500)
       }
     }
+  })
+
+  it('reports timeouts as abort errors, not network errors', async () => {
+    const fetchImpl = vi.fn(
+      (_url: unknown, init?: RequestInit) =>
+        new Promise<Response>((_resolve, reject) => {
+          init?.signal?.addEventListener('abort', () => reject(init.signal?.reason))
+        }),
+    )
+    const http = createTestClient(fetchImpl as typeof fetch, { timeoutMs: 5 })
+
+    await expect(http.get('/slow')).rejects.toSatisfy(
+      (error: unknown) => isAbortError(error) && (error as Error).name === 'TimeoutError',
+    )
+    expect(fetchImpl).toHaveBeenCalledTimes(1)
+  })
+
+  it('clears the timeout timer once the request finishes', async () => {
+    vi.useFakeTimers()
+    try {
+      const fetchImpl = vi.fn().mockResolvedValue(jsonResponse({ body: { ok: true } }))
+      const http = createTestClient(fetchImpl)
+
+      await http.get('/fast')
+
+      expect(vi.getTimerCount()).toBe(0)
+    } finally {
+      vi.useRealTimers()
+    }
+  })
+
+  it('sends typed-array bodies as raw bytes', async () => {
+    const fetchImpl = vi.fn().mockResolvedValue(jsonResponse({ body: { ok: true } }))
+    const http = createTestClient(fetchImpl)
+    const bytes = new Uint8Array([1, 2, 3])
+
+    await http.post('/bytes', { body: bytes })
+
+    const init = fetchImpl.mock.calls[0]?.[1] as RequestInit
+    expect(init.body).toBe(bytes)
+    expect(new Headers(init.headers).has('content-type')).toBe(false)
   })
 })

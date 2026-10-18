@@ -42,13 +42,16 @@ const sendHttp = async (input: ExecuteArgs, body: BodyInit | null | undefined) =
     })
   }
 
+  const isStream = typeof ReadableStream !== 'undefined' && body instanceof ReadableStream
   return fetchImpl(context.request.url, {
     method: context.request.method,
     headers: context.request.headers,
     body,
     signal: context.request.signal,
     credentials: client.credentials,
-  })
+    // Required by Node/undici when streaming a request body.
+    ...(isStream ? { duplex: 'half' } : {}),
+  } as RequestInit)
 }
 
 const toErrorResult = <T, E>(status: number, error: E, headers: Headers): AttemptOutcome<T, E> => ({
@@ -98,6 +101,19 @@ const executeFetch = async <T, E>(input: ExecuteArgs): Promise<AttemptOutcome<T,
   }
 }
 
+// Error responses keep their HTTP status even when the body is not valid JSON
+// (e.g. an HTML 502 page), so `onResponseError` interceptors still run.
+const readResponseData = async (response: Response, parseAs?: RequestOptions['parseAs']) => {
+  try {
+    return await parseBody(response, parseAs)
+  } catch (error) {
+    if (!response.ok && isBodyParseError(error)) {
+      return error.bodyText
+    }
+    throw error
+  }
+}
+
 const handleResponse = async <T, E>(input: {
   interceptors: HttpInterceptor[]
   context: RequestContext
@@ -108,7 +124,7 @@ const handleResponse = async <T, E>(input: {
   const context = {
     ...input.context,
     response,
-    data: await parseBody(response, requestOptions?.parseAs),
+    data: await readResponseData(response, requestOptions?.parseAs),
   }
   const hook = response.ok
     ? (item: HttpInterceptor) => item.onResponse

@@ -10,13 +10,13 @@ license: MIT
 metadata:
   author: Mohammad Garmabi
   package: tanstack-fetch
-  version: '1.7.0'
+  version: '1.7.1'
   docs: https://mohamadgarmabi.github.io/tanstack-fetch/
   npm: https://www.npmjs.com/package/tanstack-fetch
   llm: https://mohamadgarmabi.github.io/tanstack-fetch/llms.txt
 ---
 
-# tanstack-fetch (v1.7.0)
+# tanstack-fetch (v1.7.1)
 
 Typed Fetch client shaped for TanStack Query. Not an official TanStack package.
 
@@ -307,6 +307,7 @@ const trpcClient = createTRPCFetchClient<AppRouter>({ url: '/api/trpc', client: 
 - Solid: https://mohamadgarmabi.github.io/tanstack-fetch/guide/solid
 - Angular: https://mohamadgarmabi.github.io/tanstack-fetch/guide/angular
 - Svelte: https://mohamadgarmabi.github.io/tanstack-fetch/guide/svelte
+- Release 1.7.1: https://mohamadgarmabi.github.io/tanstack-fetch/blog/tanstack-fetch-1-7-1
 - Release 1.7.0: https://mohamadgarmabi.github.io/tanstack-fetch/blog/tanstack-fetch-1-7-0
 - Changelog 1.6.1: https://mohamadgarmabi.github.io/tanstack-fetch/blog/tanstack-fetch-1-6
 - Doctor: `npx tanstack-fetch doctor [--dir ./src]` (alias `--doctor`)

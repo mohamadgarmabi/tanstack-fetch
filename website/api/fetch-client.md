@@ -18,16 +18,16 @@ Methods on the client returned by `createFetch`.
 
 ## Request options
 
-| Option             | Notes                                                              |
-| ------------------ | ------------------------------------------------------------------ |
-| `params`           | Typed from path (`:id` / `{id}`), required when placeholders exist |
-| `query`            | Query string                                                       |
-| `body`             | JSON / FormData / …                                                |
-| `headers`          | Per-request headers                                                |
-| `signal`           | AbortSignal (pass Query’s)                                         |
-| `timeoutMs`        | Override client timeout                                            |
-| `parseAs`          | `json` \| `text` \| `blob`                                         |
-| `operation`        | Name for interceptor match                                         |
-| `interceptors`     | Per-request `use` / `eject`                                        |
-| `onUploadProgress` | Browser upload progress (XHR)                                      |
-| `onDownloadProgress` | Browser download progress (XHR)                                  |
+| Option               | Notes                                                                                                                                    |
+| -------------------- | ---------------------------------------------------------------------------------------------------------------------------------------- |
+| `params`             | Typed from path (`:id` / `{id}`), required when placeholders exist. Only the pathname is scanned — ports and `?query` colons are ignored |
+| `query`              | Query string                                                                                                                             |
+| `body`               | Objects → JSON; `string`, `FormData`, `Blob`, `URLSearchParams`, `ArrayBuffer`, typed arrays and `ReadableStream` are sent as-is         |
+| `headers`            | Per-request headers                                                                                                                      |
+| `signal`             | AbortSignal (pass Query’s)                                                                                                               |
+| `timeoutMs`          | Override client timeout (default 30 000). Rejects with `TimeoutError` — see `isAbortError`                                               |
+| `parseAs`            | `json` \| `text` \| `blob`                                                                                                               |
+| `operation`          | Name for interceptor match                                                                                                               |
+| `interceptors`       | Per-request `use` / `eject`                                                                                                              |
+| `onUploadProgress`   | Browser upload progress (XHR)                                                                                                            |
+| `onDownloadProgress` | Browser download progress (XHR)                                                                                                          |

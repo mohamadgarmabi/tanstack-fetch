@@ -17,7 +17,7 @@ const CHANGELOG_URL = `${GITHUB_URL}/blob/main/CHANGELOG.md`
 const NPM_URL = 'https://www.npmjs.com/package/tanstack-fetch'
 const AUTHOR_URL = 'https://github.com/mohamadgarmabi'
 const LINKEDIN_URL = 'https://www.linkedin.com/in/mohammad-garmabi/'
-const RELEASE_POST_URL = '/blog/tanstack-fetch-1-7-0'
+const RELEASE_POST_URL = '/blog/tanstack-fetch-1-7-1'
 const STACKBLITZ_BASE =
   'https://stackblitz.com/github/mohamadgarmabi/tanstack-fetch/tree/main/examples'
 
