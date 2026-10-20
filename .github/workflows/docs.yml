@@ -1,19 +1,23 @@
 name: Deploy Docs
 
+# Deploys the VitePress site straight from Actions — no gh-pages branch.
+# Requires Settings → Pages → Build and deployment → Source: "GitHub Actions".
+
 on:
   push:
     branches: [main]
   workflow_dispatch:
 
-# Single deploy path: push the build to gh-pages; GitHub's own "pages build and deployment"
-# then serves it. A second deploy-pages job raced that run ("in progress deployment").
 permissions:
-  contents: write
+  contents: read
   pages: write
+  id-token: write
 
+# One deployment at a time; let an in-progress deploy finish instead of cancelling it
+# (a cancelled deploy-pages run leaves a pending deployment that blocks the next one).
 concurrency:
   group: pages
-  cancel-in-progress: true
+  cancel-in-progress: false
 
 jobs:
   build:
@@ -27,47 +31,24 @@ jobs:
           cache: npm
           cache-dependency-path: website/package-lock.json
 
+      - uses: actions/configure-pages@v5
+
       - name: Install and build VitePress
         working-directory: website
         run: |
           npm ci
           npm run build
 
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-pages-artifact@v3
         with:
-          name: vitepress-dist
           path: website/.vitepress/dist
 
-  # Always publish VitePress to gh-pages (never serve main/README.md).
-  deploy-branch:
+  deploy:
     needs: build
     runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
     steps:
-      - uses: actions/download-artifact@v4
-        with:
-          name: vitepress-dist
-          path: dist
-
-      - name: Ensure Pages source is gh-pages (not main)
-        continue-on-error: true
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          # main/(root) publishes README.md — hard reload shows README instead of VitePress.
-          gh api "repos/${{ github.repository }}/pages" -X POST \
-            -f build_type=legacy \
-            -f source[branch]=gh-pages \
-            -f source[path]=/ || true
-          gh api "repos/${{ github.repository }}/pages" -X PUT \
-            -f build_type=legacy \
-            -f source[branch]=gh-pages \
-            -f source[path]=/ || true
-
-      - uses: peaceiris/actions-gh-pages@v4
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: dist
-          force_orphan: true
-          # Use human author so github-actions[bot] does not appear in Contributors.
-          user_name: m.garmabi
-          user_email: m.garmabi@charismacredits.com
+      - id: deployment
+        uses: actions/deploy-pages@v4
