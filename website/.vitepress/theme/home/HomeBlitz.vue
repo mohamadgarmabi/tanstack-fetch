@@ -2,6 +2,7 @@
 import { withBase } from 'vitepress'
 import { stackBlitzLinks } from './home.content'
 </script>
+import HomeIcon from './HomeIcon.vue'
 
 <template>
   <section class="home-blitz">
@@ -16,7 +17,7 @@ import { stackBlitzLinks } from './home.content'
     </div>
 
     <ul>
-      <li v-for="item in stackBlitzLinks" :key="item.label">
+      <li v-for="item in stackBlitzLinks" :key="item.label" class="fx-spotlight">
         <a
           v-if="item.href"
           class="home-blitz-main"
@@ -25,11 +26,11 @@ import { stackBlitzLinks } from './home.content'
           rel="noopener"
         >
           {{ item.label }}
-          <span>StackBlitz</span>
+          <span><HomeIcon name="bolt" /> StackBlitz <HomeIcon name="external" /></span>
         </a>
         <a v-else class="home-blitz-main" :href="withBase(item.docs)">
           {{ item.label }}
-          <span>Docs</span>
+          <span><HomeIcon name="book" /> Docs</span>
         </a>
         <a v-if="item.href" class="home-blitz-docs" :href="withBase(item.docs)">Docs</a>
       </li>

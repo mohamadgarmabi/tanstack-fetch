@@ -99,3 +99,32 @@ try {
     readFileSync(out)
   }
 }
+
+// GitHub stars snapshot — the site fetches live stars too; this is the offline fallback.
+const githubOut = join(root, 'data', 'github-repo.json')
+const githubRepo = 'mohamadgarmabi/tanstack-fetch'
+
+try {
+  const repo = await fetchJson(`https://api.github.com/repos/${githubRepo}`)
+  writeFileSync(
+    githubOut,
+    `${JSON.stringify(
+      {
+        repo: githubRepo,
+        stars: repo.stargazers_count ?? null,
+        updatedAt: new Date().toISOString(),
+      },
+      null,
+      2,
+    )}\n`,
+  )
+  console.log(`${githubRepo} stars=${repo.stargazers_count}`)
+} catch (error) {
+  console.warn('GitHub stars fetch failed — keeping previous snapshot:', error.message)
+  if (!existsSync(githubOut)) {
+    writeFileSync(
+      githubOut,
+      `${JSON.stringify({ repo: githubRepo, stars: null, updatedAt: null }, null, 2)}\n`,
+    )
+  }
+}

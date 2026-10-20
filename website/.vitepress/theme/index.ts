@@ -16,8 +16,10 @@ import DevtoolsDemo from './components/DevtoolsDemo.vue'
 import InstallTabs from './components/InstallTabs.vue'
 import PackagesFeatured from './components/PackagesFeatured.vue'
 import HomeLanding from './home/HomeLanding.vue'
+import LiquidGlass from './components/glass/LiquidGlass.vue'
 import './custom.css'
 import './home/home.css'
+import './glass.css'
 
 const theme: Theme = {
   extends: DefaultTheme,
@@ -38,6 +40,7 @@ const theme: Theme = {
     app.component('PackagesFeatured', PackagesFeatured)
     app.component('InstallTabs', InstallTabs)
     app.component('HomeLanding', HomeLanding)
+    app.component('LiquidGlass', LiquidGlass)
   },
 }
 

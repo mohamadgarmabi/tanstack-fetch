@@ -1,12 +1,21 @@
 <script setup lang="ts">
 import { withBase } from 'vitepress'
 import { AUTHOR_URL, footerColumns, GITHUB_URL, LINKEDIN_URL } from './home.content'
+import FlickeringGrid from '../components/backgrounds/FlickeringGrid.vue'
 
 const toHref = (href: string) => (href.startsWith('http') ? href : withBase(href))
 </script>
 
 <template>
   <section class="home-close">
+    <FlickeringGrid
+      class="home-close-grid"
+      color="#ff7a18"
+      :square-size="4"
+      :grid-gap="6"
+      :flicker-chance="0.2"
+      :max-opacity="0.3"
+    />
     <h2>Start with one request.</h2>
     <p>
       Add a token when you need auth, a plugin when you need retry, another entry when you need SSE.

@@ -1,0 +1,378 @@
+/*
+ * Liquid glass surfaces (Inspira UI style).
+ * Chromium gets the SVG displacement filter via --lg-filter + [data-liquid];
+ * Safari / Firefox fall back to frosted glass.
+ */
+
+:root {
+  --fx-ease: cubic-bezier(0.32, 0.72, 0, 1);
+  --fx-glass-bg: rgba(14, 14, 17, 0.42);
+  --fx-glass-edge:
+    inset 0 0 2px 1px rgba(255, 255, 255, 0.12), inset 0 0 10px 4px rgba(255, 255, 255, 0.04),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  --fx-glass-drop: 0 4px 16px rgba(0, 0, 0, 0.18), 0 16px 48px rgba(0, 0, 0, 0.28);
+  --fx-nav-pill: 48px;
+}
+
+@media (min-width: 960px) {
+  :root {
+    --vp-nav-height: 72px;
+    --fx-nav-pill: 54px;
+  }
+}
+
+/* ---------- Generic surface (LiquidGlass.vue) ---------- */
+
+/* :where() keeps these overridable by component classes like .home-btn */
+:where(.liquid-glass) {
+  position: relative;
+  border-radius: var(--lg-radius, 16px);
+  background: rgba(255, 255, 255, var(--lg-frost, 0.05));
+  box-shadow: var(--fx-glass-edge), var(--fx-glass-drop);
+}
+
+.liquid-glass {
+  -webkit-backdrop-filter: blur(14px) saturate(1.6);
+  backdrop-filter: blur(14px) saturate(1.6);
+}
+
+.liquid-glass[data-liquid] {
+  backdrop-filter: var(--lg-filter) saturate(1.5);
+}
+
+/* ---------- Floating nav pill ---------- */
+
+#app .VPNav {
+  background: transparent;
+  border: 0;
+}
+
+#app .VPNavBar,
+#app .VPNavBar:not(.home),
+#app .VPNavBar.screen-open {
+  height: var(--vp-nav-height);
+  background: transparent;
+  border: 0;
+}
+
+#app .VPNavBar > .wrapper {
+  position: relative;
+  width: calc(100% - 16px);
+  max-width: 1376px;
+  height: var(--fx-nav-pill);
+  margin: 8px auto 0;
+  padding: 0 6px 0 16px;
+  border-radius: 999px;
+  background: var(--fx-glass-bg);
+  -webkit-backdrop-filter: blur(18px) saturate(1.6);
+  backdrop-filter: blur(18px) saturate(1.6);
+  box-shadow: var(--fx-glass-edge), var(--fx-glass-drop);
+  transition:
+    background-color 0.5s var(--fx-ease),
+    box-shadow 0.5s var(--fx-ease);
+}
+
+/* Liquid refraction plus a light frost so links stay readable over busy content. */
+#app .VPNavBar > .wrapper[data-liquid] {
+  backdrop-filter: var(--lg-filter) blur(3px) saturate(1.6);
+}
+
+#app .VPNavBar.home.top > .wrapper {
+  background: rgba(14, 14, 17, 0.22);
+}
+
+#app .VPNavBar > .wrapper::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  background: linear-gradient(
+    100deg,
+    transparent 20%,
+    rgba(255, 179, 71, 0.08) 45%,
+    rgba(255, 122, 24, 0.05) 55%,
+    transparent 80%
+  );
+  mask: linear-gradient(#000 0 0) top / 100% 1px no-repeat;
+}
+
+@media (min-width: 768px) {
+  #app .VPNavBar > .wrapper {
+    width: calc(100% - 32px);
+    margin-top: 9px;
+    padding: 0 10px 0 20px;
+  }
+}
+
+#app .VPNavBar > .wrapper > .container,
+#app .VPNavBar .title,
+#app .VPNavBar .content-body,
+#app .VPNavBarTitle .title,
+#app .VPNavBarHamburger {
+  height: var(--fx-nav-pill);
+  background: transparent;
+  border: 0;
+}
+
+#app .VPNavBar > .wrapper > .container {
+  max-width: none;
+}
+
+/* Fade content out as it scrolls up behind the floating pill (desktop: nav is fixed) */
+@media (min-width: 960px) {
+  #app .VPNav::before {
+    content: '';
+    position: absolute;
+    inset: 0 0 auto;
+    height: calc(var(--vp-nav-height) - 6px);
+    pointer-events: none;
+    background: linear-gradient(180deg, rgba(9, 9, 11, 0.85), rgba(9, 9, 11, 0));
+  }
+}
+
+#app .VPNavBar .divider {
+  display: none;
+}
+
+/* Sidebar pages: keep title inline inside the pill instead of pinned to sidebar width. */
+@media (min-width: 960px) {
+  #app .VPNavBar.has-sidebar .title {
+    position: static;
+    width: auto;
+    padding: 0;
+  }
+
+  #app .VPNavBar.has-sidebar .content {
+    padding: 0;
+  }
+}
+
+#app .VPNavBarMenuLink,
+#app .VPNavBar .VPFlyout .button {
+  height: var(--fx-nav-pill);
+  line-height: var(--fx-nav-pill);
+}
+
+#app .VPNavBarMenuLink {
+  position: relative;
+  padding: 0 14px;
+  transition: color 0.3s var(--fx-ease);
+}
+
+#app .VPNavBarMenuLink::before {
+  content: '';
+  position: absolute;
+  inset: 9px 3px;
+  z-index: -1;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.07);
+  opacity: 0;
+  transform: scale(0.9);
+  transition:
+    opacity 0.3s var(--fx-ease),
+    transform 0.3s var(--fx-ease);
+}
+
+#app .VPNavBarMenuLink:hover::before {
+  opacity: 1;
+  transform: scale(1);
+}
+
+#app .VPNavBarMenuLink.active::before {
+  opacity: 1;
+  transform: scale(1);
+  background: rgba(255, 122, 24, 0.12);
+  box-shadow: inset 0 0 0 1px rgba(255, 122, 24, 0.22);
+}
+
+#app .VPNavBarMenuLink:hover {
+  color: var(--vp-c-text-1);
+}
+
+#app .VPNavBarMenuLink.active {
+  color: var(--vp-c-brand-1);
+}
+
+#app .VPNavBarMenuLink:active {
+  transform: scale(0.96);
+}
+
+#app .VPNavBar .VPFlyout .menu {
+  top: calc(var(--fx-nav-pill) - 4px);
+}
+
+#app .VPNavBar .VPFlyout .VPMenu,
+#app .VPNavScreen {
+  background: rgba(14, 14, 17, 0.82);
+  -webkit-backdrop-filter: blur(20px) saturate(1.6);
+  backdrop-filter: blur(20px) saturate(1.6);
+}
+
+#app .VPNavBar .VPFlyout .VPMenu {
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 16px;
+  box-shadow: var(--fx-glass-edge), var(--fx-glass-drop);
+}
+
+/* Search button as a nested glass capsule (icon-only below 768px stays bare) */
+@media (min-width: 768px) {
+  #app .VPNavBar .DocSearch-Button,
+  #app .VPNavBar .VPNavBarSearchButton {
+    border-radius: 999px;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    background: rgba(255, 255, 255, 0.04);
+    transition:
+      border-color 0.3s var(--fx-ease),
+      background-color 0.3s var(--fx-ease),
+      transform 0.3s var(--fx-ease);
+  }
+
+  #app .VPNavBar .DocSearch-Button:hover,
+  #app .VPNavBar .VPNavBarSearchButton:hover {
+    border-color: rgba(255, 122, 24, 0.35);
+    background: rgba(255, 255, 255, 0.07);
+  }
+}
+
+#app .VPNavBar .DocSearch-Button:active,
+#app .VPNavBar .VPNavBarSearchButton:active {
+  transform: scale(0.97);
+}
+
+/* Mobile drawer opens beneath the floating pill */
+#app .VPNavScreen {
+  top: calc(var(--vp-layout-top-height, 0px) + var(--vp-nav-height));
+}
+
+/* ---------- Docs chrome refinements ---------- */
+
+@media (min-width: 960px) {
+  #app .VPSidebar {
+    background: transparent;
+    border-right: 1px solid rgba(255, 255, 255, 0.06);
+  }
+}
+
+#app .VPSidebarItem.is-active > .item .link > .text {
+  color: var(--vp-c-brand-1);
+}
+
+#app .VPSidebarItem .item {
+  border-radius: 10px;
+  transition: background-color 0.3s var(--fx-ease);
+}
+
+#app .VPSidebarItem.level-1 .item:hover,
+#app .VPSidebarItem.level-2 .item:hover {
+  background: rgba(255, 255, 255, 0.035);
+}
+
+#app .VPLocalNav {
+  background: rgba(9, 9, 11, 0.6);
+  -webkit-backdrop-filter: blur(16px) saturate(1.5);
+  backdrop-filter: blur(16px) saturate(1.5);
+  border-bottom-color: rgba(255, 255, 255, 0.06);
+}
+
+#app .vp-doc div[class*='language-'] {
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 14px;
+}
+
+#app .VPDocFooter .pager-link {
+  border-radius: 14px;
+  transition:
+    border-color 0.3s var(--fx-ease),
+    transform 0.3s var(--fx-ease);
+}
+
+#app .VPDocFooter .pager-link:hover {
+  transform: translateY(-2px);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  #app .VPNavBar > .wrapper,
+  #app .VPNavBarMenuLink,
+  #app .VPNavBarMenuLink::before,
+  .liquid-glass {
+    transition: none;
+  }
+}
+
+/* ---------- Home (hero styles live in home/hero.css) ---------- */
+
+/* Stats band */
+.home-landing .home-stats li {
+  transition:
+    border-color 0.3s var(--fx-ease),
+    transform 0.3s var(--fx-ease);
+}
+
+.home-landing .home-stats li.liquid-glass {
+  background: rgba(255, 255, 255, 0.025);
+  box-shadow:
+    var(--fx-glass-edge),
+    0 18px 40px rgba(0, 0, 0, 0.25);
+}
+
+.home-landing .home-stats li:hover {
+  transform: translateY(-2px);
+  border-color: rgba(255, 176, 106, 0.28);
+}
+
+@media (max-width: 480px) {
+  .home-landing .home-install {
+    padding-left: 0.85rem;
+    font-size: 0.78rem;
+  }
+}
+
+/* ---------- Site-wide pattern (Inspira PatternBackground in Layout.vue) ---------- */
+
+#app .site-pattern {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+}
+
+/* ---------- Mobile: sticky floating header ---------- */
+
+@media (max-width: 959px) {
+  #app .VPNav {
+    position: sticky;
+    top: 0;
+  }
+
+  /* Fade content scrolling up behind the pill */
+  #app .VPNav::before {
+    content: '';
+    position: absolute;
+    inset: 0 0 auto;
+    height: var(--vp-nav-height);
+    pointer-events: none;
+    background: linear-gradient(180deg, rgba(9, 9, 11, 0.9) 40%, rgba(9, 9, 11, 0));
+  }
+
+  /* Docs "Menu / On this page" bar sticks right under the header */
+  #app .VPLocalNav {
+    top: var(--vp-nav-height);
+  }
+}
+
+/* ---------- Tablet: the full menu doesn't fit the pill below 1100px — use the drawer ---------- */
+
+@media (min-width: 768px) and (max-width: 1099px) {
+  #app .VPNavBarMenu,
+  #app .VPNavBarExtra {
+    display: none;
+  }
+
+  #app .VPNavBarHamburger {
+    display: flex;
+  }
+
+  #app .VPNavScreen {
+    display: block;
+  }
+}

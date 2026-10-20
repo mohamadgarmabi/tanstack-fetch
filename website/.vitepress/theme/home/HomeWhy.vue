@@ -1,6 +1,9 @@
 <script setup lang="ts">
 import { withBase } from 'vitepress'
 import { whyAxios } from './home.content'
+import HomeIcon, { type HomeIconName } from './HomeIcon.vue'
+
+const WHY_ICONS: HomeIconName[] = ['query', 'server', 'stream']
 </script>
 
 <template>
@@ -15,14 +18,17 @@ import { whyAxios } from './home.content'
     </div>
 
     <ul>
-      <li v-for="item in whyAxios" :key="item.title">
+      <li v-for="(item, index) in whyAxios" :key="item.title" class="fx-spotlight">
+        <span class="home-card-icon"><HomeIcon :name="WHY_ICONS[index] ?? 'bolt'" /></span>
         <h3>{{ item.title }}</h3>
         <p>{{ item.text }}</p>
       </li>
     </ul>
 
     <p class="home-why-link">
-      <a :href="withBase('/guide/comparison')">Read the full comparison</a>
+      <a :href="withBase('/guide/comparison')">
+        Read the full comparison <HomeIcon name="arrow" />
+      </a>
     </p>
   </section>
 </template>

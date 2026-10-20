@@ -2,6 +2,7 @@
 import { withBase } from 'vitepress'
 import { highlightTypeScript } from './home-highlight'
 import { quickstartCode } from './home.content'
+import HomeIcon from './HomeIcon.vue'
 
 const highlighted = highlightTypeScript(quickstartCode)
 </script>
@@ -26,10 +27,31 @@ const highlighted = highlightTypeScript(quickstartCode)
       </div>
 
       <div class="home-quick-side">
+        <p class="home-quick-kicker">What the queryFn gets</p>
         <ol>
-          <li>Returns data on success</li>
-          <li>Throws <code>FetchError</code> on HTTP failure</li>
-          <li>Honors Query’s <code>AbortSignal</code></li>
+          <li>
+            <span class="home-quick-step">1</span>
+            <div>
+              <strong>Data on success</strong><small>Parsed JSON, typed by your generic.</small>
+            </div>
+            <HomeIcon name="check" />
+          </li>
+          <li>
+            <span class="home-quick-step">2</span>
+            <div>
+              <strong><code>FetchError</code> on failure</strong>
+              <small>status, code, and body — Query's error state.</small>
+            </div>
+            <HomeIcon name="check" />
+          </li>
+          <li>
+            <span class="home-quick-step">3</span>
+            <div>
+              <strong><code>AbortSignal</code> honored</strong>
+              <small>Unmounts and refetches cancel in flight.</small>
+            </div>
+            <HomeIcon name="check" />
+          </li>
         </ol>
         <a class="home-btn home-btn-primary" :href="withBase('/guide/getting-started')">
           Get started

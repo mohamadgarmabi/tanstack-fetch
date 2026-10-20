@@ -1,50 +1,47 @@
 <script setup lang="ts">
-import { computed } from 'vue'
 import { withBase } from 'vitepress'
 import { CHANGELOG_URL, NPM_URL, PACKAGE_VERSION, integrations, runtimes } from './home.content'
-import { formatCount, useNpmPackageStats } from '../composables/use-npm-stats'
-
-const { pkg } = useNpmPackageStats('tanstack-fetch')
+import LiquidGlass from '../components/glass/LiquidGlass.vue'
+import HomeIcon, { type HomeIconName } from './HomeIcon.vue'
 
 const toHref = (href: string) => (href.startsWith('http') ? href : withBase(href))
 
-const stats = computed(() => [
+// Downloads live in the hero; the band covers footprint and reach.
+const stats: { value: string; label: string; href: string; icon: HomeIconName }[] = [
   {
     value: '4.81KB',
     label: 'gzip HTTP core',
     href: 'https://bundlephobia.com/package/tanstack-fetch',
+    icon: 'feather',
   },
-  {
-    value: formatCount(pkg.value?.weekly ?? 0),
-    label: 'downloads / week',
-    href: NPM_URL,
-  },
-  {
-    value: formatCount(pkg.value?.monthly ?? 0),
-    label: 'downloads / month',
-    href: NPM_URL,
-  },
-  {
-    value: `v${PACKAGE_VERSION}`,
-    label: 'current release',
-    href: CHANGELOG_URL,
-  },
-])
+  { value: '0', label: 'runtime dependencies', href: NPM_URL, icon: 'layers' },
+  { value: '8', label: 'frameworks supported', href: '/docs', icon: 'atom' },
+  { value: `v${PACKAGE_VERSION}`, label: 'current release', href: CHANGELOG_URL, icon: 'bolt' },
+]
 </script>
 
 <template>
   <section class="home-band">
     <ul class="home-stats">
-      <li v-for="stat in stats" :key="stat.label">
-        <a v-if="stat.href" :href="toHref(stat.href)" target="_blank" rel="noopener">
+      <LiquidGlass
+        v-for="stat in stats"
+        :key="stat.label"
+        as="li"
+        :radius="16"
+        :scale="-60"
+        :g-offset="4"
+        :b-offset="8"
+      >
+        <a
+          :href="toHref(stat.href)"
+          :target="stat.href.startsWith('http') ? '_blank' : undefined"
+          rel="noopener"
+        >
+          <span class="home-stat-icon"><HomeIcon :name="stat.icon" /></span>
           <strong>{{ stat.value }}</strong>
           <span>{{ stat.label }}</span>
         </a>
-        <template v-else>
-          <strong>{{ stat.value }}</strong>
-          <span>{{ stat.label }}</span>
-        </template>
-      </li>
+      </LiquidGlass>
     </ul>
 
     <div class="home-pills">
