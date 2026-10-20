@@ -5,10 +5,11 @@ on:
     branches: [main]
   workflow_dispatch:
 
+# Single deploy path: push the build to gh-pages; GitHub's own "pages build and deployment"
+# then serves it. A second deploy-pages job raced that run ("in progress deployment").
 permissions:
   contents: write
   pages: write
-  id-token: write
 
 concurrency:
   group: pages
@@ -31,10 +32,6 @@ jobs:
         run: |
           npm ci
           npm run build
-
-      - uses: actions/upload-pages-artifact@v3
-        with:
-          path: website/.vitepress/dist
 
       - uses: actions/upload-artifact@v4
         with:
@@ -74,16 +71,3 @@ jobs:
           # Use human author so github-actions[bot] does not appear in Contributors.
           user_name: m.garmabi
           user_email: m.garmabi@charismacredits.com
-
-  # Optional: works when Settings → Pages → Source is "GitHub Actions".
-  deploy-actions:
-    needs: build
-    if: success()
-    continue-on-error: true
-    runs-on: ubuntu-latest
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
-    steps:
-      - id: deployment
-        uses: actions/deploy-pages@v4
