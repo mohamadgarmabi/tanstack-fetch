@@ -1,0 +1,11 @@
+/* TEAM */
+Developer: Mohammad Garmabi
+Contact: mwmdgmb@gmail.com
+GitHub: https://github.com/mohamadgarmabi
+LinkedIn: https://www.linkedin.com/in/mohammad-garmabi/
+npm: https://www.npmjs.com/~mohammad.garmabi
+
+/* SITE */
+Standards: HTML5, CSS3, Markdown
+Software: VitePress, TypeScript
+Language: English
