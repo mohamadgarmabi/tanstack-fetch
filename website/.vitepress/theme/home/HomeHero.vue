@@ -12,7 +12,6 @@ import LiquidGlass from '../components/glass/LiquidGlass.vue'
 import FlickeringGrid from '../components/backgrounds/FlickeringGrid.vue'
 import HomeHeroConsole from './HomeHeroConsole.vue'
 import HomeIcon from './HomeIcon.vue'
-import NumberTicker from '../components/fx/NumberTicker.vue'
 import { formatCount, useNpmPackageStats } from '../composables/use-npm-stats'
 import { useGithubStars } from '../composables/use-github-stars'
 import './hero.css'
@@ -162,17 +161,16 @@ const copyInstall = async () => {
           >
             <span class="hero-downloads-icon"><HomeIcon name="download" /></span>
             <span class="hero-downloads-main">
-              <strong><NumberTicker :value="pkg?.monthly ?? 0" :format="formatCount" /></strong>
+              <strong>{{ formatCount(pkg?.monthly ?? 0) }}</strong>
               downloads / month
             </span>
             <span class="hero-downloads-week">
-              <NumberTicker :value="pkg?.weekly ?? 0" :format="formatCount" /> this week
+              {{ formatCount(pkg?.weekly ?? 0) }} this week
             </span>
             <span v-if="downloadsLive" class="hero-live-dot" aria-label="live" />
           </a>
 
           <a
-            v-if="stars !== null"
             class="hero-downloads hero-stars"
             :href="GITHUB_URL"
             title="Star tanstack-fetch on GitHub"
@@ -180,10 +178,11 @@ const copyInstall = async () => {
             rel="noopener"
           >
             <span class="hero-downloads-icon"><HomeIcon name="star" /></span>
-            <span class="hero-downloads-main">
-              <strong><NumberTicker :value="stars" :format="formatCount" /></strong>
+            <span v-if="stars !== null" class="hero-downloads-main">
+              <strong>{{ formatCount(stars) }}</strong>
               {{ stars === 1 ? 'star' : 'stars' }}
             </span>
+            <span v-else class="hero-downloads-main"><strong>Star</strong> on GitHub</span>
           </a>
         </div>
       </div>
