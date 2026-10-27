@@ -1,4 +1,4 @@
-import { computed, onMounted, ref, shallowRef } from 'vue'
+import { onMounted, ref, shallowRef } from 'vue'
 import fallback from '../../../data/npm-packages.json'
 
 type NpmPackageRow = {
@@ -56,12 +56,22 @@ const sumTotals = (packages: NpmPackageRow[]) => ({
   monthly: packages.reduce((sum, row) => sum + row.monthly, 0),
 })
 
+// npm's `last-week` / `last-month` aliases can lag months behind (returning 0),
+// so request explicit ranges ending yesterday (UTC) instead.
+const downloadsRange = (days: number) => {
+  const day = 24 * 60 * 60 * 1000
+  const end = new Date(Date.now() - day)
+  const start = new Date(end.getTime() - (days - 1) * day)
+  const format = (date: Date) => date.toISOString().slice(0, 10)
+  return `${format(start)}:${format(end)}`
+}
+
 const fetchPackageRow = async (pkg: NpmPackageRow): Promise<NpmPackageRow> => {
   const weeklyPromise = fetchJson<DownloadsPoint>(
-    `https://api.npmjs.org/downloads/point/last-week/${pkg.name}`,
+    `https://api.npmjs.org/downloads/point/${downloadsRange(7)}/${pkg.name}`,
   )
   const monthlyPromise = fetchJson<DownloadsPoint>(
-    `https://api.npmjs.org/downloads/point/last-month/${pkg.name}`,
+    `https://api.npmjs.org/downloads/point/${downloadsRange(30)}/${pkg.name}`,
   )
   const metaPromise = fetchJson<RegistryMeta>(`https://registry.npmjs.org/${pkg.name}`).catch(
     () => null,

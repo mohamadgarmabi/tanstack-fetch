@@ -26,13 +26,23 @@ const fetchJson = async (url) => {
   return response.json()
 }
 
+// npm's `last-week` / `last-month` aliases can lag months behind (returning 0),
+// so request explicit ranges ending yesterday (UTC) instead.
+const downloadsRange = (days) => {
+  const day = 24 * 60 * 60 * 1000
+  const end = new Date(Date.now() - day)
+  const start = new Date(end.getTime() - (days - 1) * day)
+  const format = (date) => date.toISOString().slice(0, 10)
+  return `${format(start)}:${format(end)}`
+}
+
 const fetchPackage = async (name) => {
   let attempt = 0
   for (;;) {
     try {
       const [weekly, monthly, meta] = await Promise.all([
-        fetchJson(`https://api.npmjs.org/downloads/point/last-week/${name}`),
-        fetchJson(`https://api.npmjs.org/downloads/point/last-month/${name}`),
+        fetchJson(`https://api.npmjs.org/downloads/point/${downloadsRange(7)}/${name}`),
+        fetchJson(`https://api.npmjs.org/downloads/point/${downloadsRange(30)}/${name}`),
         fetchJson(`https://registry.npmjs.org/${name}`),
       ])
       return {
