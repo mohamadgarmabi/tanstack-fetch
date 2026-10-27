@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed, onMounted, ref } from 'vue'
 import { withBase } from 'vitepress'
-import { formatUpdatedAt, useNpmPackages } from '../composables/use-npm-stats'
+import { countBadgeUrl, formatUpdatedAt, useNpmPackages } from '../composables/use-npm-stats'
 
 const props = withDefaults(
   defineProps<{
@@ -45,12 +45,9 @@ const docsHref = (name: string) => {
   return `https://www.npmjs.com/package/${name}`
 }
 
-const badgeSrc = (kind: 'dw' | 'dm' | 'v', name: string) => {
-  const colors = { dw: 'ff7a18', dm: 'c62818', v: '6b7c3a' } as const
-  const labels = { dw: 'week', dm: 'month', v: '' } as const
-  const label = labels[kind] ? `label=${labels[kind]}&` : ''
+const versionBadgeSrc = (name: string) => {
   const bust = badgeNonce.value ? `&cacheSeconds=60&t=${badgeNonce.value}` : ''
-  return `https://img.shields.io/npm/${kind}/${name}?${label}color=${colors[kind]}${bust}`
+  return `https://img.shields.io/npm/v/${name}?color=6b7c3a${bust}`
 }
 </script>
 
@@ -107,16 +104,16 @@ const badgeSrc = (kind: 'dw' | 'dm' | 'v', name: string) => {
         <p class="npm-desc">{{ pkg.description }}</p>
         <div class="npm-badges">
           <img
-            :src="badgeSrc('dw', pkg.name)"
+            :src="countBadgeUrl('week', pkg.weekly, 'ff7a18')"
             :alt="`${pkg.name} weekly downloads`"
             loading="lazy"
           />
           <img
-            :src="badgeSrc('dm', pkg.name)"
+            :src="countBadgeUrl('month', pkg.monthly, 'c62818')"
             :alt="`${pkg.name} monthly downloads`"
             loading="lazy"
           />
-          <img :src="badgeSrc('v', pkg.name)" :alt="`${pkg.name} version`" loading="lazy" />
+          <img :src="versionBadgeSrc(pkg.name)" :alt="`${pkg.name} version`" loading="lazy" />
         </div>
         <div class="npm-stats">
           <span>{{ format(pkg.weekly) }} / week</span>

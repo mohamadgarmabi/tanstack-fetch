@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { computed, onMounted, ref } from 'vue'
+import { countBadgeUrl, useNpmPackageStats } from '../composables/use-npm-stats'
 
 const props = withDefaults(
   defineProps<{
@@ -8,6 +9,7 @@ const props = withDefaults(
   { packageName: 'tanstack-fetch' },
 )
 
+const { pkg } = useNpmPackageStats(props.packageName)
 const badgeNonce = ref('')
 
 onMounted(() => {
@@ -16,32 +18,36 @@ onMounted(() => {
 
 const href = computed(() => `https://www.npmjs.com/package/${props.packageName}`)
 
-const badge = (path: string, color: string, label: string) => {
+const versionBadge = computed(() => {
   const bust = badgeNonce.value ? `&cacheSeconds=60&t=${badgeNonce.value}` : ''
-  return `https://img.shields.io/npm/${path}/${props.packageName}?style=for-the-badge&color=${color}&label=${encodeURIComponent(label)}${bust}`
-}
+  return `https://img.shields.io/npm/v/${props.packageName}?style=for-the-badge&color=ff7a18&label=npm${bust}`
+})
+
+// Download badges use counts fetched from the npm API (see use-npm-stats).
+const countBadge = (label: string, value: number | undefined, color: string) =>
+  countBadgeUrl(label, value ?? 0, color, 'for-the-badge')
 </script>
 
 <template>
   <p class="npm-download-badges">
     <a :href="href" target="_blank" rel="noopener">
-      <img :src="badge('v', 'ff7a18', 'npm')" :alt="`${packageName} on npm`" />
+      <img :src="versionBadge" :alt="`${packageName} on npm`" />
     </a>
     <a :href="href" target="_blank" rel="noopener">
       <img
-        :src="badge('dw', 'f05a12', 'downloads/week')"
+        :src="countBadge('downloads/week', pkg?.weekly, 'f05a12')"
         :alt="`${packageName} weekly downloads`"
       />
     </a>
     <a :href="href" target="_blank" rel="noopener">
       <img
-        :src="badge('dm', 'c62818', 'downloads/month')"
+        :src="countBadge('downloads/month', pkg?.monthly, 'c62818')"
         :alt="`${packageName} monthly downloads`"
       />
     </a>
     <a :href="href" target="_blank" rel="noopener">
       <img
-        :src="badge('dt', '6b7c3a', 'total downloads')"
+        :src="countBadge('total downloads', pkg?.total, '6b7c3a')"
         :alt="`${packageName} total downloads`"
       />
     </a>

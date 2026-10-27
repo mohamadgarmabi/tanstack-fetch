@@ -6,6 +6,9 @@ name: Deploy Docs
 on:
   push:
     branches: [main]
+  # Daily rebuild refreshes the npm download snapshot and README badge JSON.
+  schedule:
+    - cron: '0 3 * * *'
   workflow_dispatch:
 
 permissions:

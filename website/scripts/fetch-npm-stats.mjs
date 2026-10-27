@@ -17,6 +17,7 @@ const packages = [
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..')
 const out = join(root, 'data', 'npm-packages.json')
+const badgesDir = join(root, 'public', 'badges')
 
 const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms))
 
@@ -28,12 +29,51 @@ const fetchJson = async (url) => {
 
 // npm's `last-week` / `last-month` aliases can lag months behind (returning 0),
 // so request explicit ranges ending yesterday (UTC) instead.
+const DAY = 24 * 60 * 60 * 1000
+
+const formatDay = (date) => date.toISOString().slice(0, 10)
+
 const downloadsRange = (days) => {
-  const day = 24 * 60 * 60 * 1000
-  const end = new Date(Date.now() - day)
-  const start = new Date(end.getTime() - (days - 1) * day)
-  const format = (date) => date.toISOString().slice(0, 10)
-  return `${format(start)}:${format(end)}`
+  const end = new Date(Date.now() - DAY)
+  const start = new Date(end.getTime() - (days - 1) * DAY)
+  return `${formatDay(start)}:${formatDay(end)}`
+}
+
+// The point API caps a range at 18 months, so sum all-time downloads in chunks.
+const fetchTotalDownloads = async (name, createdAt) => {
+  const end = Date.now() - DAY
+  const chunk = 500 * DAY
+  let total = 0
+  for (let start = new Date(createdAt).getTime(); start <= end; start += chunk) {
+    const stop = Math.min(start + chunk - DAY, end)
+    const point = await fetchJson(
+      `https://api.npmjs.org/downloads/point/${formatDay(new Date(start))}:${formatDay(new Date(stop))}/${name}`,
+    )
+    total += point.downloads ?? 0
+  }
+  return total
+}
+
+const formatCount = (value) => {
+  if (value >= 1000) return `${(value / 1000).toFixed(1).replace(/\.0$/, '')}K`
+  return value.toLocaleString('en-US')
+}
+
+// shields.io endpoint badges for the README — shields' own npm download
+// badges read the stale aliases too. Served from GitHub Pages under /badges.
+const writeBadges = (row) => {
+  const badges = {
+    dw: { label: 'downloads', message: `${formatCount(row.weekly)}/week` },
+    dm: { label: 'downloads', message: `${formatCount(row.monthly)}/month` },
+    dt: { label: 'downloads', message: formatCount(row.total) },
+  }
+  mkdirSync(badgesDir, { recursive: true })
+  for (const [kind, badge] of Object.entries(badges)) {
+    writeFileSync(
+      join(badgesDir, `${row.name}-${kind}.json`),
+      `${JSON.stringify({ schemaVersion: 1, ...badge, color: 'brightgreen' })}\n`,
+    )
+  }
 }
 
 const fetchPackage = async (name) => {
@@ -50,6 +90,7 @@ const fetchPackage = async (name) => {
         version: meta['dist-tags']?.latest ?? '?',
         weekly: weekly.downloads ?? 0,
         monthly: monthly.downloads ?? 0,
+        total: await fetchTotalDownloads(name, meta.time?.created ?? '2015-01-10'),
         description: String(meta.description ?? '').slice(0, 120),
       }
     } catch (error) {
@@ -65,7 +106,8 @@ try {
   for (const name of packages) {
     const row = await fetchPackage(name)
     rows.push(row)
-    console.log(`${name} week=${row.weekly} month=${row.monthly}`)
+    writeBadges(row)
+    console.log(`${name} week=${row.weekly} month=${row.monthly} total=${row.total}`)
     await sleep(350)
   }
 

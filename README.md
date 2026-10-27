@@ -5,7 +5,7 @@
 Returns data · throws `FetchError` · honors `AbortSignal` · SSR · SSE · React · Vue/Nuxt · Solid · Angular · Svelte · tRPC · DevTools
 
 [![npm version](https://img.shields.io/npm/v/tanstack-fetch.svg)](https://www.npmjs.com/package/tanstack-fetch)
-[![npm downloads](https://img.shields.io/npm/dw/tanstack-fetch.svg)](https://www.npmjs.com/package/tanstack-fetch)
+[![npm downloads](https://img.shields.io/endpoint?url=https%3A%2F%2Fmohamadgarmabi.github.io%2Ftanstack-fetch%2Fbadges%2Ftanstack-fetch-dm.json&cacheSeconds=3600)](https://www.npmjs.com/package/tanstack-fetch)
 [![bundle size](https://img.shields.io/bundlephobia/minzip/tanstack-fetch)](https://bundlephobia.com/package/tanstack-fetch)
 [![license](https://img.shields.io/npm/l/tanstack-fetch.svg)](./LICENSE)
 [![CI](https://img.shields.io/github/actions/workflow/status/mohamadgarmabi/tanstack-fetch/ci.yml?branch=main&label=CI)](https://github.com/mohamadgarmabi/tanstack-fetch/actions/workflows/ci.yml)

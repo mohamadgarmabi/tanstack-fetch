@@ -6,6 +6,7 @@ type NpmPackageRow = {
   version: string
   weekly: number
   monthly: number
+  total?: number
   description: string
 }
 
@@ -28,6 +29,9 @@ type RegistryMeta = {
   description?: string
   'dist-tags'?: {
     latest?: string
+  }
+  time?: {
+    created?: string
   }
 }
 
@@ -58,12 +62,31 @@ const sumTotals = (packages: NpmPackageRow[]) => ({
 
 // npm's `last-week` / `last-month` aliases can lag months behind (returning 0),
 // so request explicit ranges ending yesterday (UTC) instead.
+const DAY = 24 * 60 * 60 * 1000
+
+const formatDay = (date: Date) => date.toISOString().slice(0, 10)
+
 const downloadsRange = (days: number) => {
-  const day = 24 * 60 * 60 * 1000
-  const end = new Date(Date.now() - day)
-  const start = new Date(end.getTime() - (days - 1) * day)
-  const format = (date: Date) => date.toISOString().slice(0, 10)
-  return `${format(start)}:${format(end)}`
+  const end = new Date(Date.now() - DAY)
+  const start = new Date(end.getTime() - (days - 1) * DAY)
+  return `${formatDay(start)}:${formatDay(end)}`
+}
+
+// The point API caps a range at 18 months, so sum all-time downloads in chunks.
+const fetchTotalDownloads = async (name: string, createdAt: string) => {
+  const end = Date.now() - DAY
+  const chunk = 500 * DAY
+  const requests: Promise<DownloadsPoint>[] = []
+  for (let start = new Date(createdAt).getTime(); start <= end; start += chunk) {
+    const stop = Math.min(start + chunk - DAY, end)
+    requests.push(
+      fetchJson<DownloadsPoint>(
+        `https://api.npmjs.org/downloads/point/${formatDay(new Date(start))}:${formatDay(new Date(stop))}/${name}`,
+      ),
+    )
+  }
+  const points = await Promise.all(requests)
+  return points.reduce((sum, point) => sum + (point.downloads ?? 0), 0)
 }
 
 const fetchPackageRow = async (pkg: NpmPackageRow): Promise<NpmPackageRow> => {
@@ -81,12 +104,17 @@ const fetchPackageRow = async (pkg: NpmPackageRow): Promise<NpmPackageRow> => {
 
   const registryLatest = meta?.['dist-tags']?.latest ?? pkg.version
   const version = compareSemver(pkg.version, registryLatest) > 0 ? pkg.version : registryLatest
+  const createdAt = meta?.time?.created
+  const total = createdAt
+    ? await fetchTotalDownloads(pkg.name, createdAt).catch(() => pkg.total)
+    : pkg.total
 
   return {
     name: pkg.name,
     version,
     weekly: weekly.downloads ?? pkg.weekly,
     monthly: monthly.downloads ?? pkg.monthly,
+    total,
     description: String(meta?.description ?? pkg.description).slice(0, 120),
   }
 }
@@ -170,6 +198,14 @@ const formatCount = (value: number) => {
   return value.toLocaleString('en-US')
 }
 
+// Static shields.io badge built from our own numbers — shields' `npm/dw|dm|dt`
+// badges rely on the same stale npm aliases and show 0.
+const countBadgeUrl = (label: string, value: number, color: string, style = '') => {
+  const escape = (text: string) => encodeURIComponent(text.replace(/-/g, '--').replace(/_/g, '__'))
+  const query = style ? `?style=${style}` : ''
+  return `https://img.shields.io/badge/${escape(label)}-${escape(formatCount(value))}-${color}${query}`
+}
+
 const formatUpdatedAt = (iso: string) => {
   try {
     return new Date(iso).toLocaleString('en-GB', {
@@ -181,5 +217,5 @@ const formatUpdatedAt = (iso: string) => {
   }
 }
 
-export { useNpmPackages, useNpmPackageStats, formatCount, formatUpdatedAt }
+export { useNpmPackages, useNpmPackageStats, formatCount, formatUpdatedAt, countBadgeUrl }
 export type { NpmPackageRow, NpmPackagesSnapshot }
