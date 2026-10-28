@@ -2,6 +2,9 @@
 title: 'TanStack Start / Router + tanstack-fetch: Query on router context'
 titleTemplate: false
 description: "Wire tanstack-fetch into TanStack Start and TanStack Router — queryOptions, ensureQueryData loaders, router context, SSR, tRPC, and comparison graphs."
+date: 2026-10-12
+category: Framework guides
+tags: ["TanStack Start","Router","React"]
 ---
 
 # TanStack Start / Router + tanstack-fetch

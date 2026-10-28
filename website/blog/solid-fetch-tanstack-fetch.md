@@ -2,6 +2,9 @@
 title: 'Solid fetch / axios vs tanstack-fetch: Solid Query adapters'
 titleTemplate: false
 description: "Use tanstack-fetch with Solid — FetchProvider, useFetch, useSse signals, Solid Query, refresh-token, migrate CLI, and comparison graphs."
+date: 2026-10-12
+category: Framework guides
+tags: ["Solid","Comparison"]
 ---
 
 # Solid fetch vs tanstack-fetch

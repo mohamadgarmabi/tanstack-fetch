@@ -2,6 +2,9 @@
 title: 'React axios vs tanstack-fetch: typed fetch for TanStack Query'
 titleTemplate: false
 description: "Replace axios unwrap glue with tanstack-fetch — FetchProvider, useFetch, useSse, React Query, refresh-token, migrate CLI, and a full side-by-side comparison."
+date: 2026-10-12
+category: Framework guides
+tags: ["React","Comparison"]
 ---
 
 # React axios vs tanstack-fetch

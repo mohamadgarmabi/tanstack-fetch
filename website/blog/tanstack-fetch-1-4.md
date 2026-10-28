@@ -2,6 +2,9 @@
 title: 'tanstack-fetch 1.3 → 1.4.2: automatic token refresh, built-in DevTools, and a simpler useSse'
 description: Refresh tokens without hand-written interceptors, a DevTools panel for HTTP, SSE, SSR and tRPC, and a useSse hook that no longer needs a provider.
 date: 2026-09-30
+category: Releases
+tags: ["Auth","DevTools","SSE"]
+cover: /images/blog-1-4-cover.png
 ---
 
 # tanstack-fetch 1.3 → 1.4.2

@@ -1,3 +1,12 @@
+---
+title: 'TanStack Start 1.0 + tanstack-fetch: 6 Real-World Data Fetching Patterns'
+titleTemplate: false
+description: 'TanStack Start 1.0 is here. Six production-ready patterns: direct fetching, shared loaders, SSR auth, mutations, centralized error handling, and live SSE updates with tanstack-fetch.'
+date: 2026-10-12
+category: Tutorials
+tags: ["TanStack Start","Router","React","SSR","SSE"]
+---
+
 # TanStack Start 1.0 + tanstack-fetch: 6 Real-World Data Fetching Patterns
 
 TanStack Start is officially stable. If you have been waiting for the 1.0 release before building a production application, now is a good time to explore the framework.

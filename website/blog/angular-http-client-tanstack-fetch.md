@@ -2,6 +2,9 @@
 title: 'Angular HttpClient vs tanstack-fetch: typed fetch for TanStack Angular Query'
 titleTemplate: false
 description: Replace Angular HttpClient glue with tanstack-fetch — provideFetchClient, injectFetch, signals SSE, Angular Query, refresh-token, migrate CLI, and a full side-by-side comparison.
+date: 2026-10-12
+category: Framework guides
+tags: ["Angular","Comparison"]
 ---
 
 # Angular HttpClient vs tanstack-fetch

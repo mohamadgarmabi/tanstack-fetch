@@ -1224,10 +1224,24 @@ api.use(
 
 The plugin keeps **one in-flight refresh** and retries the failed call — the usual interceptor queue, without the queue code.`
 
+/** Blog index filters read `category` + `tags` from frontmatter. */
+const postTags = {
+  'react-axios-tanstack-fetch.md': ['React', 'Comparison'],
+  'vue-ofetch-tanstack-fetch.md': ['Vue', 'Comparison'],
+  'nextjs-fetch-tanstack-fetch.md': ['Next.js', 'React', 'SSR'],
+  'nuxt-ofetch-tanstack-fetch.md': ['Nuxt', 'Vue', 'SSR'],
+  'solid-fetch-tanstack-fetch.md': ['Solid', 'Comparison'],
+  'tanstack-start-router-tanstack-fetch.md': ['TanStack Start', 'Router', 'React'],
+  'sveltekit-fetch-tanstack-fetch.md': ['Svelte', 'SSR'],
+}
+
 const render = (post) => `---
 title: '${post.title.replace(/'/g, "\\'")}'
 titleTemplate: false
 description: ${JSON.stringify(post.description)}
+date: 2026-10-12
+category: Framework guides
+tags: ${JSON.stringify(postTags[post.file] ?? [])}
 ---
 
 # ${post.h1}

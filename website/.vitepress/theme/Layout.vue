@@ -1,10 +1,17 @@
 <script setup lang="ts">
+import { computed } from 'vue'
+import { useData } from 'vitepress'
 import DefaultTheme from 'vitepress/theme'
+import BlogPostHeader from './blog/BlogPostHeader.vue'
+import BlogRelated from './blog/BlogRelated.vue'
 import FrameworkPicker from './components/FrameworkPicker.vue'
 import NavLiquidGlass from './components/glass/NavLiquidGlass.vue'
 import PatternBackground from './components/backgrounds/PatternBackground.vue'
 
 const { Layout } = DefaultTheme
+const { page } = useData()
+
+const isBlogPost = computed(() => /^blog\/(?!index\.md$).+\.md$/.test(page.value.relativePath))
 </script>
 
 <template>
@@ -26,6 +33,12 @@ const { Layout } = DefaultTheme
     </template>
     <template #nav-bar-content-after>
       <FrameworkPicker />
+    </template>
+    <template #doc-before>
+      <BlogPostHeader v-if="isBlogPost" />
+    </template>
+    <template #doc-after>
+      <BlogRelated v-if="isBlogPost" />
     </template>
   </Layout>
 </template>

@@ -2,6 +2,9 @@
 title: 'Vue ofetch / axios vs tanstack-fetch: typed fetch for Vue Query'
 titleTemplate: false
 description: "Replace ofetch and axios glue in Vue 3 with tanstack-fetch — createFetchPlugin, useFetch, useSse, Vue Query, refresh-token, and a full comparison."
+date: 2026-10-12
+category: Framework guides
+tags: ["Vue","Comparison"]
 ---
 
 # Vue ofetch / axios vs tanstack-fetch

@@ -2,6 +2,9 @@
 title: 'Svelte / SvelteKit fetch vs tanstack-fetch: stores, SSR, Query'
 titleTemplate: false
 description: "Use tanstack-fetch with Svelte and SvelteKit — setFetchClient, useFetch, useSse stores, Svelte Query, ssr-forward load functions, and comparison graphs."
+date: 2026-10-12
+category: Framework guides
+tags: ["Svelte","SSR"]
 ---
 
 # Svelte / SvelteKit fetch vs tanstack-fetch

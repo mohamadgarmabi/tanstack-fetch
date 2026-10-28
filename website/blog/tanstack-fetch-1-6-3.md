@@ -2,6 +2,10 @@
 title: 'tanstack-fetch 1.6.3: migrate from axios, ky, ofetch, or fetch'
 titleTemplate: false
 description: CLI that scans axios, ky, ofetch, $fetch, and fetch call sites, applies safe rewrites for TanStack Query, and scaffolds React, Vue, Nuxt, or Next.js.
+date: 2026-10-07
+category: Releases
+tags: ["CLI","Migration"]
+cover: /images/blog-1-6-3-cover.jpg
 ---
 
 # tanstack-fetch 1.6.3: migrate from axios, ky, ofetch, or fetch

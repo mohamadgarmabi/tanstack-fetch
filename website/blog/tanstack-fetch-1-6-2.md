@@ -2,6 +2,10 @@
 title: 'tanstack-fetch migrate (moved to 1.6.3)'
 titleTemplate: false
 description: This post moved to the merged migrate release notes for 1.6.3.
+date: 2026-10-05
+category: Releases
+tags: []
+hidden: true
 ---
 
 # Moved → 1.6.3

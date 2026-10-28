@@ -243,7 +243,8 @@ const trpcClient = createTRPCFetchClient<AppRouter>({ url: '/api/trpc', client: 
 - Comparison: /guide/comparison
 - Playground: /examples/playground
 - DevTools: /examples/devtools
-- Blog: /blog/
+- Blog: /blog/ (filter with ?category=tutorials|frameworks|releases and ?tags=)
+- Tutorial: TanStack Pacer + Query + tanstack-fetch (debounce, throttle, rate-limit, queue, batch): /blog/tanstack-pacer-tanstack-query-tanstack-fetch
 - Release 1.7.1 (timeouts · URLs · errors): /blog/tanstack-fetch-1-7-1
 - Release 1.7.0 (doctor · Solid · Svelte): /blog/tanstack-fetch-1-7-0
 - Release 1.6.3 (migrate CLI): /blog/tanstack-fetch-1-6-3

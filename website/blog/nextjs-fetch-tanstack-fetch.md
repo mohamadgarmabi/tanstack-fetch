@@ -2,6 +2,9 @@
 title: 'Next.js fetch vs tanstack-fetch: SSR cookies, Query hydrate, App Router'
 titleTemplate: false
 description: "Use tanstack-fetch in Next.js App Router — ssr-forward cookies, absolute baseUrl on the server, React Query dehydrate/hydrate, SSE, and migrate path."
+date: 2026-10-12
+category: Framework guides
+tags: ["Next.js","React","SSR"]
 ---
 
 # Next.js fetch vs tanstack-fetch

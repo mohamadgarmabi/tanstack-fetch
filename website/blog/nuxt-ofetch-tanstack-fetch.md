@@ -2,6 +2,9 @@
 title: 'Nuxt $fetch / ofetch vs tanstack-fetch: SSR cookies and Vue Query'
 titleTemplate: false
 description: "Replace Nuxt $fetch glue with tanstack-fetch — createFetchPlugin, ssr-forward, useFetchClient naming, Vue Query hydrate, SSE, and comparison graphs."
+date: 2026-10-12
+category: Framework guides
+tags: ["Nuxt","Vue","SSR"]
 ---
 
 # Nuxt $fetch vs tanstack-fetch

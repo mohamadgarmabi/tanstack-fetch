@@ -384,13 +384,26 @@ const config = defineConfig({
       '/blog/': [
         {
           text: 'Blog',
+          items: [{ text: 'All posts', link: '/blog/' }],
+        },
+        {
+          text: 'Tutorials',
+          collapsed: false,
           items: [
-            { text: 'All posts', link: '/blog/' },
-            { text: 'tanstack-fetch 1.7.1 — timeouts · URLs · errors', link: '/blog/tanstack-fetch-1-7-1' },
             {
-              text: 'TanStack Start 1.0 + tanstack-fetch: 6 Real-World Data Fetching Patterns',
+              text: 'TanStack Pacer + Query + tanstack-fetch',
+              link: '/blog/tanstack-pacer-tanstack-query-tanstack-fetch',
+            },
+            {
+              text: 'TanStack Start 1.0 — 6 real-world patterns',
               link: '/blog/tanstack-start-1-0-transtack-fetch-6-real-world-patterns',
             },
+          ],
+        },
+        {
+          text: 'Framework guides',
+          collapsed: false,
+          items: [
             { text: 'React · axios vs tanstack-fetch', link: '/blog/react-axios-tanstack-fetch' },
             { text: 'Vue · ofetch vs tanstack-fetch', link: '/blog/vue-ofetch-tanstack-fetch' },
             { text: 'Next.js · fetch vs tanstack-fetch', link: '/blog/nextjs-fetch-tanstack-fetch' },
@@ -408,11 +421,18 @@ const config = defineConfig({
               text: 'Angular · HttpClient vs tanstack-fetch',
               link: '/blog/angular-http-client-tanstack-fetch',
             },
-            { text: 'tanstack-fetch 1.7.0 — doctor · Solid · Svelte', link: '/blog/tanstack-fetch-1-7-0' },
-            { text: 'tanstack-fetch 1.6.3 — migrate CLI', link: '/blog/tanstack-fetch-1-6-3' },
-            { text: 'tanstack-fetch 1.6.1 — path params', link: '/blog/tanstack-fetch-1-6' },
-            { text: 'tanstack-fetch 1.5.0 — Vue & Nuxt', link: '/blog/tanstack-fetch-1-5' },
-            { text: 'tanstack-fetch 1.3 → 1.4.2', link: '/blog/tanstack-fetch-1-4' },
+          ],
+        },
+        {
+          text: 'Releases',
+          collapsed: true,
+          items: [
+            { text: '1.7.1 — timeouts · URLs · errors', link: '/blog/tanstack-fetch-1-7-1' },
+            { text: '1.7.0 — doctor · Solid · Svelte', link: '/blog/tanstack-fetch-1-7-0' },
+            { text: '1.6.3 — migrate CLI', link: '/blog/tanstack-fetch-1-6-3' },
+            { text: '1.6.1 — path params', link: '/blog/tanstack-fetch-1-6' },
+            { text: '1.5.0 — Vue & Nuxt', link: '/blog/tanstack-fetch-1-5' },
+            { text: '1.3 → 1.4.2', link: '/blog/tanstack-fetch-1-4' },
           ],
         },
       ],
