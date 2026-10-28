@@ -1242,11 +1242,14 @@ description: ${JSON.stringify(post.description)}
 date: 2026-10-12
 category: Framework guides
 tags: ${JSON.stringify(postTags[post.file] ?? [])}
+cover: /images/blog-${post.file.replace('.md', '')}-cover.jpg
 ---
 
 # ${post.h1}
 
 <p class="blog-meta">${post.meta}</p>
+
+![${post.title.replace(/[[\]]/g, '')}](/images/blog-${post.file.replace('.md', '')}-cover.jpg)
 
 ::: tip Stack
 ${post.tip}

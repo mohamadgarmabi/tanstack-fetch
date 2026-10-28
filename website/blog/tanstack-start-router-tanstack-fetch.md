@@ -5,11 +5,14 @@ description: "Wire tanstack-fetch into TanStack Start and TanStack Router — qu
 date: 2026-10-12
 category: Framework guides
 tags: ["TanStack Start","Router","React"]
+cover: /images/blog-tanstack-start-router-tanstack-fetch-cover.jpg
 ---
 
 # TanStack Start / Router + tanstack-fetch
 
 <p class="blog-meta">October 12, 2026 · TanStack Start · Router · Query</p>
+
+![TanStack Start / Router + tanstack-fetch: Query on router context](/images/blog-tanstack-start-router-tanstack-fetch-cover.jpg)
 
 ::: tip Stack
 **TanStack Start** · `@tanstack/react-router` · `@tanstack/react-query` · `tanstack-fetch`

@@ -5,6 +5,8 @@ description: EventSource can’t set Authorization — use tanstack-fetch/sse ov
 
 # EventSource authentication headers
 
+![EventSource auth headers](/images/page-recipes-eventsource-auth-headers.jpg)
+
 **Problem:** `new EventSource('/orders/stream')` cannot set `Authorization`. Headers are ignored. Browsers refuse custom headers on EventSource.
 
 **Solution:** Stream over native `fetch` with `tanstack-fetch/sse`, attach headers normally, and refresh tokens on `401` before reconnecting.

@@ -5,6 +5,8 @@ description: Live createFetch demo matching TanStack Query useQuery and useMutat
 
 # React / TanStack Query
 
+![React Query live demo](/images/page-examples-react.jpg)
+
 ::: tip Framework
 **React** · `@tanstack/react-query`
 :::

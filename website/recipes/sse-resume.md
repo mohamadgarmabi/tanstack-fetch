@@ -5,6 +5,8 @@ description: Resume SSE stream after reconnect with Last-Event-ID — sse-resume
 
 # SSE resume (Last-Event-ID)
 
+![SSE resume](/images/page-recipes-sse-resume.jpg)
+
 **Problem:** Network hiccups or reconnects drop in-flight server-sent events. `Last-Event-ID` tells the server where to resume so nothing is skipped.
 
 **Solution:** Use `tanstack-fetch/sse` with `plugins: ['sse-resume']` to auto-resume with `Last-Event-ID` after disconnects.

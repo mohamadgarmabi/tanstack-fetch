@@ -5,6 +5,8 @@ description: Live createFetch demos for React, Vue, Next.js, Nuxt, Solid, Angula
 
 # Examples
 
+![Examples](/images/page-examples-index.jpg)
+
 ## Live in the docs
 
 These widgets run **`createFetch` in your browser** (mock `fetch` / streams) — not screenshots.

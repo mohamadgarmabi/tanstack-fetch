@@ -5,6 +5,8 @@ description: React API reference for tanstack-fetch — FetchProvider, useFetch,
 
 # React API
 
+![React API](/images/page-api-react.jpg)
+
 ```ts
 import { FetchProvider, useFetch, useSse } from 'tanstack-fetch/react'
 ```

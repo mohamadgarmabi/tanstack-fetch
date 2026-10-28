@@ -5,11 +5,14 @@ description: "Replace ofetch and axios glue in Vue 3 with tanstack-fetch — cre
 date: 2026-10-12
 category: Framework guides
 tags: ["Vue","Comparison"]
+cover: /images/blog-vue-ofetch-tanstack-fetch-cover.jpg
 ---
 
 # Vue ofetch / axios vs tanstack-fetch
 
 <p class="blog-meta">October 12, 2026 · Vue · TanStack Query · HTTP</p>
+
+![Vue ofetch / axios vs tanstack-fetch: typed fetch for Vue Query](/images/blog-vue-ofetch-tanstack-fetch-cover.jpg)
 
 ::: tip Stack
 **Vue 3.3+** · `tanstack-fetch/vue` · `@tanstack/vue-query`

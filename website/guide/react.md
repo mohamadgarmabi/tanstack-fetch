@@ -5,6 +5,8 @@ description: React helpers for tanstack-fetch — FetchProvider, useFetch, and u
 
 # React
 
+![React](/images/page-guide-react.jpg)
+
 ::: tip Framework
 **React** · `tanstack-fetch/react` · `@tanstack/react-query`
 :::

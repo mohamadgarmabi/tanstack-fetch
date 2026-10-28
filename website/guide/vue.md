@@ -5,6 +5,8 @@ description: Vue 3 and Nuxt helpers for tanstack-fetch — createFetchPlugin, us
 
 # Vue & Nuxt
 
+![Vue & Nuxt](/images/page-guide-vue.jpg)
+
 ::: tip Framework
 **Vue 3 / Nuxt** · `tanstack-fetch/vue` · optional `@tanstack/vue-query`
 :::

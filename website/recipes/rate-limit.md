@@ -5,6 +5,8 @@ description: Handle HTTP 429 with onTooManyRequests and parseRetryAfter in tanst
 
 # Rate limit (429)
 
+![Rate limit (429)](/images/page-recipes-rate-limit.jpg)
+
 Use the first-class **`onTooManyRequests`** shortcut (or `onStatus[429]`).
 
 ```ts

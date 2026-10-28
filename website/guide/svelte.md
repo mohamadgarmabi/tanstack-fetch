@@ -5,6 +5,8 @@ description: Svelte helpers for tanstack-fetch — setFetchClient, useFetch, and
 
 # Svelte & SvelteKit
 
+![Svelte & SvelteKit](/images/page-guide-svelte.jpg)
+
 ::: tip Framework
 **Svelte / SvelteKit** · `tanstack-fetch/svelte` · `@tanstack/svelte-query`
 :::

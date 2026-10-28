@@ -5,6 +5,8 @@ description: Live ssr-forward demo for Next.js — cookies and auth headers on t
 
 # Next.js SSR
 
+![Next.js SSR live demo](/images/page-examples-next-ssr.jpg)
+
 ::: tip Framework
 **React** · Next.js App Router · `ssr-forward`
 :::

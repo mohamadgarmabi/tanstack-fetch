@@ -5,6 +5,8 @@ description: Install the tanstack-fetch Cursor / Agent Skills package so coding 
 
 # Agent skill
 
+![Agent skill](/images/page-guide-skill.jpg)
+
 Teach Cursor, Claude Code, Codex, and other Agent Skills–compatible tools how to use **tanstack-fetch v1.5** correctly (shared client, Query `signal`, typed path params, SSE, SSR, plugins, React, Vue/Nuxt, DevTools).
 
 ## Install (one command)

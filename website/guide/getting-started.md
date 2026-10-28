@@ -68,7 +68,7 @@ useQuery({
 
 Or inject a shared client with [`tanstack-fetch/vue`](/guide/vue).
 
-![Hero](/images/tanstack-fetch-hero.gif)
+![tanstack-fetch hero](/images/tanstack-fetch-hero.png)
 
 ## Shared client (recommended)
 

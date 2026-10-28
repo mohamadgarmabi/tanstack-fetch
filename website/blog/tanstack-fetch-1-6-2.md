@@ -6,11 +6,14 @@ date: 2026-10-05
 category: Releases
 tags: []
 hidden: true
+cover: /images/blog-1-6-2-cover.jpg
 ---
 
 # Moved → 1.6.3
 
 <p class="blog-meta">October 5, 2026</p>
+
+![tanstack-fetch migrate](/images/blog-1-6-2-cover.jpg)
 
 The migrate CLI intro (formerly 1.6.2) and the follow-up fixes live in one post:
 

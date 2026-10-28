@@ -5,6 +5,8 @@ description: Solid helpers for tanstack-fetch — FetchProvider, useFetch, and u
 
 # Solid
 
+![Solid](/images/page-guide-solid.jpg)
+
 ::: tip Framework
 **Solid** · `tanstack-fetch/solid` · `@tanstack/solid-query`
 :::

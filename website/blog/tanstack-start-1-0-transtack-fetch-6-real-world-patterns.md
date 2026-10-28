@@ -5,6 +5,7 @@ description: 'TanStack Start 1.0 is here. Six production-ready patterns: direct 
 date: 2026-10-12
 category: Tutorials
 tags: ["TanStack Start","Router","React","SSR","SSE"]
+cover: /images/blog-tanstack-start-1-0-transtack-fetch-6-real-world-patterns-cover.jpg
 ---
 
 # TanStack Start 1.0 + tanstack-fetch: 6 Real-World Data Fetching Patterns

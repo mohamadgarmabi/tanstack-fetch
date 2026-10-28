@@ -5,11 +5,14 @@ description: 'A hands-on TanStack Pacer tutorial — debounced search, autosave 
 date: 2026-10-28
 category: Tutorials
 tags: ["TanStack Pacer", "TanStack Query", "React", "Performance"]
+cover: /images/blog-tanstack-pacer-tanstack-query-tanstack-fetch-cover.jpg
 ---
 
 # TanStack Pacer + TanStack Query: control _when_ your requests run
 
 <p class="blog-meta">October 28, 2026 · TanStack Pacer · TanStack Query · React</p>
+
+![TanStack Pacer + TanStack Query: debounce, throttle, rate-limit, queue and batch your API calls](/images/blog-tanstack-pacer-tanstack-query-tanstack-fetch-cover.jpg)
 
 ::: tip Stack
 **React 18+** · `@tanstack/react-pacer` · `@tanstack/react-query` · `tanstack-fetch`

@@ -5,11 +5,14 @@ description: "Replace Nuxt $fetch glue with tanstack-fetch — createFetchPlugin
 date: 2026-10-12
 category: Framework guides
 tags: ["Nuxt","Vue","SSR"]
+cover: /images/blog-nuxt-ofetch-tanstack-fetch-cover.jpg
 ---
 
 # Nuxt $fetch vs tanstack-fetch
 
 <p class="blog-meta">October 12, 2026 · Nuxt · Vue · SSR</p>
+
+![Nuxt $fetch / ofetch vs tanstack-fetch: SSR cookies and Vue Query](/images/blog-nuxt-ofetch-tanstack-fetch-cover.jpg)
 
 ::: tip Stack
 **Nuxt 3 / 4** · `tanstack-fetch/vue` · `@tanstack/vue-query` · `ssr-forward`

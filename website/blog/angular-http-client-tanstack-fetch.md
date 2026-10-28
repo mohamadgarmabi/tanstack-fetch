@@ -5,11 +5,14 @@ description: Replace Angular HttpClient glue with tanstack-fetch — provideFetc
 date: 2026-10-12
 category: Framework guides
 tags: ["Angular","Comparison"]
+cover: /images/blog-angular-http-client-tanstack-fetch-cover.jpg
 ---
 
 # Angular HttpClient vs tanstack-fetch
 
 <p class="blog-meta">October 12, 2026 · Angular · TanStack Query · HTTP</p>
+
+![Angular HttpClient vs tanstack-fetch: typed fetch for TanStack Angular Query](/images/blog-angular-http-client-tanstack-fetch-cover.jpg)
 
 ::: tip Stack
 **Angular 17+** · `tanstack-fetch/angular` · `@tanstack/angular-query-experimental`

@@ -5,6 +5,8 @@ description: CLI and call-site mapping to replace axios, ky, ofetch, or raw fetc
 
 # Migrate to tanstack-fetch
 
+![Migrate from axios, ky, ofetch, or fetch](/images/page-guide-migrate.jpg)
+
 tanstack-fetch matches TanStack Query: **return data**, **throw `FetchError`**, **honor `AbortSignal`**.
 
 ## CLI

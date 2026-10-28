@@ -5,6 +5,8 @@ description: FetchClient methods — get, post, put, patch, delete, upload, requ
 
 # FetchClient
 
+![FetchClient](/images/page-api-fetch-client.jpg)
+
 Methods on the client returned by `createFetch`.
 
 | Method                                      | Description                    |

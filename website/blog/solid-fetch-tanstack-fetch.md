@@ -5,11 +5,14 @@ description: "Use tanstack-fetch with Solid — FetchProvider, useFetch, useSse 
 date: 2026-10-12
 category: Framework guides
 tags: ["Solid","Comparison"]
+cover: /images/blog-solid-fetch-tanstack-fetch-cover.jpg
 ---
 
 # Solid fetch vs tanstack-fetch
 
 <p class="blog-meta">October 12, 2026 · Solid · TanStack Query · HTTP</p>
+
+![Solid fetch / axios vs tanstack-fetch: Solid Query adapters](/images/blog-solid-fetch-tanstack-fetch-cover.jpg)
 
 ::: tip Stack
 **Solid 1.8+** · `tanstack-fetch/solid` · `@tanstack/solid-query`

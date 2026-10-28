@@ -5,6 +5,8 @@ description: Live tanstack-fetch DevTools — SSE event list, call graph, one-li
 
 # DevTools
 
+![DevTools preview](/images/page-examples-devtools.jpg)
+
 ::: tip Framework
 **Core** (works with React, Vue, Nuxt, Next.js)
 :::

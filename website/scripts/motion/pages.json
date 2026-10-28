@@ -1,0 +1,965 @@
+[
+  {
+    "id": "page-api-fetch-client",
+    "md": "api/fetch-client.md",
+    "cover": "/images/page-api-fetch-client.jpg",
+    "alt": "FetchClient",
+    "kicker": "API reference",
+    "h1": "FetchClient",
+    "h2": "methods",
+    "chips": [
+      "get",
+      "post",
+      "put · patch · delete",
+      "upload",
+      "request"
+    ],
+    "accent": "#ffb347",
+    "desc": "FetchClient methods — get, post, put, patch, delete, upload, request — and typed path params.",
+    "code": {
+      "lang": "ts",
+      "lines": [
+        "api.get<User[]>('/users', { signal })",
+        "api.get('/users/:id', { params: { id: '1' } })",
+        "api.post('/users', { body: { name: 'Ada' } })",
+        "api.request('PATCH', '/users/:id', { … })",
+        "api.upload('/files', { file, onUploadProgress })",
+        "api.use('trace', interceptor)"
+      ]
+    }
+  },
+  {
+    "id": "page-api-react",
+    "md": "api/react.md",
+    "cover": "/images/page-api-react.jpg",
+    "alt": "React API",
+    "kicker": "API · React",
+    "h1": "React",
+    "h2": "API",
+    "chips": [
+      "FetchProvider",
+      "useFetch",
+      "useSse"
+    ],
+    "accent": "#61dafb",
+    "desc": "React API reference for tanstack-fetch — FetchProvider, useFetch, and useSse options and return values.",
+    "code": {
+      "lang": "ts",
+      "lines": [
+        "import { FetchProvider, useFetch, useSse } from '…",
+        "",
+        "import { createFetch } from 'tanstack-fetch/sse'",
+        "import { useSse } from 'tanstack-fetch/react'",
+        "",
+        "const api = createFetch({",
+        "  plugins: ['sse-resume'],"
+      ]
+    }
+  },
+  {
+    "id": "page-api-vue",
+    "md": "api/vue.md",
+    "cover": "/images/page-api-vue.jpg",
+    "alt": "Vue API",
+    "kicker": "API · Vue & Nuxt",
+    "h1": "Vue",
+    "h2": "API",
+    "chips": [
+      "createFetchPlugin",
+      "useFetch",
+      "useSse"
+    ],
+    "accent": "#42b883",
+    "desc": "Vue and Nuxt API reference for tanstack-fetch — createFetchPlugin, useFetch, useSse, and injection key.",
+    "code": {
+      "lang": "ts",
+      "lines": [
+        "import {",
+        "  createFetchPlugin,",
+        "  provideFetchClient,",
+        "  useFetch,",
+        "  useSse,",
+        "  fetchClientKey,",
+        "} from 'tanstack-fetch/vue'"
+      ]
+    }
+  },
+  {
+    "id": "page-docs-index",
+    "md": "docs/index.md",
+    "cover": "/images/page-docs-index.jpg",
+    "alt": "tanstack-fetch Documentation — Typed Fetch Client API Reference",
+    "kicker": "Documentation",
+    "h1": "tanstack-fetch",
+    "h2": "docs",
+    "chips": [
+      "Guides",
+      "API",
+      "Recipes",
+      "Examples"
+    ],
+    "accent": "#ffb347",
+    "desc": "tanstack-fetch documentation hub — getting started, guides for React and Vue/Nuxt, API reference, SSR, SSE, recipes, and examples.",
+    "code": {
+      "lang": "ts",
+      "lines": [
+        "import { createFetch } from 'tanstack-fetch'",
+        "",
+        "const api = createFetch({ baseUrl: '/api' })",
+        "",
+        "api.get<User[]>('/users', { signal })",
+        "api.post('/users', { body: { name: 'Ada' } })"
+      ]
+    }
+  },
+  {
+    "id": "page-guide-react",
+    "md": "guide/react.md",
+    "cover": "/images/page-guide-react.jpg",
+    "alt": "React",
+    "kicker": "Guide · React",
+    "h1": "React",
+    "h2": "+ tanstack-fetch",
+    "chips": [
+      "FetchProvider",
+      "useFetch",
+      "React Query"
+    ],
+    "accent": "#61dafb",
+    "desc": "React helpers for tanstack-fetch — FetchProvider, useFetch, and useSse with TanStack React Query.",
+    "code": {
+      "lang": "tsx",
+      "lines": [
+        "import { FetchProvider, useFetch } from 'tanstack…",
+        "import { useQuery } from '@tanstack/react-query'",
+        "import { isFetchError } from 'tanstack-fetch'",
+        "",
+        "const App = () => (",
+        "  <FetchProvider",
+        "    baseUrl={import.meta.env.VITE_API_URL}"
+      ]
+    }
+  },
+  {
+    "id": "page-guide-vue",
+    "md": "guide/vue.md",
+    "cover": "/images/page-guide-vue.jpg",
+    "alt": "Vue & Nuxt",
+    "kicker": "Guide · Vue & Nuxt",
+    "h1": "Vue & Nuxt",
+    "h2": "+ tanstack-fetch",
+    "chips": [
+      "createFetchPlugin",
+      "useFetch",
+      "Vue Query"
+    ],
+    "accent": "#42b883",
+    "desc": "Vue 3 and Nuxt helpers for tanstack-fetch — createFetchPlugin, useFetch, useSse, and Vue Query.",
+    "code": {
+      "lang": "ts",
+      "lines": [
+        "import { useFetch as useFetchClient, useSse } fro…",
+        "",
+        "import { createApp } from 'vue'",
+        "import { createFetch } from 'tanstack-fetch'",
+        "import { createFetchPlugin, useFetch } from 'tans…",
+        "import App from './App.vue'"
+      ]
+    }
+  },
+  {
+    "id": "page-guide-solid",
+    "md": "guide/solid.md",
+    "cover": "/images/page-guide-solid.jpg",
+    "alt": "Solid",
+    "kicker": "Guide · Solid",
+    "h1": "Solid",
+    "h2": "+ tanstack-fetch",
+    "chips": [
+      "FetchProvider",
+      "useSse signals",
+      "Solid Query"
+    ],
+    "accent": "#6ea4e0",
+    "desc": "Solid helpers for tanstack-fetch — FetchProvider, useFetch, and useSse with TanStack Solid Query.",
+    "code": {
+      "lang": "tsx",
+      "lines": [
+        "import { createFetch } from 'tanstack-fetch'",
+        "import { FetchProvider, useFetch } from 'tanstack…",
+        "import { createQuery } from '@tanstack/solid-quer…",
+        "import { isFetchError } from 'tanstack-fetch'",
+        "",
+        "const api = createFetch({",
+        "  baseUrl: import.meta.env.VITE_API_URL,"
+      ]
+    }
+  },
+  {
+    "id": "page-guide-angular",
+    "md": "guide/angular.md",
+    "cover": "/images/page-guide-angular.jpg",
+    "alt": "Angular",
+    "kicker": "Guide · Angular",
+    "h1": "Angular",
+    "h2": "+ tanstack-fetch",
+    "chips": [
+      "provideFetchClient",
+      "injectFetch",
+      "signals"
+    ],
+    "accent": "#f0335a",
+    "desc": "Angular helpers for tanstack-fetch — provideFetchClient, injectFetch, and useSse signals with TanStack Angular Query.",
+    "code": {
+      "lang": "ts",
+      "lines": [
+        "import { bootstrapApplication } from '@angular/pl…",
+        "import { createFetch } from 'tanstack-fetch'",
+        "import { provideFetchClient, injectFetch } from '…",
+        "import { injectQuery } from '@tanstack/angular-qu…",
+        "import { isFetchError } from 'tanstack-fetch'",
+        "import { Component } from '@angular/core'"
+      ]
+    }
+  },
+  {
+    "id": "page-guide-svelte",
+    "md": "guide/svelte.md",
+    "cover": "/images/page-guide-svelte.jpg",
+    "alt": "Svelte & SvelteKit",
+    "kicker": "Guide · Svelte",
+    "h1": "Svelte & SvelteKit",
+    "h2": "+ tanstack-fetch",
+    "chips": [
+      "setFetchClient",
+      "stores",
+      "Svelte Query"
+    ],
+    "accent": "#ff5a1f",
+    "desc": "Svelte helpers for tanstack-fetch — setFetchClient, useFetch, and useSse stores with TanStack Svelte Query.",
+    "code": {
+      "lang": "svelte",
+      "lines": [
+        "<!-- src/routes/+layout.svelte -->",
+        "<script lang=\"ts\">",
+        "  import { createFetch } from 'tanstack-fetch'",
+        "  import { setFetchClient } from 'tanstack-fetch/…",
+        "",
+        "  const api = createFetch({",
+        "    baseUrl: import.meta.env.VITE_API_URL,"
+      ]
+    }
+  },
+  {
+    "id": "page-guide-migrate",
+    "md": "guide/migrate.md",
+    "cover": "/images/page-guide-migrate.jpg",
+    "alt": "Migrate from axios, ky, ofetch, or fetch",
+    "kicker": "Guide · Migrate",
+    "h1": "Migrate from",
+    "h2": "axios · ky · ofetch",
+    "chips": [
+      "doctor",
+      "migrate CLI",
+      "call-site map"
+    ],
+    "accent": "#ffb347",
+    "desc": "CLI and call-site mapping to replace axios, ky, ofetch, or raw fetch with tanstack-fetch for TanStack Query.",
+    "code": {
+      "lang": "ts",
+      "lines": [
+        "// before",
+        "queryFn: async ({ signal }) => {",
+        "  const response = await axios.get('/users', { si…",
+        "  return response.data",
+        "}"
+      ]
+    }
+  },
+  {
+    "id": "page-guide-migrate-checklist",
+    "md": "guide/migrate/checklist.md",
+    "cover": "/images/page-guide-migrate-checklist.jpg",
+    "alt": "Migrate from axios to tanstack-fetch – checklist",
+    "kicker": "Guide · Migrate",
+    "h1": "Migration",
+    "h2": "checklist",
+    "chips": [
+      "pre-flight",
+      "CLI rewrites",
+      "signal",
+      "verify"
+    ],
+    "accent": "#a5b84a",
+    "desc": "Use this checklist after the CLI scan (npx tanstack-fetch migrate --from axios) to verify and complete the migration.",
+    "code": {
+      "lang": "ts",
+      "lines": [
+        "// OLD (axios)",
+        "queryFn: async ({ signal }) => {",
+        "  const res = await axios.get('/users', { signal,…",
+        "  return res.data",
+        "}"
+      ]
+    }
+  },
+  {
+    "id": "page-guide-openapi",
+    "md": "guide/openapi.md",
+    "cover": "/images/page-guide-openapi.jpg",
+    "alt": "OpenAPI CLI",
+    "kicker": "Guide · CLI",
+    "h1": "OpenAPI",
+    "h2": "typed client",
+    "chips": [
+      "generate",
+      "--spec",
+      "--out"
+    ],
+    "accent": "#ffb347",
+    "desc": "Generate a typed tanstack-fetch client from an OpenAPI document, or migrate from axios / ky / ofetch / fetch.",
+    "code": {
+      "lang": "bash",
+      "lines": [
+        "npx tanstack-fetch generate --spec ./openapi.yaml…",
+        "",
+        "npx tanstack-fetch doctor --dir ./src",
+        "npx tanstack-fetch migrate --from axios --framewo…",
+        "npx tanstack-fetch migrate --from ofetch --framew…",
+        "npx tanstack-fetch migrate --from fetch --framewo…",
+        "npx tanstack-fetch migrate --from axios --framewo…"
+      ]
+    }
+  },
+  {
+    "id": "page-guide-skill",
+    "md": "guide/skill.md",
+    "cover": "/images/page-guide-skill.jpg",
+    "alt": "Agent skill",
+    "kicker": "Guide · Agents",
+    "h1": "Agent",
+    "h2": "skill",
+    "chips": [
+      "Cursor",
+      "Agent Skills",
+      "createFetch patterns"
+    ],
+    "accent": "#a5b84a",
+    "desc": "Install the tanstack-fetch Cursor / Agent Skills package so coding agents follow the correct createFetch patterns.",
+    "code": {
+      "lang": "bash",
+      "lines": [
+        "mkdir -p .agents/skills",
+        "curl -fsSL https://codeload.github.com/mohamadgar…",
+        "  | tar -xz --strip-components=3 -C .agents/skill…",
+        "    '*/.agents/skills/tanstack-fetch'",
+        "",
+        "cp -R path/to/tanstack-fetch/.agents/skills/tanst…"
+      ]
+    }
+  },
+  {
+    "id": "page-recipes-eventsource-auth-headers",
+    "md": "recipes/eventsource-auth-headers.md",
+    "cover": "/images/page-recipes-eventsource-auth-headers.jpg",
+    "alt": "EventSource auth headers",
+    "kicker": "Recipe",
+    "h1": "EventSource",
+    "h2": "auth headers",
+    "chips": [
+      "Authorization",
+      "tanstack-fetch/sse",
+      "reconnect"
+    ],
+    "accent": "#ffb347",
+    "desc": "EventSource can’t set Authorization — use tanstack-fetch/sse over fetch, then refresh on reconnect.",
+    "code": {
+      "lang": "ts",
+      "lines": [
+        "// Cannot set Authorization — browsers ignore it",
+        "const es = new EventSource('https://api.example.c…",
+        "  headers: { Authorization: `Bearer ${token}` }, …",
+        "})",
+        "",
+        "import { createFetch } from 'tanstack-fetch/sse'"
+      ]
+    }
+  },
+  {
+    "id": "page-recipes-rate-limit",
+    "md": "recipes/rate-limit.md",
+    "cover": "/images/page-recipes-rate-limit.jpg",
+    "alt": "Rate limit (429)",
+    "kicker": "Recipe",
+    "h1": "Rate limit",
+    "h2": "HTTP 429",
+    "chips": [
+      "onTooManyRequests",
+      "parseRetryAfter"
+    ],
+    "accent": "#ffb347",
+    "desc": "Handle HTTP 429 with onTooManyRequests and parseRetryAfter in tanstack-fetch.",
+    "code": {
+      "lang": "ts",
+      "lines": [
+        "import { createFetch, parseRetryAfter } from 'tan…",
+        "",
+        "export const api = createFetch({",
+        "  baseUrl: import.meta.env.VITE_API_URL,",
+        "  maxRetries: 2,",
+        "  onTooManyRequests: ({ context }) => {",
+        "    const delayMs = parseRetryAfter(context.respo…"
+      ]
+    }
+  },
+  {
+    "id": "page-recipes-sse-resume",
+    "md": "recipes/sse-resume.md",
+    "cover": "/images/page-recipes-sse-resume.jpg",
+    "alt": "SSE resume",
+    "kicker": "Recipe",
+    "h1": "SSE",
+    "h2": "resume",
+    "chips": [
+      "Last-Event-ID",
+      "sse-resume plugin"
+    ],
+    "accent": "#a5b84a",
+    "desc": "Resume SSE stream after reconnect with Last-Event-ID — sse-resume plugin.",
+    "code": {
+      "lang": "ts",
+      "lines": [
+        "import { createFetch } from 'tanstack-fetch/sse'",
+        "",
+        "const api = createFetch({",
+        "  baseUrl: import.meta.env.VITE_API_URL,",
+        "  plugins: ['sse-resume'],",
+        "})"
+      ]
+    }
+  },
+  {
+    "id": "page-examples-index",
+    "md": "examples/index.md",
+    "cover": "/images/page-examples-index.jpg",
+    "alt": "Examples",
+    "kicker": "Examples",
+    "h1": "Live",
+    "h2": "demos",
+    "chips": [
+      "React",
+      "Vue",
+      "Next.js",
+      "Nuxt",
+      "Svelte"
+    ],
+    "accent": "#ffb347",
+    "desc": "Live createFetch demos for React, Vue, Next.js, Nuxt, Solid, Angular, Svelte, upload, SSE, tRPC, and status handlers.",
+    "code": {
+      "lang": "ts",
+      "lines": [
+        "import { createFetch } from 'tanstack-fetch'",
+        "",
+        "const api = createFetch({ baseUrl: '/api' })",
+        "",
+        "api.get<User[]>('/users', { signal })",
+        "api.post('/users', { body: { name: 'Ada' } })"
+      ]
+    }
+  },
+  {
+    "id": "page-examples-playground",
+    "md": "examples/playground.md",
+    "cover": "/images/page-examples-playground.jpg",
+    "alt": "Live playground",
+    "kicker": "Examples",
+    "h1": "Live",
+    "h2": "playground",
+    "chips": [
+      "status handlers",
+      "React Query",
+      "upload",
+      "SSE"
+    ],
+    "accent": "#ffb347",
+    "desc": "Run real createFetch demos — status handlers, React Query, Next.js SSR, upload, and SSE. Filter by framework in the header.",
+    "code": {
+      "lang": "ts",
+      "lines": [
+        "import { createFetch } from 'tanstack-fetch'",
+        "",
+        "const api = createFetch({ baseUrl: '/api' })",
+        "",
+        "api.get<User[]>('/users', { signal })",
+        "api.post('/users', { body: { name: 'Ada' } })"
+      ]
+    }
+  },
+  {
+    "id": "page-examples-react",
+    "md": "examples/react.md",
+    "cover": "/images/page-examples-react.jpg",
+    "alt": "React Query live demo",
+    "kicker": "Live demo · React",
+    "h1": "React Query",
+    "h2": "live demo",
+    "chips": [
+      "useQuery",
+      "useMutation",
+      "isFetchError"
+    ],
+    "accent": "#61dafb",
+    "desc": "Live createFetch demo matching TanStack Query useQuery and useMutation — React.",
+    "code": {
+      "lang": "tsx",
+      "lines": [
+        "import { createFetch, isFetchError } from 'tansta…",
+        "import { useQuery, useMutation, useQueryClient } …",
+        "",
+        "const api = createFetch({ baseUrl: import.meta.en…",
+        "",
+        "const UsersPage = () => {",
+        "  const queryClient = useQueryClient()"
+      ]
+    }
+  },
+  {
+    "id": "page-examples-next-ssr",
+    "md": "examples/next-ssr.md",
+    "cover": "/images/page-examples-next-ssr.jpg",
+    "alt": "Next.js SSR live demo",
+    "kicker": "Live demo · Next.js",
+    "h1": "Next.js SSR",
+    "h2": "live demo",
+    "chips": [
+      "cookies()",
+      "ssr-forward",
+      "server only"
+    ],
+    "accent": "#f5f5f5",
+    "desc": "Live ssr-forward demo for Next.js — cookies and auth headers on the server, skipped in the browser.",
+    "code": {
+      "lang": "ts",
+      "lines": [
+        "import { cookies } from 'next/headers'",
+        "import { createFetch } from 'tanstack-fetch'",
+        "",
+        "export const createServerApi = async () =>",
+        "  createFetch({",
+        "    baseUrl: process.env.API_URL!,",
+        "    source: 'ssr',"
+      ]
+    }
+  },
+  {
+    "id": "page-examples-nuxt-ssr",
+    "md": "examples/nuxt-ssr.md",
+    "cover": "/images/page-examples-nuxt-ssr.jpg",
+    "alt": "Nuxt SSR",
+    "kicker": "Live demo · Nuxt",
+    "h1": "Nuxt SSR",
+    "h2": "+ ssr-forward",
+    "chips": [
+      "createFetchPlugin",
+      "cookies",
+      "server only"
+    ],
+    "accent": "#00dc82",
+    "desc": "Nuxt + ssr-forward — forward cookies and auth headers on the server, skip in the browser.",
+    "code": {
+      "lang": "ts",
+      "lines": [
+        "// plugins/tanstack-fetch.ts",
+        "import { createFetch } from 'tanstack-fetch'",
+        "import { createFetchPlugin } from 'tanstack-fetch…",
+        "",
+        "export default defineNuxtPlugin((nuxtApp) => {",
+        "  const config = useRuntimeConfig()"
+      ]
+    }
+  },
+  {
+    "id": "page-examples-sse",
+    "md": "examples/sse.md",
+    "cover": "/images/page-examples-sse.jpg",
+    "alt": "SSE live demo",
+    "kicker": "Live demo",
+    "h1": "SSE",
+    "h2": "live demos",
+    "chips": [
+      "api.sse",
+      "useSse",
+      "Last-Event-ID"
+    ],
+    "accent": "#ffb347",
+    "desc": "Live Server-Sent Events demos — api.sse (core) plus React, Vue, Next, Solid, Angular, and Svelte patterns.",
+    "code": {
+      "lang": "tsx",
+      "lines": [
+        "import { createFileRoute } from '@tanstack/react-…",
+        "import { createFetch } from 'tanstack-fetch/sse'",
+        "import { useSse } from 'tanstack-fetch/react'",
+        "",
+        "const api = createFetch({ plugins: ['sse-resume']…",
+        "",
+        "export const Route = createFileRoute('/orders/liv…"
+      ]
+    }
+  },
+  {
+    "id": "page-examples-upload",
+    "md": "examples/upload.md",
+    "cover": "/images/page-examples-upload.jpg",
+    "alt": "Upload & download live demo",
+    "kicker": "Live demo",
+    "h1": "Upload & download",
+    "h2": "progress",
+    "chips": [
+      "api.upload",
+      "onUploadProgress",
+      "onDownloadProgress"
+    ],
+    "accent": "#ffb347",
+    "desc": "Live api.upload multipart demo plus onDownloadProgress example with createFetch.",
+    "code": {
+      "lang": "ts",
+      "lines": [
+        "await api.upload('/files', {",
+        "  file,",
+        "  fields: { folder: 'avatars' },",
+        "  onUploadProgress: ({ progress }) => setProgress…",
+        "})"
+      ]
+    }
+  },
+  {
+    "id": "page-examples-devtools",
+    "md": "examples/devtools.md",
+    "cover": "/images/page-examples-devtools.jpg",
+    "alt": "DevTools preview",
+    "kicker": "Live demo",
+    "h1": "DevTools",
+    "h2": "preview",
+    "chips": [
+      "setupDevtools",
+      "call graph",
+      "SSE events"
+    ],
+    "accent": "#a5b84a",
+    "desc": "Live tanstack-fetch DevTools — SSE event list, call graph, one-line setup.",
+    "code": {
+      "lang": "ts",
+      "lines": [
+        "import { createFetch } from 'tanstack-fetch'",
+        "import { setupDevtools } from 'tanstack-fetch/dev…",
+        "",
+        "const api = createFetch({ plugins: ['trace'] })",
+        "setupDevtools(api) // registers interceptor + mou…"
+      ]
+    }
+  },
+  {
+    "id": "page-packages",
+    "md": "packages.md",
+    "cover": "/images/page-packages.jpg",
+    "alt": "npm packages by Mohammad Garmabi",
+    "kicker": "Open source",
+    "h1": "npm packages",
+    "h2": "by Mohammad Garmabi",
+    "chips": [
+      "tanstack-fetch",
+      "vite-plugin-react-splash",
+      "SSE hooks"
+    ],
+    "accent": "#ffb347",
+    "desc": "Download stats for npm packages by Mohammad Garmabi — tanstack-fetch v1.2, vite-plugin-react-splash, SSE hooks, and more.",
+    "code": {
+      "lang": "ts",
+      "lines": [
+        "$ npm i tanstack-fetch",
+        "$ npm i vite-plugin-react-splash",
+        "$ npm i sse-shared-worker-react-hook",
+        "$ npm i react-providers-tree",
+        "$ npm i image-auth"
+      ]
+    }
+  },
+  {
+    "id": "blog-react-axios-tanstack-fetch-cover",
+    "md": "blog/react-axios-tanstack-fetch.md",
+    "cover": "/images/blog-react-axios-tanstack-fetch-cover.jpg",
+    "alt": "React axios vs tanstack-fetch: typed fetch for TanStack Query",
+    "kicker": "Blog · Framework guide",
+    "h1": "React axios",
+    "h2": "vs tanstack-fetch",
+    "chips": [
+      "FetchProvider",
+      "useFetch",
+      "refresh-token"
+    ],
+    "accent": "#61dafb",
+    "desc": "Replace axios unwrap glue with tanstack-fetch — FetchProvider, useFetch, useSse, React Query, refresh-token, migrate CLI, and a full…",
+    "code": {
+      "lang": "tsx",
+      "lines": [
+        "import axios from 'axios'",
+        "import { useQuery } from '@tanstack/react-query'",
+        "",
+        "const UsersPage = () => {",
+        "  const { data, error, isPending } = useQuery({",
+        "    queryKey: ['users'],",
+        "    queryFn: async ({ signal }) => {"
+      ]
+    }
+  },
+  {
+    "id": "blog-vue-ofetch-tanstack-fetch-cover",
+    "md": "blog/vue-ofetch-tanstack-fetch.md",
+    "cover": "/images/blog-vue-ofetch-tanstack-fetch-cover.jpg",
+    "alt": "Vue ofetch / axios vs tanstack-fetch: typed fetch for Vue Query",
+    "kicker": "Blog · Framework guide",
+    "h1": "Vue ofetch / axios",
+    "h2": "vs tanstack-fetch",
+    "chips": [
+      "createFetchPlugin",
+      "useFetch",
+      "Vue Query"
+    ],
+    "accent": "#42b883",
+    "desc": "Replace ofetch and axios glue in Vue 3 with tanstack-fetch — createFetchPlugin, useFetch, useSse, Vue Query, refresh-token, and a full…",
+    "code": {
+      "lang": "ts",
+      "lines": [
+        "import axios from 'axios'",
+        "import { useQuery } from '@tanstack/vue-query'",
+        "",
+        "const { data, error, isPending } = useQuery({",
+        "  queryKey: ['users'],",
+        "  queryFn: async ({ signal }) => {",
+        "    const res = await axios.get<User[]>('/users',…"
+      ]
+    }
+  },
+  {
+    "id": "blog-nextjs-fetch-tanstack-fetch-cover",
+    "md": "blog/nextjs-fetch-tanstack-fetch.md",
+    "cover": "/images/blog-nextjs-fetch-tanstack-fetch-cover.jpg",
+    "alt": "Next.js fetch vs tanstack-fetch: SSR cookies, Query hydrate, App Router",
+    "kicker": "Blog · Framework guide",
+    "h1": "Next.js fetch",
+    "h2": "vs tanstack-fetch",
+    "chips": [
+      "ssr-forward",
+      "hydrate",
+      "SSE"
+    ],
+    "accent": "#f5f5f5",
+    "desc": "Use tanstack-fetch in Next.js App Router — ssr-forward cookies, absolute baseUrl on the server, React Query dehydrate/hydrate, SSE, and…",
+    "code": {
+      "lang": "ts",
+      "lines": [
+        "import { cookies } from 'next/headers'",
+        "",
+        "export const getUsers = async () => {",
+        "  const jar = await cookies()",
+        "  const res = await fetch(`${process.env.API_URL}…",
+        "    headers: { cookie: jar.toString() },",
+        "    cache: 'no-store',"
+      ]
+    }
+  },
+  {
+    "id": "blog-nuxt-ofetch-tanstack-fetch-cover",
+    "md": "blog/nuxt-ofetch-tanstack-fetch.md",
+    "cover": "/images/blog-nuxt-ofetch-tanstack-fetch-cover.jpg",
+    "alt": "Nuxt $fetch / ofetch vs tanstack-fetch: SSR cookies and Vue Query",
+    "kicker": "Blog · Framework guide",
+    "h1": "Nuxt $fetch",
+    "h2": "vs tanstack-fetch",
+    "chips": [
+      "createFetchPlugin",
+      "ssr-forward",
+      "Vue Query"
+    ],
+    "accent": "#00dc82",
+    "desc": "Replace Nuxt $fetch glue with tanstack-fetch — createFetchPlugin, ssr-forward, useFetchClient naming, Vue Query hydrate, SSE, and comparison…",
+    "code": {
+      "lang": "vue",
+      "lines": [
+        "<script setup lang=\"ts\">",
+        "const { data } = await useAsyncData('users', () =…",
+        "</script>",
+        "",
+        "// plugins/tanstack-fetch.ts",
+        "import { createFetch } from 'tanstack-fetch'",
+        "import { createFetchPlugin } from 'tanstack-fetch…"
+      ]
+    }
+  },
+  {
+    "id": "blog-solid-fetch-tanstack-fetch-cover",
+    "md": "blog/solid-fetch-tanstack-fetch.md",
+    "cover": "/images/blog-solid-fetch-tanstack-fetch-cover.jpg",
+    "alt": "Solid fetch / axios vs tanstack-fetch: Solid Query adapters",
+    "kicker": "Blog · Framework guide",
+    "h1": "Solid fetch",
+    "h2": "vs tanstack-fetch",
+    "chips": [
+      "FetchProvider",
+      "useSse signals",
+      "Solid Query"
+    ],
+    "accent": "#6ea4e0",
+    "desc": "Use tanstack-fetch with Solid — FetchProvider, useFetch, useSse signals, Solid Query, refresh-token, migrate CLI, and comparison graphs.",
+    "code": {
+      "lang": "tsx",
+      "lines": [
+        "import axios from 'axios'",
+        "import { createQuery } from '@tanstack/solid-quer…",
+        "",
+        "const query = createQuery(() => ({",
+        "  queryKey: ['users'],",
+        "  queryFn: async ({ signal }) => (await axios.get…",
+        "}))"
+      ]
+    }
+  },
+  {
+    "id": "blog-angular-http-client-tanstack-fetch-cover",
+    "md": "blog/angular-http-client-tanstack-fetch.md",
+    "cover": "/images/blog-angular-http-client-tanstack-fetch-cover.jpg",
+    "alt": "Angular HttpClient vs tanstack-fetch: typed fetch for TanStack Angular Query",
+    "kicker": "Blog · Framework guide",
+    "h1": "Angular HttpClient",
+    "h2": "vs tanstack-fetch",
+    "chips": [
+      "provideFetchClient",
+      "injectFetch",
+      "signals SSE"
+    ],
+    "accent": "#f0335a",
+    "desc": "Replace Angular HttpClient glue with tanstack-fetch — provideFetchClient, injectFetch, signals SSE, Angular Query, refresh-token, migrate…",
+    "code": {
+      "lang": "ts",
+      "lines": [
+        "import { HttpClient } from '@angular/common/http'",
+        "import { inject } from '@angular/core'",
+        "import { injectQuery } from '@tanstack/angular-qu…",
+        "import { firstValueFrom } from 'rxjs'",
+        "",
+        "export class UsersHttpComponent {",
+        "  private readonly http = inject(HttpClient)"
+      ]
+    }
+  },
+  {
+    "id": "blog-sveltekit-fetch-tanstack-fetch-cover",
+    "md": "blog/sveltekit-fetch-tanstack-fetch.md",
+    "cover": "/images/blog-sveltekit-fetch-tanstack-fetch-cover.jpg",
+    "alt": "Svelte / SvelteKit fetch vs tanstack-fetch: stores, SSR, Query",
+    "kicker": "Blog · Framework guide",
+    "h1": "SvelteKit fetch",
+    "h2": "vs tanstack-fetch",
+    "chips": [
+      "setFetchClient",
+      "stores",
+      "load()"
+    ],
+    "accent": "#ff5a1f",
+    "desc": "Use tanstack-fetch with Svelte and SvelteKit — setFetchClient, useFetch, useSse stores, Svelte Query, ssr-forward load functions, and…",
+    "code": {
+      "lang": "ts",
+      "lines": [
+        "// +page.server.ts",
+        "export const load = async ({ fetch }) => {",
+        "  const users = await fetch('/api/users').then((r…",
+        "  return { users }",
+        "}"
+      ]
+    }
+  },
+  {
+    "id": "blog-tanstack-start-router-tanstack-fetch-cover",
+    "md": "blog/tanstack-start-router-tanstack-fetch.md",
+    "cover": "/images/blog-tanstack-start-router-tanstack-fetch-cover.jpg",
+    "alt": "TanStack Start / Router + tanstack-fetch: Query on router context",
+    "kicker": "Blog · TanStack",
+    "h1": "Start & Router",
+    "h2": "+ tanstack-fetch",
+    "chips": [
+      "queryOptions",
+      "ensureQueryData",
+      "router context"
+    ],
+    "accent": "#ffb347",
+    "desc": "Wire tanstack-fetch into TanStack Start and TanStack Router — queryOptions, ensureQueryData loaders, router context, SSR, tRPC, and…",
+    "code": {
+      "lang": "ts",
+      "lines": [
+        "export const Route = createFileRoute('/users')({",
+        "  loader: async () => {",
+        "    const res = await fetch('/api/users')",
+        "    return res.json()",
+        "  },",
+        "  component: ({ useLoaderData }) => {",
+        "    const data = useLoaderData()"
+      ]
+    }
+  },
+  {
+    "id": "blog-tanstack-start-1-0-transtack-fetch-6-real-world-patterns-cover",
+    "md": "blog/tanstack-start-1-0-transtack-fetch-6-real-world-patterns.md",
+    "cover": "/images/blog-tanstack-start-1-0-transtack-fetch-6-real-world-patterns-cover.jpg",
+    "alt": "TanStack Start 1.0 + tanstack-fetch: 6 Real-World Data Fetching Patterns",
+    "kicker": "Blog · TanStack",
+    "h1": "TanStack Start 1.0",
+    "h2": "6 real-world patterns",
+    "chips": [
+      "loaders",
+      "SSR auth",
+      "mutations",
+      "SSE"
+    ],
+    "accent": "#ffb347",
+    "desc": "TanStack Start 1.0 is here. Six production-ready patterns: direct fetching, shared loaders, SSR auth, mutations, centralized error handling,…",
+    "code": {
+      "lang": "ts",
+      "lines": [
+        "import { createFetch } from 'tanstack-fetch'",
+        "",
+        "export const api = createFetch({",
+        "  baseUrl: '/api',",
+        "})"
+      ]
+    }
+  },
+  {
+    "id": "blog-tanstack-pacer-tanstack-query-tanstack-fetch-cover",
+    "md": "blog/tanstack-pacer-tanstack-query-tanstack-fetch.md",
+    "cover": "/images/blog-tanstack-pacer-tanstack-query-tanstack-fetch-cover.jpg",
+    "alt": "TanStack Pacer + TanStack Query: debounce, throttle, rate-limit, queue and batch your API calls",
+    "kicker": "Blog · TanStack",
+    "h1": "TanStack Pacer",
+    "h2": "+ Query + fetch",
+    "chips": [
+      "debounce",
+      "throttle",
+      "rate-limit",
+      "batch"
+    ],
+    "accent": "#a5b84a",
+    "desc": "A hands-on TanStack Pacer tutorial — debounced search, autosave with abortable requests, throttled infinite scroll, client-side rate limits,…",
+    "code": {
+      "lang": "ts",
+      "lines": [
+        "// src/lib/api.ts",
+        "import { createFetch } from 'tanstack-fetch'",
+        "",
+        "export const api = createFetch({",
+        "  baseUrl: import.meta.env.VITE_API_URL,",
+        "  timeoutMs: 10_000,",
+        "})"
+      ]
+    }
+  }
+]

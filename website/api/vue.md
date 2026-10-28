@@ -5,6 +5,8 @@ description: Vue and Nuxt API reference for tanstack-fetch — createFetchPlugin
 
 # Vue API
 
+![Vue API](/images/page-api-vue.jpg)
+
 ```ts
 import {
   createFetchPlugin,

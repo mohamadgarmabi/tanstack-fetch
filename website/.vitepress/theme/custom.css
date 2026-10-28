@@ -95,6 +95,20 @@
   margin: 1.5rem auto;
   max-width: 720px;
   width: 100%;
+  height: auto;
+  border-radius: 14px;
+}
+
+.vp-doc .motion-media {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 16 / 9;
+  margin: 1rem 0 1.5rem;
+  border-radius: 14px;
+  border: 1px solid rgba(255, 122, 24, 0.22);
+  background: #070504;
+  box-shadow: 0 18px 50px rgba(0, 0, 0, 0.45);
 }
 
 .brand-logo-hero {

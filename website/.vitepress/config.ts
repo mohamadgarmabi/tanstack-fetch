@@ -3,6 +3,7 @@ import { join } from 'node:path'
 import { fileURLToPath, URL } from 'node:url'
 import { defineConfig, type HeadConfig, type SiteConfig } from 'vitepress'
 import { frameworkContainer } from './markdown/framework-container'
+import { motionMedia } from './markdown/motion-media'
 
 const SITE_URL = 'https://mohamadgarmabi.github.io/tanstack-fetch'
 const SITE_NAME = 'tanstack-fetch'
@@ -172,6 +173,9 @@ const config = defineConfig({
   markdown: {
     config: (md) => {
       md.use(frameworkContainer)
+      md.use(motionMedia, {
+        publicDir: fileURLToPath(new URL('../public', import.meta.url)),
+      })
     },
   },
 

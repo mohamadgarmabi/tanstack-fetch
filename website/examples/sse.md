@@ -5,6 +5,8 @@ description: Live Server-Sent Events demos — api.sse (core) plus React, Vue, N
 
 # SSE
 
+![SSE live demo](/images/page-examples-sse.jpg)
+
 Use the **Framework** picker in the header to filter stacks.
 
 :::: framework core

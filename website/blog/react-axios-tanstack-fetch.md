@@ -5,11 +5,14 @@ description: "Replace axios unwrap glue with tanstack-fetch — FetchProvider, u
 date: 2026-10-12
 category: Framework guides
 tags: ["React","Comparison"]
+cover: /images/blog-react-axios-tanstack-fetch-cover.jpg
 ---
 
 # React axios vs tanstack-fetch
 
 <p class="blog-meta">October 12, 2026 · React · TanStack Query · HTTP</p>
+
+![React axios vs tanstack-fetch: typed fetch for TanStack Query](/images/blog-react-axios-tanstack-fetch-cover.jpg)
 
 ::: tip Stack
 **React 18+** · `tanstack-fetch/react` · `@tanstack/react-query`

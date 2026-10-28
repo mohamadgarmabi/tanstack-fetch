@@ -5,11 +5,14 @@ description: "Use tanstack-fetch in Next.js App Router — ssr-forward cookies, 
 date: 2026-10-12
 category: Framework guides
 tags: ["Next.js","React","SSR"]
+cover: /images/blog-nextjs-fetch-tanstack-fetch-cover.jpg
 ---
 
 # Next.js fetch vs tanstack-fetch
 
 <p class="blog-meta">October 12, 2026 · Next.js · React · SSR</p>
+
+![Next.js fetch vs tanstack-fetch: SSR cookies, Query hydrate, App Router](/images/blog-nextjs-fetch-tanstack-fetch-cover.jpg)
 
 ::: tip Stack
 **Next.js App Router** · `tanstack-fetch` · `@tanstack/react-query` · `ssr-forward`

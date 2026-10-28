@@ -5,11 +5,14 @@ description: "Use tanstack-fetch with Svelte and SvelteKit — setFetchClient, u
 date: 2026-10-12
 category: Framework guides
 tags: ["Svelte","SSR"]
+cover: /images/blog-sveltekit-fetch-tanstack-fetch-cover.jpg
 ---
 
 # Svelte / SvelteKit fetch vs tanstack-fetch
 
 <p class="blog-meta">October 12, 2026 · Svelte · SvelteKit · HTTP</p>
+
+![Svelte / SvelteKit fetch vs tanstack-fetch: stores, SSR, Query](/images/blog-sveltekit-fetch-tanstack-fetch-cover.jpg)
 
 ::: tip Stack
 **Svelte 4+ / SvelteKit** · `tanstack-fetch/svelte` · `@tanstack/svelte-query`

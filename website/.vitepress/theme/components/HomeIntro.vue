@@ -15,12 +15,17 @@ import { withBase } from 'vitepress'
     </p>
 
     <p class="home-intro-center">
-      <img
+      <video
         class="hero-gif"
-        :src="withBase('/images/tanstack-fetch-hero.gif')"
-        alt="tanstack-fetch by Mohammad Garmabi — createFetch + TanStack Query demo"
+        :src="withBase('/images/tanstack-fetch-hero.mp4')"
+        :poster="withBase('/images/tanstack-fetch-hero.png')"
+        aria-label="tanstack-fetch by Mohammad Garmabi — createFetch + TanStack Query demo"
         width="720"
         height="456"
+        autoplay
+        loop
+        muted
+        playsinline
       />
     </p>
 

@@ -5,6 +5,8 @@ description: Generate a typed tanstack-fetch client from an OpenAPI document, or
 
 # OpenAPI CLI
 
+![OpenAPI CLI](/images/page-guide-openapi.jpg)
+
 Generate typed clients from an OpenAPI spec:
 
 ```bash

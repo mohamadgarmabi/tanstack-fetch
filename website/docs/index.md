@@ -6,6 +6,8 @@ description: tanstack-fetch documentation hub — getting started, guides for Re
 
 # Documentation
 
+![tanstack-fetch Documentation — Typed Fetch Client API Reference](/images/page-docs-index.jpg)
+
 Typed Fetch client for TanStack Query. Start here, then jump to the guide that matches your stack.
 
 ## Start

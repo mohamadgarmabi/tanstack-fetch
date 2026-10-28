@@ -5,6 +5,8 @@ description: Live api.upload multipart demo plus onDownloadProgress example with
 
 # Upload & download
 
+![Upload & download live demo](/images/page-examples-upload.jpg)
+
 :::: framework core
 
 ::: tip Framework

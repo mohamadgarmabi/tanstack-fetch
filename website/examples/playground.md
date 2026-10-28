@@ -5,6 +5,8 @@ description: Run real createFetch demos — status handlers, React Query, Next.j
 
 # Live playground
 
+![Live playground](/images/page-examples-playground.jpg)
+
 All widgets import **`tanstack-fetch` from source** and use a mock `fetch` / stream. Use the **Framework** picker to show only your stack.
 
 :::: framework core

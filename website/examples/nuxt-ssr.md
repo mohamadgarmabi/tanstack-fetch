@@ -5,6 +5,8 @@ description: Nuxt + ssr-forward — forward cookies and auth headers on the serv
 
 # Nuxt SSR
 
+![Nuxt SSR](/images/page-examples-nuxt-ssr.jpg)
+
 ::: tip Framework
 **Vue** · Nuxt 3 / 4 · `tanstack-fetch/vue` · `@tanstack/vue-query`
 :::

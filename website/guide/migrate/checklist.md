@@ -1,5 +1,7 @@
 # Migrate from axios to tanstack-fetch – checklist
 
+![Migrate from axios to tanstack-fetch – checklist](/images/page-guide-migrate-checklist.jpg)
+
 Use this checklist after the CLI scan (`npx tanstack-fetch migrate --from axios`) to verify and complete the migration.
 
 ## 0. Pre-flight

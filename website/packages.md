@@ -9,6 +9,8 @@ head:
 
 # npm packages
 
+![npm packages by Mohammad Garmabi](/images/page-packages.jpg)
+
 Live download badges and stats for packages by **[Mohammad Garmabi](/author)**
 ([npm](https://www.npmjs.com/~mohammad.garmabi) ·
 [LinkedIn](https://www.linkedin.com/in/mohammad-garmabi/) ·

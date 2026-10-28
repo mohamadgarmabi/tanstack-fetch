@@ -5,6 +5,8 @@ description: Angular helpers for tanstack-fetch — provideFetchClient, injectFe
 
 # Angular
 
+![Angular](/images/page-guide-angular.jpg)
+
 ::: tip Framework
 **Angular** · `tanstack-fetch/angular` · `@tanstack/angular-query-experimental`
 :::
