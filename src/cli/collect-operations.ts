@@ -3,12 +3,18 @@ import { toCamel } from './schema-to-ts'
 
 const HTTP_METHODS = ['get', 'post', 'put', 'patch', 'delete'] as const
 
-const isSseOperation = (operation: OpenApiOperation) => {
-  const contents = Object.values(operation.responses ?? {}).flatMap((response) =>
+const NDJSON_TYPES = ['application/x-ndjson', 'application/jsonl', 'application/json-seq']
+
+const responseTypes = (operation: OpenApiOperation) =>
+  Object.values(operation.responses ?? {}).flatMap((response) =>
     Object.keys(response.content ?? {}),
   )
-  return contents.some((type) => type.includes('event-stream'))
-}
+
+const isSseOperation = (operation: OpenApiOperation) =>
+  responseTypes(operation).some((type) => type.includes('event-stream'))
+
+const isNdjsonOperation = (operation: OpenApiOperation) =>
+  responseTypes(operation).some((type) => NDJSON_TYPES.includes(type))
 
 const collectOperations = (spec: OpenApiSpec): CollectedOperation[] => {
   const operations: CollectedOperation[] = []
@@ -26,6 +32,7 @@ const collectOperations = (spec: OpenApiSpec): CollectedOperation[] => {
         operationId: toCamel(operation.operationId ?? fallbackId),
         tag: toCamel(tag),
         isSse: isSseOperation(operation),
+        isNdjson: isNdjsonOperation(operation),
         parameters: operation.parameters ?? [],
         bodySchema: operation.requestBody?.content?.['application/json']?.schema,
         successSchema: pickSuccessSchema(operation),
@@ -38,7 +45,11 @@ const collectOperations = (spec: OpenApiSpec): CollectedOperation[] => {
 const pickSuccessSchema = (operation: OpenApiOperation) => {
   const success = operation.responses?.['200'] ?? operation.responses?.['201']
   const content = success?.content ?? {}
-  return content['application/json']?.schema ?? content['text/event-stream']?.schema
+  return (
+    content['application/json']?.schema ??
+    content['text/event-stream']?.schema ??
+    NDJSON_TYPES.map((type) => content[type]?.schema).find(Boolean)
+  )
 }
 
 export { collectOperations }

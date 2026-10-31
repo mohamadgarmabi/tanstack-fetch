@@ -212,11 +212,12 @@ Use `createFetch` in loaders with `source: 'ssr'` and `ssr-forward` for cookies.
 ```ts
 import { json, type LoaderFunctionArgs } from '@remix-run/node'
 import { createFetch } from 'tanstack-fetch'
+import { createSsrForwardInterceptor } from 'tanstack-fetch/plugins'
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
   const api = createFetch({
     source: 'ssr',
-    plugins: ['ssr-forward'],
+    interceptors: [createSsrForwardInterceptor()],
     incoming: () => ({ cookie: request.headers.get('cookie') ?? undefined }),
   })
   const users = await api.get<User[]>('/users')

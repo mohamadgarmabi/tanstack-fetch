@@ -15,6 +15,7 @@ const ICON_BY_TAB: Record<string, HomeIconName> = {
   devtools: 'devtools',
   ssr: 'server',
   sse: 'stream',
+  realtime: 'bolt',
   upload: 'upload',
   trpc: 'link',
   openapi: 'code',

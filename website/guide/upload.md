@@ -14,6 +14,10 @@ description: Multipart upload with onUploadProgress and file download with onDow
 ## Upload
 
 ```ts
+import { createFetch } from 'tanstack-fetch/sse'
+
+const api = createFetch({ baseUrl: import.meta.env.VITE_API_URL })
+
 await api.upload('/files', {
   file,
   fields: { albumId: '1' },
@@ -65,6 +69,7 @@ await api.post('/export', {
 
 ## Notes
 
+- `upload()` and progress events need `createFetch` from `tanstack-fetch/sse` (or `/live`, or a framework provider). The slim core `tanstack-fetch` client has no `upload()` and ignores `onUploadProgress` / `onDownloadProgress`.
 - Progress uses **XHR** under the hood when `onUploadProgress` and/or `onDownloadProgress` is set (fetch has no reliable progress API).
 - `progress` is `loaded / total` when `Content-Length` (download) or the upload size is known; otherwise only `loaded` updates.
 - Browser-only — on the server, omit these handlers and use plain `fetch`.

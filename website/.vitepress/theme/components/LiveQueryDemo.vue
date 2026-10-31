@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue'
 import { createFetch, isFetchError } from 'tanstack-fetch'
+import { createStatusInterceptor } from 'tanstack-fetch/plugins'
 
 type User = { id: string; name: string }
 
@@ -31,10 +32,13 @@ const mockFetch: typeof fetch = async (input) => {
 const api = createFetch({
   baseUrl: 'https://demo.tanstack-fetch.local',
   fetch: mockFetch,
-  plugins: [],
-  onNotFound: ({ error }) => {
-    output.value = `onNotFound fired · ${error.message}`
-  },
+  interceptors: [
+    createStatusInterceptor({
+      404: ({ error }) => {
+        output.value = `onNotFound fired · ${error.message}`
+      },
+    }),
+  ],
 })
 
 const runSuccess = async () => {

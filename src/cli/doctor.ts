@@ -21,7 +21,10 @@ const LEGACY_IMPORT_RE =
   /from\s*['"](?:axios|ky|ofetch)['"]|\brequire\s*\(\s*['"](?:axios|ky|ofetch)['"]\s*\)|\$fetch\s*[<(]/
 const QUERY_FN_BLOCK_RE =
   /queryFn\s*:\s*(?:async\s*)?\(([^)]*)\)\s*(?:=>|{)[\s\S]{0,800}?(?=queryFn\s*:|mutationFn\s*:|$)/g
-const API_CALL_RE = /\b(?:api|client)\.(?:get|post|put|patch|delete|request|upload|sse)\s*\(/g
+const API_CALL_RE =
+  /\b(?:api|client)\.(?:get|post|put|patch|delete|request|upload|sse|stream)\s*\(/g
+/** Hand-rolled live connections that can't send Authorization or reconnect with a fresh token. */
+const RAW_LIVE_RE = /\bnew\s+(?:WebSocket|EventSource)\s*\(/
 
 const readPackageJson = (rootDirectory: string): Record<string, unknown> | null => {
   const path = join(rootDirectory, 'package.json')
@@ -61,7 +64,6 @@ const collectMissingSignalHits = (source: string, file: string): DoctorFinding[]
     API_CALL_RE.lastIndex = 0
     const hasSignalParam = /\bsignal\b/.test(params)
     const passesSignal = /\{[^}]*\bsignal\b/.test(body)
-    if (hasSignalParam && passesSignal) continue
     if (!hasSignalParam && !passesSignal) {
       findings.push({
         severity: 'warn',
@@ -121,15 +123,14 @@ const runDoctorChecks = (rootDirectory: string): DoctorResult => {
   const files = listSourceFiles(rootDirectory)
   let createFetchHits = 0
   let legacyImportFiles = 0
+  let rawLiveFiles = 0
 
   for (const absolutePath of files) {
     const source = readFileSync(absolutePath, 'utf8')
     const relativeFile = toRelativePath(rootDirectory, absolutePath)
     createFetchHits += countMatches(source, CREATE_FETCH_RE)
-    if (LEGACY_IMPORT_RE.test(source)) {
-      legacyImportFiles += 1
-      LEGACY_IMPORT_RE.lastIndex = 0
-    }
+    if (LEGACY_IMPORT_RE.test(source)) legacyImportFiles += 1
+    if (RAW_LIVE_RE.test(source)) rawLiveFiles += 1
     findings.push(...collectMissingSignalHits(source, relativeFile))
   }
 
@@ -152,6 +153,14 @@ const runDoctorChecks = (rootDirectory: string): DoctorResult => {
       severity: 'warn',
       code: 'legacy-imports',
       message: `${legacyImportFiles} file(s) still import axios / ky / ofetch / $fetch`,
+    })
+  }
+
+  if (rawLiveFiles > 0) {
+    findings.push({
+      severity: 'info',
+      code: 'raw-live-connections',
+      message: `${rawLiveFiles} file(s) use new WebSocket / new EventSource — api.ws / api.sse from tanstack-fetch/live add auth, interceptors and reconnect with a fresh token`,
     })
   }
 

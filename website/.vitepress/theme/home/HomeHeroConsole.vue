@@ -4,7 +4,7 @@ import LiquidGlass from '../components/glass/LiquidGlass.vue'
 
 interface ConsoleStep {
   call: string
-  method: 'GET' | 'POST'
+  method: 'GET' | 'POST' | 'WS'
   status: string
   tone: 'ok' | 'error' | 'refresh'
   time: string
@@ -47,12 +47,23 @@ const steps: ConsoleStep[] = [
   },
   {
     method: 'POST',
-    call: "api.upload('/files', { file, onUploadProgress })",
+    call: "api.upload('/files', { file, onUploadProgress }) // tanstack-fetch/sse",
     status: '201',
     tone: 'ok',
     time: '1.2s',
     result: "{ id: 'f_91', size: '2.4MB' }",
     type: 'Upload',
+  },
+  {
+    method: 'WS',
+    call: "api.ws<Msg, { id: string }>('/rooms/:id', { params, onMessage })",
+    status: '101',
+    tone: 'refresh',
+    time: 'live',
+    result: "{ text: 'hi' } · reconnected, fresh token",
+    type: 'WsSocket',
+    pendingStatus: '1006',
+    pendingText: 'dropped → reconnecting…',
   },
 ]
 

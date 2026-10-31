@@ -31,11 +31,12 @@ import { createFetch } from 'tanstack-fetch'
 import { provideFetchClient, injectFetch } from 'tanstack-fetch/angular'
 import { injectQuery } from '@tanstack/angular-query-experimental'
 import { isFetchError } from 'tanstack-fetch'
+import { createAuthInterceptor } from 'tanstack-fetch/plugins'
 import { Component } from '@angular/core'
 
 const api = createFetch({
   baseUrl: 'https://api.example.com',
-  getToken: () => localStorage.getItem('access_token'),
+  interceptors: [createAuthInterceptor({ getToken: () => localStorage.getItem('access_token') })],
 })
 
 bootstrapApplication(AppComponent, {
@@ -62,8 +63,7 @@ export class UsersComponent {
   private readonly api = injectFetch()
   readonly users = injectQuery(() => ({
     queryKey: ['users'],
-    queryFn: ({ signal }: { signal: AbortSignal }) =>
-      this.api.get<User[]>('/users', { signal }),
+    queryFn: ({ signal }: { signal: AbortSignal }) => this.api.get<User[]>('/users', { signal }),
   }))
 
   errorLabel = () => {
@@ -97,6 +97,33 @@ export class OrdersLiveComponent {
   readonly data = this.stream.data
   readonly status = this.stream.status
   readonly close = this.stream.close
+}
+```
+
+## `useWs`
+
+Create the client from **`tanstack-fetch/live`** and pass `{ client: api }`. Same result shape as `useSse`, plus `send`. In the browser, set `authIn` (`'query'` or `'protocol'`) when you have a token. Add `transport: 'webtransport'` for WebTransport. See [WebSocket, WebTransport & streams](./websocket).
+
+```ts
+import { Component } from '@angular/core'
+import { createFetch } from 'tanstack-fetch/live'
+import { useWs } from 'tanstack-fetch/angular'
+
+const api = createFetch({ getToken: () => localStorage.getItem('access_token') })
+
+@Component({
+  selector: 'app-chat-room',
+  template: `
+    <p>{{ status() }}</p>
+    <p>{{ data()?.text ?? 'waiting…' }}</p>
+    <button type="button" (click)="send({ text: 'hi' })">Send</button>
+  `,
+})
+export class ChatRoomComponent {
+  private readonly socket = useWs<ChatMessage>('/rooms/lobby', { client: api, authIn: 'query' })
+  readonly data = this.socket.data
+  readonly status = this.socket.status
+  readonly send = this.socket.send
 }
 ```
 

@@ -6,6 +6,7 @@ const root = new URL('../dist/', import.meta.url).pathname
 const targets = [
   'index.js',
   'sse.js',
+  'live.js',
   'plugins.js',
   'react.js',
   'vue.js',
@@ -28,6 +29,7 @@ for (const name of targets) {
 console.log('\nImport guide:')
 console.log('  tanstack-fetch           → index.js   (HTTP only)')
 console.log('  tanstack-fetch/sse       → sse.js     (HTTP + SSE)')
+console.log('  tanstack-fetch/live      → live.js    (HTTP + SSE + WebSocket + NDJSON)')
 console.log('  tanstack-fetch/plugins   → plugins.js')
 console.log('  tanstack-fetch/react     → react.js')
 console.log('  tanstack-fetch/vue       → vue.js')

@@ -1,4 +1,5 @@
-type DevtoolsKind = 'http' | 'sse' | 'ssr' | 'trpc'
+/** `ws` covers WebSocket and WebTransport (`api.ws` / `api.transport`); `stream` is `api.stream`. */
+type DevtoolsKind = 'http' | 'sse' | 'ssr' | 'trpc' | 'ws' | 'stream'
 
 type DevtoolsEntryStatus = 'pending' | 'success' | 'error' | 'aborted'
 
@@ -7,11 +8,14 @@ type DevtoolsKindFlags = {
   sse: boolean
   ssr: boolean
   trpc: boolean
+  ws: boolean
+  stream: boolean
 }
 
 type DevtoolsSseEvent = {
   index: number
   id?: string
+  /** SSE event name, or `in` / `out` for WebSocket / NDJSON messages. */
   event?: string
   data: unknown
   at: number
@@ -77,8 +81,10 @@ type CreateDevtoolsOptions = {
   sse?: boolean
   ssr?: boolean
   trpc?: boolean
+  ws?: boolean
+  stream?: boolean
   maxEntries?: number
-  /** Cap SSE events kept per stream. Default 100. */
+  /** Cap SSE events / live messages kept per connection. Default 100. */
   maxSseEvents?: number
   /** Redact these request header names (case-insensitive). */
   redactHeaders?: string[]

@@ -1,6 +1,6 @@
-import type { CreateFetchOptions, FetchClient } from './types'
+import type { CoreFetchClient, CreateFetchOptions, FetchClient } from './types'
 
-type FetchClientLike = Omit<FetchClient, 'sse'> | FetchClient
+type FetchClientLike = Omit<FetchClient, 'sse'> | FetchClient | CoreFetchClient
 
 const clientOptionsRegistry = new WeakMap<object, CreateFetchOptions>()
 

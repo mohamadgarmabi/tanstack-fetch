@@ -23,8 +23,11 @@ type CleanParamName<T extends string> = T extends `${infer Name}?${string}`
       : T
 
 /** Param names from `/users/:id` or `/users/{id}` patterns. */
-type ExtractPathParamKeys<TPath extends string> =
-  ExtractColonParams<TPath> | ExtractBraceParams<TPath>
+type ExtractPathParamKeys<TPath extends string> = Exclude<
+  // `''` comes from the scheme in absolute URLs (`https://`).
+  ExtractColonParams<TPath> | ExtractBraceParams<TPath>,
+  ''
+>
 
 /** `{ id: string | number }` inferred from a path pattern. */
 type PathParamsOf<TPath extends string> = {
@@ -111,7 +114,22 @@ type FetchMethodArgs<TData, TParams, TPath extends string, TBase, TBody = UnsetF
     : [options: WithTypedBody<TBase & { params?: PathParams }, TBody>]
   : [options: WithTypedBody<TBase & ParamsOption<Exclude<TParams, UnsetFetchParams>>, TBody>]
 
+/**
+ * `params` for live calls and hooks (`sse` / `ws` / `transport` / `stream`):
+ * typed as `TParams` when given, otherwise inferred from the path literal.
+ */
+type LiveParams<TParams, TPath extends string> = [TParams] extends [UnsetFetchParams]
+  ? WithPathParams<TPath>
+  : ParamsOption<Exclude<TParams, UnsetFetchParams>>
+
+/** Options tuple for live client methods — `options` is required when params are. */
+type LiveMethodArgs<TParams, TPath extends string, TBase> = [TParams] extends [UnsetFetchParams]
+  ? PathRequestArgs<TPath, TBase>
+  : [options: TBase & ParamsOption<Exclude<TParams, UnsetFetchParams>>]
+
 export type {
+  LiveParams,
+  LiveMethodArgs,
   PathParamValue,
   ExtractPathParamKeys,
   PathParamsOf,

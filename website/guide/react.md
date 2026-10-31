@@ -108,6 +108,45 @@ const OrdersLive = () => {
 }
 ```
 
+## `useWs`
+
+Create the client from **`tanstack-fetch/live`** and pass `{ client: api }`. Same result shape as `useSse`, plus `send`. In the browser, set `authIn` (`'query'` or `'protocol'`) when you have a token. Add `transport: 'webtransport'` for WebTransport. See [WebSocket, WebTransport & streams](./websocket).
+
+```tsx
+import { createFetch } from 'tanstack-fetch/live'
+import { useWs } from 'tanstack-fetch/react'
+
+type ChatMessage = { user: string; text: string }
+
+const api = createFetch({
+  baseUrl: import.meta.env.VITE_API_URL,
+  getToken: () => localStorage.getItem('access_token'),
+})
+
+const ChatRoom = ({ id }: { id: number }) => {
+  const { data, status, error, send, close } = useWs<ChatMessage, { id: string }>('/rooms/:id', {
+    client: api,
+    params: { id },
+    authIn: 'query',
+  })
+
+  if (status === 'error') return <p>Socket error: {String(error)}</p>
+
+  return (
+    <div>
+      <p>status: {status}</p>
+      <p>{data?.text ?? 'waiting…'}</p>
+      <button type="button" onClick={() => send({ text: 'hi' })}>
+        Send
+      </button>
+      <button type="button" onClick={close}>
+        Disconnect
+      </button>
+    </div>
+  )
+}
+```
+
 ### Optional: via `FetchProvider`
 
 If the tree already has `<FetchProvider client={api}>`, you can omit `client` and `useSse` reads it from context.

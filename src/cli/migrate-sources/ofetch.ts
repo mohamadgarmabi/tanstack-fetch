@@ -56,9 +56,7 @@ const applySafeTransforms = (source: string): string => {
       const wantsFetchError = names.some(
         (name) => name === 'FetchError' || name.startsWith('FetchError '),
       )
-      const imports = wantsFetchError
-        ? 'createFetch, FetchError, isFetchError'
-        : 'createFetch'
+      const imports = wantsFetchError ? 'createFetch, FetchError, isFetchError' : 'createFetch'
       return `${indent}import { ${imports} } from 'tanstack-fetch'`
     },
   )

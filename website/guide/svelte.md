@@ -29,11 +29,12 @@ npm install @tanstack/svelte-query
 <!-- src/routes/+layout.svelte -->
 <script lang="ts">
   import { createFetch } from 'tanstack-fetch'
+  import { createAuthInterceptor } from 'tanstack-fetch/plugins'
   import { setFetchClient } from 'tanstack-fetch/svelte'
 
   const api = createFetch({
     baseUrl: import.meta.env.VITE_API_URL,
-    getToken: () => localStorage.getItem('access_token'),
+    interceptors: [createAuthInterceptor({ getToken: () => localStorage.getItem('access_token') })],
   })
   setFetchClient({ client: api })
 </script>
@@ -89,6 +90,27 @@ Stores: `$data`, `$status`, `$error`. Prefer `{ client }` from `tanstack-fetch/s
   <pre>{JSON.stringify($data, null, 2)}</pre>
   <button type="button" on:click={close}>Stop</button>
 {/if}
+```
+
+## `useWs`
+
+Create the client from **`tanstack-fetch/live`** and pass `{ client: api }`. Same result shape as `useSse`, plus `send`. In the browser, set `authIn` (`'query'` or `'protocol'`) when you have a token. Add `transport: 'webtransport'` for WebTransport. See [WebSocket, WebTransport & streams](./websocket).
+
+```svelte
+<script lang="ts">
+  import { createFetch } from 'tanstack-fetch/live'
+  import { useWs } from 'tanstack-fetch/svelte'
+
+  const api = createFetch({ getToken: () => localStorage.getItem('access_token') })
+  const { data, status, send } = useWs<ChatMessage>('/rooms/lobby', {
+    client: api,
+    authIn: 'query',
+  })
+</script>
+
+<p>{$status}</p>
+<p>{$data?.text ?? 'waiting…'}</p>
+<button type="button" on:click={() => send({ text: 'hi' })}>Send</button>
 ```
 
 ## SvelteKit SSR

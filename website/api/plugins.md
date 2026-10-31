@@ -13,9 +13,11 @@ import { pluginFactories, createRefreshTokenInterceptor } from 'tanstack-fetch/p
 
 Built-in names: `trace` · `ssr-forward` · `retry-idempotent` · `sse-resume`.
 
+Interceptor hooks, including the live-connection hooks `onLiveOpen` / `onLiveMessage` / `onLiveClose` (1.8.0): [Plugins guide · Interceptor hooks](/guide/plugins#interceptor-hooks).
+
 Factories for app wiring: `createAuthInterceptor` · `createStatusInterceptor` · **`createRefreshTokenInterceptor`** · `createTraceInterceptor` · …
 
-Prefer enabling named plugins via `createFetch({ plugins: […] })`. For refresh token, call the factory and `api.use`:
+On core `tanstack-fetch`, pass factories in `createFetch({ interceptors: [createAuthInterceptor(…), createStatusInterceptor(…), createTraceInterceptor()] })`. `tanstack-fetch/sse`, `/live`, `/trpc` and providers also accept named plugins via `plugins: […]`. For refresh token, call the factory and `api.use`:
 
 ```ts
 api.use(

@@ -10,8 +10,8 @@ import type {
 import type { AuthConfig, StatusHandler, StatusHandlers } from './config.type'
 import type { HttpInterceptor } from './interceptor.type'
 import type {
-  PathRequestArgs,
-  WithPathParams,
+  LiveParams,
+  LiveMethodArgs,
   FetchMethodArgs,
   FetchMethodPath,
   FetchParamsConstraint,
@@ -22,10 +22,13 @@ import type {
 } from './path-params.type'
 import type { SseEvent, SseHandlers, SseSubscription } from './sse.type'
 import type {
-  DownloadProgressHandler,
-  UploadOptions,
-  UploadProgressHandler,
-} from './upload.type'
+  CreateWebSocket,
+  CreateWebTransport,
+  WsHandlers,
+  WsOptions,
+  WsSocket,
+} from './ws.type'
+import type { DownloadProgressHandler, UploadOptions, UploadProgressHandler } from './upload.type'
 
 type RequestInterceptorConfig = {
   use?: HttpInterceptor[]
@@ -57,6 +60,10 @@ type CreateFetchOptions = {
   interceptors?: HttpInterceptor[]
   plugins?: PluginName[]
   fetch?: typeof fetch
+  /** WebSocket factory for `api.ws()` (e.g. the `ws` package on Node < 22). */
+  createWebSocket?: CreateWebSocket
+  /** WebTransport factory for `transport: 'webtransport'` (e.g. a polyfill outside browsers). */
+  createWebTransport?: CreateWebTransport
   credentials?: RequestCredentials
   maxRetries?: number
 
@@ -154,11 +161,27 @@ type UploadMethod = <
   ...args: FetchMethodArgs<TData, NoInfer<TParams>, TPath, UploadBase>
 ) => Promise<ResolveFetchData<TData>>
 
-type SseCallOptions<T = unknown, TPath extends string = string> = Omit<RequestOptions, 'params'> &
-  WithPathParams<TPath> &
-  SseHandlers<T> & {
-    lastEventId?: string
-  }
+type SseBase<T> = Omit<RequestOptions, 'params'> & SseHandlers<T> & { lastEventId?: string }
+type WsBase<T> = Omit<RequestOptions, 'params'> & WsHandlers<T> & WsOptions
+type StreamBase = Omit<RequestOptions, 'params'> & {
+  /** Default: `GET`, or `POST` when `body` is set. */
+  method?: HttpMethod
+}
+
+type SseCallOptions<
+  T = unknown,
+  TPath extends string = string,
+  TParams = UnsetFetchParams,
+> = SseBase<T> & LiveParams<TParams, TPath>
+
+type WsCallOptions<
+  T = unknown,
+  TPath extends string = string,
+  TParams = UnsetFetchParams,
+> = WsBase<T> & LiveParams<TParams, TPath>
+
+type StreamCallOptions<TPath extends string = string, TParams = UnsetFetchParams> = StreamBase &
+  LiveParams<TParams, TPath>
 
 type FetchClient = {
   use: (
@@ -178,22 +201,65 @@ type FetchClient = {
   /**
    * Simple: pass `onMessage` / `onEvent` → returns `{ close }`.
    * Advanced: no handlers → `AsyncIterable` for `for await`.
+   * Params: inferred from the path, or `api.sse<Event, { id: number }>('/orders/:id', { params })`.
    */
   sse: {
-    <T, TPath extends string = string>(
-      path: TPath,
-      options: SseCallOptions<T, TPath> &
+    <T, TParams extends FetchParamsConstraint = UnsetFetchParams, TPath extends string = string>(
+      path: FetchMethodPath<NoInfer<TParams>, TPath>,
+      options: SseCallOptions<T, TPath, NoInfer<TParams>> &
         ({ onMessage: SseHandlers<T>['onMessage'] } | { onEvent: SseHandlers<T>['onEvent'] }),
     ): SseSubscription
-    <T, TPath extends string = string>(
-      path: TPath,
-      ...args: PathRequestArgs<
-        TPath,
-        Omit<RequestOptions, 'params'> & SseHandlers<T> & { lastEventId?: string }
-      >
+    <T, TParams extends FetchParamsConstraint = UnsetFetchParams, TPath extends string = string>(
+      path: FetchMethodPath<NoInfer<TParams>, TPath>,
+      ...args: LiveMethodArgs<NoInfer<TParams>, TPath, SseBase<T>>
     ): AsyncIterable<SseEvent<T>>
   }
 }
+
+/** Client from `tanstack-fetch/live`: everything in `FetchClient` plus `ws` and `stream`. */
+type LiveFetchClient = FetchClient & {
+  /**
+   * WebSocket with auth (header on server, query/protocol opt-in in browser), interceptors,
+   * auto-reconnect and a send queue. `http(s)` base URLs become `ws(s)`.
+   */
+  ws: <
+    TMessage = unknown,
+    TParams extends FetchParamsConstraint = UnsetFetchParams,
+    TSend = unknown,
+    TPath extends string = string,
+  >(
+    path: FetchMethodPath<NoInfer<TParams>, TPath>,
+    ...args: LiveMethodArgs<NoInfer<TParams>, TPath, WsBase<TMessage>>
+  ) => WsSocket<TSend>
+  /** `ws()` over WebTransport (HTTP/3 datagrams) — same as `ws(path, { transport: 'webtransport' })`. */
+  transport: LiveFetchClient['ws']
+  /** NDJSON / JSON-lines stream over fetch (any method, body, headers) — one item per line. */
+  stream: <
+    T = unknown,
+    TParams extends FetchParamsConstraint = UnsetFetchParams,
+    TPath extends string = string,
+  >(
+    path: FetchMethodPath<NoInfer<TParams>, TPath>,
+    ...args: LiveMethodArgs<NoInfer<TParams>, TPath, StreamBase>
+  ) => AsyncIterable<T>
+}
+
+/** Options for the slim `tanstack-fetch` core. Add auth / status / plugins via `interceptors` from `tanstack-fetch/plugins`. */
+type CoreFetchOptions = Pick<
+  CreateFetchOptions,
+  | 'baseUrl'
+  | 'headers'
+  | 'source'
+  | 'incoming'
+  | 'timeoutMs'
+  | 'interceptors'
+  | 'fetch'
+  | 'credentials'
+  | 'maxRetries'
+>
+
+/** Client from the slim `tanstack-fetch` core: no `upload()` or progress events (use `tanstack-fetch/sse`). */
+type CoreFetchClient = Omit<FetchClient, 'sse' | 'upload'>
 
 /** @deprecated Use CreateFetchOptions */
 type CreateClientOptions = CreateFetchOptions
@@ -206,7 +272,10 @@ export type {
   RequestOptions,
   CreateFetchOptions,
   CreateClientOptions,
+  CoreFetchOptions,
+  CoreFetchClient,
   FetchClient,
+  LiveFetchClient,
   HttpClient,
   FetchMethod,
   BodyFetchMethod,
@@ -214,4 +283,6 @@ export type {
   UploadCallOptions,
   UploadMethod,
   SseCallOptions,
+  WsCallOptions,
+  StreamCallOptions,
 }

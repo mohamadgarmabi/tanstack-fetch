@@ -1,18 +1,19 @@
 <script setup lang="ts">
 import { withBase } from 'vitepress'
-import { stackBlitzLinks } from './home.content'
+import { PACKAGE_VERSION, stackBlitzLinks } from './home.content'
 </script>
 import HomeIcon from './HomeIcon.vue'
 
 <template>
   <section class="home-blitz">
     <div class="home-section-head">
-      <p class="home-eyebrow">Open in StackBlitz · v1.7.0</p>
+      <p class="home-eyebrow">Open in StackBlitz · v{{ PACKAGE_VERSION }}</p>
       <h2>Run the examples in the browser.</h2>
       <p class="home-lead">
         StackBlitz for React demos (Query, Next.js, SSE, tRPC, upload). Docs cover the same
-        <code>api.sse</code> / <code>createTRPCFetchClient</code> patterns on Vue, Nuxt, Solid,
-        Angular, Svelte, and SvelteKit.
+        <code>api.sse</code> / <code>api.ws</code> / <code>api.stream</code> /
+        <code>createTRPCFetchClient</code> patterns on Vue, Nuxt, Solid, Angular, Svelte, and
+        SvelteKit.
       </p>
     </div>
 

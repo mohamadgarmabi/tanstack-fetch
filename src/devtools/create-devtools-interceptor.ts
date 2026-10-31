@@ -1,4 +1,4 @@
-import type { HttpInterceptor, RequestContext, SseEventContext } from '../types'
+import type { HttpInterceptor, LiveMessageContext, RequestContext, SseEventContext } from '../types'
 import { captureCallStack, resolveCallerLabel } from './capture-call-stack'
 import { estimateSize } from './estimate-size'
 import { headersToRecord, parsePathParams, parseQuery } from './parse-url-parts'
@@ -12,7 +12,6 @@ import type {
 } from './devtools.type'
 
 type PendingTiming = {
-  startedAt: number
   startMark: number
 }
 
@@ -36,10 +35,17 @@ const wallClock = () => Date.now()
 const resolveKind = (context: RequestContext, asSse = false): DevtoolsKind => {
   if (context.meta.operation === 'trpc') return 'trpc'
   if (asSse) return 'sse'
+  if (context.meta.transport === 'ndjson') return 'stream'
+  if (context.meta.transport) return 'ws'
   if (context.meta.source && context.meta.source !== 'browser') return 'ssr'
   if (context.incoming?.cookie || context.incoming?.authorization) return 'ssr'
   return 'http'
 }
+
+const METHOD_LABEL = { websocket: 'WS', webtransport: 'WT', ndjson: undefined } as const
+
+const methodLabel = (context: RequestContext) =>
+  (context.meta.transport && METHOD_LABEL[context.meta.transport]) ?? context.request.method
 
 const entryId = (context: RequestContext) => {
   const requestId = context.meta.requestId ?? 'anon'
@@ -74,7 +80,7 @@ const createPendingEntry = (
     id: idOverride ?? entryId(context),
     kind,
     status: 'pending',
-    method: context.request.method,
+    method: methodLabel(context),
     url: url.href,
     path: url.pathname,
     params: parsePathParams(url.pathname),
@@ -160,7 +166,7 @@ const createDevtoolsInterceptor = (
       if (!store.isKindEnabled(kind)) return { action: 'continue' }
       const id = entryId(context)
       const callStack = captureCallStack()
-      pending.set(id, { startedAt: wallClock(), startMark: nowMs() })
+      pending.set(id, { startMark: nowMs() })
       store.upsert(createPendingEntry(context, redact, kind, id, callStack))
 
       const signal = context.request.signal
@@ -177,6 +183,8 @@ const createDevtoolsInterceptor = (
       return { action: 'continue' }
     },
     onResponse: (context) => {
+      // NDJSON stays live until onLiveClose; headers alone are not the end of it.
+      if (context.meta.transport === 'ndjson') return { action: 'continue' }
       finish(context, 'success')
       return { action: 'continue' }
     },
@@ -188,12 +196,69 @@ const createDevtoolsInterceptor = (
       finish(context, 'error')
       return { action: 'continue' }
     },
+    onLiveOpen: (context) => {
+      const id = entryId(context)
+      const existing = store.getById(id)
+      if (!existing) return { action: 'continue' }
+      store.patch(id, {
+        status: 'pending',
+        httpStatus: context.response?.status ?? 101,
+        responseHeaders: context.response
+          ? headersToRecord(context.response.headers, redact)
+          : existing.responseHeaders,
+        sse: emptySse({ open: true, events: existing.sse?.events ?? [] }),
+      })
+      return { action: 'continue' }
+    },
+    onLiveMessage: (context: LiveMessageContext) => {
+      const id = entryId(context)
+      const existing = store.getById(id)
+      if (!existing) return { action: 'continue' }
+      const prevEvents = existing.sse?.events ?? []
+      const events = [
+        ...prevEvents,
+        {
+          index: (prevEvents.at(-1)?.index ?? 0) + 1,
+          event: context.message.direction,
+          data: context.message.data,
+          at: wallClock(),
+        },
+      ].slice(-maxSseEvents)
+      store.patch(id, {
+        sse: emptySse({
+          open: existing.sse?.open ?? true,
+          eventCount: (existing.sse?.eventCount ?? 0) + 1,
+          events,
+        }),
+        ...(context.message.direction === 'in' ? { responseBody: context.message.data } : {}),
+      })
+      return { action: 'continue' }
+    },
+    onLiveClose: (context) => {
+      const id = entryId(context)
+      const existing = store.getById(id)
+      if (!existing) return { action: 'continue' }
+      const sse = existing.sse ? { ...existing.sse, open: false } : undefined
+      // Aborted streams already finished via the signal listener.
+      if (existing.status === 'aborted' || existing.status === 'error') {
+        store.patch(id, { sse })
+        return { action: 'continue' }
+      }
+      finish(context, context.error ? 'error' : 'success', {
+        id,
+        httpStatus: existing.httpStatus,
+        responseBody: existing.responseBody,
+        sse,
+      })
+      return { action: 'continue' }
+    },
     onSseOpen: (context) => {
       const id = entryId(context)
       const kind: DevtoolsKind = 'sse'
       if (!store.isKindEnabled(kind)) return { action: 'continue' }
       sseStreamIds.set(context.request.url.pathname, id)
       const existing = store.getById(id)
+      const callStack = existing?.callStack ?? captureCallStack()
       store.upsert({
         ...(existing ?? createPendingEntry(context, redact, kind, id)),
         id,
@@ -201,9 +266,8 @@ const createDevtoolsInterceptor = (
         status: 'pending',
         httpStatus: context.response?.status ?? 200,
         responseHeaders: context.response ? headersToRecord(context.response.headers, redact) : {},
-        callStack: existing?.callStack ?? captureCallStack(),
-        callerFile:
-          existing?.callerFile ?? resolveCallerLabel(existing?.callStack ?? captureCallStack()),
+        callStack,
+        callerFile: existing?.callerFile ?? resolveCallerLabel(callStack),
         sse: emptySse({
           open: true,
           eventCount: existing?.sse?.eventCount ?? 0,

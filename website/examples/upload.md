@@ -20,6 +20,10 @@ Pick a file and run **`api.upload()`** — real FormData + `createFetch` (mock r
 ## Upload
 
 ```ts
+import { createFetch } from 'tanstack-fetch/sse' // upload + progress need the full client
+
+const api = createFetch({ baseUrl: import.meta.env.VITE_API_URL })
+
 await api.upload('/files', {
   file,
   fields: { folder: 'avatars' },

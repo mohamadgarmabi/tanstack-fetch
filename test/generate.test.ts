@@ -53,6 +53,36 @@ const spec: OpenApiSpec = {
         },
       },
     },
+    '/orders/{id}/events': {
+      get: {
+        operationId: 'streamOrder',
+        tags: ['events'],
+        parameters: [{ name: 'id', in: 'path', required: true, schema: { type: 'string' } }],
+        responses: {
+          '200': {
+            content: {
+              'text/event-stream': { schema: { $ref: '#/components/schemas/OrderEvent' } },
+            },
+          },
+        },
+      },
+    },
+    '/chat': {
+      post: {
+        operationId: 'chatStream',
+        tags: ['chat'],
+        requestBody: {
+          content: { 'application/json': { schema: { $ref: '#/components/schemas/User' } } },
+        },
+        responses: {
+          '200': {
+            content: {
+              'application/x-ndjson': { schema: { $ref: '#/components/schemas/OrderEvent' } },
+            },
+          },
+        },
+      },
+    },
   },
   components: {
     schemas: {
@@ -86,7 +116,9 @@ describe('tanstack-fetch generate', () => {
     expect(types).toContain('type User =')
     expect(client).toContain("api.get<User, { id: string }>('/users/:id'")
     expect(client).toContain("api.sse<OrderEvent>('/events'")
+    expect(client).toContain("api.sse<OrderEvent, { id: string }>('/orders/:id/events'")
     expect(client).toContain('listUsers')
-    expect(client).toContain("from 'tanstack-fetch/sse'")
+    expect(client).toContain("api.stream<OrderEvent>('/chat', { ...options, method: 'POST' })")
+    expect(client).toContain("from 'tanstack-fetch/live'")
   })
 })

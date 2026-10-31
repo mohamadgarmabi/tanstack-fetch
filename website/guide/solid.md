@@ -30,10 +30,11 @@ import { createFetch } from 'tanstack-fetch'
 import { FetchProvider, useFetch } from 'tanstack-fetch/solid'
 import { createQuery } from '@tanstack/solid-query'
 import { isFetchError } from 'tanstack-fetch'
+import { createAuthInterceptor } from 'tanstack-fetch/plugins'
 
 const api = createFetch({
   baseUrl: import.meta.env.VITE_API_URL,
-  getToken: () => localStorage.getItem('access_token'),
+  interceptors: [createAuthInterceptor({ getToken: () => localStorage.getItem('access_token') })],
 })
 
 const App = () => (
@@ -84,6 +85,34 @@ const OrdersLive = () => {
       <pre>{JSON.stringify(data(), null, 2)}</pre>
       <button type="button" onClick={close}>
         Stop
+      </button>
+    </div>
+  )
+}
+```
+
+## `useWs`
+
+Create the client from **`tanstack-fetch/live`** and pass `{ client: api }`. Same result shape as `useSse`, plus `send`. In the browser, set `authIn` (`'query'` or `'protocol'`) when you have a token. Add `transport: 'webtransport'` for WebTransport. See [WebSocket, WebTransport & streams](./websocket).
+
+```tsx
+import { createFetch } from 'tanstack-fetch/live'
+import { useWs } from 'tanstack-fetch/solid'
+
+const api = createFetch({ getToken: () => localStorage.getItem('access_token') })
+
+const ChatRoom = () => {
+  const { data, status, send } = useWs<ChatMessage>('/rooms/lobby', {
+    client: api,
+    authIn: 'query',
+  })
+
+  return (
+    <div>
+      <p>{status()}</p>
+      <p>{data()?.text ?? 'waiting…'}</p>
+      <button type="button" onClick={() => send({ text: 'hi' })}>
+        Send
       </button>
     </div>
   )

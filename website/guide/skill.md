@@ -82,6 +82,8 @@ You should see `tanstack-fetch`. Open **Customize → Skills** in Cursor to conf
 - [Vue & Nuxt](/guide/vue)
 - [Raw skill file](/skills/tanstack-fetch/SKILL.md)
 - [LLM context (`llms.txt`)](https://mohamadgarmabi.github.io/tanstack-fetch/llms.txt)
+- [Release 2.0.0 — 3.57KB core · typed live params](/blog/tanstack-fetch-2-0-0)
+- [Release 1.8.0 — WebSocket · WebTransport · NDJSON](/blog/tanstack-fetch-1-8-0)
 - [Release 1.7.1 — timeouts · URLs · errors](/blog/tanstack-fetch-1-7-1)
 - [Release 1.7.0 — doctor · Solid · Svelte](/blog/tanstack-fetch-1-7-0)
 - [Release 1.6.3 — migrate](/blog/tanstack-fetch-1-6-3)

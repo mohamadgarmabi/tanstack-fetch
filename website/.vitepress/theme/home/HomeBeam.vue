@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { onBeforeUnmount, onMounted, ref } from 'vue'
 import { withBase } from 'vitepress'
+import { PACKAGE_VERSION } from './home.content'
 
 type BeamNode = {
   id: string
@@ -13,6 +14,7 @@ const nodes: BeamNode[] = [
   { id: 'query', label: 'Query', href: '/guide/tanstack-query', side: 'left' },
   { id: 'ssr', label: 'SSR', href: '/guide/ssr', side: 'left' },
   { id: 'sse', label: 'SSE', href: '/guide/sse', side: 'left' },
+  { id: 'ws', label: 'WebSocket', href: '/guide/websocket', side: 'left' },
   { id: 'solid', label: 'Solid', href: '/guide/migrate#solid', side: 'left' },
   { id: 'angular', label: 'Angular', href: '/guide/migrate#angular', side: 'left' },
   { id: 'react', label: 'React', href: '/guide/react', side: 'right' },
@@ -20,6 +22,12 @@ const nodes: BeamNode[] = [
   { id: 'nextjs', label: 'Next.js', href: '/guide/ssr', side: 'right' },
   { id: 'svelte', label: 'Svelte', href: '/guide/migrate#svelte--sveltekit', side: 'right' },
   { id: 'trpc', label: 'tRPC', href: '/guide/trpc', side: 'right' },
+  {
+    id: 'wt',
+    label: 'WebTransport',
+    href: '/guide/websocket#webtransport-api-transport',
+    side: 'right',
+  },
 ]
 
 const containerRef = ref<HTMLElement | null>(null)
@@ -99,11 +107,12 @@ const gradientIdFor = (id: string) => `home-beam-grad-${id}`
 <template>
   <section class="home-beam" aria-label="One client connected to every call site">
     <div class="home-section-head">
-      <p class="home-eyebrow">Call graph · v1.7.0</p>
+      <p class="home-eyebrow">Call graph · v{{ PACKAGE_VERSION }}</p>
       <h2>One client. Beams to every surface.</h2>
       <p class="home-lead">
-        Auth, plugins, and typed errors stay on <code>createFetch</code>. Query, SSR, SSE, React,
-        Vue, Nuxt, Next.js, Solid, Angular, Svelte, and tRPC only plug in.
+        Auth, plugins, and typed errors stay on <code>createFetch</code>. Query, SSR, SSE,
+        WebSocket, WebTransport, NDJSON streams, React, Vue, Nuxt, Next.js, Solid, Angular, Svelte,
+        and tRPC only plug in.
       </p>
     </div>
 

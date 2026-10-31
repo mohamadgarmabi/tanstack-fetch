@@ -9,6 +9,8 @@ description: Server-Sent Events over fetch with Authorization — api.sse plus u
 
 `tanstack-fetch/sse` is **framework-agnostic**. Optional `useSse` helpers live in `tanstack-fetch/react`, `/vue`, `/solid`, `/angular`, and `/svelte`.
 
+Need two-way messages or NDJSON? See [WebSocket, WebTransport & streams](/guide/websocket) (`tanstack-fetch/live`, which also includes `api.sse`).
+
 `EventSource` cannot set `Authorization`. Use `tanstack-fetch/sse` (`api.sse`) for authenticated streams — see [`/recipes/eventsource-auth-headers`](/recipes/eventsource-auth-headers).
 
 Use the **Framework** picker in the header to show one stack at a time.

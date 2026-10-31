@@ -8,10 +8,8 @@ const detect = (source: string) =>
   /(?:const|let|var)\s+\w+\s*=\s*await\s+fetch\s*\(/.test(source)
 
 const applySafeTransforms = (source: string): string => {
-  if (!detect(source) || /from\s*['"]tanstack-fetch['"]/.test(source)) {
-    return source
-  }
-  return ensureTanstackFetchImport(source)
+  // ensureTanstackFetchImport is a no-op when tanstack-fetch is already imported
+  return detect(source) ? ensureTanstackFetchImport(source) : source
 }
 
 const collectFindings = (file: string, source: string): MigrateFinding[] => {
@@ -31,7 +29,7 @@ const collectFindings = (file: string, source: string): MigrateFinding[] => {
         note: 'Replace raw fetch with api.get/post/… from a shared createFetch client',
       })
     }
-    if (/\b(res|response)\.ok\b/.test(line) || /\b(res|response)\.ok\s*===/.test(line)) {
+    if (/\b(res|response)\.ok\b/.test(line)) {
       findings.push({
         file,
         line: lineNumber,
@@ -58,7 +56,7 @@ const collectFindings = (file: string, source: string): MigrateFinding[] => {
         source: 'fetch',
         kind: 'manual',
         snippet: trimmed,
-        note: 'Prefer getToken / headers on createFetch instead of manual Authorization',
+        note: 'Prefer createAuthInterceptor / headers on createFetch instead of manual Authorization',
       })
     }
   })

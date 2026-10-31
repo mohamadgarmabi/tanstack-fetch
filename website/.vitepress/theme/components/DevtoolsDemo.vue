@@ -2,8 +2,14 @@
 import { computed, onBeforeUnmount, onMounted, reactive, ref } from 'vue'
 import { createFetch, isFetchError } from 'tanstack-fetch'
 import { createFetch as createSseFetch } from 'tanstack-fetch/sse'
+import { createFetch as createLiveFetch } from 'tanstack-fetch/live'
 import { createTRPCFetch } from 'tanstack-fetch/trpc'
 import { createDevtools, mountDevtools } from 'tanstack-fetch/devtools'
+import {
+  createAuthInterceptor,
+  createSsrForwardInterceptor,
+  createTraceInterceptor,
+} from 'tanstack-fetch/plugins'
 import type { DevtoolsKindFlags } from 'tanstack-fetch/devtools'
 
 type Tick = { n: number; at: string }
@@ -16,6 +22,8 @@ const flags = reactive<DevtoolsKindFlags>({
   sse: true,
   ssr: true,
   trpc: true,
+  ws: true,
+  stream: true,
 })
 
 const encoder = new TextEncoder()
@@ -61,6 +69,25 @@ const mockFetch: typeof fetch = async (input, init) => {
         'cache-control': 'no-cache',
       },
     })
+  }
+
+  if (url.includes('/chat')) {
+    let index = 0
+    const words = ['Streaming', ' one', ' JSON', ' line', ' at', ' a', ' time.']
+    const body = new ReadableStream<Uint8Array>({
+      start: (controller) => {
+        const timer = setInterval(() => {
+          if (index >= words.length) {
+            clearInterval(timer)
+            controller.close()
+            return
+          }
+          controller.enqueue(encoder.encode(`${JSON.stringify({ text: words[index] })}\n`))
+          index += 1
+        }, 180)
+      },
+    })
+    return new Response(body, { status: 200, headers: { 'content-type': 'application/x-ndjson' } })
   }
 
   if (url.includes('/api/trpc')) {
@@ -121,15 +148,19 @@ const devtools = createDevtools({
   sse: true,
   ssr: true,
   trpc: true,
+  ws: true,
+  stream: true,
   maxEntries: 100,
 })
 
 const httpApi = createFetch({
   baseUrl: 'https://demo.tanstack-fetch.local',
   fetch: mockFetch,
-  plugins: ['trace'],
-  interceptors: [devtools.interceptor],
-  getToken: () => 'demo-browser-token',
+  interceptors: [
+    createAuthInterceptor({ getToken: () => 'demo-browser-token' }),
+    createTraceInterceptor(),
+    devtools.interceptor,
+  ],
   maxRetries: 0,
 })
 
@@ -137,8 +168,7 @@ const ssrApi = createFetch({
   baseUrl: 'https://demo.tanstack-fetch.local',
   fetch: mockFetch,
   source: 'ssr',
-  plugins: ['trace', 'ssr-forward'],
-  interceptors: [devtools.interceptor],
+  interceptors: [createTraceInterceptor(), createSsrForwardInterceptor(), devtools.interceptor],
   incoming: { cookie: 'session=demo-ssr', requestId: 'ssr-preview-1' },
   maxRetries: 0,
 })
@@ -151,6 +181,63 @@ const sseApi = createSseFetch({
   getToken: () => 'demo-sse-token',
   maxRetries: 0,
 })
+
+// Mock socket / session: a few server pushes, echoes what you send, then closes normally.
+const fakeSocket = (onFinish: () => void) => {
+  const socket = {
+    readyState: 0,
+    onopen: null as ((event: Event) => void) | null,
+    onmessage: null as ((event: MessageEvent) => void) | null,
+    onerror: null as ((event: Event) => void) | null,
+    onclose: null as ((event: CloseEvent) => void) | null,
+    send: (frame: string) =>
+      setTimeout(() => socket.onmessage?.({ data: frame } as MessageEvent), 150),
+    close: () => {
+      socket.readyState = 3
+    },
+  }
+  let n = 0
+  setTimeout(() => {
+    socket.readyState = 1
+    socket.onopen?.(new Event('open'))
+    const timer = setInterval(() => {
+      n += 1
+      socket.onmessage?.({ data: JSON.stringify({ tick: n }) } as MessageEvent)
+      if (n >= 4) {
+        clearInterval(timer)
+        socket.readyState = 3
+        socket.onclose?.({ code: 1000 } as CloseEvent)
+        onFinish()
+      }
+    }, 400)
+  }, 200)
+  return socket as unknown as WebSocket
+}
+
+const liveApi = createLiveFetch({
+  baseUrl: 'https://demo.tanstack-fetch.local',
+  fetch: mockFetch,
+  plugins: ['trace'],
+  interceptors: [devtools.interceptor],
+  getToken: () => 'demo-live-token',
+  maxRetries: 0,
+  createWebSocket: () => fakeSocket(() => (log.value = 'WebSocket closed (1000) — see WS tab')),
+})
+
+const runWs = () => {
+  log.value = 'WebSocket connecting — messages in / out appear in the WS tab'
+  const socket = liveApi.ws('/rooms/:id', { params: { id: 7 }, authIn: 'query' })
+  socket.send({ text: 'hello from the demo' })
+}
+
+const runStream = async () => {
+  log.value = 'NDJSON streaming — one entry per line in the Stream tab'
+  let text = ''
+  for await (const chunk of liveApi.stream<{ text: string }>('/chat', { body: { prompt: 'hi' } })) {
+    text += chunk.text
+    log.value = `NDJSON · ${text}`
+  }
+}
 
 const trpcFetch = createTRPCFetch({
   baseUrl: 'https://demo.tanstack-fetch.local',
@@ -298,11 +385,12 @@ const clearPanel = () => {
 <template>
   <div class="devtools-demo status-playground">
     <p class="status-playground-eyebrow">
-      Alt+Shift+F (⌥⇧F) · caller file in list · click graph → Cursor / Zed / VS Code
+      Alt+Shift+F (⌥⇧F) · WS + Stream tabs (1.8.0) · caller file in list · click graph → Cursor /
+      Zed / VS Code
     </p>
     <p class="devtools-demo-lead">
-      Simple dock: request list, SSE event list, and a call graph showing where the request was
-      fired.
+      Simple dock: request list, SSE events and WebSocket / NDJSON messages, and a call graph
+      showing where the request was fired.
     </p>
 
     <div class="devtools-demo-flags">
@@ -323,6 +411,8 @@ const clearPanel = () => {
         SSR + cookies
       </button>
       <button type="button" class="status-chip tone-rate" @click="runSse">SSE stream</button>
+      <button type="button" class="status-chip tone-client" @click="runWs">WebSocket</button>
+      <button type="button" class="status-chip tone-auth" @click="runStream">NDJSON stream</button>
       <button type="button" class="status-chip tone-server" :disabled="busy" @click="runTrpc">
         tRPC fetch
       </button>

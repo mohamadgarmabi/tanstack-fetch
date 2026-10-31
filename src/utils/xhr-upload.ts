@@ -96,8 +96,7 @@ const uploadWithProgress = (args: XhrProgressArgs): Promise<Response> =>
     xhr.send(args.body ?? null)
   })
 
-const canTrackUploadProgress = () => typeof XMLHttpRequest !== 'undefined'
+type XhrSender = typeof uploadWithProgress
 
-const canTrackDownloadProgress = () => typeof XMLHttpRequest !== 'undefined'
-
-export { uploadWithProgress, canTrackUploadProgress, canTrackDownloadProgress }
+export { uploadWithProgress }
+export type { XhrSender }

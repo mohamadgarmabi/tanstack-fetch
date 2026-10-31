@@ -44,7 +44,6 @@ const mockFetch: typeof fetch = async (input, init) => {
 const api = createFetch({
   baseUrl: 'https://demo.tanstack-fetch.local',
   fetch: mockFetch,
-  plugins: [],
   maxRetries: 0,
 })
 

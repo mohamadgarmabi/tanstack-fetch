@@ -1,12 +1,12 @@
 import { registerClientOptions } from '../client-options'
-import { createFetchContext, createHttpClient } from '../create-fetch'
+import { createFullFetchContext, createFullHttpClient } from '../create-fetch-full'
 import { createSseApi } from '../sse-listen'
 import type { CreateFetchOptions, FetchClient } from '../types'
 
 /** Full client with SSE. Prefer this when you need `api.sse()`. */
 const createFetch = (options: CreateFetchOptions = {}): FetchClient => {
-  const context = createFetchContext(options)
-  const http = createHttpClient(context)
+  const context = createFullFetchContext(options)
+  const http = createFullHttpClient(context)
   const client: FetchClient = {
     ...http,
     sse: createSseApi({

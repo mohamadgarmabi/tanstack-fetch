@@ -1,6 +1,6 @@
 ---
 title: React API
-description: React API reference for tanstack-fetch — FetchProvider, useFetch, and useSse options and return values.
+description: React API reference for tanstack-fetch — FetchProvider, useFetch, useSse, and useWs options and return values.
 ---
 
 # React API
@@ -8,14 +8,15 @@ description: React API reference for tanstack-fetch — FetchProvider, useFetch,
 ![React API](/images/page-api-react.jpg)
 
 ```ts
-import { FetchProvider, useFetch, useSse } from 'tanstack-fetch/react'
+import { FetchProvider, useFetch, useSse, useWs } from 'tanstack-fetch/react'
 ```
 
-| Export                  | Role                                |
-| ----------------------- | ----------------------------------- |
-| `FetchProvider`         | Optional shared client via context  |
-| `useFetch()`            | Read client from `FetchProvider`    |
-| `useSse(path, options)` | React SSE helper (needs SSE client) |
+| Export                  | Role                                                               |
+| ----------------------- | ------------------------------------------------------------------ |
+| `FetchProvider`         | Optional shared client via context                                 |
+| `useFetch()`            | Read client from `FetchProvider`                                   |
+| `useSse(path, options)` | React SSE helper (needs SSE client)                                |
+| `useWs(path, options)`  | WebSocket / WebTransport hook (needs `tanstack-fetch/live` client) |
 
 ### `useSse` result
 
@@ -64,5 +65,24 @@ const OrdersLive = () => {
   )
 }
 ```
+
+### `useWs` result
+
+| Field    | Type                                                       |
+| -------- | ---------------------------------------------------------- |
+| `data`   | last message (JSON parsed)                                 |
+| `error`  | last error                                                 |
+| `status` | `'connecting' \| 'connected' \| 'disconnected' \| 'error'` |
+| `send`   | Send a message (queued until open, JSON for objects)       |
+| `close`  | Close and stop reconnecting                                |
+
+### `useWs` options
+
+All [`api.ws` options](/guide/websocket#options) (`authIn`, `reconnect`, `protocols`, `transport`, `params`, `query`, …), plus:
+
+| Option    | Role                                              |
+| --------- | ------------------------------------------------- |
+| `client`  | Client from `tanstack-fetch/live` (**preferred**) |
+| `enabled` | When `false`, stays `disconnected`                |
 
 Live demo: [SSE — useSse](/guide/sse#react-usesse) · [React guide](/guide/react#usesse)

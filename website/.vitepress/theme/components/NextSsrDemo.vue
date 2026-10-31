@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import { createFetch } from 'tanstack-fetch'
+import { createSsrForwardInterceptor, createTraceInterceptor } from 'tanstack-fetch/plugins'
 
 type StepLog = { id: number; text: string }
 
@@ -33,7 +34,7 @@ const runServerPrefetch = async () => {
     const serverApi = createFetch({
       baseUrl: 'https://demo.tanstack-fetch.local',
       source: 'ssr',
-      plugins: ['ssr-forward', 'trace'],
+      interceptors: [createSsrForwardInterceptor(), createTraceInterceptor()],
       fetch: createMockFetch('SSR'),
       incoming: {
         cookie: 'session=demo-user; theme=dark',
@@ -41,7 +42,7 @@ const runServerPrefetch = async () => {
         requestId: 'req-from-next',
       },
     })
-    push('server: createFetch({ source: "ssr", plugins: ["ssr-forward"] })')
+    push('server: createFetch({ source: "ssr", interceptors: [createSsrForwardInterceptor()] })')
     const data = await serverApi.get('/users')
     push(`server prefetch ok · ${JSON.stringify(data)}`)
   } finally {
@@ -55,7 +56,7 @@ const runBrowserClient = async () => {
     const browserApi = createFetch({
       baseUrl: 'https://demo.tanstack-fetch.local',
       source: 'browser',
-      plugins: ['ssr-forward', 'trace'],
+      interceptors: [createSsrForwardInterceptor(), createTraceInterceptor()],
       fetch: createMockFetch('Browser'),
       credentials: 'include',
       // ssr-forward no-ops in browser — cookies come from the document
@@ -75,12 +76,13 @@ const clearLogs = () => {
 const snippet = `// app/users/page.tsx (Next.js App Router)
 import { cookies } from 'next/headers'
 import { createFetch } from 'tanstack-fetch'
+import { createSsrForwardInterceptor, createTraceInterceptor } from 'tanstack-fetch/plugins'
 
 const createServerApi = async () =>
   createFetch({
     baseUrl: process.env.API_URL!,
     source: 'ssr',
-    plugins: ['ssr-forward', 'trace'],
+    interceptors: [createSsrForwardInterceptor(), createTraceInterceptor()],
     incoming: async () => ({
       cookie: (await cookies()).toString(),
     }),

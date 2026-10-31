@@ -46,6 +46,8 @@ type CollectedOperation = {
   operationId: string
   tag: string
   isSse: boolean
+  /** `application/x-ndjson` / `application/jsonl` response → `api.stream`. */
+  isNdjson: boolean
   parameters: OpenApiParameter[]
   bodySchema?: JsonSchema
   successSchema?: JsonSchema

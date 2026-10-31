@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue'
 import { createFetch, isFetchError, parseRetryAfter } from 'tanstack-fetch'
+import { createStatusInterceptor } from 'tanstack-fetch/plugins'
 
 type StatusButton = {
   status: number
@@ -71,27 +72,29 @@ const mockFetch: typeof fetch = async (input) => {
 const api = createFetch({
   baseUrl: 'https://demo.tanstack-fetch.local',
   fetch: mockFetch,
-  plugins: [],
   maxRetries: 0,
-  onBadRequest: ({ status }) => pushLog('handler', `onBadRequest (${status})`),
-  onUnauthorized: ({ status }) => pushLog('handler', `onUnauthorized (${status})`),
-  onForbidden: ({ status }) => pushLog('handler', `onForbidden (${status})`),
-  onNotFound: ({ status }) => pushLog('handler', `onNotFound (${status})`),
-  onMethodNotAllowed: ({ status }) => pushLog('handler', `onMethodNotAllowed (${status})`),
-  onRequestTimeout: ({ status }) => pushLog('handler', `onRequestTimeout (${status})`),
-  onConflict: ({ status }) => pushLog('handler', `onConflict (${status})`),
-  onGone: ({ status }) => pushLog('handler', `onGone (${status})`),
-  onPayloadTooLarge: ({ status }) => pushLog('handler', `onPayloadTooLarge (${status})`),
-  onUnsupportedMediaType: ({ status }) => pushLog('handler', `onUnsupportedMediaType (${status})`),
-  onUnprocessableEntity: ({ status }) => pushLog('handler', `onUnprocessableEntity (${status})`),
-  onTooManyRequests: ({ status, context }) => {
-    const waitMs = parseRetryAfter(context.response?.headers, 1000)
-    pushLog('handler', `onTooManyRequests (${status}) · retry after ${waitMs}ms`)
-  },
-  onUnavailableForLegalReasons: ({ status }) =>
-    pushLog('handler', `onUnavailableForLegalReasons (${status})`),
-  onClientError: ({ status }) => pushLog('handler', `onClientError / 4xx (${status})`),
-  onServerError: ({ status }) => pushLog('handler', `onServerError / 5xx (${status})`),
+  interceptors: [
+    createStatusInterceptor({
+      400: ({ status }) => pushLog('handler', `onBadRequest (${status})`),
+      401: ({ status }) => pushLog('handler', `onUnauthorized (${status})`),
+      403: ({ status }) => pushLog('handler', `onForbidden (${status})`),
+      404: ({ status }) => pushLog('handler', `onNotFound (${status})`),
+      405: ({ status }) => pushLog('handler', `onMethodNotAllowed (${status})`),
+      408: ({ status }) => pushLog('handler', `onRequestTimeout (${status})`),
+      409: ({ status }) => pushLog('handler', `onConflict (${status})`),
+      410: ({ status }) => pushLog('handler', `onGone (${status})`),
+      413: ({ status }) => pushLog('handler', `onPayloadTooLarge (${status})`),
+      415: ({ status }) => pushLog('handler', `onUnsupportedMediaType (${status})`),
+      422: ({ status }) => pushLog('handler', `onUnprocessableEntity (${status})`),
+      429: ({ status, context }) => {
+        const waitMs = parseRetryAfter(context.response?.headers, 1000)
+        pushLog('handler', `onTooManyRequests (${status}) · retry after ${waitMs}ms`)
+      },
+      451: ({ status }) => pushLog('handler', `onUnavailableForLegalReasons (${status})`),
+      '4xx': ({ status }) => pushLog('handler', `onClientError / 4xx (${status})`),
+      '5xx': ({ status }) => pushLog('handler', `onServerError / 5xx (${status})`),
+    }),
+  ],
 })
 
 const runStatus = async (status: number) => {
@@ -124,12 +127,16 @@ const clearLogs = () => {
 
 const codeSnippet = computed(
   () => `const api = createFetch({
-  onTooManyRequests: ({ context }) => {
-    const waitMs = parseRetryAfter(context.response?.headers)
-    // show toast / backoff…
-  },
-  onClientError: ({ status }) => console.warn('4xx', status),
-  onUnauthorized: () => logout(),
+  interceptors: [
+    createStatusInterceptor({
+      401: () => logout(),
+      429: ({ context }) => {
+        const waitMs = parseRetryAfter(context.response?.headers)
+        // show toast / backoff…
+      },
+      '4xx': ({ status }) => console.warn('4xx', status),
+    }),
+  ],
 })`,
 )
 </script>

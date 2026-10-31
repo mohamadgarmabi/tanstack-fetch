@@ -1,5 +1,6 @@
 import { describe, expect, it, vi } from 'vitest'
 import { createFetch } from '../src'
+import { createAuthInterceptor } from '../src/plugins-entry'
 import { createTRPCFetch, createTRPCFetchLink } from '../src/trpc'
 import { jsonResponse } from './helpers'
 
@@ -11,7 +12,7 @@ describe('tanstack-fetch/trpc', () => {
     const api = createFetch({
       baseUrl: 'https://api.example.com',
       fetch: fetchImpl,
-      getToken: async () => 'secret-token',
+      interceptors: [createAuthInterceptor({ getToken: async () => 'secret-token' })],
       timeoutMs: 5_000,
     })
 

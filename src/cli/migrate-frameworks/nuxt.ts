@@ -7,10 +7,19 @@ const nuxtScaffold: FrameworkScaffold = {
     {
       path: 'lib/api.ts',
       contents: `import { createFetch, isFetchError } from 'tanstack-fetch'
+import {
+  createRetryIdempotentInterceptor,
+  createSsrForwardInterceptor,
+  createTraceInterceptor,
+} from 'tanstack-fetch/plugins'
 
 export const api = createFetch({
   baseUrl: process.env.NUXT_PUBLIC_API_URL ?? 'https://api.example.com',
-  plugins: ['trace', 'retry-idempotent', 'ssr-forward'],
+  interceptors: [
+    createTraceInterceptor(),
+    createRetryIdempotentInterceptor(),
+    createSsrForwardInterceptor(),
+  ],
 })
 
 export { isFetchError }

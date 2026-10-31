@@ -22,7 +22,7 @@ npm install tanstack-fetch vue
 npm install @tanstack/vue-query
 ```
 
-For SSE, React, Vue/Nuxt, or tRPC, import the matching entry — same package.
+For SSE, WebSocket / WebTransport / NDJSON (`tanstack-fetch/live`), React, Vue/Nuxt, or tRPC, import the matching entry — same package.
 
 ---
 
@@ -77,27 +77,41 @@ Framework-agnostic — works in React, Vue, Nuxt, and Next.js.
 ```ts
 // src/lib/api.ts
 import { createFetch } from 'tanstack-fetch'
+import {
+  createAuthInterceptor,
+  createRetryIdempotentInterceptor,
+  createStatusInterceptor,
+  createTraceInterceptor,
+} from 'tanstack-fetch/plugins'
 
 export const api = createFetch({
   baseUrl: import.meta.env.VITE_API_URL ?? 'https://api.example.com',
-  getToken: () => localStorage.getItem('access_token'),
-  onUnauthorized: () => {
-    localStorage.removeItem('access_token')
-    window.location.href = '/login'
-  },
-  plugins: ['trace', 'retry-idempotent'],
+  interceptors: [
+    createAuthInterceptor({ getToken: () => localStorage.getItem('access_token') }),
+    createStatusInterceptor({
+      401: () => {
+        localStorage.removeItem('access_token')
+        window.location.href = '/login'
+      },
+    }),
+    createTraceInterceptor(),
+    createRetryIdempotentInterceptor(),
+  ],
 })
 ```
+
+The core `tanstack-fetch` entry is slim (**3.57KB**) — auth, status handlers and plugins are interceptors. Prefer `getToken` / `onUnauthorized` / `plugins: [...]` shortcuts or need `upload()`? Import `createFetch` from `tanstack-fetch/sse` (or `/live`) — same options, plus those. See [Core entry points](./introduction#core-entry-points).
 
 ## Quick taste — typed params & body
 
 ```ts
 import { createFetch, isFetchError } from 'tanstack-fetch'
 import type { NoParams } from 'tanstack-fetch'
+import { createAuthInterceptor } from 'tanstack-fetch/plugins'
 
 const api = createFetch({
   baseUrl: import.meta.env.VITE_API_URL,
-  getToken: () => localStorage.getItem('access_token'),
+  interceptors: [createAuthInterceptor({ getToken: () => localStorage.getItem('access_token') })],
 })
 
 const user = await api.get<User, { id: string | number }>('/users/:id', { params: { id: '1' } })
@@ -129,5 +143,6 @@ try {
 | Vue / Nuxt helpers      | [Vue & Nuxt](./vue)                                            |
 | Next.js / Nuxt cookies  | [SSR](./ssr)                                                   |
 | Streams                 | [SSE](./sse)                                                   |
+| WebSocket / NDJSON      | [WebSocket, WebTransport & streams](./websocket)               |
 | SSE auth                | [EventSource auth headers](./recipes/eventsource-auth-headers) |
 | tRPC                    | [tRPC](./trpc)                                                 |

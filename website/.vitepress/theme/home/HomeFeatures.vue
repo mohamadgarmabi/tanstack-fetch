@@ -8,7 +8,7 @@ const ICON_BY_FEATURE: Record<string, HomeIconName> = {
   'Status handlers': 'shield',
   'Refresh on 401': 'refresh',
   'Request DevTools': 'devtools',
-  '4.81KB HTTP core': 'feather',
+  '3.57KB HTTP core': 'feather',
   Plugins: 'plug',
   'SSR forwarding': 'server',
   'SSE with auth': 'stream',

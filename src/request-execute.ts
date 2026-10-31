@@ -1,14 +1,15 @@
-import type { CreateFetchOptions, HttpInterceptor, RequestContext } from './types'
+import type {
+  CreateFetchOptions,
+  FetchResult,
+  HttpInterceptor,
+  RequestContext,
+  RequestOptions,
+} from './types'
 import { encodeBody, isBodyParseError, parseBody } from './utils/parse-body'
 import { toErrResult, toFetchErrorInfo, toOkResult } from './utils/result'
 import { runHook } from './interceptors/run-interceptors'
 import { createFetchError, isAbortError } from './fetch-error'
-import {
-  canTrackDownloadProgress,
-  canTrackUploadProgress,
-  uploadWithProgress,
-} from './utils/xhr-upload'
-import type { FetchResult, RequestOptions } from './types'
+import type { XhrSender } from './utils/xhr-upload'
 
 type AttemptOutcome<T, E> =
   { kind: 'result'; result: FetchResult<T, E> } | { kind: 'retry'; delayMs?: number }
@@ -18,19 +19,21 @@ type ExecuteArgs = {
   client: CreateFetchOptions
   interceptors: HttpInterceptor[]
   fetchImpl: typeof fetch
+  progress?: XhrSender
   context: RequestContext
 }
 
 const sendHttp = async (input: ExecuteArgs, body: BodyInit | null | undefined) => {
-  const { context, fetchImpl, client, requestOptions } = input
+  const { context, fetchImpl, client, requestOptions, progress } = input
   const onUploadProgress = requestOptions?.onUploadProgress
   const onDownloadProgress = requestOptions?.onDownloadProgress
-  const useXhrProgress =
-    (Boolean(onUploadProgress) && canTrackUploadProgress()) ||
-    (Boolean(onDownloadProgress) && canTrackDownloadProgress())
 
-  if (useXhrProgress) {
-    return uploadWithProgress({
+  if (
+    progress &&
+    (onUploadProgress || onDownloadProgress) &&
+    typeof XMLHttpRequest !== 'undefined'
+  ) {
+    return progress({
       url: context.request.url,
       method: context.request.method,
       headers: context.request.headers,

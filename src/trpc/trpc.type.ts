@@ -1,4 +1,4 @@
-import type { CreateFetchOptions, FetchClient } from '../types'
+import type { CoreFetchClient, CreateFetchOptions, FetchClient } from '../types'
 import type { FetchClientLike } from '../client-options'
 
 type CreateTRPCFetchSource = CreateFetchOptions | FetchClientLike
@@ -10,7 +10,7 @@ type CreateTRPCFetchLinkOptions = CreateFetchOptions & {
    * Reuse an existing `createFetch()` client (auth, plugins, status handlers).
    * When set, takes precedence over other createFetch fields on this object.
    */
-  client?: Omit<FetchClient, 'sse'> | FetchClient
+  client?: Omit<FetchClient, 'sse'> | FetchClient | CoreFetchClient
   /** Use `httpBatchLink` (default `true`) or plain `httpLink` when `false`. */
   batch?: boolean
 }

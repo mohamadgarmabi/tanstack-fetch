@@ -99,16 +99,26 @@ onBeforeUnmount(() => {
 })
 
 const snippet = `import { createFetch } from 'tanstack-fetch/sse'
+import { useSse } from 'tanstack-fetch/react'
 
 const api = createFetch({
   plugins: ['sse-resume'],
   getToken: () => localStorage.getItem('access_token'),
 })
 
-const stream = api.sse<Tick>('/orders/stream', {
-  onMessage: (data) => setTicks((t) => [data, ...t]),
-})
-// stream.close()`
+const OrdersLive = () => {
+  const { data, status, error, close } = useSse<Tick>('/orders/stream', {
+    client: api,
+  })
+
+  if (status === 'error') return <p>{error?.message}</p>
+  return (
+    <>
+      <p>{status} · tick #{data?.n}</p>
+      <button onClick={close}>Close</button>
+    </>
+  )
+}`
 </script>
 
 <template>

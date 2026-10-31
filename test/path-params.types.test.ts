@@ -2,6 +2,8 @@ import { describe, expectTypeOf, it } from 'vitest'
 import { createFetch, pathParams } from '../src'
 import type { ExtractPathParamKeys, NoParams, PathParamsOf } from '../src'
 import { createFetch as createSseFetch } from '../src/sse'
+import { createFetch as createLiveFetch } from '../src/live'
+import { useSse, useWs } from '../src/react'
 
 describe('path params types', () => {
   it('extracts colon and brace keys', () => {
@@ -108,5 +110,65 @@ describe('path params types', () => {
     const full = createSseFetch()
     expectTypeOf(full.get).toBeFunction()
     expectTypeOf(full.sse).toBeFunction()
+  })
+})
+
+describe('live path params types', () => {
+  it('types sse / ws / transport / stream params like HTTP', () => {
+    const live = createLiveFetch({ baseUrl: 'https://api.example.com' })
+    type Msg = { text: string }
+    type Params = { id: number }
+
+    // Compile-only checks — never invoke (would open connections)
+    const typeCheck = async () => {
+      // No generics → params inferred from the URL
+      live.sse('/orders/:id', { params: { id: 1 }, onMessage: () => undefined })
+      live.ws('/rooms/:id', { params: { id: 'a' } })
+      live.stream('/chat/{id}', { params: { id: 1 } })
+      live.ws('/feed')
+
+      // <Message, Params> → params typed as Params; path must contain the keys
+      live.sse<Msg, Params>('/orders/:id', {
+        params: { id: 1 },
+        onMessage: (message) => expectTypeOf(message).toEqualTypeOf<Msg>(),
+      })
+      const socket = live.ws<Msg, Params, { hi: string }>('/rooms/:id', { params: { id: 1 } })
+      socket.send({ hi: 'x' })
+      live.transport<Msg, Params>('/game/:id', { params: { id: 1 } })
+      for await (const item of live.stream<Msg, Params>('/chat/:id', { params: { id: 1 } })) {
+        expectTypeOf(item).toEqualTypeOf<Msg>()
+      }
+      for await (const event of live.sse<Msg, Params>('/orders/:id', { params: { id: 1 } })) {
+        expectTypeOf(event.data).toEqualTypeOf<Msg>()
+      }
+
+      // @ts-expect-error missing params for patterned path (no generics)
+      live.ws('/rooms/:id')
+      // @ts-expect-error wrong param key from the URL
+      live.stream('/chat/:id', { params: { chatId: 1 } })
+      // @ts-expect-error <Message, Params> without options
+      live.ws<Msg, Params>('/rooms/:id')
+      // @ts-expect-error params type does not match the path
+      live.sse<Msg, Params>('/orders/:orderId', { params: { id: 1 }, onMessage: () => undefined })
+      // @ts-expect-error wrong param value type
+      live.transport<Msg, Params>('/game/:id', { params: { id: 'x' } })
+    }
+    void typeCheck
+  })
+
+  it('types useSse / useWs params like HTTP', () => {
+    type Msg = { text: string }
+    const typeCheck = () => {
+      useSse<Msg, { id: number }>('/orders/:id', { params: { id: 1 } })
+      useWs<Msg, { id: string }, { hi: string }>('/rooms/:id', { params: { id: 'a' } }).send({
+        hi: 'x',
+      })
+      useWs('/rooms/:id', { params: { id: 'a' } })
+      // @ts-expect-error params type does not match the path
+      useSse<Msg, { id: number }>('/orders/:orderId', { params: { id: 1 } })
+      // @ts-expect-error wrong param key from the URL
+      useWs('/rooms/:id', { params: { roomId: 'a' } })
+    }
+    void typeCheck
   })
 })

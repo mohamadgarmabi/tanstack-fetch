@@ -20,6 +20,8 @@ type RequestContext = {
     operation?: string
     requestId?: string
     lastEventId?: string
+    /** Set for `api.ws` / `api.transport` / `api.stream` connections. */
+    transport?: 'websocket' | 'webtransport' | 'ndjson'
   }
 }
 
@@ -30,6 +32,11 @@ type SseEventContext<T = unknown> = RequestContext & {
     id?: string
     retry?: number
   }
+}
+
+/** A message on a live connection (`api.ws`, `api.transport`, `api.stream`). */
+type LiveMessageContext = RequestContext & {
+  message: { direction: 'in' | 'out'; data: unknown }
 }
 
 type InterceptorDecision<T> =
@@ -60,11 +67,18 @@ type HttpInterceptor = {
   onSseReconnect?: InterceptorHandler<RequestContext>
   /** Fired when the SSE stream ends cleanly (server close or client abort after open). */
   onSseClose?: InterceptorHandler<RequestContext>
+  /** `api.ws` / `api.transport` connected, or `api.stream` response opened. */
+  onLiveOpen?: InterceptorHandler<RequestContext>
+  /** Every message received (`in`) or sent (`out`) on a live connection. Observe-only. */
+  onLiveMessage?: InterceptorHandler<LiveMessageContext>
+  /** Fires once per connection; `context.error` is set when it ended abnormally. */
+  onLiveClose?: InterceptorHandler<RequestContext>
 }
 
 export type {
   RequestContext,
   SseEventContext,
+  LiveMessageContext,
   InterceptorDecision,
   InterceptorHandler,
   HttpInterceptor,

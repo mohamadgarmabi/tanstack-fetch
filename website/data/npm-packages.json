@@ -1,44 +1,44 @@
 {
-  "updatedAt": "2026-10-27T10:45:35.415Z",
+  "updatedAt": "2026-10-31T07:19:59.629Z",
   "author": "Mohammad Garmabi",
   "npmUser": "mohammad.garmabi",
   "packages": [
     {
       "name": "tanstack-fetch",
       "version": "1.7.1",
-      "weekly": 16,
-      "monthly": 1669,
-      "total": 3241,
+      "weekly": 41,
+      "monthly": 1190,
+      "total": 3271,
       "description": "TanStack Query fetch client — typed errors, AbortSignal, SSR, SSE, upload. React, Vue/Nuxt, Solid, Angular, Svelte/Svelt"
     },
     {
       "name": "vite-plugin-react-splash",
       "version": "1.1.0",
-      "weekly": 48,
-      "monthly": 366,
-      "total": 3258,
+      "weekly": 55,
+      "monthly": 242,
+      "total": 3270,
       "description": "Fast Vite splash screen plugin for React PWAs — critical CSS for better FCP/LCP, progress API, prefers-reduced-motion, w"
     },
     {
       "name": "url-validation-query",
       "version": "0.0.17",
-      "weekly": 3,
-      "monthly": 25,
-      "total": 2280,
+      "weekly": 20,
+      "monthly": 28,
+      "total": 2299,
       "description": "**URL Validation Query** URL Validation Query is a utility library providing a range of functions for managing query str"
     },
     {
       "name": "sse-shared-worker-react-hook",
       "version": "1.0.19",
-      "weekly": 0,
-      "monthly": 11,
-      "total": 2934,
+      "weekly": 1,
+      "monthly": 7,
+      "total": 2935,
       "description": "Type-safe Server-Sent Events (SSE) hook for React with token authentication and retry logic"
     },
     {
       "name": "react-video-capture",
       "version": "0.0.4",
-      "weekly": 1,
+      "weekly": 0,
       "monthly": 8,
       "total": 636,
       "description": "A flexible React component for video capture and recording"
@@ -54,38 +54,38 @@
     {
       "name": "sse-crossframework",
       "version": "1.0.2",
-      "weekly": 0,
-      "monthly": 8,
-      "total": 525,
+      "weekly": 5,
+      "monthly": 7,
+      "total": 530,
       "description": "Framework-agnostic SSE toolkit with React, Vue, and Solid adapters"
     },
     {
       "name": "image-auth",
       "version": "0.0.16",
-      "weekly": 4,
-      "monthly": 22,
-      "total": 1773,
+      "weekly": 23,
+      "monthly": 41,
+      "total": 1793,
       "description": "To install the package, you can use npm or yarn:"
     },
     {
       "name": "react-providers-tree",
       "version": "1.0.0",
       "weekly": 3,
-      "monthly": 8,
+      "monthly": 7,
       "total": 176,
       "description": "A utility to build a tree of React providers with their props"
     },
     {
       "name": "frontend-stack-cli",
       "version": "0.0.1",
-      "weekly": 0,
-      "monthly": 1,
-      "total": 184,
+      "weekly": 2,
+      "monthly": 3,
+      "total": 186,
       "description": "A CLI tool for setting up Stack Setup projects. It provides a guided process for creating a new project, selecting the p"
     }
   ],
   "totals": {
-    "weekly": 77,
-    "monthly": 2124
+    "weekly": 152,
+    "monthly": 1539
   }
 }

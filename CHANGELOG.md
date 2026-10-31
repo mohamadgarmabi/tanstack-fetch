@@ -1,5 +1,47 @@
 # Changelog
 
+## 2.0.0
+
+### Breaking
+
+- **Slim core**: `tanstack-fetch` drops from 5.14KB to **3.57KB** gzip. Core `createFetch` keeps `baseUrl`, `headers`, `source`, `incoming`, `timeoutMs`, `interceptors`, `fetch`, `credentials`, `maxRetries` (`CoreFetchOptions`)
+  - Removed from core: `getToken`, `auth`, `plugins: [...]`, `onStatus` and the `onUnauthorized` / `onForbidden` / … / `onServerError` shortcuts. Use interceptors from `tanstack-fetch/plugins`: `createAuthInterceptor({ getToken })`, `createStatusInterceptor({ 401: fn, '5xx': fn })`, `createTraceInterceptor()`, …
+  - Removed from the core client: `upload()` and `onUploadProgress` / `onDownloadProgress` (XHR)
+  - **Unchanged**: `tanstack-fetch/sse`, `/live`, `/trpc` and the framework providers keep every option, `upload()` and progress events — switch the import to `tanstack-fetch/sse` for a drop-in upgrade
+  - CLI `migrate` scaffolds now emit the interceptor style
+- **Typed live params**: `api.sse` / `ws` / `transport` / `stream` and `useSse` / `useWs` (React, Vue, Solid, Svelte, Angular) type `params` like `api.get` — inferred from the URL, or `api.ws<Message, { id: number }>('/rooms/:id', { params })` with the path checked against the keys
+  - Generic order now matches HTTP: `ws` / `transport` / `useWs` are `<Message, Params, Send>` (was `<Message, Send>`; use `NoParams` to skip); `sse` / `stream` / `useSse` are `<Message, Params>`
+  - `generate` emits the params type for SSE / NDJSON operations
+  - New exported types: `LiveParams`, `FetchMethodPath`, `FetchParamsConstraint`
+
+### Fixes
+
+- **Docs**: [tanstack-fetch 2.0.0](https://mohamadgarmabi.github.io/tanstack-fetch/blog/tanstack-fetch-2-0-0) release post
+- **`api.stream()`** (NDJSON): sends `duplex: 'half'` for `ReadableStream` bodies (required by Node/undici), runs `onRequestError` on network failures (retry / short-circuit like HTTP), and aborting during a retry delay rejects immediately
+
+## 1.8.0
+
+### Features
+
+- **`tanstack-fetch/live`**: new entry with every live transport — `api.sse()`, `api.ws()`, `api.transport()`, `api.stream()`. `tanstack-fetch/sse` is unchanged and stays small
+- **`api.ws()`** — WebSocket on the same auth / interceptors / plugins as HTTP
+  - `Authorization` header on Node 22+, Bun, Deno; browsers / workers need an explicit `authIn: 'query' | 'protocol'` (a token is never put in a URL by default)
+  - Auto-reconnect (5 attempts, exponential backoff, max 30s) with a fresh token per attempt; failed token refreshes count as attempts
+  - Ordered send queue until open, JSON frames parsed, absolute `ws(s)://` URLs, `signal`, `onClose` fires exactly once and closed sockets emit nothing
+  - `createWebSocket` option for the `ws` package on Node < 22
+- **`api.transport()`** — the same API over WebTransport (HTTP/3 datagrams); `webTransport` options (e.g. `serverCertificateHashes`), `createWebTransport` for polyfills
+- **`api.stream()`** — NDJSON / JSON-lines over fetch: any method + body, full interceptor pipeline (status handlers, `refresh-token`, retry), header-only timeout, returns an `AsyncIterable` for `streamedQuery`
+- **Live interceptor hooks**: `onLiveOpen`, `onLiveMessage` (`direction: 'in' | 'out'`), `onLiveClose` (with `error`); `context.meta.transport` is `'websocket' | 'webtransport' | 'ndjson'`
+- **DevTools**: new **WS** (WebSocket / WebTransport) and **Stream** (NDJSON) tabs with a per-connection message log; `ws` / `stream` flags
+- **CLI**: `generate` emits `api.stream` for `application/x-ndjson` / `jsonl` responses (imports `tanstack-fetch/live`); `doctor` flags raw `new WebSocket` / `new EventSource` and checks `signal` on `api.stream` in `queryFn`
+- **Examples**: [`examples/ws-chat`](./examples/ws-chat), live WebSocket / WebTransport / NDJSON demos in the docs playground, and a [Cookbook](https://mohamadgarmabi.github.io/tanstack-fetch/examples/cookbook) with an example for every feature
+- **`useWs`** in `tanstack-fetch/react`, `/vue`, `/solid`, `/svelte`, `/angular` (`transport: 'webtransport'` supported)
+- **Docs**: [WebSocket, WebTransport & streams](https://mohamadgarmabi.github.io/tanstack-fetch/guide/websocket) guide; blog: [tanstack-fetch 1.8.0](https://mohamadgarmabi.github.io/tanstack-fetch/blog/tanstack-fetch-1-8-0)
+
+### Fixes
+
+- **Types**: absolute URLs (`https://…`) no longer infer an empty required path param from the scheme's `:`
+
 ## 1.7.1
 
 ### Fixes

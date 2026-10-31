@@ -21,28 +21,28 @@ Use this checklist after the CLI scan (`npx tanstack-fetch migrate --from axios`
 
 ## 2. Manual review points
 
-| File                | Check                                      | Expected?                                                                       | Notes                                                                             |
-| ------------------- | ------------------------------------------ | ------------------------------------------------------------------------------- | --------------------------------------------------------------------------------- |
-| `src/lib/api.ts`    | Axios adapters missing?                    | **No axios adapter if you use `createFetch`**                                   | Compare: `onFulfilled` interceptor chains, retry logic.                           |
-| `src/queryFns/*.ts` | `signal` passed?                           | `api.get(url, { signal })`                                                      | If missing, rewrite to pass `{ signal }`.                                         |
-| `src/queries/...ts` | `api` used?                                | Return data, throw `FetchError`                                                 | Ensure `useQuery` receives `{ signal }` from React Query.                         |
-| `src/**/*.ts`       | `axios.defaults` references?               | **Remove** defaults, move to `createFetch` config                               | Re-apply globally to `api` via `getToken`, `onUnauthorized`, etc.                 |
-| `src/**/*.ts`       | `try/catch` around `axios`?                | **Simplify**: let `FetchError` bubble to Query error state                      | Only wrap if you need transformation of the error shape.                          |
-| `src/**/*.ts`       | `fetch` + `res.ok`?                        | Already covered by CLI, but review                                              | `--from axios --write` only rewrites axios-specific patterns.                     |
-| `src/**/*.ts`       | Manual `Authorization` header?             | Use `createFetch({ getToken })`                                                 | Avoid setting header manually on each request.                                    |
-| `src/**/*.ts`       | `HTTPError` (axios) used?                  | Import `isFetchError`                                                           | Same error-narrowing, only different name.                                        |
-| `src/**/*.ts`       | `axios.interceptors.request` / `response`? | Consolidate with `plugins` (`refresh-token`, `sse-resume`, `auth` interceptors) | `plugins: ['refresh-token']`; custom interceptors go in `guide/configuration.md`. |
+| File                | Check                                      | Expected?                                                                            | Notes                                                                                   |
+| ------------------- | ------------------------------------------ | ------------------------------------------------------------------------------------ | --------------------------------------------------------------------------------------- |
+| `src/lib/api.ts`    | Axios adapters missing?                    | **No axios adapter if you use `createFetch`**                                        | Compare: `onFulfilled` interceptor chains, retry logic.                                 |
+| `src/queryFns/*.ts` | `signal` passed?                           | `api.get(url, { signal })`                                                           | If missing, rewrite to pass `{ signal }`.                                               |
+| `src/queries/...ts` | `api` used?                                | Return data, throw `FetchError`                                                      | Ensure `useQuery` receives `{ signal }` from React Query.                               |
+| `src/**/*.ts`       | `axios.defaults` references?               | **Remove** defaults, move to `createFetch` config                                    | Re-apply globally via `createAuthInterceptor`, `createStatusInterceptor`, etc.          |
+| `src/**/*.ts`       | `try/catch` around `axios`?                | **Simplify**: let `FetchError` bubble to Query error state                           | Only wrap if you need transformation of the error shape.                                |
+| `src/**/*.ts`       | `fetch` + `res.ok`?                        | Already covered by CLI, but review                                                   | `--from axios --write` only rewrites axios-specific patterns.                           |
+| `src/**/*.ts`       | Manual `Authorization` header?             | Use `interceptors: [createAuthInterceptor({ getToken })]`                            | Avoid setting header manually on each request.                                          |
+| `src/**/*.ts`       | `HTTPError` (axios) used?                  | Import `isFetchError`                                                                | Same error-narrowing, only different name.                                              |
+| `src/**/*.ts`       | `axios.interceptors.request` / `response`? | Consolidate with `tanstack-fetch/plugins` interceptors (refresh-token, auth, status) | `createRefreshTokenInterceptor(…)`; custom interceptors go in `guide/configuration.md`. |
 
 ## 3. Adapter replacements (when you need axios behavior)
 
-| Axios feature                                    | tanstack-fetch equivalent                                                              | Where to document        |
-| ------------------------------------------------ | -------------------------------------------------------------------------------------- | ------------------------ |
-| `axios.interceptors.request.use`                 | `createFetch({ plugins: ['trace'] })` + custom `HttpInterceptor` (guide/configuration) | `guide/plugins.md`       |
-| `axios.interceptors.response.use`                | `onUnauthorized` / `onForbidden` handlers + `onResponseError`                          | `guide/configuration.md` |
-| `axios.interceptors.request.eject`               | `api.eject('my-interceptor')`                                                          | `guide/plugins.md`       |
-| `axios.request` or `axios({ ... })` (raw config) | Use `api.request('/path', { method, body, headers, signal })`                          | `guide/configuration.md` |
-| `axios.toFormData` (custom)                      | Use native `FormData` + `api.upload` or custom `interceptors`                          | `guide/upload.md`        |
-| `axios.getURI` (query params)                    | `{ query: { ... } }` (same shape as `params`)                                          | `guide/configuration.md` |
+| Axios feature                                    | tanstack-fetch equivalent                                                                   | Where to document        |
+| ------------------------------------------------ | ------------------------------------------------------------------------------------------- | ------------------------ |
+| `axios.interceptors.request.use`                 | `interceptors: [createTraceInterceptor()]` + custom `HttpInterceptor` (guide/configuration) | `guide/plugins.md`       |
+| `axios.interceptors.response.use`                | `createStatusInterceptor({ 401, 403 })` + `onResponseError`                                 | `guide/configuration.md` |
+| `axios.interceptors.request.eject`               | `api.eject('my-interceptor')`                                                               | `guide/plugins.md`       |
+| `axios.request` or `axios({ ... })` (raw config) | Use `api.request('/path', { method, body, headers, signal })`                               | `guide/configuration.md` |
+| `axios.toFormData` (custom)                      | Use native `FormData` + `api.upload` or custom `interceptors`                               | `guide/upload.md`        |
+| `axios.getURI` (query params)                    | `{ query: { ... } }` (same shape as `params`)                                               | `guide/configuration.md` |
 
 ## 4. Framework scaffold wiring
 

@@ -30,9 +30,7 @@ describe('tanstack-fetch/angular', () => {
 
   it('injectFetch throws without provider', () => {
     const injector = createInjector([])
-    expect(() => runInInjectionContext(injector, () => injectFetch())).toThrow(
-      /provideFetchClient/,
-    )
+    expect(() => runInInjectionContext(injector, () => injectFetch())).toThrow(/provideFetchClient/)
   })
 
   it('useSse receives messages with { client }', async () => {

@@ -23,18 +23,24 @@ Use the **Framework** picker to show only your stack.
 
 ## Core entry points
 
-| Import                   | What you get                         | gzip       |
-| ------------------------ | ------------------------------------ | ---------- |
-| `tanstack-fetch`         | HTTP (`get` / `post` / `upload` / …) | **4.81KB** |
-| `tanstack-fetch/sse`     | + `api.sse()`                        | **5.94KB** |
-| `tanstack-fetch/plugins` | plugin factories                     | **1.13KB** |
-| `tanstack-fetch/trpc`    | tRPC link via `createFetch`          | **3.16KB** |
-| `tanstack-fetch/devtools`| request dock                         | **8.32KB** |
+| Import                    | What you get                            | gzip       |
+| ------------------------- | --------------------------------------- | ---------- |
+| `tanstack-fetch`          | HTTP (`get` / `post` / … / `request`)   | **3.57KB** |
+| `tanstack-fetch/sse`      | + `upload()`, shortcuts, `api.sse()`    | **6.33KB** |
+| `tanstack-fetch/live`     | + `sse` / `ws` / `transport` / `stream` | **8.75KB** |
+| `tanstack-fetch/plugins`  | plugin factories                        | **1.13KB** |
+| `tanstack-fetch/trpc`     | tRPC link via `createFetch`             | **3.28KB** |
+| `tanstack-fetch/devtools` | request dock                            | **8.70KB** |
 
 ```ts
 import { createFetch } from 'tanstack-fetch' // HTTP only
-import { createFetch } from 'tanstack-fetch/sse' // + streams
+import { createFetch } from 'tanstack-fetch/sse' // + SSE
+import { createFetch } from 'tanstack-fetch/live' // + SSE, WebSocket, WebTransport, NDJSON
 ```
+
+::: info Core vs full
+`tanstack-fetch` is the slim core: `baseUrl`, `headers`, `source`, `incoming`, `timeoutMs`, `interceptors`, `fetch`, `credentials`, `maxRetries` — no `upload()` or progress events. Auth, status handlers and plugins go in `interceptors` via `tanstack-fetch/plugins`. `getToken`, `auth`, `plugins: [...]`, `onStatus`, `onUnauthorized` / … shortcuts and `upload()` live on the full entries (`/sse`, `/live`, `/trpc`) and framework providers.
+:::
 
 ## Next (core)
 
@@ -53,9 +59,9 @@ import { createFetch } from 'tanstack-fetch/sse' // + streams
 **React** · `tanstack-fetch/react`
 :::
 
-| Import                 | What you get              | gzip       |
-| ---------------------- | ------------------------- | ---------- |
-| `tanstack-fetch/react` | `FetchProvider` / `useFetch` / `useSse` | **0.81KB** |
+| Import                 | What you get                                      | gzip       |
+| ---------------------- | ------------------------------------------------- | ---------- |
+| `tanstack-fetch/react` | `FetchProvider` / `useFetch` / `useSse` / `useWs` | **0.99KB** |
 
 - [React guide](./react)
 - [TanStack Query](./tanstack-query)
@@ -110,9 +116,9 @@ import { createFetch } from 'tanstack-fetch/sse' // + streams
 **Vue 3 / Nuxt** · `tanstack-fetch/vue`
 :::
 
-| Import               | What you get                         | gzip       |
-| -------------------- | ------------------------------------ | ---------- |
-| `tanstack-fetch/vue` | plugin / composables (Vue 3 / Nuxt)  | **0.78KB** |
+| Import               | What you get                        | gzip       |
+| -------------------- | ----------------------------------- | ---------- |
+| `tanstack-fetch/vue` | plugin / composables (Vue 3 / Nuxt) | **0.94KB** |
 
 - [Vue & Nuxt guide](./vue)
 - [SSR · Nuxt](./ssr#nuxt)
@@ -127,9 +133,9 @@ import { createFetch } from 'tanstack-fetch/sse' // + streams
 **Solid** · `tanstack-fetch/solid`
 :::
 
-| Import                 | What you get                    |
-| ---------------------- | ------------------------------- |
-| `tanstack-fetch/solid` | `FetchProvider` / `useFetch` / `useSse` |
+| Import                 | What you get                                      |
+| ---------------------- | ------------------------------------------------- |
+| `tanstack-fetch/solid` | `FetchProvider` / `useFetch` / `useSse` / `useWs` |
 
 - [Solid guide](./solid)
 - [SSE · Solid](./sse#solid)
@@ -157,9 +163,9 @@ import { createFetch } from 'tanstack-fetch/sse' // + streams
 **Angular** · `tanstack-fetch/angular`
 :::
 
-| Import                   | What you get                                      |
-| ------------------------ | ------------------------------------------------- |
-| `tanstack-fetch/angular` | `provideFetchClient` / `injectFetch` / `useSse` |
+| Import                   | What you get                                              |
+| ------------------------ | --------------------------------------------------------- |
+| `tanstack-fetch/angular` | `provideFetchClient` / `injectFetch` / `useSse` / `useWs` |
 
 - [Angular guide](./angular)
 
@@ -173,9 +179,9 @@ import { createFetch } from 'tanstack-fetch/sse' // + streams
 **Svelte** · `tanstack-fetch/svelte`
 :::
 
-| Import                  | What you get                                 |
-| ----------------------- | -------------------------------------------- |
-| `tanstack-fetch/svelte` | `setFetchClient` / `useFetch` / `useSse` |
+| Import                  | What you get                                       |
+| ----------------------- | -------------------------------------------------- |
+| `tanstack-fetch/svelte` | `setFetchClient` / `useFetch` / `useSse` / `useWs` |
 
 - [Svelte guide](./svelte)
 

@@ -62,4 +62,13 @@ describe('doctor', () => {
     expect(result.findings.some((item) => item.code === 'missing-signal')).toBe(true)
     expect(result.exitCode).toBe(1)
   })
+
+  it('points raw WebSocket / EventSource at the live client', () => {
+    const root = writeProject({
+      'package.json': JSON.stringify({ dependencies: { 'tanstack-fetch': '1.8.0' } }),
+      'src/socket.ts': `export const socket = new WebSocket('wss://x/rooms')\n`,
+    })
+    const result = doctor({ command: 'doctor', dir: root })
+    expect(result.findings.some((item) => item.code === 'raw-live-connections')).toBe(true)
+  })
 })

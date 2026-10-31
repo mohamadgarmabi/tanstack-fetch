@@ -1,6 +1,7 @@
 import { getContext, setContext } from 'svelte'
-import { createFetch } from 'tanstack-fetch'
-import type { CreateFetchOptions } from 'tanstack-fetch'
+// Providers accept every option shortcut (getToken, onUnauthorized, plugins, …).
+import { createFetch } from 'tanstack-fetch/sse'
+import type { CoreFetchClient, CreateFetchOptions } from 'tanstack-fetch'
 import {
   FETCH_CONTEXT_KEY,
   getFetchClient,
@@ -9,11 +10,11 @@ import {
 } from './fetch-context'
 
 type SetFetchClientOptions = CreateFetchOptions & {
-  client?: AnyFetchClient
+  client?: AnyFetchClient | CoreFetchClient
 }
 
 const resolveClient = (options: SetFetchClientOptions = {}): AnyFetchClient => {
-  if (options.client) return options.client
+  if (options.client) return options.client as AnyFetchClient
   const { client: _client, ...createOptions } = options
   return createFetch(createOptions as CreateFetchOptions)
 }

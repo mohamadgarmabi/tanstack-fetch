@@ -1,11 +1,21 @@
 import { createFetch } from 'tanstack-fetch'
+import {
+  createAuthInterceptor,
+  createRetryIdempotentInterceptor,
+  createSsrForwardInterceptor,
+  createTraceInterceptor,
+} from 'tanstack-fetch/plugins'
 import { cookies, headers } from 'next/headers'
 
 const createServerApi = async () =>
   createFetch({
     baseUrl: process.env.API_URL ?? process.env.NEXT_PUBLIC_API_URL!,
     source: 'ssr',
-    plugins: ['ssr-forward', 'trace', 'retry-idempotent'],
+    interceptors: [
+      createSsrForwardInterceptor(),
+      createTraceInterceptor(),
+      createRetryIdempotentInterceptor(),
+    ],
     incoming: async () => {
       const jar = await cookies()
       const requestHeaders = await headers()
@@ -19,8 +29,13 @@ const createServerApi = async () =>
 
 const api = createFetch({
   baseUrl: process.env.NEXT_PUBLIC_API_URL ?? 'https://api.example.com',
-  getToken: () => (typeof window === 'undefined' ? null : localStorage.getItem('access_token')),
-  plugins: ['trace', 'retry-idempotent'],
+  interceptors: [
+    createAuthInterceptor({
+      getToken: () => (typeof window === 'undefined' ? null : localStorage.getItem('access_token')),
+    }),
+    createTraceInterceptor(),
+    createRetryIdempotentInterceptor(),
+  ],
 })
 
 export { api, createServerApi }

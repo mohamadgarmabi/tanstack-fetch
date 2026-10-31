@@ -4,11 +4,12 @@ import { defineConfig } from 'vitest/config'
 const config = defineConfig({
   resolve: {
     alias: {
-      'tanstack-fetch': fileURLToPath(new URL('./src/index.ts', import.meta.url)),
       'tanstack-fetch/sse': fileURLToPath(new URL('./src/sse/index.ts', import.meta.url)),
       'tanstack-fetch/plugins': fileURLToPath(new URL('./src/plugins-entry.ts', import.meta.url)),
       'tanstack-fetch/react': fileURLToPath(new URL('./src/react/index.ts', import.meta.url)),
       'tanstack-fetch/vue': fileURLToPath(new URL('./src/vue/index.ts', import.meta.url)),
+      // Last: a string alias also matches subpaths, so the bare entry must not shadow them.
+      'tanstack-fetch': fileURLToPath(new URL('./src/index.ts', import.meta.url)),
     },
   },
   test: {

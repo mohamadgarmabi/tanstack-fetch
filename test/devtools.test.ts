@@ -2,6 +2,7 @@ import { describe, expect, it, vi } from 'vitest'
 import { createFetch } from '../src'
 import { createFetch as createSseFetch } from '../src/sse'
 import { createTRPCFetch } from '../src/trpc'
+import { createSsrForwardInterceptor, createTraceInterceptor } from '../src/plugins-entry'
 import {
   createDevtools,
   createDevtoolsStore,
@@ -108,8 +109,7 @@ describe('devtools interceptor', () => {
     const api = createFetch({
       baseUrl: 'https://demo.test',
       fetch: mockFetch,
-      plugins: ['trace'],
-      interceptors: [interceptor],
+      interceptors: [createTraceInterceptor(), interceptor],
       maxRetries: 0,
     })
 
@@ -137,8 +137,7 @@ describe('devtools interceptor', () => {
           status: 200,
           headers: { 'content-type': 'application/json' },
         }),
-      plugins: ['trace', 'ssr-forward'],
-      interceptors: [interceptor],
+      interceptors: [createTraceInterceptor(), createSsrForwardInterceptor(), interceptor],
       incoming: { cookie: 'a=1', requestId: 'r1' },
       maxRetries: 0,
     })
@@ -198,7 +197,7 @@ describe('devtools interceptor', () => {
     const api = createFetch({
       baseUrl: 'https://demo.test',
       fetch: mockFetch,
-      plugins: ['trace'],
+      interceptors: [createTraceInterceptor()],
       maxRetries: 0,
     })
     const { store, destroy } = setupDevtools(api, { mount: false })
@@ -228,5 +227,82 @@ describe('devtools interceptor', () => {
     expect(entry?.kind).toBe('trpc')
     expect(entry?.status).toBe('success')
     expect(entry?.httpStatus).toBe(200)
+  })
+})
+
+describe('devtools — live transports', () => {
+  it('records WebSocket messages in / out, and each reconnect as its own entry', async () => {
+    const { createFetch: createLiveFetch } = await import('../src/live')
+    const { store, interceptor } = createDevtools()
+    type Fake = {
+      readyState: number
+      onopen: ((e: Event) => void) | null
+      onmessage: ((e: MessageEvent) => void) | null
+      onclose: ((e: CloseEvent) => void) | null
+      send: () => void
+      close: () => void
+    }
+    const sockets: Fake[] = []
+    const api = createLiveFetch({
+      baseUrl: 'https://demo.test',
+      interceptors: [interceptor],
+      createWebSocket: () => {
+        const socket: Fake = {
+          readyState: 0,
+          onopen: null,
+          onmessage: null,
+          onclose: null,
+          send: () => undefined,
+          close: () => undefined,
+        }
+        sockets.push(socket)
+        return socket as unknown as WebSocket
+      },
+    })
+    const ws = api.ws('/rooms/1', { reconnect: { retries: 1, delayMs: 1 } })
+    await vi.waitFor(() => expect(sockets).toHaveLength(1))
+    const first = sockets[0]!
+    first.readyState = 1
+    first.onopen?.(new Event('open'))
+    ws.send({ text: 'hi' })
+    first.onmessage?.({ data: '{"text":"yo"}' } as MessageEvent)
+
+    await vi.waitFor(() => expect(store.list('ws')[0]?.sse?.eventCount).toBe(2))
+    const entry = store.list('ws')[0]!
+    expect(entry.method).toBe('WS')
+    expect(entry.status).toBe('pending')
+    expect(entry.sse?.events.map((e) => [e.event, e.data])).toEqual([
+      ['out', { text: 'hi' }],
+      ['in', { text: 'yo' }],
+    ])
+
+    first.onclose?.({ code: 1006 } as CloseEvent)
+    await vi.waitFor(() => expect(sockets).toHaveLength(2))
+    await vi.waitFor(() => expect(store.list('ws')).toHaveLength(2))
+    expect(store.getById(entry.id)?.status).toBe('error')
+
+    ws.close()
+    await vi.waitFor(() =>
+      expect(store.list('ws').map((e) => e.status)).toEqual(
+        expect.arrayContaining(['error', 'success']),
+      ),
+    )
+  })
+
+  it('keeps an NDJSON stream live until it ends, logging every line', async () => {
+    const { createFetch: createLiveFetch } = await import('../src/live')
+    const { store, interceptor } = createDevtools()
+    const api = createLiveFetch({
+      baseUrl: 'https://demo.test',
+      interceptors: [interceptor],
+      fetch: async () => new Response('{"t":"a"}\n{"t":"b"}\n', { status: 200 }),
+    })
+    for await (const _ of api.stream('/chat', { body: { q: 1 } })) void _
+    const entry = store.list('stream')[0]!
+    expect(entry.method).toBe('POST')
+    expect(entry.status).toBe('success')
+    expect(entry.sse?.open).toBe(false)
+    expect(entry.sse?.events.map((e) => e.data)).toEqual([{ t: 'a' }, { t: 'b' }])
+    expect(store.list('http')).toHaveLength(0)
   })
 })

@@ -1,5 +1,6 @@
 import { createMemo, type ParentComponent } from 'solid-js'
-import { createFetch } from 'tanstack-fetch'
+// Providers accept every option shortcut (getToken, onUnauthorized, plugins, …).
+import { createFetch } from 'tanstack-fetch/sse'
 import type { CreateFetchOptions } from 'tanstack-fetch'
 import { FetchContext, type AnyFetchClient } from './fetch-context'
 import type { FetchProviderProps } from './fetch-provider.type'
@@ -8,7 +9,7 @@ const FetchProvider: ParentComponent<FetchProviderProps> = (props) => {
   let cached: AnyFetchClient | undefined
 
   const value = createMemo(() => {
-    if (props.client) return props.client
+    if (props.client) return props.client as AnyFetchClient
     if (!cached) {
       const { children: _children, client: _client, ...options } = props
       cached = createFetch(options as CreateFetchOptions)

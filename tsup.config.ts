@@ -5,6 +5,7 @@ const config = defineConfig([
     entry: {
       index: 'src/index.ts',
       sse: 'src/sse/index.ts',
+      live: 'src/live/index.ts',
       plugins: 'src/plugins-entry.ts',
       react: 'src/react/index.ts',
       vue: 'src/vue/index.ts',
@@ -35,6 +36,7 @@ const config = defineConfig([
       '@trpc/server',
       'tanstack-fetch',
       'tanstack-fetch/sse',
+      'tanstack-fetch/live',
     ],
   },
   {

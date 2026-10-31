@@ -29,18 +29,28 @@ No wrapping `if (!res.ok)` — success returns data, failure throws `FetchError`
 
 ## Tiny by default
 
-Import only what you need. The HTTP core is **4.81KB gzip**. SSE, React, Vue, plugins, and tRPC are separate entries.
+Import only what you need. The HTTP core is **3.57KB gzip**. SSE, WebSocket / WebTransport / NDJSON (`tanstack-fetch/live`), React, Vue, plugins, and tRPC are separate entries.
+
+## Realtime on the same client
+
+`api.ws`, `api.transport` and `api.stream` reuse your `getToken`, `refresh-token` and interceptors, and they reconnect with a fresh token. There's no second socket library to wire auth into. See [WebSocket, WebTransport & streams](./websocket).
 
 ## First-class status handling
 
 ```ts
 createFetch({
-  getToken: () => localStorage.getItem('access_token'),
-  onUnauthorized: () => logout(), // 401
-  onForbidden: () => toast.error('Forbidden'), // 403
-  onNotFound: () => toast.error('Missing'), // 404
-  onServerError: ({ status }) => console.error(status), // 5xx
+  interceptors: [
+    createAuthInterceptor({ getToken: () => localStorage.getItem('access_token') }),
+    createStatusInterceptor({
+      401: () => logout(),
+      403: () => toast.error('Forbidden'),
+      404: () => toast.error('Missing'),
+      '5xx': ({ status }) => console.error(status),
+    }),
+  ],
 })
 ```
+
+On `tanstack-fetch/sse`, `/live` and framework providers these are plain options: `getToken`, `onUnauthorized`, `onForbidden`, `onNotFound`, `onServerError`.
 
 Handlers run **before** the error is thrown — Query still sees `isError` / `FetchError`.

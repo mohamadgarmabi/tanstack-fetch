@@ -1,7 +1,7 @@
 {
   "name": "tanstack-fetch",
-  "version": "1.7.1",
-  "description": "TanStack Query fetch client — typed errors, AbortSignal, SSR, SSE, upload. React, Vue/Nuxt, Solid, Angular, Svelte/SvelteKit. Lightweight axios/ky alternative (4.81KB gzip HTTP core).",
+  "version": "2.0.0",
+  "description": "TanStack Query fetch client — typed errors, AbortSignal, SSR, SSE, WebSocket, WebTransport, NDJSON streams, upload. React, Vue/Nuxt, Solid, Angular, Svelte/SvelteKit. Lightweight axios/ky alternative (3.57KB gzip HTTP core).",
   "license": "MIT",
   "author": {
     "name": "Mohammad Garmabi",
@@ -48,6 +48,9 @@
     "edge",
     "sse",
     "server-sent-events",
+    "websocket",
+    "webtransport",
+    "ndjson",
     "streaming",
     "openapi",
     "openapi-codegen",
@@ -90,6 +93,11 @@
       "types": "./dist/sse.d.ts",
       "import": "./dist/sse.js",
       "require": "./dist/sse.cjs"
+    },
+    "./live": {
+      "types": "./dist/live.d.ts",
+      "import": "./dist/live.js",
+      "require": "./dist/live.cjs"
     },
     "./plugins": {
       "types": "./dist/plugins.d.ts",

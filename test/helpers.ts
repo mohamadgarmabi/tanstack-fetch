@@ -1,4 +1,3 @@
-import { createFetch } from '../src'
 import { createFetch as createSseFetch } from '../src/sse'
 import type { CreateFetchOptions, FetchClient } from '../src'
 
@@ -14,11 +13,12 @@ const jsonResponse = ({ status = 200, body, headers }: JsonResponse = {}) =>
     headers: { 'content-type': 'application/json', ...headers },
   })
 
+// Full client (option shortcuts, upload, progress); core-only behavior lives in core.test.ts.
 const createTestClient = (
   fetchImpl: typeof fetch,
   extra?: CreateFetchOptions,
-): ReturnType<typeof createFetch> =>
-  createFetch({
+): ReturnType<typeof createSseFetch> =>
+  createSseFetch({
     baseUrl: 'https://api.example.com',
     fetch: fetchImpl,
     timeoutMs: 5_000,

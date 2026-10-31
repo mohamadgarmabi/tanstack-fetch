@@ -47,9 +47,7 @@ describe('migrate transforms', () => {
   })
 
   it('keeps FetchError when rewriting ofetch imports', () => {
-    const output = ofetchSource.applySafeTransforms(
-      `import { ofetch, FetchError } from 'ofetch'\n`,
-    )
+    const output = ofetchSource.applySafeTransforms(`import { ofetch, FetchError } from 'ofetch'\n`)
     expect(output).toContain('FetchError')
     expect(output).toContain('isFetchError')
     expect(output).toContain('createFetch')
@@ -74,13 +72,16 @@ describe('migrate transforms', () => {
     expect(fetchSource.detect(`const res = await fetch('/users')\n`)).toBe(true)
     expect(fetchSource.detect(`void fetch('/ping')\n`)).toBe(true)
     expect(fetchSource.detect(`fetch('/users').then((res) => res.json())\n`)).toBe(true)
-    const findings = fetchSource.collectFindings('a.ts', `const res = await fetch('/users')\nif (!res.ok) throw new Error()\nreturn res.json()\n`)
+    const findings = fetchSource.collectFindings(
+      'a.ts',
+      `const res = await fetch('/users')\nif (!res.ok) throw new Error()\nreturn res.json()\n`,
+    )
     expect(findings.some((item) => item.kind === 'call')).toBe(true)
     expect(findings.some((item) => item.kind === 'data')).toBe(true)
     expect(
-      fetchSource.collectFindings('b.ts', `const form = { ok: true }\nif (!form.ok) {}\n`).some(
-        (item) => item.kind === 'manual',
-      ),
+      fetchSource
+        .collectFindings('b.ts', `const form = { ok: true }\nif (!form.ok) {}\n`)
+        .some((item) => item.kind === 'manual'),
     ).toBe(false)
   })
 
@@ -104,10 +105,12 @@ describe('migrate transforms', () => {
     )
     expect(instanceFindings.some((item) => item.kind === 'call')).toBe(true)
     expect(
-      axiosSource.collectFindings(
-        'd.ts',
-        `import axios from 'axios'\naxios.defaults.baseURL = 'https://api.test'\n`,
-      ).some((item) => item.kind === 'manual'),
+      axiosSource
+        .collectFindings(
+          'd.ts',
+          `import axios from 'axios'\naxios.defaults.baseURL = 'https://api.test'\n`,
+        )
+        .some((item) => item.kind === 'manual'),
     ).toBe(true)
   })
 
@@ -123,9 +126,9 @@ describe('migrate transforms', () => {
       ),
     ).toContain('query:')
 
-    expect(ofetchSource.applySafeTransforms(`export const getUsers = () => $fetch('/users')\n`)).toContain(
-      "api.get('/users')",
-    )
+    expect(
+      ofetchSource.applySafeTransforms(`export const getUsers = () => $fetch('/users')\n`),
+    ).toContain("api.get('/users')")
     expect(
       ofetchSource.applySafeTransforms(
         `await $fetch('/users', { method: 'POST', body: { name: 'Ada' } })\n`,
@@ -200,11 +203,7 @@ describe('migrate runner', () => {
     })
 
     expect(result.scaffoldsWritten).toEqual(
-      expect.arrayContaining([
-        'lib/api.ts',
-        'plugins/tanstack-fetch.ts',
-        'composables/useApi.ts',
-      ]),
+      expect.arrayContaining(['lib/api.ts', 'plugins/tanstack-fetch.ts', 'composables/useApi.ts']),
     )
     expect(result.frameworkTip).toMatch(/useFetch/)
   })
@@ -236,7 +235,11 @@ describe('migrate runner', () => {
     })
 
     expect(result.scaffoldsWritten).toEqual(
-      expect.arrayContaining(['src/lib/api.ts', 'src/lib/api.server.ts', 'src/lib/queries/users.ts']),
+      expect.arrayContaining([
+        'src/lib/api.ts',
+        'src/lib/api.server.ts',
+        'src/lib/queries/users.ts',
+      ]),
     )
     expect(result.frameworkTip).toMatch(/ssr-forward/)
   })
@@ -245,9 +248,9 @@ describe('migrate runner', () => {
     expect(
       parseArgs(['migrate', '--from', 'axios', '--framework', 'angular', '--write']),
     ).toMatchObject({ framework: 'angular' })
-    expect(
-      parseArgs(['migrate', '--from', 'ky', '--framework', 'svelte']),
-    ).toMatchObject({ framework: 'svelte' })
+    expect(parseArgs(['migrate', '--from', 'ky', '--framework', 'svelte'])).toMatchObject({
+      framework: 'svelte',
+    })
   })
 
   it('honors --no-scaffold with --framework', () => {
@@ -298,9 +301,7 @@ describe('parseArgs migrate', () => {
   })
 
   it('parses --framework nextjs', () => {
-    expect(
-      parseArgs(['migrate', '--from', 'fetch', '--framework', 'nextjs', '--write']),
-    ).toEqual({
+    expect(parseArgs(['migrate', '--from', 'fetch', '--framework', 'nextjs', '--write'])).toEqual({
       command: 'migrate',
       from: 'fetch',
       dir: '.',

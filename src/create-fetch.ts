@@ -1,10 +1,10 @@
 import { registerClientOptions } from './client-options'
-import { createConfigInterceptors } from './plugins/config-interceptors'
-import { pluginFactories } from './plugins'
 import { createFetchError } from './fetch-error'
 import { sendRequest } from './request'
-import { resolveUploadBody } from './utils/form-data'
+import type { XhrSender } from './utils/xhr-upload'
 import type {
+  CoreFetchClient,
+  CoreFetchOptions,
   CreateFetchOptions,
   FetchClient,
   FetchErrorInfo,
@@ -12,28 +12,27 @@ import type {
   HttpInterceptor,
   HttpMethod,
   RequestOptions,
-  UploadCallOptions,
 } from './types'
 
 type FetchContext = {
   clientOptions: CreateFetchOptions
   interceptors: HttpInterceptor[]
+  /** XHR transport for upload / download progress — only wired by the full entries. */
+  progress?: XhrSender
 }
 
-const createFetchContext = (options: CreateFetchOptions = {}): FetchContext => {
+const createFetchContext = (
+  options: CreateFetchOptions = {},
+  features: HttpInterceptor[] = [],
+  progress?: XhrSender,
+): FetchContext => {
   const clientOptions: CreateFetchOptions = { ...options }
-
-  const interceptors: HttpInterceptor[] = [
-    ...createConfigInterceptors(clientOptions),
-    ...(clientOptions.plugins ?? []).map((name) => pluginFactories[name]()),
-    ...(clientOptions.interceptors ?? []),
-  ]
-
-  return { clientOptions, interceptors }
+  const interceptors = [...features, ...(clientOptions.interceptors ?? [])]
+  return { clientOptions, interceptors, progress }
 }
 
-const createHttpClient = (context: FetchContext): Omit<FetchClient, 'sse'> => {
-  const { clientOptions, interceptors } = context
+const createHttpClient = (context: FetchContext): CoreFetchClient => {
+  const { clientOptions, interceptors, progress } = context
 
   const use: FetchClient['use'] = (name, interceptor, config) => {
     const next: HttpInterceptor = {
@@ -67,6 +66,7 @@ const createHttpClient = (context: FetchContext): Omit<FetchClient, 'sse'> => {
       requestOptions,
       client: clientOptions,
       interceptors,
+      progress,
     })
     if (!result.ok) {
       throw createFetchError(result as FetchResult<never, FetchErrorInfo>)
@@ -80,15 +80,6 @@ const createHttpClient = (context: FetchContext): Omit<FetchClient, 'sse'> => {
     return bound as FetchClient['get']
   }
 
-  const upload: FetchClient['upload'] = ((path: string, uploadOptions?: UploadCallOptions) => {
-    const { method = 'POST', file, files, fields, fieldName, body, ...rest } = uploadOptions ?? {}
-    return request(method, path, {
-      ...rest,
-      body: resolveUploadBody({ body, file, files, fields, fieldName }),
-      onUploadProgress: uploadOptions?.onUploadProgress,
-    } as never)
-  }) as FetchClient['upload']
-
   const client = {
     use,
     eject,
@@ -98,15 +89,17 @@ const createHttpClient = (context: FetchContext): Omit<FetchClient, 'sse'> => {
     put: bindMethod('PUT') as FetchClient['put'],
     patch: bindMethod('PATCH') as FetchClient['patch'],
     delete: bindMethod('DELETE'),
-    upload,
   }
 
   registerClientOptions(client, clientOptions)
   return client
 }
 
-/** Tiny HTTP client (no SSE). For streams use `tanstack-fetch/sse`. */
-const createFetch = (options?: CreateFetchOptions): Omit<FetchClient, 'sse'> =>
+/**
+ * Slim HTTP client. Add auth / status / trace via `interceptors` from `tanstack-fetch/plugins`;
+ * for `upload()`, progress events, and option shortcuts use `tanstack-fetch/sse`.
+ */
+const createFetch = (options?: CoreFetchOptions): CoreFetchClient =>
   createHttpClient(createFetchContext(options))
 
 /** @deprecated Use createFetch */

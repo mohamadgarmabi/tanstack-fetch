@@ -9,14 +9,17 @@ description: FetchClient methods — get, post, put, patch, delete, upload, requ
 
 Methods on the client returned by `createFetch`.
 
-| Method                                      | Description                    |
-| ------------------------------------------- | ------------------------------ |
-| `get` / `post` / `put` / `patch` / `delete` | Typed HTTP helpers             |
-| `request(method, path, options?)`           | Generic verb                   |
-| `upload(path, options?)`                    | Multipart + progress           |
-| `sse(path, options?)`                       | Only from `tanstack-fetch/sse` |
-| `use(name, interceptor)`                    | Register interceptor           |
-| `eject(name)`                               | Remove interceptor             |
+| Method                                      | Description                                                                                     |
+| ------------------------------------------- | ----------------------------------------------------------------------------------------------- |
+| `get` / `post` / `put` / `patch` / `delete` | Typed HTTP helpers                                                                              |
+| `request(method, path, options?)`           | Generic verb                                                                                    |
+| `upload(path, options?)`                    | Multipart + progress — not on the core `tanstack-fetch` client (use `/sse`, `/live`, providers) |
+| `sse(path, options?)`                       | From `tanstack-fetch/sse` or `/live`                                                            |
+| `ws(path, options?)`                        | WebSocket — only from `tanstack-fetch/live` ([guide](/guide/websocket))                         |
+| `transport(path, options?)`                 | WebTransport (HTTP/3 datagrams) — only from `tanstack-fetch/live`                               |
+| `stream(path, options?)`                    | NDJSON `AsyncIterable` — only from `tanstack-fetch/live`                                        |
+| `use(name, interceptor)`                    | Register interceptor                                                                            |
+| `eject(name)`                               | Remove interceptor                                                                              |
 
 ## Request options
 
@@ -31,5 +34,5 @@ Methods on the client returned by `createFetch`.
 | `parseAs`            | `json` \| `text` \| `blob`                                                                                                               |
 | `operation`          | Name for interceptor match                                                                                                               |
 | `interceptors`       | Per-request `use` / `eject`                                                                                                              |
-| `onUploadProgress`   | Browser upload progress (XHR)                                                                                                            |
-| `onDownloadProgress` | Browser download progress (XHR)                                                                                                          |
+| `onUploadProgress`   | Browser upload progress (XHR) — ignored by core `tanstack-fetch`; use `/sse` / `/live`                                                   |
+| `onDownloadProgress` | Browser download progress (XHR) — ignored by core `tanstack-fetch`; use `/sse` / `/live`                                                 |

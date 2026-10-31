@@ -30,12 +30,21 @@ Use absolute `baseUrl` on the server and the `ssr-forward` plugin.
     30|```ts
 
 import { createFetch } from 'tanstack-fetch'
+import {
+createRetryIdempotentInterceptor,
+createSsrForwardInterceptor,
+createTraceInterceptor,
+} from 'tanstack-fetch/plugins'
 import { cookies } from 'next/headers'
 
 export const api = createFetch({
 baseUrl: process.env.API_URL, // absolute in SSR
 source: 'ssr',
-plugins: ['ssr-forward', 'trace', 'retry-idempotent'],
+interceptors: [
+createSsrForwardInterceptor(),
+createTraceInterceptor(),
+createRetryIdempotentInterceptor(),
+],
 incoming: async () => {
 const jar = await cookies()
 40| return { cookie: jar.toString() }

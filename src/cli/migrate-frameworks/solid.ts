@@ -7,13 +7,23 @@ const solidScaffold: FrameworkScaffold = {
     {
       path: 'src/lib/api.ts',
       contents: `import { createFetch, isFetchError } from 'tanstack-fetch'
+import {
+  createAuthInterceptor,
+  createRetryIdempotentInterceptor,
+  createTraceInterceptor,
+} from 'tanstack-fetch/plugins'
 
 /** Shared client for Solid + @tanstack/solid-query. */
 export const api = createFetch({
   baseUrl: import.meta.env.VITE_API_URL ?? 'https://api.example.com',
-  getToken: () =>
-    typeof localStorage === 'undefined' ? null : localStorage.getItem('access_token'),
-  plugins: ['trace', 'retry-idempotent'],
+  interceptors: [
+    createAuthInterceptor({
+      getToken: () =>
+        typeof localStorage === 'undefined' ? null : localStorage.getItem('access_token'),
+    }),
+    createTraceInterceptor(),
+    createRetryIdempotentInterceptor(),
+  ],
 })
 
 export { isFetchError }

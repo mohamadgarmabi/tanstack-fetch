@@ -1,10 +1,11 @@
 import { createFetch, isFetchError } from 'tanstack-fetch'
+import { createRetryIdempotentInterceptor, createTraceInterceptor } from 'tanstack-fetch/plugins'
 
 type User = { id: number; name: string; email?: string }
 
 const api = createFetch({
   baseUrl: 'https://jsonplaceholder.typicode.com',
-  plugins: ['trace', 'retry-idempotent'],
+  interceptors: [createTraceInterceptor(), createRetryIdempotentInterceptor()],
 })
 
 const main = async () => {

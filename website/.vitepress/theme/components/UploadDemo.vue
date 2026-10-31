@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue'
-import { createFetch, isFetchError } from 'tanstack-fetch'
+import { isFetchError } from 'tanstack-fetch'
+import { createFetch } from 'tanstack-fetch/sse'
 
 type UploadResponse = { id: string; url: string; name: string; size: number }
 
@@ -104,7 +105,8 @@ const snippet = `await api.upload('/files', {
         <h2>api.upload + multipart fields</h2>
         <p class="status-playground-lead">
           Real <code>api.upload()</code> builds <code>FormData</code> and posts through
-          <code>createFetch</code>. Add <code>onUploadProgress</code> in your app for XHR progress.
+          <code>createFetch</code> from <code>tanstack-fetch/sse</code>. Add
+          <code>onUploadProgress</code> in your app for XHR progress.
         </p>
       </div>
     </header>

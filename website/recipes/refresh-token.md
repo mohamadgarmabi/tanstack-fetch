@@ -94,3 +94,4 @@ api.use(
 - [Configuration · 401/403](/guide/configuration)
 - [Migrate from axios](/guide/migrate) — axios interceptor alternative
 - [SSE + auth](/guide/sse) — refresh with stream auth
+- [WebSocket / NDJSON](/guide/websocket) — `api.ws` / `api.transport` call `getToken` again on every reconnect, and `api.stream` retries after a 401 refresh

@@ -62,9 +62,14 @@ api.sse('/orders/stream', {
 })
 ```
 
+## WebSocket has the same problem
+
+Browser `WebSocket` can't send `Authorization` either. `api.ws` from `tanstack-fetch/live` makes the choice explicit (`authIn: 'query' | 'protocol'`), sends a real header on Node 22+ / Bun / Deno, and refetches the token on every reconnect. See [WebSocket guide · Auth](/guide/websocket#auth).
+
 ## Related
 
 - [SSE](/guide/sse)
+- [WebSocket, WebTransport & streams](/guide/websocket)
 - [Plugins · sse-resume](/guide/plugins)
 - [Refresh token](/recipes/refresh-token)
 - [TanStack Query SSE](/guide/sse#cache-updates-with-query)

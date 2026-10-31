@@ -13,6 +13,8 @@ const DEFAULT_FLAGS: DevtoolsKindFlags = {
   sse: true,
   ssr: true,
   trpc: true,
+  ws: true,
+  stream: true,
 }
 
 const createDevtoolsStore = (options: CreateDevtoolsOptions = {}): DevtoolsStore => {
@@ -25,6 +27,8 @@ const createDevtoolsStore = (options: CreateDevtoolsOptions = {}): DevtoolsStore
     sse: options.sse ?? true,
     ssr: options.ssr ?? true,
     trpc: options.trpc ?? true,
+    ws: options.ws ?? true,
+    stream: options.stream ?? true,
   }
   const listeners = new Set<DevtoolsStoreListener>()
 

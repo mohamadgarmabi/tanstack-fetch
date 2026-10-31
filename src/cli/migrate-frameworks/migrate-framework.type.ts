@@ -1,12 +1,5 @@
 type MigrateFramework =
-  | 'react'
-  | 'vue'
-  | 'nuxt'
-  | 'nextjs'
-  | 'solid'
-  | 'angular'
-  | 'svelte'
-  | 'sveltekit'
+  'react' | 'vue' | 'nuxt' | 'nextjs' | 'solid' | 'angular' | 'svelte' | 'sveltekit'
 
 type FrameworkScaffoldFile = {
   path: string

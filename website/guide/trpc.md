@@ -20,13 +20,22 @@ Example app: [`examples/trpc`](https://github.com/mohamadgarmabi/tanstack-fetch/
 
 ```ts
 import { createFetch } from 'tanstack-fetch'
+import {
+  createAuthInterceptor,
+  createRetryIdempotentInterceptor,
+  createStatusInterceptor,
+  createTraceInterceptor,
+} from 'tanstack-fetch/plugins'
 import { createTRPCFetchClient } from 'tanstack-fetch/trpc'
 import type { AppRouter } from './server'
 
 export const api = createFetch({
-  getToken: () => localStorage.getItem('access_token'),
-  onUnauthorized: () => localStorage.removeItem('access_token'),
-  plugins: ['trace', 'retry-idempotent'],
+  interceptors: [
+    createAuthInterceptor({ getToken: () => localStorage.getItem('access_token') }),
+    createStatusInterceptor({ 401: () => localStorage.removeItem('access_token') }),
+    createTraceInterceptor(),
+    createRetryIdempotentInterceptor(),
+  ],
 })
 
 export const trpcClient = createTRPCFetchClient<AppRouter>({
@@ -59,6 +68,7 @@ export const trpcClient = createTRPCFetchClient<AppRouter>({
 
 ```ts
 import { createFetch } from 'tanstack-fetch'
+import { createSsrForwardInterceptor, createTraceInterceptor } from 'tanstack-fetch/plugins'
 import { createTRPCFetchClient } from 'tanstack-fetch/trpc'
 import { createTRPCOptionsProxy } from '@trpc/tanstack-react-query'
 import { QueryClient } from '@tanstack/react-query'
@@ -71,7 +81,7 @@ const getTrpcUrl = () =>
 
 export const api = createFetch({
   source: typeof window === 'undefined' ? 'ssr' : 'browser',
-  plugins: ['ssr-forward', 'trace'],
+  interceptors: [createSsrForwardInterceptor(), createTraceInterceptor()],
 })
 
 export const queryClient = new QueryClient()

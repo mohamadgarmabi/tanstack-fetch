@@ -1,12 +1,12 @@
 <script setup lang="ts">
 import { withBase } from 'vitepress'
-import { packages } from './home.content'
+import { PACKAGE_VERSION, packages } from './home.content'
 </script>
 
 <template>
   <section class="home-packages">
     <div class="home-section-head">
-      <p class="home-eyebrow">Entry points · v1.7.0</p>
+      <p class="home-eyebrow">Entry points · v{{ PACKAGE_VERSION }}</p>
       <h2>Import only the piece you call.</h2>
       <p class="home-lead">
         None of these are required on day one. Add an entry when the feature shows up — Solid,

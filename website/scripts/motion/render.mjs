@@ -43,6 +43,8 @@ const SCENES = [
   { id: 'blog-1-6-3', out: 'blog-1-6-3-cover.jpg', video: true },
   { id: 'blog-1-7-0', out: 'blog-1-7-0-cover.jpg', video: true },
   { id: 'blog-1-7-1', out: 'blog-1-7-1-cover.jpg', video: true },
+  { id: 'blog-1-8-0', out: 'blog-1-8-0-cover.jpg', video: true },
+  { id: 'blog-2-0-0', out: 'blog-2-0-0-cover.jpg', video: true },
   // one cover per page / post — see pages.mjs
   ...JSON.parse(readFileSync(new URL('./pages.json', import.meta.url), 'utf8')).map((p) => ({
     id: p.id,

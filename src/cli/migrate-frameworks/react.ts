@@ -3,13 +3,23 @@ import type { FrameworkScaffold } from './migrate-framework.type'
 const API_FILE = {
   path: 'src/lib/api.ts',
   contents: `import { createFetch, isFetchError } from 'tanstack-fetch'
+import {
+  createAuthInterceptor,
+  createRetryIdempotentInterceptor,
+  createTraceInterceptor,
+} from 'tanstack-fetch/plugins'
 
 /** Shared browser/client API for React + TanStack Query. */
 export const api = createFetch({
   baseUrl: import.meta.env.VITE_API_URL ?? process.env.NEXT_PUBLIC_API_URL ?? 'https://api.example.com',
-  getToken: () =>
-    typeof localStorage === 'undefined' ? null : localStorage.getItem('access_token'),
-  plugins: ['trace', 'retry-idempotent'],
+  interceptors: [
+    createAuthInterceptor({
+      getToken: () =>
+        typeof localStorage === 'undefined' ? null : localStorage.getItem('access_token'),
+    }),
+    createTraceInterceptor(),
+    createRetryIdempotentInterceptor(),
+  ],
 })
 
 export { isFetchError }
@@ -53,9 +63,7 @@ const createReactScaffold = (withProvider = false): FrameworkScaffold => ({
   tip: withProvider
     ? 'Wrap the app with <FetchProvider client={api}>. Prefer useQuery({ queryFn: ({ signal }) => api.get(..., { signal }) }).'
     : 'Import api from src/lib/api.ts into queryFns. For useSse, pass { client: api } — FetchProvider is optional.',
-  files: withProvider
-    ? [API_FILE, PROVIDER_FILE, USERS_QUERY_FILE]
-    : [API_FILE, USERS_QUERY_FILE],
+  files: withProvider ? [API_FILE, PROVIDER_FILE, USERS_QUERY_FILE] : [API_FILE, USERS_QUERY_FILE],
 })
 
 const reactScaffold = createReactScaffold(false)

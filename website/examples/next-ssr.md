@@ -20,12 +20,21 @@ Click **Server prefetch** and inspect the request log — `ssr-forward` attaches
 ```ts
 import { cookies } from 'next/headers'
 import { createFetch } from 'tanstack-fetch'
+import {
+  createRetryIdempotentInterceptor,
+  createSsrForwardInterceptor,
+  createTraceInterceptor,
+} from 'tanstack-fetch/plugins'
 
 export const createServerApi = async () =>
   createFetch({
     baseUrl: process.env.API_URL!,
     source: 'ssr',
-    plugins: ['ssr-forward', 'trace', 'retry-idempotent'],
+    interceptors: [
+      createSsrForwardInterceptor(),
+      createTraceInterceptor(),
+      createRetryIdempotentInterceptor(),
+    ],
     incoming: async () => ({ cookie: (await cookies()).toString() }),
   })
 ```

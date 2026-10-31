@@ -38,20 +38,36 @@ useQuery({
 
 ## Entry points
 
-| Import                    | Use                                       |       gzip |
-| ------------------------- | ----------------------------------------- | ---------: |
-| `tanstack-fetch`          | HTTP                                      | **4.81KB** |
-| `tanstack-fetch/sse`      | HTTP + `api.sse()`                        | **5.94KB** |
-| `tanstack-fetch/plugins`  | Interceptor factories                     | **1.13KB** |
-| `tanstack-fetch/react`    | `FetchProvider`, `useFetch`, `useSse`     | **0.81KB** |
-| `tanstack-fetch/vue`      | `createFetchPlugin`, `useFetch`, `useSse` | **0.78KB** |
-| `tanstack-fetch/solid`    | `FetchProvider`, `useFetch`, `useSse`     | optional   |
-| `tanstack-fetch/svelte`   | `setFetchClient`, `useFetch`, `useSse`    | optional   |
-| `tanstack-fetch/angular`  | `provideFetchClient`, `injectFetch`, `useSse` | optional |
-| `tanstack-fetch/trpc`     | tRPC link                                 | **3.16KB** |
-| `tanstack-fetch/devtools` | Request dock                              | **8.32KB** |
+| Import                    | Use                                                      |       gzip |
+| ------------------------- | -------------------------------------------------------- | ---------: |
+| `tanstack-fetch`          | Slim HTTP (add features via `interceptors`)              | **3.57KB** |
+| `tanstack-fetch/sse`      | Full HTTP (shortcuts, `upload()`) + `api.sse()`          | **6.33KB** |
+| `tanstack-fetch/live`     | HTTP + `api.sse()` / `ws()` / `transport()` / `stream()` | **8.75KB** |
+| `tanstack-fetch/plugins`  | Interceptor factories                                    | **1.13KB** |
+| `tanstack-fetch/react`    | `FetchProvider`, `useFetch`, `useSse`, `useWs`           | **0.99KB** |
+| `tanstack-fetch/vue`      | `createFetchPlugin`, `useFetch`, `useSse`, `useWs`       | **0.94KB** |
+| `tanstack-fetch/solid`    | `FetchProvider`, `useFetch`, `useSse`, `useWs`           |   optional |
+| `tanstack-fetch/svelte`   | `setFetchClient`, `useFetch`, `useSse`, `useWs`          |   optional |
+| `tanstack-fetch/angular`  | `provideFetchClient`, `injectFetch`, `useSse`, `useWs`   |   optional |
+| `tanstack-fetch/trpc`     | tRPC link                                                | **3.28KB** |
+| `tanstack-fetch/devtools` | Request dock                                             | **8.70KB** |
 
 Minified ESM, `gzip` measured locally after `npm run build` (`npm run size`).
+
+The core takes auth, status handlers and plugins as interceptors from `tanstack-fetch/plugins`. Option shortcuts (`getToken`, `onUnauthorized`, `plugins: [...]`), `upload()` and progress events live on `tanstack-fetch/sse` / `/live` and the framework providers:
+
+```ts
+import { createFetch } from 'tanstack-fetch'
+import { createAuthInterceptor, createStatusInterceptor } from 'tanstack-fetch/plugins'
+
+const api = createFetch({
+  baseUrl: 'https://api.example.com',
+  interceptors: [
+    createAuthInterceptor({ getToken: () => localStorage.getItem('access_token') }),
+    createStatusInterceptor({ 401: () => logout() }),
+  ],
+})
+```
 
 ## Compared to axios / ky / ofetch
 
@@ -63,9 +79,9 @@ Minified ESM, `gzip` measured locally after `npm run build` (`npm run size`).
 | Refresh token + single-flight      | Built-in interceptor                 | Custom  | Custom  | Custom  |
 | Next.js SSR cookies                | `ssr-forward`                        | Custom  | Custom  | Custom  |
 | SSE with Authorization             | `tanstack-fetch/sse`                 | No      | No      | No      |
-| File upload + progress             | `api.upload()`                       | Yes     | Limited | Limited |
+| File upload + progress             | `api.upload()` (`/sse`, `/live`)     | Yes     | Limited | Limited |
 | tRPC transport                     | `tanstack-fetch/trpc`                | No      | No      | No      |
-| Bundle (HTTP core)                 | **4.81KB** gzip                      | Larger  | Small   | Small   |
+| Bundle (HTTP core)                 | **3.57KB** gzip                      | Larger  | Small   | Small   |
 
 Full write-up: [Comparison](https://mohamadgarmabi.github.io/tanstack-fetch/guide/comparison)
 
@@ -75,7 +91,7 @@ Full write-up: [Comparison](https://mohamadgarmabi.github.io/tanstack-fetch/guid
 - [StackBlitz examples](./examples)
 - [Migrate from axios / ky / ofetch / fetch](https://mohamadgarmabi.github.io/tanstack-fetch/guide/migrate)
 - [Doctor CLI](https://mohamadgarmabi.github.io/tanstack-fetch/guide/migrate#doctor) — `npx tanstack-fetch doctor`
-- [What's new — 1.7.1](https://mohamadgarmabi.github.io/tanstack-fetch/blog/tanstack-fetch-1-7-1)
+- [What's new — 2.0.0](https://mohamadgarmabi.github.io/tanstack-fetch/blog/tanstack-fetch-2-0-0)
 - [Changelog](./CHANGELOG.md)
 
 > Not an official TanStack package — shaped for the same Query mental model.

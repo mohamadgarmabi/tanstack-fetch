@@ -23,9 +23,11 @@ tanstack-fetch is an HTTP client shaped for TanStack Query. axios, ky, and ofetc
 | Refresh token + single-flight      | Interceptor + `{ action: 'retry' }`               | Custom  | Custom  | Custom  |
 | Next.js SSR cookies                | `ssr-forward` plugin                              | Custom  | Custom  | Custom  |
 | SSE with Authorization             | `tanstack-fetch/sse`                              | No      | No      | No      |
-| File upload + progress             | `api.upload()`                                    | Yes     | Limited | Limited |
+| WebSocket / WebTransport with auth | `api.ws` / `api.transport` (`/live`)              | No      | No      | No      |
+| NDJSON streaming (POST + headers)  | `api.stream` (`/live`)                            | Custom  | Custom  | Custom  |
+| File upload + progress             | `api.upload()` (`/sse`)                           | Yes     | Limited | Limited |
 | tRPC transport                     | `tanstack-fetch/trpc`                             | No      | No      | No      |
-| Bundle                             | **4.81KB** gzip HTTP core                         | Larger  | Small   | Small   |
+| Bundle                             | **3.57KB** gzip HTTP core                         | Larger  | Small   | Small   |
 
 ## Before / after
 
@@ -89,15 +91,16 @@ Next.js App Router `fetch` does not forward cookies automatically. `ssr-forward`
 ```ts
 // server
 import { cookies } from 'next/headers'
+import { createSsrForwardInterceptor } from 'tanstack-fetch/plugins'
 export const api = createFetch({
   baseUrl: process.env.API_URL,
   source: 'ssr',
-  plugins: ['ssr-forward'],
+  interceptors: [createSsrForwardInterceptor()],
   incoming: () => ({ cookie: (await cookies()).toString() }),
 })
 
 // client
-const api = createFetch({ baseUrl: '/api', plugins: ['ssr-forward'] })
+const api = createFetch({ baseUrl: '/api', interceptors: [createSsrForwardInterceptor()] })
 ```
 
 Guide: [SSR](/guide/ssr) · Blog: [Next.js fetch vs tanstack-fetch](/blog/nextjs-fetch-tanstack-fetch) · Example: [/examples/next-ssr](/examples/next-ssr).
@@ -120,6 +123,22 @@ api.sse<OrderEvent>('/orders/stream', {
 - Full recipe: [EventSource auth headers](/recipes/eventsource-auth-headers)
 - Reconnect with `Last-Event-ID`: [`sse-resume`](/guide/plugins)
 - [SSE guide](/guide/sse) · [Blog posts](/blog) for framework-specific SSE
+
+## WebSocket, WebTransport & NDJSON
+
+axios, ky and ofetch stop at request / response. For sockets you'd usually add a second library and wire auth into it separately. `tanstack-fetch/live` reuses the same client:
+
+```ts
+import { createFetch } from 'tanstack-fetch/live'
+
+const api = createFetch({ baseUrl: '/api', getToken, plugins: ['refresh-token'] })
+
+const room = api.ws<ChatMessage, { id: string }>('/rooms/:id', { params: { id }, authIn: 'query' })
+for await (const chunk of api.stream<Token>('/chat', { body: { prompt } })) render(chunk)
+```
+
+- Fresh token on every reconnect, the same interceptors, and `refresh-token` on 401 for `api.stream`
+- [WebSocket, WebTransport & streams guide](/guide/websocket) · [1.8.0 release](/blog/tanstack-fetch-1-8-0)
 
 ## When to keep axios
 

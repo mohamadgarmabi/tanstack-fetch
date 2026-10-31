@@ -166,7 +166,8 @@ describe('createRefreshTokenInterceptor', () => {
       'refresh-token',
       createRefreshTokenInterceptor({
         refresh: async () => {
-          const body = await http.post<{ accessToken: string; expiresIn: number }>('/auth/refresh',
+          const body = await http.post<{ accessToken: string; expiresIn: number }>(
+            '/auth/refresh',
             { interceptors: { eject: ['refresh-token', 'auth'] } },
           )
           token = body.accessToken

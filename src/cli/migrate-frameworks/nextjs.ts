@@ -7,13 +7,23 @@ const nextjsScaffold: FrameworkScaffold = {
     {
       path: 'src/lib/api.ts',
       contents: `import { createFetch, isFetchError } from 'tanstack-fetch'
+import {
+  createAuthInterceptor,
+  createRetryIdempotentInterceptor,
+  createTraceInterceptor,
+} from 'tanstack-fetch/plugins'
 
 /** Browser / Client Components. */
 export const api = createFetch({
   baseUrl: process.env.NEXT_PUBLIC_API_URL ?? 'https://api.example.com',
-  getToken: () =>
-    typeof window === 'undefined' ? null : localStorage.getItem('access_token'),
-  plugins: ['trace', 'retry-idempotent'],
+  interceptors: [
+    createAuthInterceptor({
+      getToken: () =>
+        typeof window === 'undefined' ? null : localStorage.getItem('access_token'),
+    }),
+    createTraceInterceptor(),
+    createRetryIdempotentInterceptor(),
+  ],
 })
 
 export { isFetchError }
@@ -23,6 +33,11 @@ export { isFetchError }
       path: 'src/lib/api.server.ts',
       contents: `import { cookies } from 'next/headers'
 import { createFetch } from 'tanstack-fetch'
+import {
+  createRetryIdempotentInterceptor,
+  createSsrForwardInterceptor,
+  createTraceInterceptor,
+} from 'tanstack-fetch/plugins'
 
 /** Server Components / Route Handlers — forwards cookies via ssr-forward. */
 export const createServerApi = async () => {
@@ -33,7 +48,11 @@ export const createServerApi = async () => {
     incoming: {
       cookie: jar.toString(),
     },
-    plugins: ['trace', 'ssr-forward', 'retry-idempotent'],
+    interceptors: [
+      createTraceInterceptor(),
+      createSsrForwardInterceptor(),
+      createRetryIdempotentInterceptor(),
+    ],
   })
 }
 `,

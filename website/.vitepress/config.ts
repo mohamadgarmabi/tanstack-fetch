@@ -127,7 +127,7 @@ const buildJsonLd = (pageUrl: string, title: string, description: string) => {
       description: DEFAULT_DESCRIPTION,
       url: `${SITE_URL}/`,
       downloadUrl: NPM_URL,
-      softwareVersion: '1.7.1',
+      softwareVersion: '2.0.0',
       license: 'https://opensource.org/licenses/MIT',
       codeRepository: GITHUB_URL,
       programmingLanguage: ['TypeScript', 'JavaScript'],
@@ -350,6 +350,7 @@ const config = defineConfig({
             { text: 'Svelte & SvelteKit', link: '/guide/svelte' },
             { text: 'SSR (Next.js & Nuxt)', link: '/guide/ssr' },
             { text: 'SSE', link: '/guide/sse' },
+            { text: 'WebSocket, WebTransport & streams', link: '/guide/websocket' },
             { text: 'Upload', link: '/guide/upload' },
             { text: 'tRPC', link: '/guide/trpc' },
             { text: 'OpenAPI CLI', link: '/guide/openapi' },
@@ -431,6 +432,8 @@ const config = defineConfig({
           text: 'Releases',
           collapsed: true,
           items: [
+            { text: '2.0.0 — 3.57KB core · typed live params', link: '/blog/tanstack-fetch-2-0-0' },
+            { text: '1.8.0 — WebSocket · WebTransport · NDJSON', link: '/blog/tanstack-fetch-1-8-0' },
             { text: '1.7.1 — timeouts · URLs · errors', link: '/blog/tanstack-fetch-1-7-1' },
             { text: '1.7.0 — doctor · Solid · Svelte', link: '/blog/tanstack-fetch-1-7-0' },
             { text: '1.6.3 — migrate CLI', link: '/blog/tanstack-fetch-1-6-3' },
@@ -451,6 +454,8 @@ const config = defineConfig({
             { text: 'Nuxt SSR', link: '/examples/nuxt-ssr' },
             { text: 'Upload', link: '/examples/upload' },
             { text: 'SSE', link: '/examples/sse' },
+            { text: 'WebSocket · WebTransport · NDJSON', link: '/examples/realtime' },
+            { text: 'Cookbook — every feature', link: '/examples/cookbook' },
             { text: 'DevTools', link: '/examples/devtools' },
           ],
         },
@@ -462,6 +467,7 @@ const config = defineConfig({
     resolve: {
       alias: {
         'tanstack-fetch/sse': fileURLToPath(new URL('../../src/sse/index.ts', import.meta.url)),
+        'tanstack-fetch/live': fileURLToPath(new URL('../../src/live/index.ts', import.meta.url)),
         'tanstack-fetch/react': fileURLToPath(new URL('../../src/react/index.ts', import.meta.url)),
         'tanstack-fetch/vue': fileURLToPath(new URL('../../src/vue/index.ts', import.meta.url)),
         'tanstack-fetch/plugins': fileURLToPath(

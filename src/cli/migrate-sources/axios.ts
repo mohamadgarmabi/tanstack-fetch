@@ -85,7 +85,7 @@ const applySafeTransforms = (source: string): string => {
 
   next = stripJsonChainOnCalls(next, instances)
 
-  if (/\bapi\.(get|post|put|patch|delete|request|head|options)\s*\(/.test(next)) {
+  if (new RegExp(`\\bapi\\.(${HTTP_METHODS})\\s*\\(`).test(next)) {
     next = ensureTanstackFetchImport(next)
   }
 
@@ -184,7 +184,7 @@ const collectFindings = (file: string, source: string): MigrateFinding[] => {
         source: 'axios',
         kind: 'interceptor',
         snippet: trimmed,
-        note: 'Map to getToken, plugins, or createRefreshTokenInterceptor',
+        note: 'Map to interceptors from tanstack-fetch/plugins (createAuthInterceptor, createRefreshTokenInterceptor, …)',
       })
     }
     if (/\baxios\.defaults\b/.test(line)) {
@@ -194,7 +194,7 @@ const collectFindings = (file: string, source: string): MigrateFinding[] => {
         source: 'axios',
         kind: 'manual',
         snippet: trimmed,
-        note: 'axios.defaults → createFetch({ baseUrl, headers, getToken, plugins })',
+        note: 'axios.defaults → createFetch({ baseUrl, headers, interceptors: [createAuthInterceptor(…)] })',
       })
     }
   })

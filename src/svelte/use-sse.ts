@@ -1,7 +1,16 @@
 import { onDestroy } from 'svelte'
 import { writable, type Readable } from 'svelte/store'
 import { isFetchError } from 'tanstack-fetch'
-import type { FetchClient, FetchError, SseEvent, SseStatus, WithPathParams } from 'tanstack-fetch'
+import type {
+  FetchClient,
+  FetchError,
+  SseEvent,
+  SseStatus,
+  FetchMethodPath,
+  FetchParamsConstraint,
+  LiveParams,
+  NoParams,
+} from 'tanstack-fetch'
 import { getContextFetchClient } from './set-fetch-client'
 
 type UseSseOptionsBase<T> = {
@@ -15,7 +24,8 @@ type UseSseOptionsBase<T> = {
   onError?: (error: unknown) => void
 }
 
-type UseSseOptions<T, TPath extends string = string> = UseSseOptionsBase<T> & WithPathParams<TPath>
+type UseSseOptions<T, TPath extends string = string, TParams = NoParams> = UseSseOptionsBase<T> &
+  LiveParams<TParams, TPath>
 
 type UseSseResult<T> = {
   data: Readable<T | undefined>
@@ -30,9 +40,13 @@ const hasSse = (client: unknown): client is FetchClient =>
     client && typeof client === 'object' && 'sse' in client && typeof client.sse === 'function',
   )
 
-const useSse = <T, TPath extends string = string>(
-  path: TPath,
-  options: UseSseOptions<T, TPath> = {} as UseSseOptions<T, TPath>,
+const useSse = <T, TParams extends FetchParamsConstraint = NoParams, TPath extends string = string>(
+  path: FetchMethodPath<NoInfer<TParams>, TPath>,
+  options: UseSseOptions<T, TPath, NoInfer<TParams>> = {} as UseSseOptions<
+    T,
+    TPath,
+    NoInfer<TParams>
+  >,
 ): UseSseResult<T> => {
   const data = writable<T | undefined>(undefined)
   const event = writable<SseEvent<T> | undefined>(undefined)
@@ -67,8 +81,8 @@ const useSse = <T, TPath extends string = string>(
     error.set(undefined)
     status.set('connecting')
 
-    const subscription = api.sse<T, TPath>(path, {
-      ...(options as UseSseOptions<T, TPath>),
+    const subscription = api.sse<T>(path, {
+      ...(options as object),
       lastEventId: options.lastEventId,
       onOpen: () => status.set('connected'),
       onMessage: (message: T, nextEvent: SseEvent<T>) => {

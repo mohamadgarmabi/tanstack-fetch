@@ -1,6 +1,6 @@
 ---
 title: Vue API
-description: Vue and Nuxt API reference for tanstack-fetch — createFetchPlugin, useFetch, useSse, and injection key.
+description: Vue and Nuxt API reference for tanstack-fetch — createFetchPlugin, useFetch, useSse, useWs, and injection key.
 ---
 
 # Vue API
@@ -13,17 +13,19 @@ import {
   provideFetchClient,
   useFetch,
   useSse,
+  useWs,
   fetchClientKey,
 } from 'tanstack-fetch/vue'
 ```
 
-| Export                    | Role                                                 |
-| ------------------------- | ---------------------------------------------------- |
-| `createFetchPlugin(opts)` | `app.use(...)` / Nuxt plugin — provides the client   |
-| `provideFetchClient(api)` | `provide` in a **parent** setup for child `useFetch` |
-| `useFetch()`              | Inject the shared client                             |
-| `useSse(path, options)`   | Vue SSE helper (needs SSE client)                    |
-| `fetchClientKey`          | Injection key (advanced)                             |
+| Export                    | Role                                                               |
+| ------------------------- | ------------------------------------------------------------------ |
+| `createFetchPlugin(opts)` | `app.use(...)` / Nuxt plugin — provides the client                 |
+| `provideFetchClient(api)` | `provide` in a **parent** setup for child `useFetch`               |
+| `useFetch()`              | Inject the shared client                                           |
+| `useSse(path, options)`   | Vue SSE helper (needs SSE client)                                  |
+| `useWs(path, options)`    | WebSocket / WebTransport composable (`tanstack-fetch/live` client) |
+| `fetchClientKey`          | Injection key (advanced)                                           |
 
 Nuxt already ships a core `useFetch`. Rename on import when needed:
 
@@ -76,4 +78,23 @@ const { data, status, error, close } = useSse<{ id: string }>('/orders/stream', 
 </template>
 ```
 
-Guide: [Vue & Nuxt](/guide/vue) · [SSE](/guide/sse)
+### `useWs` result
+
+| Field    | Type                                                               |
+| -------- | ------------------------------------------------------------------ |
+| `data`   | `Ref` — last message (JSON parsed)                                 |
+| `error`  | `Ref` — last error                                                 |
+| `status` | `Ref` — `'connecting' \| 'connected' \| 'disconnected' \| 'error'` |
+| `send`   | Send a message (queued until open, JSON for objects)               |
+| `close`  | Close and stop reconnecting                                        |
+
+### `useWs` options
+
+All [`api.ws` options](/guide/websocket#options) (`authIn`, `reconnect`, `protocols`, `transport`, `params`, `query`, …), plus:
+
+| Option    | Role                                              |
+| --------- | ------------------------------------------------- |
+| `client`  | Client from `tanstack-fetch/live` (**preferred**) |
+| `enabled` | When `false`, stays `disconnected`                |
+
+Guide: [Vue & Nuxt](/guide/vue) · [SSE](/guide/sse) · [WebSocket](/guide/websocket)

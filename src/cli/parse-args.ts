@@ -22,9 +22,7 @@ const readFlagValue = (rest: string[], index: number, key: string) => {
 
 const parseMigrateFrom = (value: string): MigrateFrom => {
   if (!MIGRATE_FROM_VALUES.has(value as MigrateFrom)) {
-    throw new Error(
-      `tanstack-fetch: --from must be axios|ky|ofetch|fetch|all (got "${value}")`,
-    )
+    throw new Error(`tanstack-fetch: --from must be axios|ky|ofetch|fetch|all (got "${value}")`)
   }
   return value as MigrateFrom
 }
@@ -128,9 +126,7 @@ const parseArgs = (argv: string[]): CliArgs => {
     }
 
     if (command === 'migrate' && !fromSet) {
-      throw new Error(
-        'tanstack-fetch: migrate requires --from axios|ky|ofetch|fetch|all',
-      )
+      throw new Error('tanstack-fetch: migrate requires --from axios|ky|ofetch|fetch|all')
     }
 
     return { command: 'migrate', from, dir, write, scaffold, framework, provider }

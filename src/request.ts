@@ -1,4 +1,13 @@
-import type { CreateFetchOptions, HttpInterceptor, HttpMethod, RequestOptions } from './types'
+import type {
+  CreateFetchOptions,
+  FetchErrorInfo,
+  FetchResult,
+  HttpInterceptor,
+  HttpMethod,
+  IncomingHeaders,
+  RequestContext,
+  RequestOptions,
+} from './types'
 import { DEFAULT_MAX_RETRIES, DEFAULT_TIMEOUT_MS } from './constants'
 import { resolveInterceptors, runHook } from './interceptors/run-interceptors'
 import { executeFetch } from './request-execute'
@@ -7,7 +16,7 @@ import { mergeHeaders, resolveHeaders } from './utils/headers'
 import { combineSignals, createTimeoutSignal, wait } from './utils/signals'
 import { createFetchError } from './fetch-error'
 import { toErrResult, toFetchErrorInfo } from './utils/result'
-import type { FetchErrorInfo, FetchResult, IncomingHeaders, RequestContext } from './types'
+import type { XhrSender } from './utils/xhr-upload'
 
 type SendRequestArgs = {
   method: HttpMethod
@@ -15,6 +24,7 @@ type SendRequestArgs = {
   requestOptions?: RequestOptions
   client: CreateFetchOptions
   interceptors: HttpInterceptor[]
+  progress?: XhrSender
 }
 
 const resolveIncoming = async (
@@ -136,6 +146,7 @@ const runAttemptWithSignal = async <T, E>(
     client: input.args.client,
     interceptors: input.interceptors,
     fetchImpl: input.fetchImpl,
+    progress: input.args.progress,
     context,
   })
 }

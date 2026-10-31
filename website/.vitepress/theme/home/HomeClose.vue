@@ -18,8 +18,9 @@ const toHref = (href: string) => (href.startsWith('http') ? href : withBase(href
     />
     <h2>Start with one request.</h2>
     <p>
-      Add a token when you need auth, a plugin when you need retry, another entry when you need SSE.
-      The queryFn does not change. The first call is a few lines.
+      Add a token when you need auth, a plugin when you need retry, another entry when you need SSE,
+      WebSocket, WebTransport, or NDJSON streams. The queryFn does not change. The first call is a
+      few lines.
     </p>
     <div class="home-actions">
       <a class="home-btn home-btn-primary" :href="withBase('/docs')">

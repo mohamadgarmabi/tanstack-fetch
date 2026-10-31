@@ -1,6 +1,6 @@
 ---
 title: Live playground
-description: Run real createFetch demos — status handlers, React Query, Next.js SSR, upload, and SSE. Filter by framework in the header.
+description: Run real createFetch demos — status handlers, React Query, Next.js SSR, upload, SSE, WebSocket, WebTransport, and NDJSON streams. Filter by framework in the header.
 ---
 
 # Live playground
@@ -13,15 +13,16 @@ All widgets import **`tanstack-fetch` from source** and use a mock `fetch` / str
 
 ## Open in StackBlitz
 
-| Example        | Framework           | StackBlitz                                                                                            | Docs                              |
-| -------------- | ------------------- | ----------------------------------------------------------------------------------------------------- | --------------------------------- |
-| TanStack Query | **React**           | [Open](https://stackblitz.com/github/mohamadgarmabi/tanstack-fetch/tree/main/examples/tanstack-query) | [React](/examples/react)          |
-| Next.js SSR    | **React** · Next.js | [Open](https://stackblitz.com/github/mohamadgarmabi/tanstack-fetch/tree/main/examples/next-ssr)       | [Next SSR](/examples/next-ssr)    |
-| Nuxt SSR       | **Vue** · Nuxt      | —                                                                                                     | [Nuxt SSR](/examples/nuxt-ssr)    |
-| Upload         | **Core** demo       | [Open](https://stackblitz.com/github/mohamadgarmabi/tanstack-fetch/tree/main/examples/file-upload)    | [Upload](/examples/upload)        |
-| SSE            | **React** / adapters | [Open](https://stackblitz.com/github/mohamadgarmabi/tanstack-fetch/tree/main/examples/sse-live)       | [SSE](/examples/sse)              |
-| tRPC           | **React** / Start   | [Open](https://stackblitz.com/github/mohamadgarmabi/tanstack-fetch/tree/main/examples/trpc)           | [tRPC recipe](/recipes/trpc)      |
-| Auth status    | **Core**            | [Open](https://stackblitz.com/github/mohamadgarmabi/tanstack-fetch/tree/main/examples/auth-status)    | [Refresh](/recipes/refresh-token) |
+| Example                           | Framework            | StackBlitz                                                                                            | Docs                              |
+| --------------------------------- | -------------------- | ----------------------------------------------------------------------------------------------------- | --------------------------------- |
+| TanStack Query                    | **React**            | [Open](https://stackblitz.com/github/mohamadgarmabi/tanstack-fetch/tree/main/examples/tanstack-query) | [React](/examples/react)          |
+| Next.js SSR                       | **React** · Next.js  | [Open](https://stackblitz.com/github/mohamadgarmabi/tanstack-fetch/tree/main/examples/next-ssr)       | [Next SSR](/examples/next-ssr)    |
+| Nuxt SSR                          | **Vue** · Nuxt       | —                                                                                                     | [Nuxt SSR](/examples/nuxt-ssr)    |
+| Upload                            | **Core** demo        | [Open](https://stackblitz.com/github/mohamadgarmabi/tanstack-fetch/tree/main/examples/file-upload)    | [Upload](/examples/upload)        |
+| SSE                               | **React** / adapters | [Open](https://stackblitz.com/github/mohamadgarmabi/tanstack-fetch/tree/main/examples/sse-live)       | [SSE](/examples/sse)              |
+| WebSocket · WebTransport · NDJSON | **Core** demo        | Live on this page ↓                                                                                   | [Realtime](/examples/realtime)    |
+| tRPC                              | **React** / Start    | [Open](https://stackblitz.com/github/mohamadgarmabi/tanstack-fetch/tree/main/examples/trpc)           | [tRPC recipe](/recipes/trpc)      |
+| Auth status                       | **Core**             | [Open](https://stackblitz.com/github/mohamadgarmabi/tanstack-fetch/tree/main/examples/auth-status)    | [Refresh](/recipes/refresh-token) |
 
 ## Status matrix (incl. 429)
 
@@ -170,5 +171,29 @@ See [Solid guide](/guide/solid) and [tRPC · SolidStart](/recipes/trpc#3-solidst
 :::
 
 <SseDemo />
+
+## WebSocket
+
+::: tip Framework
+**Core** · `api.ws` · `tanstack-fetch/live`
+:::
+
+<RealtimeDemo kind="ws" />
+
+## WebTransport
+
+::: tip Framework
+**Core** · `api.transport` · `tanstack-fetch/live`
+:::
+
+<RealtimeDemo kind="transport" />
+
+## NDJSON stream
+
+::: tip Framework
+**Core** · `api.stream` · `tanstack-fetch/live`
+:::
+
+<RealtimeDemo kind="stream" />
 
 ::::

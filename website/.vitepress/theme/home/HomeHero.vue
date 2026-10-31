@@ -7,10 +7,12 @@ import {
   NPM_URL,
   PACKAGE_VERSION,
   RELEASE_POST_URL,
+  releases,
 } from './home.content'
 import LiquidGlass from '../components/glass/LiquidGlass.vue'
 import FlickeringGrid from '../components/backgrounds/FlickeringGrid.vue'
 import HomeHeroConsole from './HomeHeroConsole.vue'
+import HomeReleases from './HomeReleases.vue'
 import HomeIcon from './HomeIcon.vue'
 import { formatCount, useNpmPackageStats } from '../composables/use-npm-stats'
 import { useGithubStars } from '../composables/use-github-stars'
@@ -66,7 +68,7 @@ const copyInstall = async () => {
           :scale="-90"
         >
           <span>{{ releaseVersion }}</span>
-          doctor · Solid · Angular · Svelte
+          {{ releases[0].title }}
           <svg viewBox="0 0 16 16" aria-hidden="true">
             <path d="M3 8h10M9 4l4 4-4 4" />
           </svg>
@@ -77,8 +79,8 @@ const copyInstall = async () => {
 
         <p class="home-hero-lead">
           One request. Data back on success, typed <code>FetchError</code> on failure, AbortSignal
-          honored — shaped for TanStack Query. SSR, SSE, upload, refresh-token, and tRPC stay
-          optional.
+          honored — shaped for TanStack Query. SSR, SSE, WebSocket, upload, refresh-token, and tRPC
+          stay optional.
         </p>
 
         <div class="home-actions">
@@ -164,9 +166,7 @@ const copyInstall = async () => {
               <strong>{{ formatCount(pkg?.monthly ?? 0) }}</strong>
               downloads / month
             </span>
-            <span class="hero-downloads-week">
-              {{ formatCount(pkg?.weekly ?? 0) }} this week
-            </span>
+            <span class="hero-downloads-week"> {{ formatCount(pkg?.weekly ?? 0) }} this week </span>
             <span v-if="downloadsLive" class="hero-live-dot" aria-label="live" />
           </a>
 
@@ -191,5 +191,7 @@ const copyInstall = async () => {
         <HomeHeroConsole />
       </div>
     </div>
+
+    <HomeReleases />
   </header>
 </template>

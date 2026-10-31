@@ -1,6 +1,6 @@
 import { mkdir, writeFile } from 'node:fs/promises'
 import { join } from 'node:path'
-import type { CollectedOperation, JsonSchema, OpenApiSpec } from './openapi.type'
+import type { CollectedOperation, OpenApiSpec } from './openapi.type'
 import { collectOperations } from './collect-operations'
 import { schemaToTs, toPascal } from './schema-to-ts'
 
@@ -11,8 +11,7 @@ const generateTypesFile = (spec: OpenApiSpec) => {
   if (exports.length === 0) {
     return 'export {}\n'
   }
-  const body = `${types.join('\n\n')}\n\nexport type { ${exports.join(', ')} }\n`
-  return body.trimStart()
+  return `${types.join('\n\n')}\n\nexport type { ${exports.join(', ')} }\n`
 }
 
 const paramsType = (operation: CollectedOperation, kind: 'path' | 'query') => {
@@ -49,18 +48,19 @@ const optionsType = (operation: CollectedOperation) => {
 const clientPath = (path: string) => path.replace(/\{([A-Za-z0-9_]+)\}/g, ':$1')
 
 const methodLine = (operation: CollectedOperation) => {
-  const response = schemaToTs(operation.successSchema as JsonSchema | undefined)
+  const response = schemaToTs(operation.successSchema)
   const options = optionsType(operation)
   const optional = options.endsWith('| undefined') ? '?' : ''
+  const pathType = paramsType(operation, 'path')
+  const liveGenerics = pathType ? `<${response}, ${pathType}>` : `<${response}>`
   if (operation.isSse) {
-    return `    ${operation.operationId}: (options${optional}: ${options}) => api.sse<${response}>('${clientPath(operation.path)}', options),`
+    return `    ${operation.operationId}: (options${optional}: ${options}) => api.sse${liveGenerics}('${clientPath(operation.path)}', options),`
+  }
+  if (operation.isNdjson) {
+    return `    ${operation.operationId}: (options${optional}: ${options}) => api.stream${liveGenerics}('${clientPath(operation.path)}', { ...options, method: '${operation.method}' }),`
   }
   const method = operation.method.toLowerCase()
-  const call = method === 'delete' ? 'delete' : method
-  const pathType = paramsType(operation, 'path')
-  const bodyType = operation.bodySchema
-    ? schemaToTs(operation.bodySchema as JsonSchema | undefined)
-    : undefined
+  const bodyType = operation.bodySchema ? schemaToTs(operation.bodySchema) : undefined
   const hasBody = Boolean(bodyType) && method !== 'get' && method !== 'delete'
   const generics =
     pathType && hasBody
@@ -70,7 +70,7 @@ const methodLine = (operation: CollectedOperation) => {
         : hasBody
           ? `<${response}, NoParams, ${bodyType}>`
           : `<${response}>`
-  return `    ${operation.operationId}: (options${optional}: ${options}) => api.${call}${generics}('${clientPath(operation.path)}', options),`
+  return `    ${operation.operationId}: (options${optional}: ${options}) => api.${method}${generics}('${clientPath(operation.path)}', options),`
 }
 
 const generateClientFile = (spec: OpenApiSpec, operations: CollectedOperation[]) => {
@@ -83,8 +83,9 @@ const generateClientFile = (spec: OpenApiSpec, operations: CollectedOperation[])
   const typesImport =
     schemaNames.length > 0 ? `import type { ${schemaNames.join(', ')} } from './types'\n` : ''
   const hasSse = operations.some((item) => item.isSse)
+  const hasNdjson = operations.some((item) => item.isNdjson)
   const needsNoParams = operations.some((item) => {
-    if (item.isSse || !item.bodySchema) {
+    if (item.isSse || item.isNdjson || !item.bodySchema) {
       return false
     }
     const method = item.method.toLowerCase()
@@ -97,10 +98,12 @@ const generateClientFile = (spec: OpenApiSpec, operations: CollectedOperation[])
   if (needsNoParams) {
     typeImports.push('NoParams')
   }
-  const fetchImport = hasSse
-    ? `import { createFetch } from 'tanstack-fetch/sse'
-import type { ${typeImports.join(', ')} } from 'tanstack-fetch'`
-    : `import { createFetch } from 'tanstack-fetch'
+  const createFetchEntry = hasNdjson
+    ? 'tanstack-fetch/live'
+    : hasSse
+      ? 'tanstack-fetch/sse'
+      : 'tanstack-fetch'
+  const fetchImport = `import { createFetch } from '${createFetchEntry}'
 import type { ${typeImports.join(', ')} } from 'tanstack-fetch'`
 
   return `${fetchImport}

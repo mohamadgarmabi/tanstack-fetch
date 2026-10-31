@@ -119,11 +119,11 @@ Nuxt tip: keep Nuxt’s `$fetch` for Nitro routes if you want; use a shared `cre
 
 ## From raw `fetch`
 
-| fetch                                  | tanstack-fetch              |
-| -------------------------------------- | --------------------------- |
-| `fetch(url)` + `res.ok` + `res.json()` | `api.get(url)`              |
-| Manual `Authorization` header          | `getToken` on `createFetch` |
-| Manual timeout / abort                 | `{ signal }` / `timeoutMs`  |
+| fetch                                  | tanstack-fetch                                          |
+| -------------------------------------- | ------------------------------------------------------- |
+| `fetch(url)` + `res.ok` + `res.json()` | `api.get(url)`                                          |
+| Manual `Authorization` header          | `createAuthInterceptor({ getToken })` in `interceptors` |
+| Manual timeout / abort                 | `{ signal }` / `timeoutMs`                              |
 
 ```ts
 // before

@@ -1,4 +1,16 @@
-const wait = (delayMs: number) => new Promise<void>((resolve) => setTimeout(resolve, delayMs))
+const wait = (delayMs: number, signal?: AbortSignal) =>
+  new Promise<void>((resolve, reject) => {
+    const onAbort = () => {
+      clearTimeout(timer)
+      reject(signal?.reason)
+    }
+    const timer = setTimeout(() => {
+      signal?.removeEventListener('abort', onAbort)
+      resolve()
+    }, delayMs)
+    if (signal?.aborted) onAbort()
+    else signal?.addEventListener('abort', onAbort, { once: true })
+  })
 
 const combineSignals = (signals: Array<AbortSignal | undefined>) => {
   const active = signals.filter((signal): signal is AbortSignal => Boolean(signal))

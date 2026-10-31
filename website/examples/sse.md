@@ -257,4 +257,6 @@ Browser-only in SvelteKit — see [Svelte guide](/guide/svelte).
 
 ::::
 
+Need two-way messages, WebTransport, or NDJSON? → [WebSocket · WebTransport · NDJSON demos](/examples/realtime).
+
 Guide: [SSE](/guide/sse) · example: [`examples/sse-live`](https://github.com/mohamadgarmabi/tanstack-fetch/tree/main/examples/sse-live) (**React**)

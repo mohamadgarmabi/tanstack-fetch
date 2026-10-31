@@ -1,4 +1,5 @@
 import { createFetchContext } from '../create-fetch'
+import { createOptionInterceptors } from '../create-fetch-full'
 import { resolveCreateFetchOptions } from '../client-options'
 import { DEFAULT_MAX_RETRIES, DEFAULT_TIMEOUT_MS } from '../constants'
 import { runHook } from '../interceptors/run-interceptors'
@@ -21,7 +22,7 @@ const resolveRequestParts = (
       url: toAbsoluteUrl(input.url, baseUrl),
       method: (init?.method ?? input.method ?? 'GET').toUpperCase() as HttpMethod,
       headers: mergeHeaders(input.headers, init?.headers),
-      body: init?.body !== undefined ? init.body : undefined,
+      body: init?.body,
       signal: init?.signal ?? input.signal ?? undefined,
     }
   }
@@ -45,7 +46,10 @@ const resolveRequestParts = (
  */
 const createTRPCFetch = (source?: CreateTRPCFetchSource): typeof fetch => {
   const options = resolveCreateFetchOptions(source)
-  const { clientOptions, interceptors } = createFetchContext(options)
+  const { clientOptions, interceptors } = createFetchContext(
+    options,
+    createOptionInterceptors(options),
+  )
   const fetchImpl = clientOptions.fetch ?? globalThis.fetch
   if (!fetchImpl) {
     throw new Error('tanstack-fetch: fetch is not available')
@@ -64,7 +68,7 @@ const createTRPCFetch = (source?: CreateTRPCFetchSource): typeof fetch => {
           url: parts.url,
           headers: mergeHeaders(await resolveHeaders(clientOptions.headers), parts.headers),
           body: parts.body,
-          signal: combineSignals([parts.signal ?? undefined, createTimeoutSignal(timeoutMs)?.signal]),
+          signal: combineSignals([parts.signal, createTimeoutSignal(timeoutMs)?.signal]),
         },
         incoming: await resolveIncomingHeaders(clientOptions),
         meta: {

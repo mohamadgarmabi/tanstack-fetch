@@ -63,21 +63,26 @@ Handlers run **before** the error is thrown (Query still gets `isError` / `Fetch
 
 ```ts
 import { createFetch, parseRetryAfter } from 'tanstack-fetch'
+import { createStatusInterceptor } from 'tanstack-fetch/plugins'
 
 createFetch({
-  onUnauthorized: () => logout(), // 401
-  onForbidden: () => toast.error('Forbidden'), // 403
-  onNotFound: () => toast.error('Missing'), // 404
-  onTooManyRequests: ({ context }) => {
-    const waitMs = parseRetryAfter(context.response?.headers, 1000)
-    toast.error(`Rate limited — retry in ${Math.ceil(waitMs / 1000)}s`)
-  },
-  onClientError: ({ status }) => console.warn('4xx', status),
-  onServerError: ({ status }) => console.error('5xx', status),
+  interceptors: [
+    createStatusInterceptor({
+      401: () => logout(),
+      403: () => toast.error('Forbidden'),
+      404: () => toast.error('Missing'),
+      429: ({ context }) => {
+        const waitMs = parseRetryAfter(context.response?.headers, 1000)
+        toast.error(`Rate limited — retry in ${Math.ceil(waitMs / 1000)}s`)
+      },
+      '4xx': ({ status }) => console.warn('4xx', status),
+      '5xx': ({ status }) => console.error('5xx', status),
+    }),
+  ],
 })
 ```
 
-Full shortcut table: [Configuration](./configuration). Live demo: [playground](/examples/playground).
+On `tanstack-fetch/sse`, `/live` and framework providers the same handlers are plain options (`onUnauthorized`, `onForbidden`, …, `onServerError`). Full shortcut table: [Configuration](./configuration). Live demo: [playground](/examples/playground).
 
 ## With TanStack Query
 

@@ -12,8 +12,7 @@ type ResolveFrameworkScaffoldOptions = {
   provider?: boolean
 }
 
-const FRAMEWORK_LIST =
-  'react|vue|nuxt|nextjs|solid|angular|svelte|sveltekit' as const
+const FRAMEWORK_LIST = 'react|vue|nuxt|nextjs|solid|angular|svelte|sveltekit' as const
 
 const frameworkScaffolds: Record<MigrateFramework, FrameworkScaffold> = {
   react: reactScaffold,
@@ -49,9 +48,7 @@ const MIGRATE_FRAMEWORK_VALUES = new Set<MigrateFramework>([
 
 const parseMigrateFramework = (value: string): MigrateFramework => {
   if (!MIGRATE_FRAMEWORK_VALUES.has(value as MigrateFramework)) {
-    throw new Error(
-      `tanstack-fetch: --framework must be ${FRAMEWORK_LIST} (got "${value}")`,
-    )
+    throw new Error(`tanstack-fetch: --framework must be ${FRAMEWORK_LIST} (got "${value}")`)
   }
   return value as MigrateFramework
 }

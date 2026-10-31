@@ -1,6 +1,15 @@
 import { inject, onScopeDispose, ref, shallowRef, watch, type Ref } from 'vue'
 import { isFetchError } from 'tanstack-fetch'
-import type { FetchClient, FetchError, SseEvent, SseStatus, WithPathParams } from 'tanstack-fetch'
+import type {
+  FetchClient,
+  FetchError,
+  SseEvent,
+  SseStatus,
+  FetchMethodPath,
+  FetchParamsConstraint,
+  LiveParams,
+  NoParams,
+} from 'tanstack-fetch'
 import { fetchClientKey } from './fetch-key'
 
 type UseSseOptionsBase<T> = {
@@ -14,7 +23,8 @@ type UseSseOptionsBase<T> = {
   onError?: (error: unknown) => void
 }
 
-type UseSseOptions<T, TPath extends string = string> = UseSseOptionsBase<T> & WithPathParams<TPath>
+type UseSseOptions<T, TPath extends string = string, TParams = NoParams> = UseSseOptionsBase<T> &
+  LiveParams<TParams, TPath>
 
 type UseSseResult<T> = {
   data: Ref<T | undefined>
@@ -30,9 +40,13 @@ const hasSse = (client: unknown): client is FetchClient =>
     client && typeof client === 'object' && 'sse' in client && typeof client.sse === 'function',
   )
 
-const useSse = <T, TPath extends string = string>(
-  path: TPath,
-  options: UseSseOptions<T, TPath> = {} as UseSseOptions<T, TPath>,
+const useSse = <T, TParams extends FetchParamsConstraint = NoParams, TPath extends string = string>(
+  path: FetchMethodPath<NoInfer<TParams>, TPath>,
+  options: UseSseOptions<T, TPath, NoInfer<TParams>> = {} as UseSseOptions<
+    T,
+    TPath,
+    NoInfer<TParams>
+  >,
 ): UseSseResult<T> => {
   const contextClient = inject(fetchClientKey, null)
   const data = shallowRef<T | undefined>(undefined)
@@ -40,7 +54,6 @@ const useSse = <T, TPath extends string = string>(
   const error = shallowRef<FetchError | Error | undefined>(undefined)
   const status = ref<SseStatus>('disconnected')
   let closeFn: (() => void) | null = null
-  let latestOptions = options
 
   const stop = () => {
     closeFn?.()
@@ -48,7 +61,6 @@ const useSse = <T, TPath extends string = string>(
   }
 
   const connect = () => {
-    latestOptions = options
     stop()
 
     if (options.enabled === false) {
@@ -68,26 +80,26 @@ const useSse = <T, TPath extends string = string>(
     error.value = undefined
     status.value = 'connecting'
 
-    const subscription = api.sse<T, TPath>(path, {
-      ...(latestOptions as UseSseOptions<T, TPath>),
-      lastEventId: latestOptions.lastEventId,
+    const subscription = api.sse<T>(path, {
+      ...(options as object),
+      lastEventId: options.lastEventId,
       onOpen: () => {
         status.value = 'connected'
       },
       onMessage: (message: T, nextEvent: SseEvent<T>) => {
         data.value = message
         event.value = nextEvent
-        latestOptions.onMessage?.(message, nextEvent)
+        options.onMessage?.(message, nextEvent)
       },
       onEvent: (nextEvent: SseEvent<T>) => {
-        latestOptions.onEvent?.(nextEvent)
+        options.onEvent?.(nextEvent)
       },
       onError: (nextError: unknown) => {
         status.value = 'error'
         const normalized =
           nextError instanceof Error ? nextError : new Error('SSE connection failed')
         error.value = isFetchError(nextError) ? nextError : normalized
-        latestOptions.onError?.(nextError)
+        options.onError?.(nextError)
       },
       onClose: () => {
         status.value = 'disconnected'

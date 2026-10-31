@@ -32,6 +32,8 @@ const createSseContext = async (
   args: SendSseArgs,
   attempt: number,
   lastEventId?: string,
+  /** Reused by `ws` / `stream`; `accept: null` sends no accept header. */
+  init: { method?: HttpMethod; accept?: string | null } = {},
 ): Promise<RequestContext> => {
   const source = args.client.source ?? 'browser'
   assertAbsoluteUrl(args.client.baseUrl, source)
@@ -45,13 +47,16 @@ const createSseContext = async (
     await resolveHeaders(args.client.headers),
     args.requestOptions?.headers,
   )
-  headers.set('accept', 'text/event-stream')
+  const accept = init.accept === undefined ? 'text/event-stream' : init.accept
+  if (accept) {
+    headers.set('accept', accept)
+  }
   if (lastEventId) {
     headers.set('last-event-id', lastEventId)
   }
   return {
     request: {
-      method: 'GET' as HttpMethod,
+      method: init.method ?? 'GET',
       url,
       headers,
       body: args.requestOptions?.body,

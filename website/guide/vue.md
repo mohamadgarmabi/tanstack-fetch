@@ -36,16 +36,21 @@ npm install tanstack-fetch
 ```ts
 import { createApp } from 'vue'
 import { createFetch } from 'tanstack-fetch'
+import { createAuthInterceptor, createStatusInterceptor } from 'tanstack-fetch/plugins'
 import { createFetchPlugin, useFetch } from 'tanstack-fetch/vue'
 import App from './App.vue'
 
 const api = createFetch({
   baseUrl: import.meta.env.VITE_API_URL,
-  getToken: () => localStorage.getItem('access_token'),
-  onUnauthorized: () => {
-    localStorage.removeItem('access_token')
-    window.location.href = '/login'
-  },
+  interceptors: [
+    createAuthInterceptor({ getToken: () => localStorage.getItem('access_token') }),
+    createStatusInterceptor({
+      401: () => {
+        localStorage.removeItem('access_token')
+        window.location.href = '/login'
+      },
+    }),
+  ],
 })
 
 createApp(App)
@@ -137,6 +142,39 @@ const { data, status, error, close } = useSse<OrderEvent>('/orders/stream', {
 ### Optional: via plugin
 
 If the app already has `createFetchPlugin({ client: api })` with an SSE client, omit `client` and `useSse` reads it from inject.
+
+## `useWs`
+
+Create the client from **`tanstack-fetch/live`** and pass `{ client: api }`. Same result shape as `useSse`, plus `send`. In the browser, set `authIn` (`'query'` or `'protocol'`) when you have a token. Add `transport: 'webtransport'` for WebTransport. See [WebSocket, WebTransport & streams](./websocket).
+
+```vue
+<script setup lang="ts">
+import { createFetch } from 'tanstack-fetch/live'
+import { useWs } from 'tanstack-fetch/vue'
+
+type ChatMessage = { user: string; text: string }
+
+const props = defineProps<{ id: number }>()
+
+const api = createFetch({
+  baseUrl: import.meta.env.VITE_API_URL,
+  getToken: () => localStorage.getItem('access_token'),
+})
+
+const { data, status, send, close } = useWs<ChatMessage, { id: string }>('/rooms/:id', {
+  client: api,
+  params: { id: props.id },
+  authIn: 'query',
+})
+</script>
+
+<template>
+  <p>{{ status }}</p>
+  <p>{{ data?.text ?? 'waiting…' }}</p>
+  <button type="button" @click="send({ text: 'hi' })">Send</button>
+  <button type="button" @click="close">Disconnect</button>
+</template>
+```
 
 ## `provideFetchClient`
 

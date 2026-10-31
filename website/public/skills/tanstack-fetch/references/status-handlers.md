@@ -4,6 +4,8 @@ Resolution order: **exact status** → **`4xx` / `5xx` buckets** → **`default`
 
 ## Shortcuts on `createFetch`
 
+Available on `tanstack-fetch/sse`, `/live`, `/trpc` and the framework providers. On the slim core (`tanstack-fetch`) use `createStatusInterceptor({ 401: fn, '4xx': fn, '5xx': fn })` from `tanstack-fetch/plugins` with the same handler signature.
+
 | Option                         | HTTP      |
 | ------------------------------ | --------- |
 | `onBadRequest`                 | 400       |

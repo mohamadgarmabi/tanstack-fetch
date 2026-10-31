@@ -1,5 +1,6 @@
 import { createContext, useContext, useRef, type Context } from 'react'
-import { createFetch } from 'tanstack-fetch'
+// Providers accept every option shortcut (getToken, onUnauthorized, plugins, …).
+import { createFetch } from 'tanstack-fetch/sse'
 import type { CreateFetchOptions, FetchClient } from 'tanstack-fetch'
 import type { FetchProviderProps, HttpFetchClient } from './fetch-provider.type'
 
@@ -9,7 +10,7 @@ const FetchContext: Context<AnyFetchClient | null> = createContext<AnyFetchClien
 
 const buildClient = (props: FetchProviderProps): AnyFetchClient => {
   if (props.client) {
-    return props.client
+    return props.client as AnyFetchClient
   }
   const { children: _children, client: _client, ...options } = props
   return createFetch(options as CreateFetchOptions)
@@ -19,7 +20,7 @@ const useFetchProviderState = (props: FetchProviderProps) => {
   const createdRef = useRef<AnyFetchClient | null>(null)
 
   if (props.client) {
-    return { value: props.client, children: props.children }
+    return { value: props.client as AnyFetchClient, children: props.children }
   }
 
   if (!createdRef.current) {

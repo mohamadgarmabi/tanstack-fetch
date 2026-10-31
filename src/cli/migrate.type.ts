@@ -14,14 +14,7 @@ type MigrateArgs = {
 }
 
 type MigrateFindingKind =
-  | 'import'
-  | 'create'
-  | 'call'
-  | 'error'
-  | 'data'
-  | 'query-params'
-  | 'interceptor'
-  | 'manual'
+  'import' | 'create' | 'call' | 'error' | 'data' | 'query-params' | 'interceptor' | 'manual'
 
 type MigrateFinding = {
   file: string

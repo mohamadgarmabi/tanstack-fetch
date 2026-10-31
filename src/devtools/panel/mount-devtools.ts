@@ -1,11 +1,6 @@
 import { formatCallSite, promptOpenCallSite } from '../capture-call-stack'
 import { formatBytes } from '../estimate-size'
-import type {
-  DevtoolsEntry,
-  DevtoolsKind,
-  DevtoolsStore,
-  MountDevtoolsOptions,
-} from '../devtools.type'
+import type { DevtoolsEntry, DevtoolsKind, MountDevtoolsOptions } from '../devtools.type'
 import { injectStyles } from './mount-devtools.styles'
 
 type TabId = 'all' | DevtoolsKind
@@ -16,6 +11,8 @@ const TABS: { id: TabId; label: string }[] = [
   { id: 'sse', label: 'SSE' },
   { id: 'ssr', label: 'SSR' },
   { id: 'trpc', label: 'tRPC' },
+  { id: 'ws', label: 'WS' },
+  { id: 'stream', label: 'Stream' },
 ]
 
 const pretty = (value: unknown) => {
@@ -130,8 +127,8 @@ const mountDevtools = (options: MountDevtoolsOptions) => {
     handle.textContent = open ? 'Hide' : 'Fetch'
   }
 
-  const renderTabs = (storeRef: DevtoolsStore) => {
-    const flags = storeRef.getSnapshot().flags
+  const renderTabs = () => {
+    const flags = store.getSnapshot().flags
     tabsEl.replaceChildren()
     TABS.forEach((tab) => {
       const btn = document.createElement('button')
@@ -214,7 +211,7 @@ const mountDevtools = (options: MountDevtoolsOptions) => {
     if (events.length === 0) {
       const empty = document.createElement('div')
       empty.className = 'tf-dt-empty'
-      empty.textContent = 'No SSE events yet'
+      empty.textContent = entry.kind === 'sse' ? 'No SSE events yet' : 'No messages yet'
       wrap.appendChild(empty)
       return wrap
     }
@@ -223,7 +220,8 @@ const mountDevtools = (options: MountDevtoolsOptions) => {
       card.className = 'tf-dt-event'
       const head = document.createElement('div')
       head.className = 'tf-dt-event-head'
-      head.textContent = `#${item.index}${item.event ? ` · ${item.event}` : ''}${item.id ? ` · id ${item.id}` : ''}`
+      const label = item.event === 'in' ? '↓ in' : item.event === 'out' ? '↑ out' : item.event
+      head.textContent = `#${item.index}${label ? ` · ${label}` : ''}${item.id ? ` · id ${item.id}` : ''}`
       const pre = document.createElement('pre')
       pre.textContent = pretty(item.data)
       card.append(head, pre)
@@ -237,7 +235,7 @@ const mountDevtools = (options: MountDevtoolsOptions) => {
     if (!entry) {
       const empty = document.createElement('div')
       empty.className = 'tf-dt-empty'
-      empty.textContent = 'Select a request — call graph, SSE list, body.'
+      empty.textContent = 'Select a request — call graph, SSE / WebSocket messages, body.'
       detailEl.appendChild(empty)
       return
     }
@@ -259,7 +257,8 @@ const mountDevtools = (options: MountDevtoolsOptions) => {
     appendSection(detailEl, 'Call graph', renderCallGraph(entry))
 
     if (entry.kind === 'sse' || entry.sse) {
-      appendSection(detailEl, `SSE events (${entry.sse?.eventCount ?? 0})`, renderSseEvents(entry))
+      const title = entry.kind === 'sse' ? 'SSE events' : 'Messages'
+      appendSection(detailEl, `${title} (${entry.sse?.eventCount ?? 0})`, renderSseEvents(entry))
     }
 
     appendSection(detailEl, 'Query', pretty(entry.query))
@@ -285,16 +284,16 @@ const mountDevtools = (options: MountDevtoolsOptions) => {
       const row = document.createElement('button')
       row.type = 'button'
       row.className = `tf-dt-row${selectedId === entry.id ? ' is-selected' : ''}`
-      const sseHint = entry.kind === 'sse' && entry.sse ? ` · ${entry.sse.eventCount} evt` : ''
+      const unit = entry.kind === 'sse' ? 'evt' : 'msg'
+      const sseHint = entry.sse ? ` · ${entry.sse.eventCount} ${unit}` : ''
       const caller = entry.callerFile ?? '—'
       const isLive = entry.status === 'pending' && entry.sse?.open
-      const pillClass = isLive ? 'live' : entry.status
-      const pillLabel = isLive ? 'live' : entry.status
+      const pill = isLive ? 'live' : entry.status
       row.innerHTML = `
         <span class="tf-dt-method">${entry.method}</span>
         <span class="tf-dt-path" title="${entry.url}">${entry.path}${sseHint}</span>
         <span class="tf-dt-caller" title="Called from">${caller}</span>
-        <span class="tf-dt-pill ${pillClass}">${pillLabel}</span>
+        <span class="tf-dt-pill ${pill}">${pill}</span>
         <span class="tf-dt-meta">${entry.timingMs != null ? `${Math.round(entry.timingMs)}ms` : '—'}</span>
       `
       row.addEventListener('click', () => store.select(entry.id))
@@ -305,7 +304,7 @@ const mountDevtools = (options: MountDevtoolsOptions) => {
   const render = () => {
     const snap = store.getSnapshot()
     pauseBtn.textContent = snap.paused ? 'Resume' : 'Pause'
-    renderTabs(store)
+    renderTabs()
     const entries =
       activeTab === 'all' ? snap.entries : snap.entries.filter((item) => item.kind === activeTab)
     renderList(entries, snap.selectedId)

@@ -19,6 +19,11 @@ const isMigrateSelfPath = (absolutePath: string) => {
 const DEFAULT_SCAFFOLD = 'src/lib/api.ts'
 
 const GENERIC_SCAFFOLD = `import { createFetch, isFetchError } from 'tanstack-fetch'
+import {
+  createAuthInterceptor,
+  createRetryIdempotentInterceptor,
+  createTraceInterceptor,
+} from 'tanstack-fetch/plugins'
 
 /**
  * Shared client for TanStack Query queryFn.
@@ -26,9 +31,14 @@ const GENERIC_SCAFFOLD = `import { createFetch, isFetchError } from 'tanstack-fe
  */
 export const api = createFetch({
   baseUrl: process.env.API_URL ?? process.env.VITE_API_URL ?? 'https://api.example.com',
-  getToken: () =>
-    typeof localStorage === 'undefined' ? null : localStorage.getItem('access_token'),
-  plugins: ['trace', 'retry-idempotent'],
+  interceptors: [
+    createAuthInterceptor({
+      getToken: () =>
+        typeof localStorage === 'undefined' ? null : localStorage.getItem('access_token'),
+    }),
+    createTraceInterceptor(),
+    createRetryIdempotentInterceptor(),
+  ],
 })
 
 export { isFetchError }
@@ -137,8 +147,7 @@ const migrate = (args: MigrateArgs): MigrateResult => {
       if (written) scaffoldsWritten.push(written)
     }
   } else if (shouldWriteScaffold) {
-    const relativePath =
-      typeof args.scaffold === 'string' ? args.scaffold : DEFAULT_SCAFFOLD
+    const relativePath = typeof args.scaffold === 'string' ? args.scaffold : DEFAULT_SCAFFOLD
     const written = writeScaffoldFile(rootDirectory, relativePath, GENERIC_SCAFFOLD)
     scaffoldWritten = written
     if (written) scaffoldsWritten.push(written)

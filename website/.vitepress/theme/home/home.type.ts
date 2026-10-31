@@ -8,6 +8,16 @@ type ShowcaseOutput = {
   code: string
 }
 
+/** One slide in the hero "What's new" slider; `href` is the release blog post. */
+type ReleaseItem = {
+  version: string
+  title: string
+  text: string
+  /** ISO day, e.g. `2026-10-30`. */
+  date: string
+  href: string
+}
+
 type ShowcaseItem = {
   id: string
   label: string
@@ -82,6 +92,7 @@ export type {
   FooterColumn,
   PackageItem,
   PillLink,
+  ReleaseItem,
   ShowcaseItem,
   ShowcaseOutput,
   StackBlitzLink,
