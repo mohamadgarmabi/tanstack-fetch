@@ -1,21 +1,21 @@
 {
-  "updatedAt": "2026-10-31T07:19:59.629Z",
+  "updatedAt": "2026-10-30T21:43:33.134Z",
   "author": "Mohammad Garmabi",
   "npmUser": "mohammad.garmabi",
   "packages": [
     {
       "name": "tanstack-fetch",
       "version": "1.7.1",
-      "weekly": 41,
-      "monthly": 1190,
+      "weekly": 45,
+      "monthly": 1222,
       "total": 3271,
       "description": "TanStack Query fetch client — typed errors, AbortSignal, SSR, SSE, upload. React, Vue/Nuxt, Solid, Angular, Svelte/Svelt"
     },
     {
       "name": "vite-plugin-react-splash",
       "version": "1.1.0",
-      "weekly": 55,
-      "monthly": 242,
+      "weekly": 59,
+      "monthly": 301,
       "total": 3270,
       "description": "Fast Vite splash screen plugin for React PWAs — critical CSS for better FCP/LCP, progress API, prefers-reduced-motion, w"
     },
@@ -63,7 +63,7 @@
       "name": "image-auth",
       "version": "0.0.16",
       "weekly": 23,
-      "monthly": 41,
+      "monthly": 42,
       "total": 1793,
       "description": "To install the package, you can use npm or yarn:"
     },
@@ -85,7 +85,7 @@
     }
   ],
   "totals": {
-    "weekly": 152,
-    "monthly": 1539
+    "weekly": 160,
+    "monthly": 1631
   }
 }
