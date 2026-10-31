@@ -14,3 +14,5 @@ docs/assets/gif-frames/
 website/.vitepress/dist
 website/.vitepress/cache
 .pnpm-store
+# Locally cloned Claude Code skills (installed to ~/.claude/skills)
+claude-code-frontend-skills/
