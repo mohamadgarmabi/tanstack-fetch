@@ -26,7 +26,7 @@ cover: /images/blog-2-0-0-cover.jpg
 npm install tanstack-fetch@2.0.0
 ```
 
-Two breaking changes, both caught by TypeScript. If you import `createFetch` from `tanstack-fetch/sse`, `/live`, `/trpc`, or configure a framework provider, only the second one can affect you.
+Two breaking changes, both caught by TypeScript. If you import `createFetch` from `tanstack-fetch/sse` or `/live`, pass options to `createTRPCFetch` (`/trpc`), or configure a framework provider, only the second one can affect you.
 
 ## At a glance
 

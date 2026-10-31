@@ -75,7 +75,7 @@ const connectWs = () => {
   chat?.close()
   log.value = []
   status.value = 'connecting'
-  chat = wsApi.ws<{ user: string; text: string }, { text: string }>('/rooms/:id', {
+  chat = wsApi.ws<{ user: string; text: string }, { id: number }, { text: string }>('/rooms/:id', {
     params: { id: 7 },
     authIn: 'query',
     reconnect: { retries: 3, delayMs: 600 },
@@ -159,7 +159,7 @@ const connectTransport = () => {
   game?.close()
   datagrams.value = 0
   status.value = 'connecting'
-  game = transportApi.transport<{ x: number; y: number }, { boost: number }>('/game/:id', {
+  game = transportApi.transport<{ x: number; y: number }, { id: number }, { boost: number }>('/game/:id', {
     params: { id: 1 },
     authIn: 'query',
     onOpen: () => {
@@ -264,7 +264,7 @@ import { useWs } from 'tanstack-fetch/react'
 const api = createFetch({ baseUrl, getToken })
 
 const ChatRoom = ({ id }: { id: number }) => {
-  const { data, status, send, close } = useWs<ChatMessage, { id: string }>('/rooms/:id', {
+  const { data, status, send, close } = useWs<ChatMessage, { id: number }>('/rooms/:id', {
     client: api,
     params: { id },
     authIn: 'query', // browsers can't send WS headers
@@ -287,7 +287,7 @@ const ChatRoom = ({ id }: { id: number }) => {
     snippet: `import { useWs } from 'tanstack-fetch/react'
 
 const Game = () => {
-  const { data: state, status, send } = useWs<GameState, Input>('/game/:id', {
+  const { data: state, status, send } = useWs<GameState, { id: number }, Input>('/game/:id', {
     client: api,
     params: { id: 1 },
     authIn: 'query',

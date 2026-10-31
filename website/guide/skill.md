@@ -7,7 +7,7 @@ description: Install the tanstack-fetch Cursor / Agent Skills package so coding 
 
 ![Agent skill](/images/page-guide-skill.jpg)
 
-Teach Cursor, Claude Code, Codex, and other Agent Skills–compatible tools how to use **tanstack-fetch v1.5** correctly (shared client, Query `signal`, typed path params, SSE, SSR, plugins, React, Vue/Nuxt, DevTools).
+Teach Cursor, Claude Code, Codex, and other Agent Skills–compatible tools how to use **tanstack-fetch v2** correctly (shared client, Query `signal`, typed path params, slim core + interceptors, SSE, WebSocket / NDJSON, SSR, React, Vue/Nuxt, DevTools).
 
 ## Install (one command)
 
@@ -30,7 +30,7 @@ From this docs site (direct skill URL):
 
 Skill folder: [`.agents/skills/tanstack-fetch`](https://github.com/mohamadgarmabi/tanstack-fetch/tree/main/.agents/skills/tanstack-fetch)
 
-- `SKILL.md` — v1.5.0: install, entry points + gzip sizes, shared client, Query, errors, React, **Vue/Nuxt**, SSE, SSR, upload, DevTools, tRPC
+- `SKILL.md` — v2.0.0: install, entry points + gzip sizes, shared client, interceptors, Query, errors, React, **Vue/Nuxt**, SSE, WebSocket / WebTransport / NDJSON, SSR, upload, DevTools, tRPC
 - `references/` — entry sizes + status-handler map
 
 After install, invoke with `/tanstack-fetch` or let the agent pick it up when you work on HTTP / Query / SSE / Vue.

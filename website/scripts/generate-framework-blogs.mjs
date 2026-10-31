@@ -157,10 +157,11 @@ const UsersPage = () => {
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { FetchProvider } from 'tanstack-fetch/react'
 import { createFetch } from 'tanstack-fetch'
+import { createAuthInterceptor } from 'tanstack-fetch/plugins'
 
 const api = createFetch({
   baseUrl: import.meta.env.VITE_API_URL,
-  getToken: () => localStorage.getItem('access_token'),
+  interceptors: [createAuthInterceptor({ getToken: () => localStorage.getItem('access_token') })],
 })
 
 const queryClient = new QueryClient()
@@ -187,13 +188,13 @@ Or skip the provider and import a module-level \`api\` into every \`queryFn\` �
     matrixRows: `| Returns body for Query \`queryFn\` | Yes | Adapt (\`.data\`) |
 | Throws typed error with status/body | \`FetchError\` | Partial |
 | Native \`AbortSignal\` | First-class | Yes (adapt) |
-| Status handlers \`401\`–\`429\` | Built-in | Custom |
+| Status handlers \`401\`–\`429\` | \`createStatusInterceptor\` | Custom |
 | Refresh token single-flight | Plugin | Custom |
 | Path params typing \`:id\` | Yes | Manual |
-| Upload + progress | \`api.upload()\` | Yes |
+| Upload + progress | \`api.upload()\` (\`tanstack-fetch/sse\`) | Yes |
 | SSE + \`Authorization\` | \`tanstack-fetch/sse\` | No |
 | tRPC transport | \`tanstack-fetch/trpc\` | DIY |
-| Bundle (HTTP core) | ~4.8KB gzip | Larger |`,
+| Bundle (HTTP core) | 3.57KB gzip | Larger |`,
     mutation: `\`\`\`tsx
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { useFetch } from 'tanstack-fetch/react'
@@ -322,14 +323,14 @@ const { data, error, isPending } = useQuery({
     native: `\`\`\`ts
 import { createApp } from 'vue'
 import { createFetch } from 'tanstack-fetch'
-import { createFetchPlugin, useFetch } from 'tanstack-fetch/vue'
-import { VueQueryPlugin, useQuery } from '@tanstack/vue-query'
-import { isFetchError } from 'tanstack-fetch'
+import { createAuthInterceptor } from 'tanstack-fetch/plugins'
+import { createFetchPlugin } from 'tanstack-fetch/vue'
+import { VueQueryPlugin } from '@tanstack/vue-query'
 import App from './App.vue'
 
 const api = createFetch({
   baseUrl: import.meta.env.VITE_API_URL,
-  getToken: () => localStorage.getItem('access_token'),
+  interceptors: [createAuthInterceptor({ getToken: () => localStorage.getItem('access_token') })],
 })
 
 createApp(App)
@@ -374,12 +375,12 @@ In Nuxt, rename when \`useFetch\` clashes: \`import { useFetch as useFetchClient
     matrixRows: `| Returns body for Query | Yes | Adapt |
 | Typed error + status | \`FetchError\` | Partial |
 | AbortSignal | First-class | Yes / vary |
-| Status handlers | Built-in | Custom |
+| Status handlers | \`createStatusInterceptor\` | Custom |
 | Refresh single-flight | Plugin | Custom |
 | Path params \`:id\` | Yes | Manual |
 | SSE + Authorization | Yes | No |
 | Vue composables | \`useFetch\` / \`useSse\` | DIY |
-| Bundle | ~4.8KB gzip | Small–medium |`,
+| Bundle | 3.57KB gzip | Small–medium |`,
     mutation: `\`\`\`ts
 import { useMutation, useQueryClient } from '@tanstack/vue-query'
 import { useFetch } from 'tanstack-fetch/vue'
@@ -501,12 +502,21 @@ You reimplement status errors, auth, and browser parity yourself.`,
     native: `\`\`\`ts
 // lib/api.ts
 import { createFetch } from 'tanstack-fetch'
+import {
+  createRetryIdempotentInterceptor,
+  createSsrForwardInterceptor,
+  createTraceInterceptor,
+} from 'tanstack-fetch/plugins'
 import { cookies } from 'next/headers'
 
 export const api = createFetch({
   baseUrl: process.env.API_URL, // absolute on server
   source: 'ssr',
-  plugins: ['ssr-forward', 'trace', 'retry-idempotent'],
+  interceptors: [
+    createSsrForwardInterceptor(),
+    createTraceInterceptor(),
+    createRetryIdempotentInterceptor(),
+  ],
   incoming: async () => {
     const jar = await cookies()
     return { cookie: jar.toString() }
@@ -636,6 +646,11 @@ Great for simple pages — weaker when you need shared cache, mutations, refresh
     native: `\`\`\`ts
 // plugins/tanstack-fetch.ts
 import { createFetch } from 'tanstack-fetch'
+import {
+  createRetryIdempotentInterceptor,
+  createSsrForwardInterceptor,
+  createTraceInterceptor,
+} from 'tanstack-fetch/plugins'
 import { createFetchPlugin } from 'tanstack-fetch/vue'
 
 export default defineNuxtPlugin((nuxtApp) => {
@@ -643,7 +658,11 @@ export default defineNuxtPlugin((nuxtApp) => {
   const api = createFetch({
     baseUrl: config.public.apiBase as string,
     source: import.meta.server ? 'ssr' : 'client',
-    plugins: ['ssr-forward', 'trace', 'retry-idempotent'],
+    interceptors: [
+      createSsrForwardInterceptor(),
+      createTraceInterceptor(),
+      createRetryIdempotentInterceptor(),
+    ],
     incoming: () => {
       if (!import.meta.server) return undefined
       const headers = useRequestHeaders(['cookie', 'authorization', 'x-request-id'])
@@ -763,14 +782,14 @@ const query = createQuery(() => ({
 \`\`\``,
     nativeTitle: 'tanstack-fetch + Solid Query',
     native: `\`\`\`tsx
-import { createFetch } from 'tanstack-fetch'
+import { createFetch, isFetchError } from 'tanstack-fetch'
+import { createAuthInterceptor } from 'tanstack-fetch/plugins'
 import { FetchProvider, useFetch } from 'tanstack-fetch/solid'
 import { createQuery } from '@tanstack/solid-query'
-import { isFetchError } from 'tanstack-fetch'
 
 const api = createFetch({
   baseUrl: import.meta.env.VITE_API_URL,
-  getToken: () => localStorage.getItem('access_token'),
+  interceptors: [createAuthInterceptor({ getToken: () => localStorage.getItem('access_token') })],
 })
 
 const App = () => (
@@ -807,7 +826,7 @@ const UsersPage = () => {
 | Typed errors | \`FetchError\` | DIY |
 | Refresh plugin | Yes | DIY |
 | Path params | Yes | Manual |
-| Bundle | ~4.8KB gzip | Varies |`,
+| Bundle | 3.57KB gzip | Varies |`,
     mutation: `\`\`\`tsx
 import { createMutation, useQueryClient } from '@tanstack/solid-query'
 import { useFetch } from 'tanstack-fetch/solid'
@@ -957,10 +976,13 @@ export const Route = createFileRoute('/users')({
     bootstrap: `SSR \`api\` (Start):
 
 \`\`\`ts
+import { createFetch } from 'tanstack-fetch'
+import { createSsrForwardInterceptor } from 'tanstack-fetch/plugins'
+
 export const api = createFetch({
   baseUrl: process.env.SSR_ORIGIN ? \`\${process.env.SSR_ORIGIN}/api\` : '/api',
   source: typeof window === 'undefined' ? 'ssr' : 'browser',
-  plugins: typeof window === 'undefined' ? ['ssr-forward'] : [],
+  interceptors: [createSsrForwardInterceptor()], // no-op in the browser
 })
 \`\`\`
 
@@ -1061,11 +1083,12 @@ Hydrating into Svelte Query later means a second client and duplicated types.`,
 <!-- src/routes/+layout.svelte -->
 <script lang="ts">
   import { createFetch } from 'tanstack-fetch'
+  import { createAuthInterceptor } from 'tanstack-fetch/plugins'
   import { setFetchClient } from 'tanstack-fetch/svelte'
 
   const api = createFetch({
     baseUrl: import.meta.env.VITE_API_URL,
-    getToken: () => localStorage.getItem('access_token'),
+    interceptors: [createAuthInterceptor({ getToken: () => localStorage.getItem('access_token') })],
   })
   setFetchClient({ client: api })
 </script>
@@ -1197,13 +1220,20 @@ const authBlock = `## Auth, status handlers, refresh
 
 \`\`\`ts
 import { createFetch } from 'tanstack-fetch'
-import { createRefreshTokenInterceptor } from 'tanstack-fetch/plugins'
+import {
+  createAuthInterceptor,
+  createRefreshTokenInterceptor,
+  createStatusInterceptor,
+} from 'tanstack-fetch/plugins'
 
 let expiresAt = 0
 
 const api = createFetch({
   baseUrl: '/api',
-  getToken: () => localStorage.getItem('access_token'),
+  interceptors: [
+    createAuthInterceptor({ getToken: () => localStorage.getItem('access_token') }),
+    createStatusInterceptor({ 403: () => toast.error('Forbidden') }),
+  ],
 })
 
 api.use(

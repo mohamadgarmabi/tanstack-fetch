@@ -31,6 +31,12 @@ Use a **relative** `/api/trpc` in the browser and an absolute origin on the serv
 ```ts
 // src/lib/trpc.ts
 import { createFetch } from 'tanstack-fetch'
+import {
+  createAuthInterceptor,
+  createRetryIdempotentInterceptor,
+  createSsrForwardInterceptor,
+  createTraceInterceptor,
+} from 'tanstack-fetch/plugins'
 import { createTRPCFetchClient } from 'tanstack-fetch/trpc'
 import { createTRPCOptionsProxy } from '@trpc/tanstack-react-query'
 import { QueryClient } from '@tanstack/react-query'
@@ -43,9 +49,15 @@ const getTrpcUrl = () =>
 
 export const api = createFetch({
   source: typeof window === 'undefined' ? 'ssr' : 'browser',
-  plugins: ['ssr-forward', 'trace', 'retry-idempotent'],
-  getToken: () =>
-    typeof window === 'undefined' ? undefined : localStorage.getItem('access_token'),
+  interceptors: [
+    createSsrForwardInterceptor(),
+    createTraceInterceptor(),
+    createRetryIdempotentInterceptor(),
+    createAuthInterceptor({
+      getToken: () =>
+        typeof window === 'undefined' ? undefined : localStorage.getItem('access_token'),
+    }),
+  ],
   // on the server, wire cookies via incoming: () => ({ cookie: getRequestHeader('cookie') })
 })
 
@@ -176,15 +188,24 @@ export const Route = createFileRoute('/dashboard')({
 
 ```ts
 import { createFetch } from 'tanstack-fetch'
+import {
+  createAuthInterceptor,
+  createRetryIdempotentInterceptor,
+  createStatusInterceptor,
+  createTraceInterceptor,
+} from 'tanstack-fetch/plugins'
 import { createTRPCFetchClient } from 'tanstack-fetch/trpc'
 import { createTRPCOptionsProxy } from '@trpc/tanstack-react-query'
 import { QueryClient } from '@tanstack/react-query'
 import type { AppRouter } from './server/router'
 
 export const api = createFetch({
-  getToken: () => localStorage.getItem('access_token'),
-  onUnauthorized: () => localStorage.removeItem('access_token'),
-  plugins: ['trace', 'retry-idempotent'],
+  interceptors: [
+    createAuthInterceptor({ getToken: () => localStorage.getItem('access_token') }),
+    createStatusInterceptor({ 401: () => localStorage.removeItem('access_token') }),
+    createTraceInterceptor(),
+    createRetryIdempotentInterceptor(),
+  ],
 })
 
 export const queryClient = new QueryClient()
@@ -258,6 +279,7 @@ export const Route = createFileRoute('/posts')({
 ```ts
 // src/lib/api.ts
 import { createFetch } from 'tanstack-fetch'
+import { createSsrForwardInterceptor, createTraceInterceptor } from 'tanstack-fetch/plugins'
 import { createTRPCClient, httpBatchLink } from '@trpc/client'
 import { createTRPCFetch } from 'tanstack-fetch/trpc'
 import type { AppRouter } from '~/server/router'
@@ -269,7 +291,7 @@ const getTrpcUrl = () =>
 
 export const api = createFetch({
   source: typeof window === 'undefined' ? 'ssr' : 'browser',
-  plugins: ['ssr-forward', 'trace'],
+  interceptors: [createSsrForwardInterceptor(), createTraceInterceptor()],
 })
 
 export const trpc = createTRPCClient<AppRouter>({
@@ -332,13 +354,14 @@ Remix loaders run on the server — use absolute tRPC URL + `ssr-forward` for co
 ```ts
 // app/lib/trpc.server.ts
 import { createFetch } from 'tanstack-fetch'
+import { createSsrForwardInterceptor, createTraceInterceptor } from 'tanstack-fetch/plugins'
 import { createTRPCFetchClient } from 'tanstack-fetch/trpc'
 import type { AppRouter } from '~/server/router'
 
 export const createServerApi = (request: Request) => {
   const api = createFetch({
     source: 'ssr',
-    plugins: ['ssr-forward', 'trace'],
+    interceptors: [createSsrForwardInterceptor(), createTraceInterceptor()],
     incoming: () => ({ cookie: request.headers.get('cookie') ?? undefined }),
   })
 

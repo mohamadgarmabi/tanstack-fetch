@@ -94,14 +94,14 @@ const query = createQuery(() => ({
 ### tanstack-fetch + Solid Query
 
 ```tsx
-import { createFetch } from 'tanstack-fetch'
+import { createFetch, isFetchError } from 'tanstack-fetch'
+import { createAuthInterceptor } from 'tanstack-fetch/plugins'
 import { FetchProvider, useFetch } from 'tanstack-fetch/solid'
 import { createQuery } from '@tanstack/solid-query'
-import { isFetchError } from 'tanstack-fetch'
 
 const api = createFetch({
   baseUrl: import.meta.env.VITE_API_URL,
-  getToken: () => localStorage.getItem('access_token'),
+  interceptors: [createAuthInterceptor({ getToken: () => localStorage.getItem('access_token') })],
 })
 
 const App = () => (
@@ -183,19 +183,26 @@ Rough relative **boilerplate** (lower is better) — a map of where teams spend 
 | Typed errors | `FetchError` | DIY |
 | Refresh plugin | Yes | DIY |
 | Path params | Yes | Manual |
-| Bundle | ~4.8KB gzip | Varies |
+| Bundle | 3.57KB gzip | Varies |
 
 ## Auth, status handlers, refresh
 
 ```ts
 import { createFetch } from 'tanstack-fetch'
-import { createRefreshTokenInterceptor } from 'tanstack-fetch/plugins'
+import {
+  createAuthInterceptor,
+  createRefreshTokenInterceptor,
+  createStatusInterceptor,
+} from 'tanstack-fetch/plugins'
 
 let expiresAt = 0
 
 const api = createFetch({
   baseUrl: '/api',
-  getToken: () => localStorage.getItem('access_token'),
+  interceptors: [
+    createAuthInterceptor({ getToken: () => localStorage.getItem('access_token') }),
+    createStatusInterceptor({ 403: () => toast.error('Forbidden') }),
+  ],
 })
 
 api.use(

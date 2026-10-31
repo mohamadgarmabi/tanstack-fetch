@@ -42,11 +42,11 @@
       "useSse"
     ],
     "accent": "#61dafb",
-    "desc": "React API reference for tanstack-fetch — FetchProvider, useFetch, and useSse options and return values.",
+    "desc": "React API reference for tanstack-fetch — FetchProvider, useFetch, useSse, and useWs options and return values.",
     "code": {
       "lang": "ts",
       "lines": [
-        "import { FetchProvider, useFetch, useSse } from '…",
+        "import { FetchProvider, useFetch, useSse, useWs }…",
         "",
         "import { createFetch } from 'tanstack-fetch/sse'",
         "import { useSse } from 'tanstack-fetch/react'",
@@ -70,7 +70,7 @@
       "useSse"
     ],
     "accent": "#42b883",
-    "desc": "Vue and Nuxt API reference for tanstack-fetch — createFetchPlugin, useFetch, useSse, and injection key.",
+    "desc": "Vue and Nuxt API reference for tanstack-fetch — createFetchPlugin, useFetch, useSse, useWs, and injection key.",
     "code": {
       "lang": "ts",
       "lines": [
@@ -79,8 +79,8 @@
         "  provideFetchClient,",
         "  useFetch,",
         "  useSse,",
-        "  fetchClientKey,",
-        "} from 'tanstack-fetch/vue'"
+        "  useWs,",
+        "  fetchClientKey,"
       ]
     }
   },
@@ -162,6 +162,7 @@
         "",
         "import { createApp } from 'vue'",
         "import { createFetch } from 'tanstack-fetch'",
+        "import { createAuthInterceptor, createStatusInter…",
         "import { createFetchPlugin, useFetch } from 'tans…",
         "import App from './App.vue'"
       ]
@@ -189,9 +190,9 @@
         "import { FetchProvider, useFetch } from 'tanstack…",
         "import { createQuery } from '@tanstack/solid-quer…",
         "import { isFetchError } from 'tanstack-fetch'",
+        "import { createAuthInterceptor } from 'tanstack-f…",
         "",
-        "const api = createFetch({",
-        "  baseUrl: import.meta.env.VITE_API_URL,"
+        "const api = createFetch({"
       ]
     }
   },
@@ -218,6 +219,7 @@
         "import { provideFetchClient, injectFetch } from '…",
         "import { injectQuery } from '@tanstack/angular-qu…",
         "import { isFetchError } from 'tanstack-fetch'",
+        "import { createAuthInterceptor } from 'tanstack-f…",
         "import { Component } from '@angular/core'"
       ]
     }
@@ -243,10 +245,10 @@
         "<!-- src/routes/+layout.svelte -->",
         "<script lang=\"ts\">",
         "  import { createFetch } from 'tanstack-fetch'",
+        "  import { createAuthInterceptor } from 'tanstack…",
         "  import { setFetchClient } from 'tanstack-fetch/…",
         "",
-        "  const api = createFetch({",
-        "    baseUrl: import.meta.env.VITE_API_URL,"
+        "  const api = createFetch({"
       ]
     }
   },
@@ -398,17 +400,17 @@
       "parseRetryAfter"
     ],
     "accent": "#ffb347",
-    "desc": "Handle HTTP 429 with onTooManyRequests and parseRetryAfter in tanstack-fetch.",
+    "desc": "Handle HTTP 429 with createStatusInterceptor and parseRetryAfter in tanstack-fetch.",
     "code": {
       "lang": "ts",
       "lines": [
         "import { createFetch, parseRetryAfter } from 'tan…",
+        "import { createStatusInterceptor } from 'tanstack…",
         "",
         "export const api = createFetch({",
         "  baseUrl: import.meta.env.VITE_API_URL,",
         "  maxRetries: 2,",
-        "  onTooManyRequests: ({ context }) => {",
-        "    const delayMs = parseRetryAfter(context.respo…"
+        "  interceptors: ["
       ]
     }
   },
@@ -454,7 +456,7 @@
       "Svelte"
     ],
     "accent": "#ffb347",
-    "desc": "Live createFetch demos for React, Vue, Next.js, Nuxt, Solid, Angular, Svelte, upload, SSE, tRPC, and status handlers.",
+    "desc": "Live createFetch demos for React, Vue, Next.js, Nuxt, Solid, Angular, Svelte, upload, SSE, WebSocket, WebTransport, NDJSON, tRPC, and status…",
     "code": {
       "lang": "ts",
       "lines": [
@@ -482,7 +484,7 @@
       "SSE"
     ],
     "accent": "#ffb347",
-    "desc": "Run real createFetch demos — status handlers, React Query, Next.js SSR, upload, and SSE. Filter by framework in the header.",
+    "desc": "Run real createFetch demos — status handlers, React Query, Next.js SSR, upload, SSE, WebSocket, WebTransport, and NDJSON streams. Filter by…",
     "code": {
       "lang": "ts",
       "lines": [
@@ -543,11 +545,11 @@
       "lines": [
         "import { cookies } from 'next/headers'",
         "import { createFetch } from 'tanstack-fetch'",
-        "",
-        "export const createServerApi = async () =>",
-        "  createFetch({",
-        "    baseUrl: process.env.API_URL!,",
-        "    source: 'ssr',"
+        "import {",
+        "  createRetryIdempotentInterceptor,",
+        "  createSsrForwardInterceptor,",
+        "  createTraceInterceptor,",
+        "} from 'tanstack-fetch/plugins'"
       ]
     }
   },
@@ -571,10 +573,11 @@
       "lines": [
         "// plugins/tanstack-fetch.ts",
         "import { createFetch } from 'tanstack-fetch'",
-        "import { createFetchPlugin } from 'tanstack-fetch…",
-        "",
-        "export default defineNuxtPlugin((nuxtApp) => {",
-        "  const config = useRuntimeConfig()"
+        "import {",
+        "  createRetryIdempotentInterceptor,",
+        "  createSsrForwardInterceptor,",
+        "  createTraceInterceptor,",
+        "} from 'tanstack-fetch/plugins'"
       ]
     }
   },
@@ -624,11 +627,13 @@
     "code": {
       "lang": "ts",
       "lines": [
+        "import { createFetch } from 'tanstack-fetch/sse' …",
+        "",
+        "const api = createFetch({ baseUrl: import.meta.en…",
+        "",
         "await api.upload('/files', {",
         "  file,",
-        "  fields: { folder: 'avatars' },",
-        "  onUploadProgress: ({ progress }) => setProgress…",
-        "})"
+        "  fields: { folder: 'avatars' },"
       ]
     }
   },
@@ -646,14 +651,15 @@
       "SSE events"
     ],
     "accent": "#a5b84a",
-    "desc": "Live tanstack-fetch DevTools — SSE event list, call graph, one-line setup.",
+    "desc": "Live tanstack-fetch DevTools — HTTP, SSE, SSR, tRPC, WebSocket, WebTransport and NDJSON streams with message logs, call graph, one-line…",
     "code": {
       "lang": "ts",
       "lines": [
         "import { createFetch } from 'tanstack-fetch'",
         "import { setupDevtools } from 'tanstack-fetch/dev…",
+        "import { createTraceInterceptor } from 'tanstack-…",
         "",
-        "const api = createFetch({ plugins: ['trace'] })",
+        "const api = createFetch({ interceptors: [createTr…",
         "setupDevtools(api) // registers interceptor + mou…"
       ]
     }
@@ -672,7 +678,7 @@
       "SSE hooks"
     ],
     "accent": "#ffb347",
-    "desc": "Download stats for npm packages by Mohammad Garmabi — tanstack-fetch v1.2, vite-plugin-react-splash, SSE hooks, and more.",
+    "desc": "Download stats for npm packages by Mohammad Garmabi — tanstack-fetch, vite-plugin-react-splash, SSE hooks, and more.",
     "code": {
       "lang": "ts",
       "lines": [
@@ -792,7 +798,7 @@
         "",
         "// plugins/tanstack-fetch.ts",
         "import { createFetch } from 'tanstack-fetch'",
-        "import { createFetchPlugin } from 'tanstack-fetch…"
+        "import {"
       ]
     }
   },
@@ -953,12 +959,12 @@
       "lang": "ts",
       "lines": [
         "// src/lib/api.ts",
-        "import { createFetch } from 'tanstack-fetch'",
+        "// `/sse` entry: the core `tanstack-fetch` client…",
+        "import { createFetch } from 'tanstack-fetch/sse'",
         "",
         "export const api = createFetch({",
         "  baseUrl: import.meta.env.VITE_API_URL,",
-        "  timeoutMs: 10_000,",
-        "})"
+        "  timeoutMs: 10_000,"
       ]
     }
   }

@@ -138,10 +138,13 @@ export const Route = createFileRoute('/users')({
 SSR `api` (Start):
 
 ```ts
+import { createFetch } from 'tanstack-fetch'
+import { createSsrForwardInterceptor } from 'tanstack-fetch/plugins'
+
 export const api = createFetch({
   baseUrl: process.env.SSR_ORIGIN ? `${process.env.SSR_ORIGIN}/api` : '/api',
   source: typeof window === 'undefined' ? 'ssr' : 'browser',
-  plugins: typeof window === 'undefined' ? ['ssr-forward'] : [],
+  interceptors: [createSsrForwardInterceptor()], // no-op in the browser
 })
 ```
 
@@ -209,13 +212,20 @@ Rough relative **boilerplate** (lower is better) — a map of where teams spend 
 
 ```ts
 import { createFetch } from 'tanstack-fetch'
-import { createRefreshTokenInterceptor } from 'tanstack-fetch/plugins'
+import {
+  createAuthInterceptor,
+  createRefreshTokenInterceptor,
+  createStatusInterceptor,
+} from 'tanstack-fetch/plugins'
 
 let expiresAt = 0
 
 const api = createFetch({
   baseUrl: '/api',
-  getToken: () => localStorage.getItem('access_token'),
+  interceptors: [
+    createAuthInterceptor({ getToken: () => localStorage.getItem('access_token') }),
+    createStatusInterceptor({ 403: () => toast.error('Forbidden') }),
+  ],
 })
 
 api.use(

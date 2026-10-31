@@ -100,14 +100,14 @@ const { data, error, isPending } = useQuery({
 ```ts
 import { createApp } from 'vue'
 import { createFetch } from 'tanstack-fetch'
-import { createFetchPlugin, useFetch } from 'tanstack-fetch/vue'
-import { VueQueryPlugin, useQuery } from '@tanstack/vue-query'
-import { isFetchError } from 'tanstack-fetch'
+import { createAuthInterceptor } from 'tanstack-fetch/plugins'
+import { createFetchPlugin } from 'tanstack-fetch/vue'
+import { VueQueryPlugin } from '@tanstack/vue-query'
 import App from './App.vue'
 
 const api = createFetch({
   baseUrl: import.meta.env.VITE_API_URL,
-  getToken: () => localStorage.getItem('access_token'),
+  interceptors: [createAuthInterceptor({ getToken: () => localStorage.getItem('access_token') })],
 })
 
 createApp(App)
@@ -197,24 +197,31 @@ Rough relative **boilerplate** (lower is better) — a map of where teams spend 
 | Returns body for Query | Yes | Adapt |
 | Typed error + status | `FetchError` | Partial |
 | AbortSignal | First-class | Yes / vary |
-| Status handlers | Built-in | Custom |
+| Status handlers | `createStatusInterceptor` | Custom |
 | Refresh single-flight | Plugin | Custom |
 | Path params `:id` | Yes | Manual |
 | SSE + Authorization | Yes | No |
 | Vue composables | `useFetch` / `useSse` | DIY |
-| Bundle | ~4.8KB gzip | Small–medium |
+| Bundle | 3.57KB gzip | Small–medium |
 
 ## Auth, status handlers, refresh
 
 ```ts
 import { createFetch } from 'tanstack-fetch'
-import { createRefreshTokenInterceptor } from 'tanstack-fetch/plugins'
+import {
+  createAuthInterceptor,
+  createRefreshTokenInterceptor,
+  createStatusInterceptor,
+} from 'tanstack-fetch/plugins'
 
 let expiresAt = 0
 
 const api = createFetch({
   baseUrl: '/api',
-  getToken: () => localStorage.getItem('access_token'),
+  interceptors: [
+    createAuthInterceptor({ getToken: () => localStorage.getItem('access_token') }),
+    createStatusInterceptor({ 403: () => toast.error('Forbidden') }),
+  ],
 })
 
 api.use(

@@ -98,11 +98,12 @@ Hydrating into Svelte Query later means a second client and duplicated types.
 <!-- src/routes/+layout.svelte -->
 <script lang="ts">
   import { createFetch } from 'tanstack-fetch'
+  import { createAuthInterceptor } from 'tanstack-fetch/plugins'
   import { setFetchClient } from 'tanstack-fetch/svelte'
 
   const api = createFetch({
     baseUrl: import.meta.env.VITE_API_URL,
-    getToken: () => localStorage.getItem('access_token'),
+    interceptors: [createAuthInterceptor({ getToken: () => localStorage.getItem('access_token') })],
   })
   setFetchClient({ client: api })
 </script>
@@ -208,13 +209,20 @@ Rough relative **boilerplate** (lower is better) — a map of where teams spend 
 
 ```ts
 import { createFetch } from 'tanstack-fetch'
-import { createRefreshTokenInterceptor } from 'tanstack-fetch/plugins'
+import {
+  createAuthInterceptor,
+  createRefreshTokenInterceptor,
+  createStatusInterceptor,
+} from 'tanstack-fetch/plugins'
 
 let expiresAt = 0
 
 const api = createFetch({
   baseUrl: '/api',
-  getToken: () => localStorage.getItem('access_token'),
+  interceptors: [
+    createAuthInterceptor({ getToken: () => localStorage.getItem('access_token') }),
+    createStatusInterceptor({ 403: () => toast.error('Forbidden') }),
+  ],
 })
 
 api.use(

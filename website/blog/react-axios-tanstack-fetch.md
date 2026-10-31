@@ -133,10 +133,11 @@ const UsersPage = () => {
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { FetchProvider } from 'tanstack-fetch/react'
 import { createFetch } from 'tanstack-fetch'
+import { createAuthInterceptor } from 'tanstack-fetch/plugins'
 
 const api = createFetch({
   baseUrl: import.meta.env.VITE_API_URL,
-  getToken: () => localStorage.getItem('access_token'),
+  interceptors: [createAuthInterceptor({ getToken: () => localStorage.getItem('access_token') })],
 })
 
 const queryClient = new QueryClient()
@@ -205,25 +206,32 @@ Rough relative **boilerplate** (lower is better) — a map of where teams spend 
 | Returns body for Query `queryFn` | Yes | Adapt (`.data`) |
 | Throws typed error with status/body | `FetchError` | Partial |
 | Native `AbortSignal` | First-class | Yes (adapt) |
-| Status handlers `401`–`429` | Built-in | Custom |
+| Status handlers `401`–`429` | `createStatusInterceptor` | Custom |
 | Refresh token single-flight | Plugin | Custom |
 | Path params typing `:id` | Yes | Manual |
-| Upload + progress | `api.upload()` | Yes |
+| Upload + progress | `api.upload()` (`tanstack-fetch/sse`) | Yes |
 | SSE + `Authorization` | `tanstack-fetch/sse` | No |
 | tRPC transport | `tanstack-fetch/trpc` | DIY |
-| Bundle (HTTP core) | ~4.8KB gzip | Larger |
+| Bundle (HTTP core) | 3.57KB gzip | Larger |
 
 ## Auth, status handlers, refresh
 
 ```ts
 import { createFetch } from 'tanstack-fetch'
-import { createRefreshTokenInterceptor } from 'tanstack-fetch/plugins'
+import {
+  createAuthInterceptor,
+  createRefreshTokenInterceptor,
+  createStatusInterceptor,
+} from 'tanstack-fetch/plugins'
 
 let expiresAt = 0
 
 const api = createFetch({
   baseUrl: '/api',
-  getToken: () => localStorage.getItem('access_token'),
+  interceptors: [
+    createAuthInterceptor({ getToken: () => localStorage.getItem('access_token') }),
+    createStatusInterceptor({ 403: () => toast.error('Forbidden') }),
+  ],
 })
 
 api.use(

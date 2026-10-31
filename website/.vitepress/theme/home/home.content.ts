@@ -731,7 +731,7 @@ const { data, status, send } = useWs<ChatMessage>(
 
 // WebTransport (HTTP/3 datagrams) — same hook, one option
 const GameCanvas = ({ id }: { id: string }) => {
-  const { data: state, send } = useWs<GameState, PlayerInput>(
+  const { data: state, send } = useWs<GameState, { id: string }, PlayerInput>(
     '/game/:id',
     {
       client: api,
@@ -1024,7 +1024,7 @@ const packages: PackageItem[] = [
     title: 'Server-sent events',
     spec: 'tanstack-fetch/sse',
     text: 'fetch-based streams with resume and Authorization.',
-    tags: ['6.29KB'],
+    tags: ['6.33KB'],
     href: '/guide/sse',
   },
   {
@@ -1080,14 +1080,14 @@ const packages: PackageItem[] = [
     title: 'tRPC',
     spec: 'tanstack-fetch/trpc',
     text: 'A tRPC link that reuses createFetch.',
-    tags: ['3.16KB'],
+    tags: ['3.28KB'],
     href: '/guide/trpc',
   },
   {
     title: 'DevTools',
     spec: 'tanstack-fetch/devtools',
     text: 'A request dock for HTTP, SSE, SSR, and tRPC.',
-    tags: ['8.69KB'],
+    tags: ['8.70KB'],
     href: '/examples/devtools',
   },
   {

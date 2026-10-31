@@ -95,6 +95,11 @@ Great for simple pages — weaker when you need shared cache, mutations, refresh
 ```ts
 // plugins/tanstack-fetch.ts
 import { createFetch } from 'tanstack-fetch'
+import {
+  createRetryIdempotentInterceptor,
+  createSsrForwardInterceptor,
+  createTraceInterceptor,
+} from 'tanstack-fetch/plugins'
 import { createFetchPlugin } from 'tanstack-fetch/vue'
 
 export default defineNuxtPlugin((nuxtApp) => {
@@ -102,7 +107,11 @@ export default defineNuxtPlugin((nuxtApp) => {
   const api = createFetch({
     baseUrl: config.public.apiBase as string,
     source: import.meta.server ? 'ssr' : 'client',
-    plugins: ['ssr-forward', 'trace', 'retry-idempotent'],
+    interceptors: [
+      createSsrForwardInterceptor(),
+      createTraceInterceptor(),
+      createRetryIdempotentInterceptor(),
+    ],
     incoming: () => {
       if (!import.meta.server) return undefined
       const headers = useRequestHeaders(['cookie', 'authorization', 'x-request-id'])
@@ -199,13 +208,20 @@ Rough relative **boilerplate** (lower is better) — a map of where teams spend 
 
 ```ts
 import { createFetch } from 'tanstack-fetch'
-import { createRefreshTokenInterceptor } from 'tanstack-fetch/plugins'
+import {
+  createAuthInterceptor,
+  createRefreshTokenInterceptor,
+  createStatusInterceptor,
+} from 'tanstack-fetch/plugins'
 
 let expiresAt = 0
 
 const api = createFetch({
   baseUrl: '/api',
-  getToken: () => localStorage.getItem('access_token'),
+  interceptors: [
+    createAuthInterceptor({ getToken: () => localStorage.getItem('access_token') }),
+    createStatusInterceptor({ 403: () => toast.error('Forbidden') }),
+  ],
 })
 
 api.use(

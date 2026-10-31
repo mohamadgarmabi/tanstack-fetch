@@ -157,12 +157,13 @@ import { bootstrapApplication } from '@angular/platform-browser'
 import { provideHttpClient } from '@angular/common/http' // optional legacy
 import { provideTanStackQuery, QueryClient } from '@tanstack/angular-query-experimental'
 import { createFetch } from 'tanstack-fetch'
+import { createAuthInterceptor } from 'tanstack-fetch/plugins'
 import { provideFetchClient } from 'tanstack-fetch/angular'
 import { AppComponent } from './app.component'
 
 const api = createFetch({
   baseUrl: 'https://api.example.com',
-  getToken: () => localStorage.getItem('access_token'),
+  interceptors: [createAuthInterceptor({ getToken: () => localStorage.getItem('access_token') })],
 })
 
 bootstrapApplication(AppComponent, {
@@ -232,30 +233,38 @@ Rough relative **boilerplate** for the same features (lower is better). Not a be
 | Returns body for Query `queryFn` | Yes | Adapt (`firstValueFrom` + map) |
 | Throws typed error with status/body | `FetchError` + `isFetchError` | `HttpErrorResponse` |
 | Native `AbortSignal` | First-class | Manual / limited |
-| Status handlers `401`–`429` | Built-in | Custom interceptor |
+| Status handlers `401`–`429` | `createStatusInterceptor` | Custom interceptor |
 | Refresh token single-flight | Plugin | Custom |
 | Path params typing `:id` | Yes | Manual |
-| Upload + progress | `api.upload()` | Yes |
+| Upload + progress | `api.upload()` (`tanstack-fetch/sse`) | Yes |
 | SSE + `Authorization` | `tanstack-fetch/sse` | Not built-in |
 | Angular signals SSE | `useSse` | DIY |
 | tRPC transport | `tanstack-fetch/trpc` | DIY |
 | RxJS operators / `HttpContext` | Via bridge | Native |
-| Bundle (HTTP core) | ~4.8KB gzip | Framework-included |
+| Bundle (HTTP core) | 3.57KB gzip | Framework-included |
 
 ## Auth, status handlers, refresh
 
 ```ts
 import { createFetch } from 'tanstack-fetch'
-import { createRefreshTokenInterceptor } from 'tanstack-fetch/plugins'
+import {
+  createAuthInterceptor,
+  createRefreshTokenInterceptor,
+  createStatusInterceptor,
+} from 'tanstack-fetch/plugins'
 
 let expiresAt = 0
 
 const api = createFetch({
   baseUrl: '/api',
-  getToken: () => localStorage.getItem('access_token'),
-  onUnauthorized: async () => {
-    // optional: redirect to login once refresh fails
-  },
+  interceptors: [
+    createAuthInterceptor({ getToken: () => localStorage.getItem('access_token') }),
+    createStatusInterceptor({
+      401: async () => {
+        // optional: redirect to login once refresh fails
+      },
+    }),
+  ],
 })
 
 api.use(
@@ -417,10 +426,11 @@ src/app/
 ```ts
 // src/app/api.ts
 import { createFetch } from 'tanstack-fetch'
+import { createAuthInterceptor } from 'tanstack-fetch/plugins'
 
 export const api = createFetch({
   baseUrl: '/api',
-  getToken: () => localStorage.getItem('access_token'),
+  interceptors: [createAuthInterceptor({ getToken: () => localStorage.getItem('access_token') })],
 })
 ```
 

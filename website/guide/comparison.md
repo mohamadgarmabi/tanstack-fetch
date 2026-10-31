@@ -110,6 +110,8 @@ Guide: [SSR](/guide/ssr) · Blog: [Next.js fetch vs tanstack-fetch](/blog/nextjs
 Browser `EventSource` cannot set `Authorization`. Use `tanstack-fetch/sse` (`api.sse`) instead.
 
 ```ts
+import { createFetch } from 'tanstack-fetch/sse'
+
 const api = createFetch({
   baseUrl: import.meta.env.VITE_API_URL,
   getToken: () => localStorage.getItem('access_token'),
@@ -130,8 +132,10 @@ axios, ky and ofetch stop at request / response. For sockets you'd usually add a
 
 ```ts
 import { createFetch } from 'tanstack-fetch/live'
+import { createRefreshTokenInterceptor } from 'tanstack-fetch/plugins'
 
-const api = createFetch({ baseUrl: '/api', getToken, plugins: ['refresh-token'] })
+const api = createFetch({ baseUrl: '/api', getToken })
+api.use('refresh-token', createRefreshTokenInterceptor({ refresh }))
 
 const room = api.ws<ChatMessage, { id: string }>('/rooms/:id', { params: { id }, authIn: 'query' })
 for await (const chunk of api.stream<Token>('/chat', { body: { prompt } })) render(chunk)

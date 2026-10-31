@@ -72,14 +72,15 @@ useQuery({
 | --- | --- | ---: |
 | `tanstack-fetch` | Slim HTTP; auth / status / plugins via `interceptors` | 3.57KB |
 | `tanstack-fetch/sse` | Full HTTP (option shortcuts, `upload`) + `api.sse()` | 6.33KB |
+| `tanstack-fetch/live` | Full HTTP + `api.sse()` / `ws()` / `transport()` / `stream()` | 8.75KB |
 | `tanstack-fetch/plugins` | interceptor factories | 1.13KB |
 | `tanstack-fetch/react` | `FetchProvider` / `useFetch` / `useSse` | 0.99KB |
-| `tanstack-fetch/vue` | `createFetchPlugin` / `useFetch` / `useSse` | 0.78KB |
+| `tanstack-fetch/vue` | `createFetchPlugin` / `useFetch` / `useSse` | 0.94KB |
 | `tanstack-fetch/solid` | `FetchProvider` / `useFetch` / `useSse` | — |
 | `tanstack-fetch/svelte` | `setFetchClient` / `useFetch` / `useSse` | — |
 | `tanstack-fetch/angular` | `provideFetchClient` / `injectFetch` / `useSse` | — |
-| `tanstack-fetch/trpc` | tRPC link via `createFetch` | 3.16KB |
-| `tanstack-fetch/devtools` | `setupDevtools(api)` | 8.69KB |
+| `tanstack-fetch/trpc` | tRPC link via `createFetch` | 3.28KB |
+| `tanstack-fetch/devtools` | `setupDevtools(api)` | 8.70KB |
 
 ```ts
 import { createFetch } from 'tanstack-fetch' // HTTP only

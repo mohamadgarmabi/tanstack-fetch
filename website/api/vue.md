@@ -90,6 +90,8 @@ const { data, status, error, close } = useSse<{ id: string }>('/orders/stream', 
 
 ### `useWs` options
 
+Generics: `useWs<Message, Params, Send>` and `useSse<Message, Params>` — `params` is typed from the path like `api.get` (use `NoParams` to skip to `Send`).
+
 All [`api.ws` options](/guide/websocket#options) (`authIn`, `reconnect`, `protocols`, `transport`, `params`, `query`, …), plus:
 
 | Option    | Role                                              |

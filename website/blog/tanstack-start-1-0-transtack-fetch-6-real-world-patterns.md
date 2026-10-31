@@ -163,6 +163,7 @@ If an upstream API requires the incoming request's cookies or authorization head
 
 ```ts
 import { createFetch } from 'tanstack-fetch'
+import { createSsrForwardInterceptor } from 'tanstack-fetch/plugins'
 
 export const createServerApi = (
   apiOrigin: string,
@@ -171,7 +172,7 @@ export const createServerApi = (
   createFetch({
     baseUrl: `${apiOrigin}/api`,
     source: 'ssr',
-    plugins: ['ssr-forward'],
+    interceptors: [createSsrForwardInterceptor()],
     incoming: () => ({ cookie }),
   })
 ```

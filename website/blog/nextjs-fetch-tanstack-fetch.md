@@ -103,12 +103,21 @@ You reimplement status errors, auth, and browser parity yourself.
 ```ts
 // lib/api.ts
 import { createFetch } from 'tanstack-fetch'
+import {
+  createRetryIdempotentInterceptor,
+  createSsrForwardInterceptor,
+  createTraceInterceptor,
+} from 'tanstack-fetch/plugins'
 import { cookies } from 'next/headers'
 
 export const api = createFetch({
   baseUrl: process.env.API_URL, // absolute on server
   source: 'ssr',
-  plugins: ['ssr-forward', 'trace', 'retry-idempotent'],
+  interceptors: [
+    createSsrForwardInterceptor(),
+    createTraceInterceptor(),
+    createRetryIdempotentInterceptor(),
+  ],
   incoming: async () => {
     const jar = await cookies()
     return { cookie: jar.toString() }
@@ -201,13 +210,20 @@ Rough relative **boilerplate** (lower is better) — a map of where teams spend 
 
 ```ts
 import { createFetch } from 'tanstack-fetch'
-import { createRefreshTokenInterceptor } from 'tanstack-fetch/plugins'
+import {
+  createAuthInterceptor,
+  createRefreshTokenInterceptor,
+  createStatusInterceptor,
+} from 'tanstack-fetch/plugins'
 
 let expiresAt = 0
 
 const api = createFetch({
   baseUrl: '/api',
-  getToken: () => localStorage.getItem('access_token'),
+  interceptors: [
+    createAuthInterceptor({ getToken: () => localStorage.getItem('access_token') }),
+    createStatusInterceptor({ 403: () => toast.error('Forbidden') }),
+  ],
 })
 
 api.use(

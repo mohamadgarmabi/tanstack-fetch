@@ -52,7 +52,7 @@ export const api = createFetch({
 ### Status shortcuts
 
 ::: info Full entries only
-These options are accepted by `createFetch` from `tanstack-fetch/sse`, `/live`, `/trpc` and the framework providers (`FetchProvider`, `createFetchPlugin`, …). The slim core `tanstack-fetch` takes the interceptors above instead: `getToken` / `auth` → `createAuthInterceptor`, `onX` / `onStatus` → `createStatusInterceptor({ 401, 403, …, '4xx', '5xx' })`.
+These options are accepted by `createFetch` from `tanstack-fetch/sse` / `/live`, by `createTRPCFetch` (`/trpc`) and by the framework providers (`FetchProvider`, `createFetchPlugin`, …). The slim core `tanstack-fetch` takes the interceptors above instead: `getToken` / `auth` → `createAuthInterceptor`, `onX` / `onStatus` → `createStatusInterceptor({ 401, 403, …, '4xx', '5xx' })`.
 :::
 
 ```ts

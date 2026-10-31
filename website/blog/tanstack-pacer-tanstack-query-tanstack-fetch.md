@@ -69,7 +69,8 @@ npm install @tanstack/react-pacer @tanstack/react-query tanstack-fetch
 
 ```ts
 // src/lib/api.ts
-import { createFetch } from 'tanstack-fetch'
+// `/sse` entry: the core `tanstack-fetch` client has no `api.upload()` (used in section 7)
+import { createFetch } from 'tanstack-fetch/sse'
 
 export const api = createFetch({
   baseUrl: import.meta.env.VITE_API_URL,
@@ -292,18 +293,23 @@ export function useGeocode() {
 
 ```ts
 import { createFetch, parseRetryAfter } from 'tanstack-fetch'
+import { createStatusInterceptor } from 'tanstack-fetch/plugins'
 
 export const api = createFetch({
   baseUrl: import.meta.env.VITE_API_URL,
   maxRetries: 2,
-  onTooManyRequests: ({ context }) => ({
-    action: 'retry',
-    delayMs: parseRetryAfter(context.response?.headers, 1_000),
-  }),
+  interceptors: [
+    createStatusInterceptor({
+      429: ({ context }) => ({
+        action: 'retry',
+        delayMs: parseRetryAfter(context.response?.headers, 1_000),
+      }),
+    }),
+  ],
 })
 ```
 
-Pacer keeps you under the quota, and tanstack-fetch handles it when you go over anyway. See the [rate-limit recipe](/recipes/rate-limit) for the full `onTooManyRequests` / `Retry-After` options.
+Pacer keeps you under the quota, and tanstack-fetch handles it when you go over anyway. See the [rate-limit recipe](/recipes/rate-limit) for the full `429` / `Retry-After` options.
 
 ## 7. Upload queue with `useAsyncQueuer`
 

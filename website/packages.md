@@ -1,6 +1,6 @@
 ---
 title: npm packages by Mohammad Garmabi
-description: Download stats for npm packages by Mohammad Garmabi — tanstack-fetch v1.2, vite-plugin-react-splash, SSE hooks, and more.
+description: Download stats for npm packages by Mohammad Garmabi — tanstack-fetch, vite-plugin-react-splash, SSE hooks, and more.
 head:
   - - meta
     - name: keywords
