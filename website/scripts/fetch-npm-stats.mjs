@@ -80,7 +80,8 @@ const fetchPackage = async (name) => {
   let attempt = 0
   for (;;) {
     try {
-      const [weekly, monthly, meta] = await Promise.all([
+      const [daily, weekly, monthly, meta] = await Promise.all([
+        fetchJson(`https://api.npmjs.org/downloads/point/${downloadsRange(1)}/${name}`),
         fetchJson(`https://api.npmjs.org/downloads/point/${downloadsRange(7)}/${name}`),
         fetchJson(`https://api.npmjs.org/downloads/point/${downloadsRange(30)}/${name}`),
         fetchJson(`https://registry.npmjs.org/${name}`),
@@ -88,6 +89,7 @@ const fetchPackage = async (name) => {
       return {
         name,
         version: meta['dist-tags']?.latest ?? '?',
+        daily: daily.downloads ?? 0,
         weekly: weekly.downloads ?? 0,
         monthly: monthly.downloads ?? 0,
         total: await fetchTotalDownloads(name, meta.time?.created ?? '2015-01-10'),

@@ -1,91 +1,101 @@
 {
-  "updatedAt": "2026-10-30T21:43:33.134Z",
+  "updatedAt": "2026-11-03T11:25:18.483Z",
   "author": "Mohammad Garmabi",
   "npmUser": "mohammad.garmabi",
   "packages": [
     {
       "name": "tanstack-fetch",
-      "version": "1.7.1",
-      "weekly": 45,
-      "monthly": 1222,
-      "total": 3271,
-      "description": "TanStack Query fetch client — typed errors, AbortSignal, SSR, SSE, upload. React, Vue/Nuxt, Solid, Angular, Svelte/Svelt"
+      "version": "2.0.0",
+      "daily": 8,
+      "weekly": 269,
+      "monthly": 927,
+      "total": 3512,
+      "description": "TanStack Query fetch client — typed errors, AbortSignal, SSR, SSE, WebSocket, WebTransport, NDJSON streams, upload. Reac"
     },
     {
       "name": "vite-plugin-react-splash",
       "version": "1.1.0",
-      "weekly": 59,
-      "monthly": 301,
-      "total": 3270,
+      "daily": 1,
+      "weekly": 30,
+      "monthly": 242,
+      "total": 3291,
       "description": "Fast Vite splash screen plugin for React PWAs — critical CSS for better FCP/LCP, progress API, prefers-reduced-motion, w"
     },
     {
       "name": "url-validation-query",
       "version": "0.0.17",
-      "weekly": 20,
-      "monthly": 28,
-      "total": 2299,
+      "daily": 1,
+      "weekly": 26,
+      "monthly": 33,
+      "total": 2306,
       "description": "**URL Validation Query** URL Validation Query is a utility library providing a range of functions for managing query str"
     },
     {
       "name": "sse-shared-worker-react-hook",
       "version": "1.0.19",
-      "weekly": 1,
-      "monthly": 7,
-      "total": 2935,
+      "daily": 1,
+      "weekly": 7,
+      "monthly": 13,
+      "total": 2945,
       "description": "Type-safe Server-Sent Events (SSE) hook for React with token authentication and retry logic"
     },
     {
       "name": "react-video-capture",
       "version": "0.0.4",
-      "weekly": 0,
-      "monthly": 8,
-      "total": 636,
+      "daily": 0,
+      "weekly": 3,
+      "monthly": 10,
+      "total": 639,
       "description": "A flexible React component for video capture and recording"
     },
     {
       "name": "react-performanalyzer",
       "version": "0.0.7",
-      "weekly": 2,
-      "monthly": 6,
-      "total": 874,
+      "daily": 0,
+      "weekly": 5,
+      "monthly": 10,
+      "total": 880,
       "description": "A comprehensive React performance analysis tool that checks for memory leaks, performance issues, and code quality probl"
     },
     {
       "name": "sse-crossframework",
       "version": "1.0.2",
-      "weekly": 5,
-      "monthly": 7,
-      "total": 530,
+      "daily": 0,
+      "weekly": 12,
+      "monthly": 16,
+      "total": 541,
       "description": "Framework-agnostic SSE toolkit with React, Vue, and Solid adapters"
     },
     {
       "name": "image-auth",
       "version": "0.0.16",
-      "weekly": 23,
-      "monthly": 42,
-      "total": 1793,
+      "daily": 11,
+      "weekly": 50,
+      "monthly": 71,
+      "total": 1824,
       "description": "To install the package, you can use npm or yarn:"
     },
     {
       "name": "react-providers-tree",
       "version": "1.0.0",
-      "weekly": 3,
-      "monthly": 7,
-      "total": 176,
+      "daily": 0,
+      "weekly": 4,
+      "monthly": 10,
+      "total": 180,
       "description": "A utility to build a tree of React providers with their props"
     },
     {
       "name": "frontend-stack-cli",
       "version": "0.0.1",
-      "weekly": 2,
-      "monthly": 3,
-      "total": 186,
+      "daily": 1,
+      "weekly": 1,
+      "monthly": 4,
+      "total": 188,
       "description": "A CLI tool for setting up Stack Setup projects. It provides a guided process for creating a new project, selecting the p"
     }
   ],
   "totals": {
-    "weekly": 160,
-    "monthly": 1631
+    "weekly": 407,
+    "monthly": 1336
   }
 }

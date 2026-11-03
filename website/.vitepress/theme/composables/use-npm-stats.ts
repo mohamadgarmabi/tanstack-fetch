@@ -4,6 +4,7 @@ import fallback from '../../../data/npm-packages.json'
 type NpmPackageRow = {
   name: string
   version: string
+  daily?: number
   weekly: number
   monthly: number
   total?: number
@@ -90,6 +91,9 @@ const fetchTotalDownloads = async (name: string, createdAt: string) => {
 }
 
 const fetchPackageRow = async (pkg: NpmPackageRow): Promise<NpmPackageRow> => {
+  const dailyPromise = fetchJson<DownloadsPoint>(
+    `https://api.npmjs.org/downloads/point/${downloadsRange(1)}/${pkg.name}`,
+  )
   const weeklyPromise = fetchJson<DownloadsPoint>(
     `https://api.npmjs.org/downloads/point/${downloadsRange(7)}/${pkg.name}`,
   )
@@ -100,7 +104,12 @@ const fetchPackageRow = async (pkg: NpmPackageRow): Promise<NpmPackageRow> => {
     () => null,
   )
 
-  const [weekly, monthly, meta] = await Promise.all([weeklyPromise, monthlyPromise, metaPromise])
+  const [daily, weekly, monthly, meta] = await Promise.all([
+    dailyPromise,
+    weeklyPromise,
+    monthlyPromise,
+    metaPromise,
+  ])
 
   const registryLatest = meta?.['dist-tags']?.latest ?? pkg.version
   const version = compareSemver(pkg.version, registryLatest) > 0 ? pkg.version : registryLatest
@@ -112,6 +121,7 @@ const fetchPackageRow = async (pkg: NpmPackageRow): Promise<NpmPackageRow> => {
   return {
     name: pkg.name,
     version,
+    daily: daily.downloads ?? pkg.daily,
     weekly: weekly.downloads ?? pkg.weekly,
     monthly: monthly.downloads ?? pkg.monthly,
     total,

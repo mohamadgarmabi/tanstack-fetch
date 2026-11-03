@@ -4,6 +4,7 @@ import { withBase } from 'vitepress'
 import {
   GITHUB_URL,
   INSTALL_COMMANDS,
+  NPM_URL,
   PACKAGE_VERSION,
   RELEASE_POST_URL,
   releases,
@@ -12,9 +13,22 @@ import LiquidGlass from '../components/glass/LiquidGlass.vue'
 import FlickeringGrid from '../components/backgrounds/FlickeringGrid.vue'
 import HomeHeroConsole from './HomeHeroConsole.vue'
 import HomeReleases from './HomeReleases.vue'
+import HomeIcon from './HomeIcon.vue'
+import { formatCount, useNpmPackageStats } from '../composables/use-npm-stats'
+import { useGithubStars } from '../composables/use-github-stars'
 import './hero.css'
 
 const releaseVersion = `v${PACKAGE_VERSION}`
+
+const { pkg, live: downloadsLive } = useNpmPackageStats('tanstack-fetch')
+const { stars } = useGithubStars()
+
+const downloadStats = computed(() => [
+  { label: 'Downloads', value: pkg.value?.total ?? 0 },
+  { label: '30 days', value: pkg.value?.monthly ?? 0 },
+  { label: '7 days', value: pkg.value?.weekly ?? 0 },
+  { label: 'Yesterday', value: pkg.value?.daily ?? 0 },
+])
 
 const activeId = ref<(typeof INSTALL_COMMANDS)[number]['id']>('npm')
 const copied = ref(false)
@@ -145,6 +159,25 @@ const copyInstall = async () => {
             </span>
           </button>
         </LiquidGlass>
+
+        <div class="hero-stats">
+          <a
+            v-for="stat in downloadStats"
+            :key="stat.label"
+            class="hero-stat"
+            :href="NPM_URL"
+            target="_blank"
+            rel="noopener"
+            :title="downloadsLive ? 'Live from npm' : 'Last build snapshot'"
+          >
+            <strong>{{ formatCount(stat.value) }}</strong>
+            <span>{{ stat.label }}</span>
+          </a>
+          <a class="hero-stat hero-stat-star" :href="GITHUB_URL" target="_blank" rel="noopener">
+            <strong><HomeIcon name="star" />{{ stars ?? '—' }}</strong>
+            <span>Stars</span>
+          </a>
+        </div>
       </div>
 
       <div class="hero-visual">

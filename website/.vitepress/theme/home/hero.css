@@ -514,9 +514,9 @@
   border-radius: 999px;
   color: #86efac;
   font-family: Inter, ui-sans-serif, system-ui, sans-serif;
-  font-size: 0.68rem;
+  font-size: 0.66rem;
   font-weight: 600;
-  letter-spacing: 0.06em;
+  letter-spacing: 0.05em;
   text-transform: uppercase;
 }
 
@@ -796,5 +796,93 @@
 @media (max-width: 1180px) {
   .hero-console-badge {
     display: none;
+  }
+}
+
+/* ---------- Stats row ---------- */
+
+.hero-stats {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  width: min(30rem, 100%);
+  margin-top: 1.5rem;
+  border: 1px solid var(--home-line);
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.025);
+  overflow: hidden;
+}
+
+.home-landing .hero-stat {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  min-width: 0;
+  padding: 0.85rem 0.8rem;
+  color: inherit !important;
+  text-decoration: none !important;
+  transition: background-color 0.3s var(--fx-ease);
+}
+
+.hero-stat + .hero-stat {
+  border-left: 1px solid var(--home-line);
+}
+
+.home-landing .hero-stat:hover {
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.hero-stat strong {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  color: var(--home-text);
+  font-size: 1.5rem;
+  font-weight: 800;
+  line-height: 1;
+  letter-spacing: -0.03em;
+  font-variant-numeric: tabular-nums;
+}
+
+.hero-stat:first-child strong {
+  background: linear-gradient(180deg, #ffd1a6, var(--home-accent));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.hero-stat span {
+  color: var(--home-faint);
+  font-size: 0.66rem;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.hero-stat-star .home-icon {
+  color: #fbbf24;
+  fill: currentColor;
+  font-size: 1.1rem;
+}
+
+@media (max-width: 640px) {
+  .hero-stats {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .hero-stat:first-child {
+    grid-column: 1 / -1;
+  }
+
+  /* 2-col grid: draw dividers per cell instead of between siblings */
+  .hero-stat + .hero-stat {
+    border-left: 0;
+  }
+
+  .hero-stat:nth-child(n + 2) {
+    border-top: 1px solid var(--home-line);
+  }
+
+  .hero-stat:nth-child(odd):not(:first-child) {
+    border-left: 1px solid var(--home-line);
   }
 }
