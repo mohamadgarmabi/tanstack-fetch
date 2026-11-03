@@ -7,7 +7,6 @@ import type {
   ReleaseItem,
   ShowcaseItem,
   StackBlitzLink,
-  TestimonialItem,
   WhyItem,
 } from './home.type'
 import rootPackage from '../../../../package.json'
@@ -1229,27 +1228,6 @@ useQuery({
   queryFn: ({ signal }) => api.get('/users', { signal }),
 })`
 
-const testimonials: TestimonialItem[] = [
-  {
-    quote:
-      'Drop createFetch into queryFn and stop rewriting axios adapters for AbortSignal and errors.',
-    author: 'For TanStack Query apps',
-    role: 'Primary fit',
-  },
-  {
-    quote:
-      'One client for REST, SSR cookie forwarding, SSE, WebSocket, and NDJSON streams with auth, and a tRPC link.',
-    author: 'For fullstack TypeScript',
-    role: 'Same mental model',
-  },
-  {
-    quote:
-      '3.57KB HTTP core. Pull SSE, WebSocket, React, Vue, plugins, or tRPC only when you need them.',
-    author: 'For bundle-conscious teams',
-    role: 'Tree-shakeable entries',
-  },
-]
-
 const stackBlitzLinks: StackBlitzLink[] = [
   {
     label: 'TanStack Query · React',
@@ -1419,6 +1397,5 @@ export {
   runtimes,
   showcase,
   stackBlitzLinks,
-  testimonials,
   whyAxios,
 }

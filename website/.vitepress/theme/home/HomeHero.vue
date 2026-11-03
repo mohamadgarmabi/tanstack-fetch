@@ -4,7 +4,6 @@ import { withBase } from 'vitepress'
 import {
   GITHUB_URL,
   INSTALL_COMMANDS,
-  NPM_URL,
   PACKAGE_VERSION,
   RELEASE_POST_URL,
   releases,
@@ -13,15 +12,9 @@ import LiquidGlass from '../components/glass/LiquidGlass.vue'
 import FlickeringGrid from '../components/backgrounds/FlickeringGrid.vue'
 import HomeHeroConsole from './HomeHeroConsole.vue'
 import HomeReleases from './HomeReleases.vue'
-import HomeIcon from './HomeIcon.vue'
-import { formatCount, useNpmPackageStats } from '../composables/use-npm-stats'
-import { useGithubStars } from '../composables/use-github-stars'
 import './hero.css'
 
 const releaseVersion = `v${PACKAGE_VERSION}`
-
-const { pkg, live: downloadsLive } = useNpmPackageStats('tanstack-fetch')
-const { stars } = useGithubStars()
 
 const activeId = ref<(typeof INSTALL_COMMANDS)[number]['id']>('npm')
 const copied = ref(false)
@@ -152,39 +145,6 @@ const copyInstall = async () => {
             </span>
           </button>
         </LiquidGlass>
-
-        <div class="hero-proof">
-          <a
-            class="hero-downloads"
-            :href="NPM_URL"
-            target="_blank"
-            rel="noopener"
-            :title="downloadsLive ? 'Live from npm' : 'Last build snapshot'"
-          >
-            <span class="hero-downloads-icon"><HomeIcon name="download" /></span>
-            <span class="hero-downloads-main">
-              <strong>{{ formatCount(pkg?.monthly ?? 0) }}</strong>
-              downloads / month
-            </span>
-            <span class="hero-downloads-week"> {{ formatCount(pkg?.weekly ?? 0) }} this week </span>
-            <span v-if="downloadsLive" class="hero-live-dot" aria-label="live" />
-          </a>
-
-          <a
-            class="hero-downloads hero-stars"
-            :href="GITHUB_URL"
-            title="Star tanstack-fetch on GitHub"
-            target="_blank"
-            rel="noopener"
-          >
-            <span class="hero-downloads-icon"><HomeIcon name="star" /></span>
-            <span v-if="stars !== null" class="hero-downloads-main">
-              <strong>{{ formatCount(stars) }}</strong>
-              {{ stars === 1 ? 'star' : 'stars' }}
-            </span>
-            <span v-else class="hero-downloads-main"><strong>Star</strong> on GitHub</span>
-          </a>
-        </div>
       </div>
 
       <div class="hero-visual">

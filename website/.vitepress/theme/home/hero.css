@@ -758,62 +758,6 @@
   }
 }
 
-/* ---------- Downloads ---------- */
-
-.hero-proof {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.5rem;
-  margin-top: 1.1rem;
-}
-
-.home-landing .hero-downloads {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.6rem;
-  padding: 0.35rem 0.9rem 0.35rem 0.35rem;
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: 999px;
-  background: rgba(255, 255, 255, 0.03);
-  color: var(--home-muted) !important;
-  font-size: 0.85rem;
-  text-decoration: none !important;
-  transition:
-    border-color 0.3s var(--fx-ease),
-    background-color 0.3s var(--fx-ease);
-}
-
-.home-landing .hero-downloads:hover {
-  border-color: rgba(255, 176, 106, 0.32);
-  background: rgba(255, 255, 255, 0.05);
-}
-
-.hero-downloads-icon {
-  display: inline-grid;
-  place-items: center;
-  width: 1.9rem;
-  height: 1.9rem;
-  border-radius: 50%;
-  background: linear-gradient(180deg, #ffa25a, #ff7a18);
-  color: #1a0b04;
-  font-size: 0.95rem;
-  box-shadow: inset 0 1px 0 rgba(255, 236, 214, 0.55);
-}
-
-.hero-downloads-main strong {
-  color: var(--home-text);
-  font-size: 1.05rem;
-  font-weight: 700;
-  letter-spacing: -0.02em;
-}
-
-.hero-downloads-week {
-  padding-left: 0.7rem;
-  border-left: 1px solid rgba(255, 255, 255, 0.1);
-  color: var(--home-faint);
-  font-size: 0.8rem;
-}
-
 /* ---------- Console: refresh-token row ---------- */
 
 .hero-console-row.is-refreshing {
@@ -852,37 +796,5 @@
 @media (max-width: 1180px) {
   .hero-console-badge {
     display: none;
-  }
-}
-
-.hero-live-dot {
-  width: 7px;
-  height: 7px;
-  margin-left: -0.2rem;
-  border-radius: 50%;
-  background: #4ade80;
-  box-shadow: 0 0 8px #4ade80;
-  animation: console-pulse 1.6s ease-in-out infinite;
-}
-
-/* GitHub stars: same capsule, gold accent */
-.hero-stars .hero-downloads-icon {
-  background: linear-gradient(180deg, #fde68a, #f59e0b);
-  color: #2a1a02;
-}
-
-.hero-stars .hero-downloads-icon .home-icon {
-  fill: currentColor;
-}
-
-@media (max-width: 960px) {
-  .hero-proof {
-    justify-content: center;
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .hero-live-dot {
-    animation: none;
   }
 }

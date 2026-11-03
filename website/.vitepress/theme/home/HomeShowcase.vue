@@ -120,10 +120,11 @@ const selectFile = (index: number) => {
               type="button"
               class="sc-file"
               :class="{ 'is-active': index === fileIndex }"
+              :title="file.name"
               @click="selectFile(index)"
             >
               <HomeIcon name="code" />
-              {{ file.name }}
+              <span class="sc-file-name">{{ file.name }}</span>
             </button>
           </div>
           <span class="sc-lang">TS</span>

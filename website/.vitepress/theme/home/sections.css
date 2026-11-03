@@ -242,6 +242,9 @@
 .sc-file {
   position: relative;
   display: inline-flex;
+  flex: 0 1 auto;
+  min-width: 0;
+  max-width: 14rem;
   align-items: center;
   gap: 0.4rem;
   padding: 0 0.85rem;
@@ -255,11 +258,18 @@
   transition: color 0.3s var(--fx-ease);
 }
 
+.sc-file-name {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
 .sc-file:hover {
   color: var(--home-text);
 }
 
 .sc-file.is-active {
+  flex-shrink: 0;
+  max-width: none;
   color: var(--home-text);
   background: rgba(255, 255, 255, 0.04);
 }

@@ -267,7 +267,6 @@ const config = defineConfig({
     outline: [2, 3],
     socialLinks: [
       { icon: 'github', link: GITHUB_URL },
-      { icon: 'linkedin', link: LINKEDIN_URL },
       { icon: 'npm', link: NPM_URL },
     ],
     editLink: {
@@ -283,7 +282,6 @@ const config = defineConfig({
       { text: 'API', link: '/api/create-fetch', activeMatch: '/api/' },
       { text: 'Comparison', link: '/guide/comparison' },
       { text: 'Playground', link: '/examples/playground', activeMatch: '/examples/' },
-      { text: 'Skill', link: '/guide/skill' },
       { text: 'Blog', link: '/blog/', activeMatch: '/blog/' },
       {
         text: 'More',
@@ -291,6 +289,7 @@ const config = defineConfig({
           { text: 'Recipes', link: '/recipes/refresh-token' },
           { text: 'Examples', link: '/examples/' },
           { text: 'Packages', link: '/packages' },
+          { text: 'Agent skill', link: '/guide/skill' },
           { text: 'Author', link: '/author' },
           { text: 'Changelog', link: `${GITHUB_URL}/blob/main/CHANGELOG.md` },
           // Public .txt is not a VitePress route — base is not applied; use absolute URL.

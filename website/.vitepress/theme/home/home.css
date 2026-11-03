@@ -703,11 +703,9 @@
   margin-bottom: 0.75rem !important;
 }
 
-.home-footer li + li {
-  margin-top: 0.45rem;
-}
-
 .home-footer a {
+  display: inline-block;
+  padding: 0.35rem 0; /* ≥24px tap target */
   color: var(--home-muted) !important;
   text-decoration: none !important;
   font-size: 0.92rem;
@@ -922,7 +920,7 @@
 
 @media (max-width: 640px) {
   .home-wrap {
-    width: min(1120px, calc(100% - 1.5rem));
+    width: min(1120px, calc(100% - 2rem));
     padding-top: 2.5rem;
   }
 
@@ -939,5 +937,20 @@
 
   .home-hero h1 {
     font-size: 2.7rem;
+  }
+}
+
+.home-landing .is-offscreen,
+.home-landing .is-offscreen *,
+.home-landing .is-offscreen *::before,
+.home-landing .is-offscreen *::after {
+  animation-play-state: paused !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .home-landing *,
+  .home-landing *::before,
+  .home-landing *::after {
+    animation: none !important;
   }
 }

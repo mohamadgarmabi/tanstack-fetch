@@ -11,7 +11,7 @@ const highlighted = highlightTypeScript(quickstartCode)
   <section class="home-quick">
     <div class="home-section-head">
       <p class="home-eyebrow">30-second start</p>
-      <h2>Three lines into Query.</h2>
+      <h2>Create a client. Pass the signal.</h2>
       <p class="home-lead">
         Install the package, create a client, pass signal. That is the whole setup.
       </p>

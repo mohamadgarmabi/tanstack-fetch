@@ -32,7 +32,7 @@ const scoreFor = (key: Library) => compareRows.filter((row) => row[key] === 'yes
   <section class="home-compare">
     <div class="home-section-head">
       <p class="home-eyebrow">Comparison</p>
-      <h2>Measured against the usual clients.</h2>
+      <h2>Compared with the usual clients.</h2>
       <p class="home-lead">
         axios, ky, and ofetch are all capable HTTP clients. tanstack-fetch is shaped for the
         TanStack Query call site, and for the SSR, SSE, and tRPC cases that sit next to it.

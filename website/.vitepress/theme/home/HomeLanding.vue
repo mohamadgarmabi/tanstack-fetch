@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { onBeforeUnmount, onMounted, ref } from 'vue'
 import HomeBand from './HomeBand.vue'
-import HomeBeam from './HomeBeam.vue'
 import HomeBlitz from './HomeBlitz.vue'
 import HomeClose from './HomeClose.vue'
 import HomeCompare from './HomeCompare.vue'
@@ -11,13 +10,13 @@ import HomePackages from './HomePackages.vue'
 import HomePlay from './HomePlay.vue'
 import HomeQuick from './HomeQuick.vue'
 import HomeShowcase from './HomeShowcase.vue'
-import HomeSocial from './HomeSocial.vue'
 import HomeWhy from './HomeWhy.vue'
 import './sections.css'
 
 // One delegated listener drives the spotlight glow on every `.fx-spotlight` card
 // (after Inspira UI's Card Spotlight).
 const root = ref<HTMLElement | null>(null)
+let observer: IntersectionObserver | undefined
 
 const onPointerMove = (event: PointerEvent) => {
   const card = (event.target as Element | null)?.closest<HTMLElement>('.fx-spotlight')
@@ -27,16 +26,26 @@ const onPointerMove = (event: PointerEvent) => {
   card.style.setProperty('--my', `${event.clientY - rect.top}px`)
 }
 
-onMounted(() => root.value?.addEventListener('pointermove', onPointerMove, { passive: true }))
-onBeforeUnmount(() => root.value?.removeEventListener('pointermove', onPointerMove))
+onMounted(() => {
+  root.value?.addEventListener('pointermove', onPointerMove, { passive: true })
+  // Pause CSS animations in sections that are scrolled out of view.
+  observer = new IntersectionObserver((entries) => {
+    for (const entry of entries) entry.target.classList.toggle('is-offscreen', !entry.isIntersecting)
+  })
+  root.value?.querySelectorAll('.home-wrap > *').forEach((section) => observer?.observe(section))
+})
+
+onBeforeUnmount(() => {
+  root.value?.removeEventListener('pointermove', onPointerMove)
+  observer?.disconnect()
+})
 </script>
 
 <template>
-  <div ref="root" class="home-landing">
+  <main ref="root" class="home-landing">
     <div class="home-wrap">
       <HomeHero />
       <HomeShowcase />
-      <HomeBeam />
       <HomeBand />
       <HomeWhy />
       <HomeQuick />
@@ -45,8 +54,7 @@ onBeforeUnmount(() => root.value?.removeEventListener('pointermove', onPointerMo
       <HomePlay />
       <HomeBlitz />
       <HomeCompare />
-      <HomeSocial />
       <HomeClose />
     </div>
-  </div>
+  </main>
 </template>

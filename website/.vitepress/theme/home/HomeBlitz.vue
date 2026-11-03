@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { withBase } from 'vitepress'
 import { PACKAGE_VERSION, stackBlitzLinks } from './home.content'
-</script>
 import HomeIcon from './HomeIcon.vue'
+</script>
 
 <template>
   <section class="home-blitz">

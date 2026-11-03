@@ -65,12 +65,6 @@ type WhyItem = {
   text: string
 }
 
-type TestimonialItem = {
-  quote: string
-  author: string
-  role: string
-}
-
 type StackBlitzLink = {
   label: string
   /** External StackBlitz URL — omit for docs-only rows (Nuxt, migrate scaffolds, …). */
@@ -97,6 +91,5 @@ export type {
   ShowcaseOutput,
   StackBlitzLink,
   StatItem,
-  TestimonialItem,
   WhyItem,
 }
