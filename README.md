@@ -9,6 +9,13 @@ Returns data · throws `FetchError` · honors `AbortSignal` · SSR · SSE · Rea
 [![bundle size](https://img.shields.io/bundlephobia/minzip/tanstack-fetch)](https://bundlephobia.com/package/tanstack-fetch)
 [![license](https://img.shields.io/npm/l/tanstack-fetch.svg)](./LICENSE)
 [![CI](https://img.shields.io/github/actions/workflow/status/mohamadgarmabi/tanstack-fetch/ci.yml?branch=main&label=CI)](https://github.com/mohamadgarmabi/tanstack-fetch/actions/workflows/ci.yml)
+[![GitHub stars](https://img.shields.io/github/stars/mohamadgarmabi/tanstack-fetch?style=social)](https://github.com/mohamadgarmabi/tanstack-fetch)
+
+<p align="center">
+  <img src="https://raw.githubusercontent.com/mohamadgarmabi/tanstack-fetch/main/.github/assets/tanstack-fetch-demo.gif" alt="tanstack-fetch: typed status handlers firing for 200, 401, 404, 429 and 503" width="690">
+</p>
+
+<p align="center"><a href="https://mohamadgarmabi.github.io/tanstack-fetch/examples/playground">▶ Try it in the playground</a></p>
 
 ## Docs
 
@@ -95,6 +102,10 @@ Full write-up: [Comparison](https://mohamadgarmabi.github.io/tanstack-fetch/guid
 - [Changelog](./CHANGELOG.md)
 
 > Not an official TanStack package — shaped for the same Query mental model.
+
+## Support
+
+If tanstack-fetch saves you time, a ⭐ on [GitHub](https://github.com/mohamadgarmabi/tanstack-fetch) helps other developers find it. Issues, ideas and PRs are welcome.
 
 ## License
 
