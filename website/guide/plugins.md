@@ -65,6 +65,8 @@ api.eject('locale')
 
 `context.meta.transport` tells live connections apart: `'websocket' | 'webtransport' | 'ndjson'`.
 
+`context.meta.state` is a plain object shared by every retry attempt of one HTTP request. Use it for per-call flags, e.g. "already refreshed".
+
 ```ts
 api.use('live-log', {
   onLiveMessage: (context) => {

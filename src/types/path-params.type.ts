@@ -2,10 +2,12 @@ import type { PathParams } from './common.type'
 
 type PathParamValue = string | number
 
-type ExtractColonParams<TPath extends string> =
-  TPath extends `${string}:${infer Param}/${infer Rest}`
+// Mirrors buildUrl: `:name` counts only at the start of a path segment.
+type ExtractColonParams<TPath extends string> = TPath extends `:${infer Rest}`
+  ? ExtractColonParams<`/:${Rest}`>
+  : TPath extends `${string}/:${infer Param}/${infer Rest}`
     ? CleanParamName<Param> | ExtractColonParams<`/${Rest}`>
-    : TPath extends `${string}:${infer Param}`
+    : TPath extends `${string}/:${infer Param}`
       ? CleanParamName<Param>
       : never
 

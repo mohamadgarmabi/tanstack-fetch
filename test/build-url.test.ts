@@ -26,4 +26,14 @@ describe('buildUrl', () => {
     const url = buildUrl('https://api.example.com', '/search/:id?t=10:30#a:b', { id: '7' })
     expect(url.toString()).toBe('https://api.example.com/search/7?t=10:30#a:b')
   })
+
+  it('keeps a colon inside a segment literal', () => {
+    const url = buildUrl('https://x.test', '/v1/models/gemini:generateContent')
+    expect(url.pathname).toBe('/v1/models/gemini:generateContent')
+  })
+
+  it('repeats array query values', () => {
+    const url = buildUrl('https://x.test', '/a', undefined, { ids: [1, 2], q: 'x' })
+    expect(url.search).toBe('?ids=1&ids=2&q=x')
+  })
 })

@@ -1,5 +1,6 @@
 ---
-title: 'tanstack-fetch 1.7.1: timeouts, URLs, binary bodies, and honest error statuses'
+noindex: true
+title: 'tanstack-fetch 1.7.1: timeouts, URLs, binary bodies, errors'
 titleTemplate: false
 description: Patch release — ports and query colons no longer break path params, timeouts reject with TimeoutError, timers stop leaking, Uint8Array / ReadableStream bodies send as bytes, and HTML 502s keep their status.
 date: 2026-10-18

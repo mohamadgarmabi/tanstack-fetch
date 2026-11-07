@@ -1,4 +1,5 @@
 ---
+noindex: true
 title: 'tanstack-fetch migrate (moved to 1.6.3)'
 titleTemplate: false
 description: This post moved to the merged migrate release notes for 1.6.3.

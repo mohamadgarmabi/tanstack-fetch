@@ -11,12 +11,17 @@ permissions:
 jobs:
   check:
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        # Node 18 is in engines but vite/happy-dom need 20+; the AbortSignal.any fallback is unit-tested.
+        node-version: [20, 22, 24]
     steps:
       - uses: actions/checkout@v5
 
       - uses: actions/setup-node@v5
         with:
-          node-version: '24'
+          node-version: ${{ matrix.node-version }}
           cache: npm
 
       - run: npm ci
@@ -25,3 +30,5 @@ jobs:
       - run: npm test
       - run: npm run build
       - run: npm run size
+      - run: npx --yes publint
+      - run: npx --yes @arethetypeswrong/cli --pack . --profile node16

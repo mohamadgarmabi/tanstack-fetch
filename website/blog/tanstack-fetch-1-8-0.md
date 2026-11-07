@@ -1,5 +1,6 @@
 ---
-title: 'tanstack-fetch 1.8.0: WebSocket, WebTransport, and NDJSON streams'
+noindex: true
+title: 'tanstack-fetch 1.8.0: WebSocket, WebTransport, NDJSON'
 titleTemplate: false
 description: New tanstack-fetch/live entry — authenticated WebSocket with reconnect and a send queue, WebTransport over HTTP/3 with the same API, NDJSON streaming over fetch, and useWs for React, Vue, Solid, Svelte and Angular.
 date: 2026-10-30

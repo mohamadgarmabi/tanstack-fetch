@@ -42,7 +42,7 @@ type RequestOptions = {
   headers?: HeadersInit
   signal?: AbortSignal
   timeoutMs?: number
-  parseAs?: 'json' | 'text' | 'blob'
+  parseAs?: 'json' | 'text' | 'blob' | 'arrayBuffer' | 'stream'
   operation?: string
   interceptors?: RequestInterceptorConfig
   /** Browser-only — uses XHR under the hood when set (fetch has no upload progress). */

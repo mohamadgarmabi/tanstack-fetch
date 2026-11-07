@@ -1,5 +1,22 @@
 # Changelog
 
+## 2.1.0
+
+### Fixed
+
+- Aborting `signal` during a retry delay (backoff / `Retry-After`) now rejects immediately instead of waiting out the delay
+- `:name` is a path param only at the start of a segment — `/models/gemini:generateContent` no longer throws `missing path param` (runtime and types)
+- Refresh token: a 401 that arrives after another request already refreshed retries with the new token instead of refreshing again; a 401 after an earlier retry (e.g. 502) still refreshes
+- Requests with a `ReadableStream` body are never retried (the stream is single-use); the error result is returned instead
+
+### Added
+
+- Array query values: `{ ids: [1, 2] }` → `?ids=1&ids=2`
+- `parseAs: 'arrayBuffer' | 'stream'`
+- `tanstack-fetch/full` alias of `tanstack-fetch/sse`
+- CJS consumers get `.d.cts` types; CI runs Node 20/22/24, `publint` and `@arethetypeswrong/cli`
+- `RequestContext.meta.state`: a per-call object shared by every retry attempt
+
 ## 2.0.0
 
 ### Breaking

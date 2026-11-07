@@ -22,6 +22,8 @@ type RequestContext = {
     lastEventId?: string
     /** Set for `api.ws` / `api.transport` / `api.stream` connections. */
     transport?: 'websocket' | 'webtransport' | 'ndjson'
+    /** Per-call bag shared by every retry attempt of one HTTP request. */
+    state?: Record<string, unknown>
   }
 }
 

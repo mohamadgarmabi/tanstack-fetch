@@ -1,5 +1,5 @@
 ---
-title: 'React axios vs tanstack-fetch: typed fetch for TanStack Query'
+title: 'React axios vs tanstack-fetch for TanStack Query'
 titleTemplate: false
 description: "Replace axios unwrap glue with tanstack-fetch — FetchProvider, useFetch, useSse, React Query, refresh-token, migrate CLI, and a full side-by-side comparison."
 date: 2026-10-12
@@ -18,11 +18,9 @@ cover: /images/blog-react-axios-tanstack-fetch-cover.jpg
 **React 18+** · `tanstack-fetch/react` · `@tanstack/react-query`
 :::
 
-axios is great at interceptors. It is **not** shaped for TanStack Query’s `queryFn` contract: return data, throw on failure, honor `AbortSignal`.
+Most React apps call axios inside `useQuery`, then stack a `.data` unwrap, an error mapper and a refresh-token queue on top. Each of those exists only because axios predates the `queryFn` contract: return data, throw on failure, honor `AbortSignal`.
 
 That gap shows up as `.data` unwraps, custom error mappers, and refresh-token races. **tanstack-fetch** closes it with the same client every other stack uses — via `FetchProvider` / `useFetch` when you want context.
-
-This post is the deep dive: architecture, side-by-side code, graphs, migrate path, SSE, tRPC, and when to keep the default stack client.
 
 ## TL;DR
 
@@ -212,7 +210,7 @@ Rough relative **boilerplate** (lower is better) — a map of where teams spend 
 | Upload + progress | `api.upload()` (`tanstack-fetch/sse`) | Yes |
 | SSE + `Authorization` | `tanstack-fetch/sse` | No |
 | tRPC transport | `tanstack-fetch/trpc` | DIY |
-| Bundle (HTTP core) | 3.57KB gzip | Larger |
+| Bundle (HTTP core) | 3.68KB gzip | Larger |
 
 ## Auth, status handlers, refresh
 

@@ -1,13 +1,23 @@
 import type { PathParams, QueryParams } from '../types'
 
+// `:name` is a param only at the start of a segment, so `/models/gemini:generateContent` stays literal.
 const fillPath = (path: string, params?: PathParams) => {
-  return path.replace(/:([A-Za-z0-9_]+)/g, (_match, key: string) => {
-    const value = params?.[key]
-    if (value === undefined) {
-      throw new Error(`tanstack-fetch: missing path param "${key}"`)
-    }
-    return encodeURIComponent(String(value))
-  })
+  return path.replace(
+    /(^|\/):([A-Za-z0-9_]+)|\{([A-Za-z0-9_]+)\}/g,
+    (
+      _match,
+      slash: string | undefined,
+      colonKey: string | undefined,
+      braceKey: string | undefined,
+    ) => {
+      const key = (colonKey ?? braceKey) as string
+      const value = params?.[key]
+      if (value === undefined) {
+        throw new Error(`tanstack-fetch: missing path param "${key}"`)
+      }
+      return (slash ?? '') + encodeURIComponent(String(value))
+    },
+  )
 }
 
 const appendQuery = (url: URL, query?: QueryParams) => {
@@ -17,6 +27,10 @@ const appendQuery = (url: URL, query?: QueryParams) => {
 
   Object.entries(query).forEach(([key, value]) => {
     if (value === undefined || value === null) {
+      return
+    }
+    if (Array.isArray(value)) {
+      value.forEach((item) => url.searchParams.append(key, String(item)))
       return
     }
     url.searchParams.set(key, String(value))
@@ -50,8 +64,7 @@ const buildUrl = (
   query?: QueryParams,
 ) => {
   const { origin, pathname, suffix } = splitPath(path)
-  const filledPath =
-    origin + fillPath(pathname.replace(/\{([A-Za-z0-9_]+)\}/g, ':$1'), params) + suffix
+  const filledPath = origin + fillPath(pathname, params) + suffix
   const absolutePath = /^https?:\/\//i.test(filledPath)
     ? filledPath
     : `${(baseUrl ?? '').replace(/\/$/, '')}/${filledPath.replace(/^\//, '')}`

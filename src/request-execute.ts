@@ -45,7 +45,7 @@ const sendHttp = async (input: ExecuteArgs, body: BodyInit | null | undefined) =
     })
   }
 
-  const isStream = typeof ReadableStream !== 'undefined' && body instanceof ReadableStream
+  const isStream = isStreamBody(body)
   return fetchImpl(context.request.url, {
     method: context.request.method,
     headers: context.request.headers,
@@ -56,6 +56,13 @@ const sendHttp = async (input: ExecuteArgs, body: BodyInit | null | undefined) =
     ...(isStream ? { duplex: 'half' } : {}),
   } as RequestInit)
 }
+
+const isStreamBody = (body: unknown) =>
+  typeof ReadableStream !== 'undefined' && body instanceof ReadableStream
+
+// A ReadableStream body is consumed by the first attempt, so it can never be retried.
+const cannotRetry = (context: RequestContext) =>
+  context.meta.attempt >= context.meta.maxRetries || isStreamBody(context.request.body)
 
 const toErrorResult = <T, E>(status: number, error: E, headers: Headers): AttemptOutcome<T, E> => ({
   kind: 'result',
@@ -90,7 +97,7 @@ const executeFetch = async <T, E>(input: ExecuteArgs): Promise<AttemptOutcome<T,
     })
     const failed = await runHook(interceptors, (item) => item.onRequestError, context)
     if (failed.type === 'retry') {
-      if (context.meta.attempt >= context.meta.maxRetries) {
+      if (cannotRetry(context)) {
         return toErrorResult(0, context.error as E, new Headers())
       }
       return { kind: 'retry', delayMs: failed.delayMs }
@@ -137,7 +144,7 @@ const handleResponse = async <T, E>(input: {
   }
   const after = await runHook(interceptors, hook, context)
   if (after.type === 'retry') {
-    if (context.meta.attempt >= context.meta.maxRetries) {
+    if (cannotRetry(context)) {
       const error = (context.error ?? toFetchErrorInfo(response.status, context.data)) as E
       return toErrorResult(response.status, error, response.headers)
     }

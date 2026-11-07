@@ -1,5 +1,5 @@
 ---
-title: 'Nuxt $fetch / ofetch vs tanstack-fetch: SSR cookies and Vue Query'
+title: 'Nuxt $fetch / ofetch vs tanstack-fetch: SSR and Vue Query'
 titleTemplate: false
 description: "Replace Nuxt $fetch glue with tanstack-fetch — createFetchPlugin, ssr-forward, useFetchClient naming, Vue Query hydrate, SSE, and comparison graphs."
 date: 2026-10-12
@@ -21,8 +21,6 @@ cover: /images/blog-nuxt-ofetch-tanstack-fetch-cover.jpg
 Nuxt’s `$fetch` (ofetch) is ergonomic for Nitro and pages. It still leaves you to invent Query-ready errors, AbortSignal discipline, SSE with Authorization, and a browser-identical client after SSR.
 
 **tanstack-fetch** plugs into Nuxt via `createFetchPlugin`, forwards cookies with `ssr-forward`, and shares options with Vue Query.
-
-This post is the deep dive: architecture, side-by-side code, graphs, migrate path, SSE, tRPC, and when to keep the default stack client.
 
 ## TL;DR
 

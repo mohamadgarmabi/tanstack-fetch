@@ -441,6 +441,12 @@
   text-align: left;
 }
 
+.home-landing .home-hero-note {
+  margin: 0.75rem 0 0 !important;
+  font-size: 0.8125rem;
+  color: var(--vp-c-text-2);
+}
+
 .home-landing .home-hero .home-actions {
   justify-content: flex-start;
 }

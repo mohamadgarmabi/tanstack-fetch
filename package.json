@@ -1,7 +1,7 @@
 {
   "name": "tanstack-fetch",
-  "version": "2.0.0",
-  "description": "TanStack Query fetch client — typed errors, AbortSignal, SSR, SSE, WebSocket, WebTransport, NDJSON streams, upload. React, Vue/Nuxt, Solid, Angular, Svelte/SvelteKit. Lightweight axios/ky alternative (3.57KB gzip HTTP core).",
+  "version": "2.1.0",
+  "description": "TanStack Query fetch client — typed errors, AbortSignal, SSR, SSE, WebSocket, WebTransport, NDJSON streams, upload. React, Vue/Nuxt, Solid, Angular, Svelte/SvelteKit. Lightweight axios/ky alternative (3.68KB gzip HTTP core).",
   "license": "MIT",
   "author": {
     "name": "Mohammad Garmabi",
@@ -19,59 +19,19 @@
   "keywords": [
     "fetch",
     "http-client",
-    "http",
     "api-client",
-    "rest-client",
     "typescript",
-    "tanstack",
     "tanstack-query",
-    "tanstack-react-query",
     "react-query",
-    "@tanstack/react-query",
-    "queryfn",
-    "react",
-    "vue",
-    "nuxt",
-    "vue3",
-    "nuxt3",
-    "solid",
-    "solidjs",
-    "angular",
-    "svelte",
-    "sveltekit",
-    "nextjs",
-    "next.js",
     "ssr",
-    "server-side-rendering",
-    "edge",
     "sse",
     "server-sent-events",
     "websocket",
-    "webtransport",
     "ndjson",
-    "streaming",
-    "openapi",
-    "openapi-codegen",
-    "codegen",
     "interceptor",
-    "middleware",
-    "axios-alternative",
-    "axios",
-    "ky",
-    "ofetch",
-    "multipart",
-    "formdata",
     "file-upload",
-    "upload-progress",
     "abortsignal",
-    "fetch-wrapper",
-    "react-query-fetch-client",
-    "tanstack-query-fetch",
-    "trpc",
-    "@trpc/client",
-    "tanstack-router",
-    "tanstack-start",
-    "devtools"
+    "trpc"
   ],
   "type": "module",
   "sideEffects": false,
@@ -83,59 +43,124 @@
   },
   "exports": {
     ".": {
-      "types": "./dist/index.d.ts",
-      "import": "./dist/index.js",
-      "require": "./dist/index.cjs"
+      "import": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/index.js"
+      },
+      "require": {
+        "types": "./dist/index.d.cts",
+        "default": "./dist/index.cjs"
+      }
     },
     "./sse": {
-      "types": "./dist/sse.d.ts",
-      "import": "./dist/sse.js",
-      "require": "./dist/sse.cjs"
+      "import": {
+        "types": "./dist/sse.d.ts",
+        "default": "./dist/sse.js"
+      },
+      "require": {
+        "types": "./dist/sse.d.cts",
+        "default": "./dist/sse.cjs"
+      }
+    },
+    "./full": {
+      "import": {
+        "types": "./dist/sse.d.ts",
+        "default": "./dist/sse.js"
+      },
+      "require": {
+        "types": "./dist/sse.d.cts",
+        "default": "./dist/sse.cjs"
+      }
     },
     "./live": {
-      "types": "./dist/live.d.ts",
-      "import": "./dist/live.js",
-      "require": "./dist/live.cjs"
+      "import": {
+        "types": "./dist/live.d.ts",
+        "default": "./dist/live.js"
+      },
+      "require": {
+        "types": "./dist/live.d.cts",
+        "default": "./dist/live.cjs"
+      }
     },
     "./plugins": {
-      "types": "./dist/plugins.d.ts",
-      "import": "./dist/plugins.js",
-      "require": "./dist/plugins.cjs"
+      "import": {
+        "types": "./dist/plugins.d.ts",
+        "default": "./dist/plugins.js"
+      },
+      "require": {
+        "types": "./dist/plugins.d.cts",
+        "default": "./dist/plugins.cjs"
+      }
     },
     "./react": {
-      "types": "./dist/react.d.ts",
-      "import": "./dist/react.js",
-      "require": "./dist/react.cjs"
+      "import": {
+        "types": "./dist/react.d.ts",
+        "default": "./dist/react.js"
+      },
+      "require": {
+        "types": "./dist/react.d.cts",
+        "default": "./dist/react.cjs"
+      }
     },
     "./vue": {
-      "types": "./dist/vue.d.ts",
-      "import": "./dist/vue.js",
-      "require": "./dist/vue.cjs"
+      "import": {
+        "types": "./dist/vue.d.ts",
+        "default": "./dist/vue.js"
+      },
+      "require": {
+        "types": "./dist/vue.d.cts",
+        "default": "./dist/vue.cjs"
+      }
     },
     "./solid": {
-      "types": "./dist/solid.d.ts",
-      "import": "./dist/solid.js",
-      "require": "./dist/solid.cjs"
+      "import": {
+        "types": "./dist/solid.d.ts",
+        "default": "./dist/solid.js"
+      },
+      "require": {
+        "types": "./dist/solid.d.cts",
+        "default": "./dist/solid.cjs"
+      }
     },
     "./svelte": {
-      "types": "./dist/svelte.d.ts",
-      "import": "./dist/svelte.js",
-      "require": "./dist/svelte.cjs"
+      "import": {
+        "types": "./dist/svelte.d.ts",
+        "default": "./dist/svelte.js"
+      },
+      "require": {
+        "types": "./dist/svelte.d.cts",
+        "default": "./dist/svelte.cjs"
+      }
     },
     "./angular": {
-      "types": "./dist/angular.d.ts",
-      "import": "./dist/angular.js",
-      "require": "./dist/angular.cjs"
+      "import": {
+        "types": "./dist/angular.d.ts",
+        "default": "./dist/angular.js"
+      },
+      "require": {
+        "types": "./dist/angular.d.cts",
+        "default": "./dist/angular.cjs"
+      }
     },
     "./trpc": {
-      "types": "./dist/trpc.d.ts",
-      "import": "./dist/trpc.js",
-      "require": "./dist/trpc.cjs"
+      "import": {
+        "types": "./dist/trpc.d.ts",
+        "default": "./dist/trpc.js"
+      },
+      "require": {
+        "types": "./dist/trpc.d.cts",
+        "default": "./dist/trpc.cjs"
+      }
     },
     "./devtools": {
-      "types": "./dist/devtools.d.ts",
-      "import": "./dist/devtools.js",
-      "require": "./dist/devtools.cjs"
+      "import": {
+        "types": "./dist/devtools.d.ts",
+        "default": "./dist/devtools.js"
+      },
+      "require": {
+        "types": "./dist/devtools.d.cts",
+        "default": "./dist/devtools.cjs"
+      }
     }
   },
   "files": [

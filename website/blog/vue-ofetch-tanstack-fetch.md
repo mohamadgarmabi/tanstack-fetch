@@ -1,5 +1,5 @@
 ---
-title: 'Vue ofetch / axios vs tanstack-fetch: typed fetch for Vue Query'
+title: 'Vue ofetch / axios vs tanstack-fetch for Vue Query'
 titleTemplate: false
 description: "Replace ofetch and axios glue in Vue 3 with tanstack-fetch — createFetchPlugin, useFetch, useSse, Vue Query, refresh-token, and a full comparison."
 date: 2026-10-12
@@ -18,11 +18,9 @@ cover: /images/blog-vue-ofetch-tanstack-fetch-cover.jpg
 **Vue 3.3+** · `tanstack-fetch/vue` · `@tanstack/vue-query`
 :::
 
-ofetch and axios are fine transporters. They are **not** shaped for Vue Query’s `queryFn` contract: return data, throw on failure, honor `AbortSignal`.
+In a Vue 3 app, `ofetch` or axios usually hides behind a hand-written composable that unwraps responses and converts errors before Vue Query ever sees them — and that composable gets copied into every project.
 
 **tanstack-fetch** gives Vue the same client as React — via `createFetchPlugin` + `useFetch` composables.
-
-This post is the deep dive: architecture, side-by-side code, graphs, migrate path, SSE, tRPC, and when to keep the default stack client.
 
 ## TL;DR
 
@@ -202,7 +200,7 @@ Rough relative **boilerplate** (lower is better) — a map of where teams spend 
 | Path params `:id` | Yes | Manual |
 | SSE + Authorization | Yes | No |
 | Vue composables | `useFetch` / `useSse` | DIY |
-| Bundle | 3.57KB gzip | Small–medium |
+| Bundle | 3.68KB gzip | Small–medium |
 
 ## Auth, status handlers, refresh
 

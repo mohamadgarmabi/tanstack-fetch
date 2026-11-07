@@ -1,5 +1,5 @@
 ---
-title: 'Svelte / SvelteKit fetch vs tanstack-fetch: stores, SSR, Query'
+title: 'SvelteKit fetch vs tanstack-fetch: stores, SSR, Query'
 titleTemplate: false
 description: "Use tanstack-fetch with Svelte and SvelteKit — setFetchClient, useFetch, useSse stores, Svelte Query, ssr-forward load functions, and comparison graphs."
 date: 2026-10-12
@@ -21,8 +21,6 @@ cover: /images/blog-sveltekit-fetch-tanstack-fetch-cover.jpg
 SvelteKit’s `event.fetch` is perfect inside `load`. The browser still needs a typed client for Query, mutations, and SSE with Authorization.
 
 **tanstack-fetch/svelte** uses `setFetchClient` in a layout, `useFetch` in components, and `useSse` stores (`$data`, `$status`). Kit SSR gets `ssr-forward` via the migrate scaffold’s `api.server.ts`.
-
-This post is the deep dive: architecture, side-by-side code, graphs, migrate path, SSE, tRPC, and when to keep the default stack client.
 
 ## TL;DR
 

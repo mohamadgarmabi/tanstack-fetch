@@ -1,5 +1,5 @@
 ---
-title: tanstack-fetch Documentation — Typed Fetch Client API Reference
+title: tanstack-fetch docs — guides and API reference
 titleTemplate: false
 description: tanstack-fetch documentation hub — getting started, guides for React and Vue/Nuxt, API reference, SSR, SSE, recipes, and examples.
 ---
@@ -50,5 +50,5 @@ Typed Fetch client for TanStack Query. Start here, then jump to the guide that m
 
 - [API reference](/api/create-fetch)
 - [Examples](/examples/)
-- [Blog](/blog) — latest: [2.0.0 3.57KB core · typed live params](/blog/tanstack-fetch-2-0-0)
+- [Blog](/blog) — latest: [2.1.0 abortable retries · safer refresh · array query](/blog/tanstack-fetch-2-1-0)
 - [Agent skill](/guide/skill)

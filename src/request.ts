@@ -40,6 +40,7 @@ const createContext = async (
   args: SendRequestArgs,
   attempt: number,
   timeoutSignal: AbortSignal | undefined,
+  state: Record<string, unknown>,
 ): Promise<RequestContext> => {
   const { method, path, requestOptions, client } = args
   const source = client.source ?? 'browser'
@@ -56,6 +57,7 @@ const createContext = async (
       maxRetries: client.maxRetries ?? DEFAULT_MAX_RETRIES,
       source,
       operation: requestOptions?.operation,
+      state,
     },
   }
 }
@@ -70,15 +72,16 @@ const sendRequest = async <T, E = FetchErrorInfo>(
   }
 
   let attempt = 0
+  const state: Record<string, unknown> = {}
   const maxRetries = args.client.maxRetries ?? DEFAULT_MAX_RETRIES
   while (attempt <= maxRetries) {
-    const outcome = await runAttempt<T, E>({ args, interceptors, fetchImpl, attempt })
+    const outcome = await runAttempt<T, E>({ args, interceptors, fetchImpl, attempt, state })
     if (outcome.kind === 'result') {
       return outcome.result
     }
     attempt += 1
     if (outcome.delayMs) {
-      await wait(outcome.delayMs)
+      await wait(outcome.delayMs, args.requestOptions?.signal)
     }
   }
 
@@ -99,6 +102,7 @@ type AttemptInput = {
   interceptors: HttpInterceptor[]
   fetchImpl: typeof fetch
   attempt: number
+  state: Record<string, unknown>
 }
 
 const runAttempt = async <T, E>(input: AttemptInput) => {
@@ -117,7 +121,7 @@ const runAttemptWithSignal = async <T, E>(
   input: AttemptInput,
   timeoutSignal: AbortSignal | undefined,
 ) => {
-  let context = await createContext(input.args, input.attempt, timeoutSignal)
+  let context = await createContext(input.args, input.attempt, timeoutSignal, input.state)
   const before = await runHook(input.interceptors, (item) => item.onRequest, context)
   if (before.type === 'short-circuit') {
     return { kind: 'result' as const, result: before.result as FetchResult<T, E> }

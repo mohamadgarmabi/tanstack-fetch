@@ -1,5 +1,5 @@
 ---
-title: 'Next.js fetch vs tanstack-fetch: SSR cookies, Query hydrate, App Router'
+title: 'Next.js fetch vs tanstack-fetch: SSR cookies and hydration'
 titleTemplate: false
 description: "Use tanstack-fetch in Next.js App Router — ssr-forward cookies, absolute baseUrl on the server, React Query dehydrate/hydrate, SSE, and migrate path."
 date: 2026-10-12
@@ -21,8 +21,6 @@ cover: /images/blog-nextjs-fetch-tanstack-fetch-cover.jpg
 Next’s native `fetch` caches aggressively and does not give you a shared typed client across RSC, Route Handlers, and the browser. Cookie forwarding and Query hydration become one-off helpers.
 
 **tanstack-fetch** + `ssr-forward` uses one `createFetch` on server and client: absolute `baseUrl` in SSR, relative in the browser, cookies from `next/headers`.
-
-This post is the deep dive: architecture, side-by-side code, graphs, migrate path, SSE, tRPC, and when to keep the default stack client.
 
 ## TL;DR
 

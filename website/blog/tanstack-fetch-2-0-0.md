@@ -1,5 +1,5 @@
 ---
-title: 'tanstack-fetch 2.0.0: a 3.57KB core and typed params on every live call'
+title: 'tanstack-fetch 2.0.0: 3.57KB core, typed live params'
 titleTemplate: false
 description: The tanstack-fetch core drops from 5.14KB to 3.57KB gzip — auth, status handlers and plugins become interceptors. sse, ws, transport, stream and the useSse / useWs hooks now type path params exactly like api.get.
 date: 2026-10-31

@@ -15,19 +15,19 @@ tanstack-fetch is an HTTP client shaped for TanStack Query. axios, ky, and ofetc
 
 ## Feature matrix
 
-| Need                               | tanstack-fetch                                    | axios   | ky      | ofetch  |
-| ---------------------------------- | ------------------------------------------------- | ------- | ------- | ------- |
-| Drop into TanStack Query `queryFn` | Returns data, throws `FetchError`, takes `signal` | Adapt   | Adapt   | Adapt   |
-| Typed error with status / body     | `FetchError` + `isFetchError`                     | Partial | Partial | Partial |
-| Handlers for 401–429               | First-class                                       | Custom  | Custom  | Custom  |
-| Refresh token + single-flight      | Interceptor + `{ action: 'retry' }`               | Custom  | Custom  | Custom  |
-| Next.js SSR cookies                | `ssr-forward` plugin                              | Custom  | Custom  | Custom  |
-| SSE with Authorization             | `tanstack-fetch/sse`                              | No      | No      | No      |
-| WebSocket / WebTransport with auth | `api.ws` / `api.transport` (`/live`)              | No      | No      | No      |
-| NDJSON streaming (POST + headers)  | `api.stream` (`/live`)                            | Custom  | Custom  | Custom  |
-| File upload + progress             | `api.upload()` (`/sse`)                           | Yes     | Limited | Limited |
-| tRPC transport                     | `tanstack-fetch/trpc`                             | No      | No      | No      |
-| Bundle                             | **3.57KB** gzip HTTP core                         | Larger  | Small   | Small   |
+| Need                               | tanstack-fetch                                    | axios                                      | ky                        | ofetch                             |
+| ---------------------------------- | ------------------------------------------------- | ------------------------------------------ | ------------------------- | ---------------------------------- |
+| Drop into TanStack Query `queryFn` | Returns data, throws `FetchError`, takes `signal` | Adapt                                      | Adapt                     | Adapt                              |
+| Typed error with status / body     | `FetchError` + `isFetchError`                     | `AxiosError` (`response.status` / `.data`) | `HTTPError` (`.response`) | `FetchError` (`.status` / `.data`) |
+| Handlers for 401–429               | First-class                                       | Custom                                     | Custom                    | Custom                             |
+| Refresh token + single-flight      | Interceptor + `{ action: 'retry' }`               | Custom                                     | Custom                    | Custom                             |
+| Next.js SSR cookies                | `ssr-forward` plugin                              | Custom                                     | Custom                    | Custom                             |
+| SSE with Authorization             | `tanstack-fetch/sse`                              | No                                         | No                        | No                                 |
+| WebSocket / WebTransport with auth | `api.ws` / `api.transport` (`/live`)              | No                                         | No                        | No                                 |
+| NDJSON streaming (POST + headers)  | `api.stream` (`/live`)                            | Custom                                     | Custom                    | Custom                             |
+| File upload + progress             | `api.upload()` (`/sse`)                           | Yes                                        | Limited                   | Limited                            |
+| tRPC transport                     | `tanstack-fetch/trpc`                             | No                                         | No                        | No                                 |
+| Bundle                             | **3.68KB** gzip HTTP core                         | Larger                                     | Small                     | Small                              |
 
 ## Before / after
 

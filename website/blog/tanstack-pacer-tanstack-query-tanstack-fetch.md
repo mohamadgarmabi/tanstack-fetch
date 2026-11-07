@@ -1,5 +1,5 @@
 ---
-title: 'TanStack Pacer + TanStack Query: debounce, throttle, rate-limit, queue and batch your API calls'
+title: 'TanStack Pacer + Query: debounce, throttle, batch API calls'
 titleTemplate: false
 description: 'A hands-on TanStack Pacer tutorial — debounced search, autosave with abortable requests, throttled infinite scroll, client-side rate limits, upload queues and event batching, wired to TanStack Query and tanstack-fetch.'
 date: 2026-10-28

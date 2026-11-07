@@ -1,4 +1,4 @@
-import { writeFileSync } from 'node:fs'
+import { readFileSync, writeFileSync } from 'node:fs'
 import { join } from 'node:path'
 import { fileURLToPath, URL } from 'node:url'
 import { defineConfig, type HeadConfig, type SiteConfig } from 'vitepress'
@@ -16,9 +16,9 @@ const GITHUB_PROFILE_URL = 'https://github.com/mohamadgarmabi'
 const NPM_URL = 'https://www.npmjs.com/package/tanstack-fetch'
 const OG_IMAGE = `${SITE_URL}/images/docs-og-banner.png`
 const DEFAULT_DESCRIPTION =
-  'Typed Fetch client designed for TanStack Query. Tiny HTTP core with SSR, SSE, TanStack Start, React, Remix, Vue, Solid, SolidStart, Angular, Svelte and Nuxt support.'
+  'The fetch client that speaks queryFn: returns data, throws typed errors, respects AbortSignal. Tiny core; SSR, SSE, WebSocket and React, Vue, Solid, Angular, Svelte adapters are optional.'
 const HOME_TITLE =
-  'tanstack-fetch by Mohammad Garmabi — Typed Fetch Client for TanStack Query'
+  'tanstack-fetch — the fetch client that speaks queryFn'
 
 const KEYWORDS = [
   'tanstack-fetch',
@@ -66,6 +66,8 @@ const writeGoogleFriendlySitemap = (siteConfig: SiteConfig) => {
       const rewritten = siteConfig.rewrites.map[page] || page
       if (rewritten.includes('/public/') || rewritten.includes('/skills/')) return null
       if (rewritten.includes('404')) return null
+      // `noindex: true` pages (thin release notes, redirects) stay out of the sitemap.
+      if (/^noindex:\s*true\s*$/m.test(readFileSync(join(siteConfig.srcDir, page), 'utf8'))) return null
       return toAbsoluteUrl(rewritten)
     })
     .filter((url): url is string => Boolean(url))
@@ -127,7 +129,7 @@ const buildJsonLd = (pageUrl: string, title: string, description: string) => {
       description: DEFAULT_DESCRIPTION,
       url: `${SITE_URL}/`,
       downloadUrl: NPM_URL,
-      softwareVersion: '2.0.0',
+      softwareVersion: '2.1.0',
       license: 'https://opensource.org/licenses/MIT',
       codeRepository: GITHUB_URL,
       programmingLanguage: ['TypeScript', 'JavaScript'],
@@ -158,7 +160,7 @@ const buildJsonLd = (pageUrl: string, title: string, description: string) => {
 
 const config = defineConfig({
   title: SITE_NAME,
-  titleTemplate: `:title | ${SITE_NAME} by ${AUTHOR_NAME}`,
+  titleTemplate: `:title | ${SITE_NAME}`,
   description: DEFAULT_DESCRIPTION,
   lang: 'en-US',
   appearance: 'force-dark',
@@ -238,13 +240,16 @@ const config = defineConfig({
     const useExactTitle = isHome || pageData.frontmatter.titleTemplate === false
     const fullTitle = useExactTitle
       ? title
-      : `${title} | ${SITE_NAME} by ${AUTHOR_NAME}`
+      : `${title} | ${SITE_NAME}`
 
     pageData.frontmatter.head ??= []
     const head = pageData.frontmatter.head as HeadConfig[]
 
+    if (pageData.frontmatter.noindex === true) {
+      head.push(['meta', { name: 'robots', content: 'noindex, follow' }])
+    }
     head.push(
-      ['link', { rel: 'canonical', href: pageUrl }],
+      ['link', { rel: 'canonical', href: pageData.frontmatter.canonical ? String(pageData.frontmatter.canonical) : pageUrl }],
       ['meta', { name: 'author', content: AUTHOR_NAME }],
       ['meta', { name: 'description', content: description }],
       ['meta', { property: 'og:title', content: fullTitle }],
@@ -431,6 +436,7 @@ const config = defineConfig({
           text: 'Releases',
           collapsed: true,
           items: [
+            { text: '2.1.0 — abortable retries · safer refresh · array query', link: '/blog/tanstack-fetch-2-1-0' },
             { text: '2.0.0 — 3.57KB core · typed live params', link: '/blog/tanstack-fetch-2-0-0' },
             { text: '1.8.0 — WebSocket · WebTransport · NDJSON', link: '/blog/tanstack-fetch-1-8-0' },
             { text: '1.7.1 — timeouts · URLs · errors', link: '/blog/tanstack-fetch-1-7-1' },

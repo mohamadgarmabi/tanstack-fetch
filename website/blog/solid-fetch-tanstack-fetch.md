@@ -1,5 +1,5 @@
 ---
-title: 'Solid fetch / axios vs tanstack-fetch: Solid Query adapters'
+title: 'Solid fetch / axios vs tanstack-fetch for Solid Query'
 titleTemplate: false
 description: "Use tanstack-fetch with Solid — FetchProvider, useFetch, useSse signals, Solid Query, refresh-token, migrate CLI, and comparison graphs."
 date: 2026-10-12
@@ -21,8 +21,6 @@ cover: /images/blog-solid-fetch-tanstack-fetch-cover.jpg
 Solid’s fine-grained reactivity loves small primitives. Raw `fetch` / axios still force you to unwrap bodies and map errors before `createQuery`.
 
 **tanstack-fetch/solid** mirrors the React adapters: `FetchProvider`, `useFetch`, and `useSse` that return accessors.
-
-This post is the deep dive: architecture, side-by-side code, graphs, migrate path, SSE, tRPC, and when to keep the default stack client.
 
 ## TL;DR
 
@@ -183,7 +181,7 @@ Rough relative **boilerplate** (lower is better) — a map of where teams spend 
 | Typed errors | `FetchError` | DIY |
 | Refresh plugin | Yes | DIY |
 | Path params | Yes | Manual |
-| Bundle | 3.57KB gzip | Varies |
+| Bundle | 3.68KB gzip | Varies |
 
 ## Auth, status handlers, refresh
 

@@ -1,4 +1,4 @@
-# tanstack-fetch v2.0.0
+# tanstack-fetch v2.1.0
 
 > Typed Fetch client designed for TanStack Query. Return data, throw `FetchError`, honor `AbortSignal`. TanStack Start, React, Remix, Vue/Nuxt, Solid, SolidStart, Angular, Svelte/SvelteKit. SSR, SSE, WebSocket, WebTransport, NDJSON streams, upload, tRPC, DevTools.
 
@@ -13,6 +13,8 @@ Robots: https://mohamadgarmabi.github.io/tanstack-fetch/robots.txt
 Not an official TanStack package.
 
 ## Version
+
+**2.1.0** — fixes: aborting `signal` during a retry delay rejects immediately; `:name` is a path param only at the start of a segment (`/models/gemini:generateContent` works, runtime + types); refresh-token: a late 401 after another refresh retries with the new token instead of refreshing again, and a 401 after an earlier retry (e.g. 502) still refreshes; `ReadableStream` bodies are never retried. Added: array query values (`{ ids: [1, 2] }` → `?ids=1&ids=2`), `parseAs: 'arrayBuffer' | 'stream'`, `tanstack-fetch/full` (alias of `/sse`), `.d.cts` types for CJS, `meta.state` (per-call object shared across retries). Timeouts / aborts reject with `TimeoutError` / `AbortError`, not `FetchError` — check with `isAbortError` (/blog/tanstack-fetch-2-1-0).
 
 **2.0.0** — breaking: slim core `tanstack-fetch` (3.57KB gzip) takes auth / status handlers / plugins as `interceptors` from `tanstack-fetch/plugins` (`createAuthInterceptor`, `createStatusInterceptor`, `createTraceInterceptor`, …); option shortcuts (`getToken`, `onUnauthorized`, `plugins: [...]`), `upload()` and progress stay on `/sse`, `/live`, `/trpc` and framework providers. Typed live params: `sse` / `ws` / `transport` / `stream` and `useSse` / `useWs` type `params` like `api.get` — `ws<Message, Params, Send>`, `sse<Message, Params>`. NDJSON: `duplex: 'half'` for stream bodies, `onRequestError` on network errors, abortable retry delays (/blog/tanstack-fetch-2-0-0).
 
@@ -70,10 +72,11 @@ useQuery({
 
 | Import | Role | gzip |
 | --- | --- | ---: |
-| `tanstack-fetch` | Slim HTTP; auth / status / plugins via `interceptors` | 3.57KB |
-| `tanstack-fetch/sse` | Full HTTP (option shortcuts, `upload`) + `api.sse()` | 6.33KB |
-| `tanstack-fetch/live` | Full HTTP + `api.sse()` / `ws()` / `transport()` / `stream()` | 8.75KB |
-| `tanstack-fetch/plugins` | interceptor factories | 1.13KB |
+| `tanstack-fetch` | Slim HTTP; auth / status / plugins via `interceptors` | 3.68KB |
+| `tanstack-fetch/sse` | Full HTTP (option shortcuts, `upload`) + `api.sse()` | 6.43KB |
+| `tanstack-fetch/full` | Alias of `/sse` | same |
+| `tanstack-fetch/live` | Full HTTP + `api.sse()` / `ws()` / `transport()` / `stream()` | 8.84KB |
+| `tanstack-fetch/plugins` | interceptor factories | 1.22KB |
 | `tanstack-fetch/react` | `FetchProvider` / `useFetch` / `useSse` | 0.99KB |
 | `tanstack-fetch/vue` | `createFetchPlugin` / `useFetch` / `useSse` | 0.94KB |
 | `tanstack-fetch/solid` | `FetchProvider` / `useFetch` / `useSse` | — |
@@ -253,6 +256,7 @@ const trpcClient = createTRPCFetchClient<AppRouter>({ url: '/api/trpc', client: 
 - Blog: /blog/ (filter with ?category=tutorials|frameworks|releases and ?tags=)
 - Tutorial: TanStack Pacer + Query + tanstack-fetch (debounce, throttle, rate-limit, queue, batch): /blog/tanstack-pacer-tanstack-query-tanstack-fetch
 - WebSocket / WebTransport / NDJSON: /guide/websocket
+- Release 2.1.0 (abortable retries · safer refresh · array query): /blog/tanstack-fetch-2-1-0
 - Release 2.0.0 (3.57KB core · typed live params): /blog/tanstack-fetch-2-0-0
 - Release 1.8.0 (WebSocket · WebTransport · NDJSON): /blog/tanstack-fetch-1-8-0
 - Release 1.7.1 (timeouts · URLs · errors): /blog/tanstack-fetch-1-7-1

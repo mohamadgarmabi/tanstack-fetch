@@ -1,5 +1,5 @@
 ---
-title: 'Angular HttpClient vs tanstack-fetch: typed fetch for TanStack Angular Query'
+title: 'Angular HttpClient vs tanstack-fetch for TanStack Query'
 titleTemplate: false
 description: Replace Angular HttpClient glue with tanstack-fetch — provideFetchClient, injectFetch, signals SSE, Angular Query, refresh-token, migrate CLI, and a full side-by-side comparison.
 date: 2026-10-12
@@ -18,11 +18,9 @@ cover: /images/blog-angular-http-client-tanstack-fetch-cover.jpg
 **Angular 17+** · `tanstack-fetch/angular` · `@tanstack/angular-query-experimental`
 :::
 
-Angular’s `HttpClient` is excellent at transporting bytes. It is **not** shaped for TanStack Query’s `queryFn` contract: return data, throw on failure, honor `AbortSignal`.
+Angular’s `HttpClient` returns cold Observables. TanStack Angular Query wants a Promise that resolves to data, rejects on failure and stops when its `AbortSignal` fires — so every call gets wrapped in `lastValueFrom` and an error mapper.
 
 That gap shows up as unwrap-`.data` helpers, RxJS subscriptions that fight Query’s cache, and interceptors that reinvent refresh-token single-flight. **tanstack-fetch** closes it with the same client every other stack already uses — wired through Angular DI and signals.
-
-This post is the deep dive: architecture, side-by-side code, graphs, migrate path, SSE, tRPC, and when you should keep `HttpClient`.
 
 ## TL;DR
 
@@ -241,7 +239,7 @@ Rough relative **boilerplate** for the same features (lower is better). Not a be
 | Angular signals SSE | `useSse` | DIY |
 | tRPC transport | `tanstack-fetch/trpc` | DIY |
 | RxJS operators / `HttpContext` | Via bridge | Native |
-| Bundle (HTTP core) | 3.57KB gzip | Framework-included |
+| Bundle (HTTP core) | 3.68KB gzip | Framework-included |
 
 ## Auth, status handlers, refresh
 

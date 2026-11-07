@@ -10,7 +10,9 @@ type IncomingHeaders = {
 
 type PathParams = Record<string, string | number>
 
-type QueryParams = Record<string, string | number | boolean | undefined | null>
+type QueryValue = string | number | boolean
+
+type QueryParams = Record<string, QueryValue | ReadonlyArray<QueryValue> | undefined | null>
 
 type PluginName = 'trace' | 'ssr-forward' | 'retry-idempotent' | 'sse-resume'
 

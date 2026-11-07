@@ -15,6 +15,8 @@ describe('path params types', () => {
       'id' | 'postId'
     >()
     expectTypeOf<PathParamsOf<'/users/:id'>>().toEqualTypeOf<{ id: string | number }>()
+    expectTypeOf<ExtractPathParamKeys<'/models/gemini:generateContent'>>().toEqualTypeOf<never>()
+    expectTypeOf<ExtractPathParamKeys<':id/x'>>().toEqualTypeOf<'id'>()
   })
 
   it('types createFetch params from the path pattern', () => {

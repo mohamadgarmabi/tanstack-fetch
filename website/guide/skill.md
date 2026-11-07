@@ -30,7 +30,7 @@ From this docs site (direct skill URL):
 
 Skill folder: [`.agents/skills/tanstack-fetch`](https://github.com/mohamadgarmabi/tanstack-fetch/tree/main/.agents/skills/tanstack-fetch)
 
-- `SKILL.md` — v2.0.0: install, entry points + gzip sizes, shared client, interceptors, Query, errors, React, **Vue/Nuxt**, SSE, WebSocket / WebTransport / NDJSON, SSR, upload, DevTools, tRPC
+- `SKILL.md` — v2.1.0: install, entry points + gzip sizes, shared client, interceptors, Query, errors, React, **Vue/Nuxt**, SSE, WebSocket / WebTransport / NDJSON, SSR, upload, DevTools, tRPC
 - `references/` — entry sizes + status-handler map
 
 After install, invoke with `/tanstack-fetch` or let the agent pick it up when you work on HTTP / Query / SSE / Vue.
@@ -82,6 +82,7 @@ You should see `tanstack-fetch`. Open **Customize → Skills** in Cursor to conf
 - [Vue & Nuxt](/guide/vue)
 - [Raw skill file](/skills/tanstack-fetch/SKILL.md)
 - [LLM context (`llms.txt`)](https://mohamadgarmabi.github.io/tanstack-fetch/llms.txt)
+- [Release 2.1.0 — abortable retries · safer refresh · array query](/blog/tanstack-fetch-2-1-0)
 - [Release 2.0.0 — 3.57KB core · typed live params](/blog/tanstack-fetch-2-0-0)
 - [Release 1.8.0 — WebSocket · WebTransport · NDJSON](/blog/tanstack-fetch-1-8-0)
 - [Release 1.7.1 — timeouts · URLs · errors](/blog/tanstack-fetch-1-7-1)

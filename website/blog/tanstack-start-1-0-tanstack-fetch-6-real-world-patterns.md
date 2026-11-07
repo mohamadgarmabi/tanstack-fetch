@@ -1,5 +1,5 @@
 ---
-title: 'TanStack Start 1.0 + tanstack-fetch: 6 Real-World Data Fetching Patterns'
+title: 'TanStack Start + tanstack-fetch: 6 data fetching patterns'
 titleTemplate: false
 description: 'TanStack Start 1.0 is here. Six production-ready patterns: direct fetching, shared loaders, SSR auth, mutations, centralized error handling, and live SSE updates with tanstack-fetch.'
 date: 2026-10-12

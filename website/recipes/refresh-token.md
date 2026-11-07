@@ -25,7 +25,8 @@ api.use('refresh-token', createRefreshTokenInterceptor({
 ```
 
 - One `refreshPromise` covers parallel failures.
-- `attempt > 0` blocks infinite 401 → refresh → 401 loops.
+- Each request refreshes at most once, so 401 → refresh → 401 never loops — even if it was retried earlier for another reason (e.g. a 502).
+- A 401 that arrives after another request already refreshed just retries with the new token — important with rotating refresh tokens.
 - Refresh calls the **same** client with `interceptors: { eject: ['refresh-token', 'auth'] }` so it doesn’t recurse.
 
 ## Before + after
@@ -151,7 +152,8 @@ api.use(
 - Call refresh with `api.post(..., { interceptors: { eject: ['refresh-token', 'auth'] } })` so the same client is used without re-entering the interceptor. `createAuthInterceptor` is named `'auth'`
 - `credentials: 'include'` on `createFetch` sends the refresh cookie with that call
 - Order `10` runs **before** auth (`15`), so a before-refresh updates the token that gets attached
-- `attempt > 0` blocks infinite 401 refresh loops on the original request
+- Each request refreshes at most once (tracked in `context.meta.state`, shared across its retries), so 401 refresh loops can't happen
+- A request sent with the old token whose 401 lands after another refresh finished is resent with the new token — no second `refresh()` call
 - One shared `refreshPromise` covers parallel requests (before and after)
 - A failed refresh continues the pipeline, so the `401` handler from `createStatusInterceptor` (order `95`) can send the user to login
 - On `tanstack-fetch/sse`, `/live`, `/trpc` and the framework providers, `getToken` and `onUnauthorized` are still accepted as options

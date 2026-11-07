@@ -10,13 +10,13 @@ license: MIT
 metadata:
   author: Mohammad Garmabi
   package: tanstack-fetch
-  version: '2.0.0'
+  version: '2.1.0'
   docs: https://mohamadgarmabi.github.io/tanstack-fetch/
   npm: https://www.npmjs.com/package/tanstack-fetch
   llm: https://mohamadgarmabi.github.io/tanstack-fetch/llms.txt
 ---
 
-# tanstack-fetch (v2.0.0)
+# tanstack-fetch (v2.1.0)
 
 Typed Fetch client shaped for TanStack Query. Not an official TanStack package.
 
@@ -46,10 +46,11 @@ npm install tanstack-fetch vue
 
 | Import                    | Use when                                               | gzip   |
 | ------------------------- | ------------------------------------------------------ | ------ |
-| `tanstack-fetch`          | Slim HTTP; features via `interceptors` (no `upload`)   | 3.57KB |
-| `tanstack-fetch/sse`      | Full HTTP (shortcuts, `upload`) + `api.sse()`          | 6.33KB |
-| `tanstack-fetch/live`     | `sse` + `ws` + `transport` + `stream`                  | 8.75KB |
-| `tanstack-fetch/plugins`  | Factories (`createRefreshTokenInterceptor`, …)         | 1.13KB |
+| `tanstack-fetch`          | Slim HTTP; features via `interceptors` (no `upload`)   | 3.68KB |
+| `tanstack-fetch/sse`      | Full HTTP (shortcuts, `upload`) + `api.sse()`          | 6.43KB |
+| `tanstack-fetch/full`     | Alias of `/sse`                                        |   same |
+| `tanstack-fetch/live`     | `sse` + `ws` + `transport` + `stream`                  | 8.84KB |
+| `tanstack-fetch/plugins`  | Factories (`createRefreshTokenInterceptor`, …)         | 1.22KB |
 | `tanstack-fetch/react`    | `FetchProvider`, `useFetch`, `useSse`, `useWs`         | 0.99KB |
 | `tanstack-fetch/vue`      | `createFetchPlugin`, `useFetch`, `useSse`, `useWs`     | 0.94KB |
 | `tanstack-fetch/solid`    | `FetchProvider`, `useFetch`, `useSse`, `useWs`         | —      |
@@ -373,6 +374,7 @@ const trpcClient = createTRPCFetchClient<AppRouter>({ url: '/api/trpc', client: 
 - Solid: https://mohamadgarmabi.github.io/tanstack-fetch/guide/solid
 - Angular: https://mohamadgarmabi.github.io/tanstack-fetch/guide/angular
 - Svelte: https://mohamadgarmabi.github.io/tanstack-fetch/guide/svelte
+- Release 2.1.0: https://mohamadgarmabi.github.io/tanstack-fetch/blog/tanstack-fetch-2-1-0
 - Release 2.0.0: https://mohamadgarmabi.github.io/tanstack-fetch/blog/tanstack-fetch-2-0-0
 - Release 1.8.0: https://mohamadgarmabi.github.io/tanstack-fetch/blog/tanstack-fetch-1-8-0
 - Release 1.7.1: https://mohamadgarmabi.github.io/tanstack-fetch/blog/tanstack-fetch-1-7-1

@@ -89,6 +89,7 @@ const copyInstall = async () => {
           honored — shaped for TanStack Query. SSR, SSE, WebSocket, upload, refresh-token, and tRPC
           stay optional.
         </p>
+        <p class="home-hero-note">Independent project — not an official TanStack package.</p>
 
         <div class="home-actions">
           <a class="home-btn home-btn-primary" :href="withBase('/docs')">

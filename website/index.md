@@ -1,8 +1,8 @@
 ---
 layout: page
-title: tanstack-fetch by Mohammad Garmabi — Typed Fetch Client for TanStack Query
+title: tanstack-fetch — the fetch client that speaks queryFn
 titleTemplate: false
-description: Typed Fetch client designed for TanStack Query. Tiny HTTP core with SSR, SSE, WebSocket, WebTransport, NDJSON streams, React, Vue and Nuxt support.
+description: 'The fetch client that speaks queryFn: returns data, throws typed errors, respects AbortSignal. Tiny core; SSR, SSE, WebSocket and framework adapters are optional.'
 outline: false
 aside: false
 ---

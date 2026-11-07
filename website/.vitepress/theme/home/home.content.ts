@@ -23,6 +23,13 @@ const STACKBLITZ_BASE =
 // Newest first. The hero badge shows releases[0]; add the new release here with its blog post.
 const releases: ReleaseItem[] = [
   {
+    version: '2.1.0',
+    title: 'Abortable retries · Safer refresh',
+    text: 'Cancel during a retry delay, one refresh per token rotation, literal colons in paths, array query values, parseAs stream.',
+    date: '2026-11-07',
+    href: '/blog/tanstack-fetch-2-1-0',
+  },
+  {
     version: '2.0.0',
     title: '3.57KB core · Typed live params',
     text: 'Auth, status and plugins as interceptors on a slim core; sse, ws, transport and stream type params like api.get.',
@@ -966,7 +973,7 @@ const features: FeatureItem[] = [
     text: 'setupDevtools(api) shows HTTP, SSE, SSR, and tRPC with attempts, timing, and caller file.',
   },
   {
-    title: '3.57KB HTTP core',
+    title: '3.68KB HTTP core',
     text: 'The HTTP entry is the core. SSE, WebSocket, React, Vue, plugins, and tRPC are separate imports.',
   },
   {
@@ -1016,28 +1023,28 @@ const packages: PackageItem[] = [
     title: 'HTTP core',
     spec: 'tanstack-fetch',
     text: 'get, post, put, patch, delete, and upload — also Solid, Angular, Svelte, SvelteKit.',
-    tags: ['3.57KB'],
+    tags: ['3.68KB'],
     href: '/api/create-fetch',
   },
   {
     title: 'Server-sent events',
     spec: 'tanstack-fetch/sse',
     text: 'fetch-based streams with resume and Authorization.',
-    tags: ['6.33KB'],
+    tags: ['6.43KB'],
     href: '/guide/sse',
   },
   {
     title: 'Live transports',
     spec: 'tanstack-fetch/live',
     text: 'SSE + WebSocket + WebTransport + NDJSON streams on one client.',
-    tags: ['8.75KB', '1.8.0'],
+    tags: ['8.84KB', '1.8.0'],
     href: '/guide/websocket',
   },
   {
     title: 'Plugins',
     spec: 'tanstack-fetch/plugins',
     text: 'Retry, trace, SSR forward, and status helpers.',
-    tags: ['1.13KB'],
+    tags: ['1.22KB'],
     href: '/api/plugins',
   },
   {
@@ -1125,9 +1132,9 @@ const compareRows: CompareRow[] = [
     feature: 'Typed error with status and body',
     href: '/guide/errors',
     fetch: 'yes',
-    axios: 'partial',
-    ky: 'partial',
-    ofetch: 'partial',
+    axios: 'yes',
+    ky: 'yes',
+    ofetch: 'yes',
   },
   {
     feature: 'Handlers for 401 through 429',
@@ -1366,6 +1373,7 @@ const footerColumns: FooterColumn[] = [
       { label: 'GitHub', href: GITHUB_URL },
       { label: 'npm', href: NPM_URL },
       { label: 'Blog', href: '/blog/' },
+      { label: '2.1.0 Abortable retries · safer refresh', href: '/blog/tanstack-fetch-2-1-0' },
       { label: '2.0.0 Slim core · typed live params', href: '/blog/tanstack-fetch-2-0-0' },
       { label: '1.8.0 WebSocket · WebTransport', href: '/blog/tanstack-fetch-1-8-0' },
       { label: '1.7.0 doctor · Solid · Svelte', href: '/blog/tanstack-fetch-1-7-0' },

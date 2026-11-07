@@ -23,16 +23,16 @@ Methods on the client returned by `createFetch`.
 
 ## Request options
 
-| Option               | Notes                                                                                                                                    |
-| -------------------- | ---------------------------------------------------------------------------------------------------------------------------------------- |
-| `params`             | Typed from path (`:id` / `{id}`), required when placeholders exist. Only the pathname is scanned — ports and `?query` colons are ignored |
-| `query`              | Query string                                                                                                                             |
-| `body`               | Objects → JSON; `string`, `FormData`, `Blob`, `URLSearchParams`, `ArrayBuffer`, typed arrays and `ReadableStream` are sent as-is         |
-| `headers`            | Per-request headers                                                                                                                      |
-| `signal`             | AbortSignal (pass Query’s)                                                                                                               |
-| `timeoutMs`          | Override client timeout (default 30 000). Rejects with `TimeoutError` — see `isAbortError`                                               |
-| `parseAs`            | `json` \| `text` \| `blob`                                                                                                               |
-| `operation`          | Name for interceptor match                                                                                                               |
-| `interceptors`       | Per-request `use` / `eject`                                                                                                              |
-| `onUploadProgress`   | Browser upload progress (XHR) — ignored by core `tanstack-fetch`; use `/sse` / `/live`                                                   |
-| `onDownloadProgress` | Browser download progress (XHR) — ignored by core `tanstack-fetch`; use `/sse` / `/live`                                                 |
+| Option               | Notes                                                                                                                                                                                |
+| -------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `params`             | Typed from path (`:id` / `{id}`), required when placeholders exist. `:name` counts only at the start of a segment — ports, `gemini:generateContent` and `?query` colons stay literal |
+| `query`              | Query string. `null` / `undefined` are skipped; arrays repeat the key: `{ ids: [1, 2] }` → `?ids=1&ids=2`                                                                            |
+| `body`               | Objects → JSON; `string`, `FormData`, `Blob`, `URLSearchParams`, `ArrayBuffer`, typed arrays and `ReadableStream` are sent as-is. A `ReadableStream` body is never retried           |
+| `headers`            | Per-request headers                                                                                                                                                                  |
+| `signal`             | AbortSignal (pass Query’s)                                                                                                                                                           |
+| `timeoutMs`          | Override client timeout (default 30 000). Rejects with `TimeoutError` — see `isAbortError`                                                                                           |
+| `parseAs`            | `json` \| `text` \| `blob` \| `arrayBuffer` \| `stream` (`stream` returns the raw `response.body`)                                                                                   |
+| `operation`          | Name for interceptor match                                                                                                                                                           |
+| `interceptors`       | Per-request `use` / `eject`                                                                                                                                                          |
+| `onUploadProgress`   | Browser upload progress (XHR) — ignored by core `tanstack-fetch`; use `/sse` / `/live`                                                                                               |
+| `onDownloadProgress` | Browser download progress (XHR) — ignored by core `tanstack-fetch`; use `/sse` / `/live`                                                                                             |

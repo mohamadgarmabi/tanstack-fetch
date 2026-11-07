@@ -86,13 +86,13 @@ const seriesNav = (slug) => {
 const posts = [
   {
     file: 'react-axios-tanstack-fetch.md',
-    title: 'React axios vs tanstack-fetch: typed fetch for TanStack Query',
+    title: 'React axios vs tanstack-fetch for TanStack Query',
     description:
       'Replace axios unwrap glue with tanstack-fetch — FetchProvider, useFetch, useSse, React Query, refresh-token, migrate CLI, and a full side-by-side comparison.',
     h1: 'React axios vs tanstack-fetch',
     meta: 'October 12, 2026 · React · TanStack Query · HTTP',
     tip: '**React 18+** · `tanstack-fetch/react` · `@tanstack/react-query`',
-    intro: `axios is great at interceptors. It is **not** shaped for TanStack Query’s \`queryFn\` contract: return data, throw on failure, honor \`AbortSignal\`.
+    intro: `Most React apps call axios inside \`useQuery\`, then stack a \`.data\` unwrap, an error mapper and a refresh-token queue on top. Each of those exists only because axios predates the \`queryFn\` contract: return data, throw on failure, honor \`AbortSignal\`.
 
 That gap shows up as \`.data\` unwraps, custom error mappers, and refresh-token races. **tanstack-fetch** closes it with the same client every other stack uses — via \`FetchProvider\` / \`useFetch\` when you want context.`,
     install: 'npm install tanstack-fetch @tanstack/react-query',
@@ -194,7 +194,7 @@ Or skip the provider and import a module-level \`api\` into every \`queryFn\` �
 | Upload + progress | \`api.upload()\` (\`tanstack-fetch/sse\`) | Yes |
 | SSE + \`Authorization\` | \`tanstack-fetch/sse\` | No |
 | tRPC transport | \`tanstack-fetch/trpc\` | DIY |
-| Bundle (HTTP core) | 3.57KB gzip | Larger |`,
+| Bundle (HTTP core) | 3.68KB gzip | Larger |`,
     mutation: `\`\`\`tsx
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { useFetch } from 'tanstack-fetch/react'
@@ -282,13 +282,13 @@ src/
   },
   {
     file: 'vue-ofetch-tanstack-fetch.md',
-    title: 'Vue ofetch / axios vs tanstack-fetch: typed fetch for Vue Query',
+    title: 'Vue ofetch / axios vs tanstack-fetch for Vue Query',
     description:
       'Replace ofetch and axios glue in Vue 3 with tanstack-fetch — createFetchPlugin, useFetch, useSse, Vue Query, refresh-token, and a full comparison.',
     h1: 'Vue ofetch / axios vs tanstack-fetch',
     meta: 'October 12, 2026 · Vue · TanStack Query · HTTP',
     tip: '**Vue 3.3+** · `tanstack-fetch/vue` · `@tanstack/vue-query`',
-    intro: `ofetch and axios are fine transporters. They are **not** shaped for Vue Query’s \`queryFn\` contract: return data, throw on failure, honor \`AbortSignal\`.
+    intro: `In a Vue 3 app, \`ofetch\` or axios usually hides behind a hand-written composable that unwraps responses and converts errors before Vue Query ever sees them — and that composable gets copied into every project.
 
 **tanstack-fetch** gives Vue the same client as React — via \`createFetchPlugin\` + \`useFetch\` composables.`,
     install: 'npm install tanstack-fetch vue @tanstack/vue-query',
@@ -380,7 +380,7 @@ In Nuxt, rename when \`useFetch\` clashes: \`import { useFetch as useFetchClient
 | Path params \`:id\` | Yes | Manual |
 | SSE + Authorization | Yes | No |
 | Vue composables | \`useFetch\` / \`useSse\` | DIY |
-| Bundle | 3.57KB gzip | Small–medium |`,
+| Bundle | 3.68KB gzip | Small–medium |`,
     mutation: `\`\`\`ts
 import { useMutation, useQueryClient } from '@tanstack/vue-query'
 import { useFetch } from 'tanstack-fetch/vue'
@@ -458,7 +458,7 @@ src/
   },
   {
     file: 'nextjs-fetch-tanstack-fetch.md',
-    title: 'Next.js fetch vs tanstack-fetch: SSR cookies, Query hydrate, App Router',
+    title: 'Next.js fetch vs tanstack-fetch: SSR cookies and hydration',
     description:
       'Use tanstack-fetch in Next.js App Router — ssr-forward cookies, absolute baseUrl on the server, React Query dehydrate/hydrate, SSE, and migrate path.',
     h1: 'Next.js fetch vs tanstack-fetch',
@@ -610,7 +610,7 @@ src/
   },
   {
     file: 'nuxt-ofetch-tanstack-fetch.md',
-    title: 'Nuxt $fetch / ofetch vs tanstack-fetch: SSR cookies and Vue Query',
+    title: 'Nuxt $fetch / ofetch vs tanstack-fetch: SSR and Vue Query',
     description:
       'Replace Nuxt $fetch glue with tanstack-fetch — createFetchPlugin, ssr-forward, useFetchClient naming, Vue Query hydrate, SSE, and comparison graphs.',
     h1: 'Nuxt $fetch vs tanstack-fetch',
@@ -747,7 +747,7 @@ components/OrdersLive.client.vue
   },
   {
     file: 'solid-fetch-tanstack-fetch.md',
-    title: 'Solid fetch / axios vs tanstack-fetch: Solid Query adapters',
+    title: 'Solid fetch / axios vs tanstack-fetch for Solid Query',
     description:
       'Use tanstack-fetch with Solid — FetchProvider, useFetch, useSse signals, Solid Query, refresh-token, migrate CLI, and comparison graphs.',
     h1: 'Solid fetch vs tanstack-fetch',
@@ -826,7 +826,7 @@ const UsersPage = () => {
 | Typed errors | \`FetchError\` | DIY |
 | Refresh plugin | Yes | DIY |
 | Path params | Yes | Manual |
-| Bundle | 3.57KB gzip | Varies |`,
+| Bundle | 3.68KB gzip | Varies |`,
     mutation: `\`\`\`tsx
 import { createMutation, useQueryClient } from '@tanstack/solid-query'
 import { useFetch } from 'tanstack-fetch/solid'
@@ -900,7 +900,7 @@ src/
   },
   {
     file: 'tanstack-start-router-tanstack-fetch.md',
-    title: 'TanStack Start / Router + tanstack-fetch: Query on router context',
+    title: 'TanStack Router + tanstack-fetch: Query on router context',
     description:
       'Wire tanstack-fetch into TanStack Start and TanStack Router — queryOptions, ensureQueryData loaders, router context, SSR, tRPC, and comparison graphs.',
     h1: 'TanStack Start / Router + tanstack-fetch',
@@ -1041,7 +1041,7 @@ src/
   },
   {
     file: 'sveltekit-fetch-tanstack-fetch.md',
-    title: 'Svelte / SvelteKit fetch vs tanstack-fetch: stores, SSR, Query',
+    title: 'SvelteKit fetch vs tanstack-fetch: stores, SSR, Query',
     description:
       'Use tanstack-fetch with Svelte and SvelteKit — setFetchClient, useFetch, useSse stores, Svelte Query, ssr-forward load functions, and comparison graphs.',
     h1: 'Svelte / SvelteKit fetch vs tanstack-fetch',
@@ -1286,8 +1286,6 @@ ${post.tip}
 :::
 
 ${post.intro}
-
-This post is the deep dive: architecture, side-by-side code, graphs, migrate path, SSE, tRPC, and when to keep the default stack client.
 
 ## TL;DR
 

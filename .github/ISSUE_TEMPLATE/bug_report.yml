@@ -21,7 +21,7 @@ body:
     id: version
     attributes:
       label: tanstack-fetch version
-      placeholder: 2.0.0
+      placeholder: 2.1.0
     validations:
       required: true
   - type: input

@@ -100,7 +100,7 @@ export const api = createFetch({
 })
 ```
 
-The core `tanstack-fetch` entry is slim (**3.57KB**) — auth, status handlers and plugins are interceptors. Prefer `getToken` / `onUnauthorized` / `plugins: [...]` shortcuts or need `upload()`? Import `createFetch` from `tanstack-fetch/sse` (or `/live`) — same options, plus those. See [Core entry points](./introduction#core-entry-points).
+The core `tanstack-fetch` entry is slim (**3.68KB**) — auth, status handlers and plugins are interceptors. Prefer `getToken` / `onUnauthorized` / `plugins: [...]` shortcuts or need `upload()`? Import `createFetch` from `tanstack-fetch/sse` (or `/live`) — same options, plus those. See [Core entry points](./introduction#core-entry-points).
 
 ## Quick taste — typed params & body
 

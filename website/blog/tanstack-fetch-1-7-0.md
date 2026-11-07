@@ -1,5 +1,6 @@
 ---
-title: 'tanstack-fetch 1.7.0: doctor CLI + Solid, Angular, Svelte adapters'
+noindex: true
+title: 'tanstack-fetch 1.7.0: doctor CLI, Solid, Angular, Svelte'
 titleTemplate: false
 description: Health-check with tanstack-fetch doctor, real Solid/Angular/Svelte adapters, migrate scaffolds, and a docs Framework picker.
 date: 2026-10-09

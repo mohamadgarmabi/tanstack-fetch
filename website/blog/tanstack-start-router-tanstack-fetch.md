@@ -1,5 +1,5 @@
 ---
-title: 'TanStack Start / Router + tanstack-fetch: Query on router context'
+title: 'TanStack Router + tanstack-fetch: Query on router context'
 titleTemplate: false
 description: "Wire tanstack-fetch into TanStack Start and TanStack Router — queryOptions, ensureQueryData loaders, router context, SSR, tRPC, and comparison graphs."
 date: 2026-10-12
@@ -21,8 +21,6 @@ cover: /images/blog-tanstack-start-router-tanstack-fetch-cover.jpg
 TanStack Start shines when **Router + Query share context**: loaders call `ensureQueryData`, components call `useQuery` with the same `queryOptions`.
 
 The missing piece is a fetch client that already speaks Query’s language. **tanstack-fetch** is that client — with `ssr-forward` on the server and the same options in the browser.
-
-This post is the deep dive: architecture, side-by-side code, graphs, migrate path, SSE, tRPC, and when to keep the default stack client.
 
 ## TL;DR
 

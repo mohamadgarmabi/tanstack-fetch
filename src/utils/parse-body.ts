@@ -29,9 +29,20 @@ const isBodyParseError = (error: unknown): error is BodyParseError =>
     'bodyText' in error,
   )
 
-const parseBody = async (response: Response, parseAs?: 'json' | 'text' | 'blob') => {
+const parseBody = async (
+  response: Response,
+  parseAs?: 'json' | 'text' | 'blob' | 'arrayBuffer' | 'stream',
+) => {
   if (response.status === 204) {
     return null
+  }
+
+  if (parseAs === 'stream') {
+    return response.body
+  }
+
+  if (parseAs === 'arrayBuffer') {
+    return response.arrayBuffer()
   }
 
   if (parseAs === 'blob') {
