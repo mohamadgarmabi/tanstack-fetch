@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Question or idea
+    url: https://github.com/mohamadgarmabi/tanstack-fetch/discussions
+    about: Ask questions and share what you built in Discussions.
+  - name: Docs
+    url: https://mohamadgarmabi.github.io/tanstack-fetch/
+    about: Guides, API reference and playground.

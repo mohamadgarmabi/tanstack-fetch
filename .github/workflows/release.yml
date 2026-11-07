@@ -17,7 +17,7 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: read
+  contents: write # create the GitHub Release + tag after publish
   id-token: write
 
 concurrency:
@@ -83,3 +83,13 @@ jobs:
       - name: Publish to npm via OIDC
         if: steps.version.outputs.should_publish == 'true'
         run: npm publish --access public --ignore-scripts
+
+      - name: Create GitHub Release from CHANGELOG
+        if: steps.version.outputs.should_publish == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          VERSION="$(node -p "require('./package.json').version")"
+          # notes = the "## $VERSION" section of CHANGELOG.md, up to the next "## "
+          awk -v v="## ${VERSION}" '$0==v{f=1;next} /^## /{f=0} f' CHANGELOG.md > notes.md
+          gh release create "v${VERSION}" --target "${GITHUB_SHA}" --title "v${VERSION}" --notes-file notes.md

@@ -164,6 +164,14 @@ See [Solid guide](/guide/solid) and [tRPC · SolidStart](/recipes/trpc#3-solidst
 
 :::: framework core
 
+## SSE resume (Last-Event-ID)
+
+::: tip Framework
+**Core** · `api.sse` · `lastEventId`
+:::
+
+<SseResumeDemo />
+
 ## SSE core stream
 
 ::: tip Framework

@@ -1,0 +1,19 @@
+name: Feature request
+description: Suggest an idea or an API change
+labels: [enhancement]
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: What problem does this solve?
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed API
+      render: ts
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives / workarounds you tried

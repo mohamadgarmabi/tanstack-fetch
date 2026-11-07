@@ -1,0 +1,36 @@
+name: Bug report
+description: Something doesn't work as documented
+labels: [bug]
+body:
+  - type: textarea
+    id: what
+    attributes:
+      label: What happened?
+      description: What you expected vs. what you got. Include the error message.
+    validations:
+      required: true
+  - type: textarea
+    id: repro
+    attributes:
+      label: Minimal reproduction
+      description: A code snippet or a link to a repo / StackBlitz.
+      render: ts
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: tanstack-fetch version
+      placeholder: 2.0.0
+    validations:
+      required: true
+  - type: input
+    id: env
+    attributes:
+      label: Environment
+      placeholder: 'React 19 / Next 15 / Node 22 / Chrome 130'
+  - type: textarea
+    id: doctor
+    attributes:
+      label: Output of `npx tanstack-fetch doctor` (optional)
+      render: text
