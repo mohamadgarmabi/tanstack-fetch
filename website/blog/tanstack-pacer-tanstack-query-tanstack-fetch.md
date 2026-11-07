@@ -442,5 +442,5 @@ Keep them in those roles and each pattern stays a few lines long: debounce the k
 - [Errors](/guide/errors): `FetchError`, `isFetchError`, `isAbortError`
 - [Rate limit (429) recipe](/recipes/rate-limit)
 - [Upload & download progress](/guide/upload)
-- [TanStack Start 1.0 + tanstack-fetch: 6 real-world patterns](/blog/tanstack-start-1-0-transtack-fetch-6-real-world-patterns)
+- [TanStack Start 1.0 + tanstack-fetch: 6 real-world patterns](/blog/tanstack-start-1-0-tanstack-fetch-6-real-world-patterns)
 - [TanStack Pacer docs](https://tanstack.com/pacer/latest/docs/overview)

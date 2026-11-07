@@ -1,7 +1,7 @@
 {
   "name": "tanstack-fetch",
   "version": "2.1.0",
-  "description": "TanStack Query fetch client — typed errors, AbortSignal, SSR, SSE, WebSocket, WebTransport, NDJSON streams, upload. React, Vue/Nuxt, Solid, Angular, Svelte/SvelteKit. Lightweight axios/ky alternative (3.68KB gzip HTTP core).",
+  "description": "The fetch client that speaks queryFn: returns data, throws typed errors, respects AbortSignal. SSR, SSE, WebSocket, upload and React / Vue / Solid / Angular / Svelte adapters. Independent project, not affiliated with TanStack.",
   "license": "MIT",
   "author": {
     "name": "Mohammad Garmabi",

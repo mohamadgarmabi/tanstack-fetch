@@ -83,7 +83,7 @@ const PAGES = [
   ['blog/angular-http-client-tanstack-fetch.md', 'Blog · Framework guide', 'Angular HttpClient', 'vs tanstack-fetch', ['provideFetchClient', 'injectFetch', 'signals SSE'], A.angular],
   ['blog/sveltekit-fetch-tanstack-fetch.md', 'Blog · Framework guide', 'SvelteKit fetch', 'vs tanstack-fetch', ['setFetchClient', 'stores', 'load()'], A.svelte],
   ['blog/tanstack-start-router-tanstack-fetch.md', 'Blog · TanStack', 'Start & Router', '+ tanstack-fetch', ['queryOptions', 'ensureQueryData', 'router context'], A.amber],
-  ['blog/tanstack-start-1-0-transtack-fetch-6-real-world-patterns.md', 'Blog · TanStack', 'TanStack Start 1.0', '6 real-world patterns', ['loaders', 'SSR auth', 'mutations', 'SSE'], A.amber],
+  ['blog/tanstack-start-1-0-tanstack-fetch-6-real-world-patterns.md', 'Blog · TanStack', 'TanStack Start 1.0', '6 real-world patterns', ['loaders', 'SSR auth', 'mutations', 'SSE'], A.amber],
   ['blog/tanstack-pacer-tanstack-query-tanstack-fetch.md', 'Blog · TanStack', 'TanStack Pacer', '+ Query + fetch', ['debounce', 'throttle', 'rate-limit', 'batch'], A.olive],
 ]
 

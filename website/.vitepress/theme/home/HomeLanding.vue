@@ -2,6 +2,7 @@
 import { onBeforeUnmount, onMounted, ref } from 'vue'
 import HomeBand from './HomeBand.vue'
 import HomeBlitz from './HomeBlitz.vue'
+import HomeBlocks from './HomeBlocks.vue'
 import HomeClose from './HomeClose.vue'
 import HomeCompare from './HomeCompare.vue'
 import HomeFeatures from './HomeFeatures.vue'
@@ -46,6 +47,7 @@ onBeforeUnmount(() => {
     <div class="home-wrap">
       <HomeHero />
       <HomeShowcase />
+      <HomeBlocks />
       <HomeBand />
       <HomeWhy />
       <HomeQuick />

@@ -14,8 +14,8 @@ const libraries: { key: Library; label: string }[] = [
 ]
 
 const labelFor = (mark: CompareMark) => {
-  if (mark === 'yes') return 'First-class'
-  if (mark === 'partial') return 'Partial'
+  if (mark === 'yes') return 'Built in'
+  if (mark === 'partial') return 'With your own code'
   return 'Not built in'
 }
 

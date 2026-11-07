@@ -1,10 +1,10 @@
 # tanstack-fetch
 
-**Typed Fetch client designed for TanStack Query.**
+**The fetch client that speaks `queryFn`.** Returns data. Throws typed errors. Respects `AbortSignal`.
 
 > Independent project — not an official TanStack package and not affiliated with the TanStack maintainers.
 
-Returns data · throws `FetchError` · honors `AbortSignal` · SSR · SSE · React · Vue/Nuxt · Solid · Angular · Svelte · tRPC · DevTools
+SSR · SSE · React · Vue/Nuxt · Solid · Angular · Svelte · tRPC · DevTools
 
 [![npm version](https://img.shields.io/npm/v/tanstack-fetch.svg)](https://www.npmjs.com/package/tanstack-fetch)
 [![npm downloads](https://img.shields.io/endpoint?url=https%3A%2F%2Fmohamadgarmabi.github.io%2Ftanstack-fetch%2Fbadges%2Ftanstack-fetch-dm.json&cacheSeconds=3600)](https://www.npmjs.com/package/tanstack-fetch)
@@ -83,17 +83,18 @@ HTTP and network failures throw `FetchError`. A cancelled `signal` or an elapsed
 
 ## Compared to axios / ky / ofetch
 
-| Need                               | tanstack-fetch                       | axios                                      | ky                        | ofetch                             |
-| ---------------------------------- | ------------------------------------ | ------------------------------------------ | ------------------------- | ---------------------------------- |
-| Drop into TanStack Query `queryFn` | Returns data, throws, takes `signal` | Adapt                                      | Adapt                     | Adapt                              |
-| Typed error with status / body     | `FetchError` + `isFetchError`        | `AxiosError` (`response.status` / `.data`) | `HTTPError` (`.response`) | `FetchError` (`.status` / `.data`) |
-| Handlers for 401–429               | First-class                          | Custom                                     | Custom                    | Custom                             |
-| Refresh token + single-flight      | Built-in interceptor                 | Custom                                     | Custom                    | Custom                             |
-| Next.js SSR cookies                | `ssr-forward`                        | Custom                                     | Custom                    | Custom                             |
-| SSE with Authorization             | `tanstack-fetch/sse`                 | No                                         | No                        | No                                 |
-| File upload + progress             | `api.upload()` (`/sse`, `/live`)     | Yes                                        | Limited                   | Limited                            |
-| tRPC transport                     | `tanstack-fetch/trpc`                | No                                         | No                        | No                                 |
-| Bundle (HTTP core)                 | **3.68KB** gzip                      | Larger                                     | Small                     | Small                              |
+| Need                               | tanstack-fetch                       | axios                      | ky                                   | ofetch                             |
+| ---------------------------------- | ------------------------------------ | -------------------------- | ------------------------------------ | ---------------------------------- |
+| Use as a TanStack Query `queryFn`  | Returns data, throws, takes `signal` | Return `response.data`     | Call `.json()`                       | Works directly                     |
+| Typed error with status / body     | `FetchError` (`.status` / `.data`)   | `AxiosError` (`.response`) | `HTTPError` (`.response`)            | `FetchError` (`.status` / `.data`) |
+| Per-status handlers (401, 403, …)  | `createStatusInterceptor` map        | Response interceptor       | `afterResponse` hook                 | `onResponseError` hook             |
+| Refresh token, one refresh at once | Built-in interceptor                 | Write it in an interceptor | Write it in a hook                   | Write it in a hook                 |
+| SSR cookie forwarding              | `ssr-forward` plugin                 | Pass headers yourself      | Pass headers yourself                | Pass headers yourself              |
+| SSE with `Authorization`           | `api.sse()` (`/sse`)                 | Not built in               | Not built in                         | Not built in                       |
+| Upload progress                    | `api.upload()` (`/sse`, `/live`)     | `onUploadProgress`         | `onUploadProgress` (recent versions) | Not built in                       |
+| tRPC transport                     | `tanstack-fetch/trpc`                | Not built in               | Not built in                         | Not built in                       |
+
+**When to use what:** already happy with axios interceptors, or need Node streams and proxies? Keep axios. Want the smallest wrapper over `fetch` with retries? ky is great. On Nuxt, `$fetch` (ofetch) is built in and drops into `queryFn` as is. Reach for tanstack-fetch when you want Query-shaped calls, auth / refresh / SSR cookies and SSE or WebSocket from one client.
 
 Full write-up: [Comparison](https://mohamadgarmabi.github.io/tanstack-fetch/guide/comparison)
 

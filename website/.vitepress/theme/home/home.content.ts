@@ -1126,7 +1126,7 @@ const compareRows: CompareRow[] = [
     fetch: 'yes',
     axios: 'partial',
     ky: 'partial',
-    ofetch: 'partial',
+    ofetch: 'yes',
   },
   {
     feature: 'Typed error with status and body',

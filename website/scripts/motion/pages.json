@@ -913,9 +913,9 @@
     }
   },
   {
-    "id": "blog-tanstack-start-1-0-transtack-fetch-6-real-world-patterns-cover",
-    "md": "blog/tanstack-start-1-0-transtack-fetch-6-real-world-patterns.md",
-    "cover": "/images/blog-tanstack-start-1-0-transtack-fetch-6-real-world-patterns-cover.jpg",
+    "id": "blog-tanstack-start-1-0-tanstack-fetch-6-real-world-patterns-cover",
+    "md": "blog/tanstack-start-1-0-tanstack-fetch-6-real-world-patterns.md",
+    "cover": "/images/blog-tanstack-start-1-0-tanstack-fetch-6-real-world-patterns-cover.jpg",
     "alt": "TanStack Start 1.0 + tanstack-fetch: 6 Real-World Data Fetching Patterns",
     "kicker": "Blog · TanStack",
     "h1": "TanStack Start 1.0",

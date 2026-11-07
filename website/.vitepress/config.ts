@@ -17,8 +17,7 @@ const NPM_URL = 'https://www.npmjs.com/package/tanstack-fetch'
 const OG_IMAGE = `${SITE_URL}/images/docs-og-banner.png`
 const DEFAULT_DESCRIPTION =
   'The fetch client that speaks queryFn: returns data, throws typed errors, respects AbortSignal. Tiny core; SSR, SSE, WebSocket and React, Vue, Solid, Angular, Svelte adapters are optional.'
-const HOME_TITLE =
-  'tanstack-fetch — the fetch client that speaks queryFn'
+const HOME_TITLE = 'tanstack-fetch — the fetch client that speaks queryFn'
 
 const KEYWORDS = [
   'tanstack-fetch',
@@ -67,7 +66,8 @@ const writeGoogleFriendlySitemap = (siteConfig: SiteConfig) => {
       if (rewritten.includes('/public/') || rewritten.includes('/skills/')) return null
       if (rewritten.includes('404')) return null
       // `noindex: true` pages (thin release notes, redirects) stay out of the sitemap.
-      if (/^noindex:\s*true\s*$/m.test(readFileSync(join(siteConfig.srcDir, page), 'utf8'))) return null
+      if (/^noindex:\s*true\s*$/m.test(readFileSync(join(siteConfig.srcDir, page), 'utf8')))
+        return null
       return toAbsoluteUrl(rewritten)
     })
     .filter((url): url is string => Boolean(url))
@@ -79,10 +79,7 @@ const writeGoogleFriendlySitemap = (siteConfig: SiteConfig) => {
   })
 
   const body = unique
-    .map(
-      (loc) =>
-        `  <url>\n    <loc>${loc}</loc>\n    <lastmod>${today}</lastmod>\n  </url>`,
-    )
+    .map((loc) => `  <url>\n    <loc>${loc}</loc>\n    <lastmod>${today}</lastmod>\n  </url>`)
     .join('\n')
 
   const xml =
@@ -238,9 +235,7 @@ const config = defineConfig({
     const pageUrl = toAbsoluteUrl(pageData.relativePath)
     // Keep exact SEO titles when titleTemplate: false (home, docs hub, key posts).
     const useExactTitle = isHome || pageData.frontmatter.titleTemplate === false
-    const fullTitle = useExactTitle
-      ? title
-      : `${title} | ${SITE_NAME}`
+    const fullTitle = useExactTitle ? title : `${title} | ${SITE_NAME}`
 
     pageData.frontmatter.head ??= []
     const head = pageData.frontmatter.head as HeadConfig[]
@@ -249,7 +244,13 @@ const config = defineConfig({
       head.push(['meta', { name: 'robots', content: 'noindex, follow' }])
     }
     head.push(
-      ['link', { rel: 'canonical', href: pageData.frontmatter.canonical ? String(pageData.frontmatter.canonical) : pageUrl }],
+      [
+        'link',
+        {
+          rel: 'canonical',
+          href: pageData.frontmatter.canonical ? String(pageData.frontmatter.canonical) : pageUrl,
+        },
+      ],
       ['meta', { name: 'author', content: AUTHOR_NAME }],
       ['meta', { name: 'description', content: description }],
       ['meta', { property: 'og:title', content: fullTitle }],
@@ -405,7 +406,7 @@ const config = defineConfig({
             },
             {
               text: 'TanStack Start 1.0 — 6 real-world patterns',
-              link: '/blog/tanstack-start-1-0-transtack-fetch-6-real-world-patterns',
+              link: '/blog/tanstack-start-1-0-tanstack-fetch-6-real-world-patterns',
             },
           ],
         },
@@ -415,7 +416,10 @@ const config = defineConfig({
           items: [
             { text: 'React · axios vs tanstack-fetch', link: '/blog/react-axios-tanstack-fetch' },
             { text: 'Vue · ofetch vs tanstack-fetch', link: '/blog/vue-ofetch-tanstack-fetch' },
-            { text: 'Next.js · fetch vs tanstack-fetch', link: '/blog/nextjs-fetch-tanstack-fetch' },
+            {
+              text: 'Next.js · fetch vs tanstack-fetch',
+              link: '/blog/nextjs-fetch-tanstack-fetch',
+            },
             { text: 'Nuxt · $fetch vs tanstack-fetch', link: '/blog/nuxt-ofetch-tanstack-fetch' },
             { text: 'Solid · fetch vs tanstack-fetch', link: '/blog/solid-fetch-tanstack-fetch' },
             {
@@ -436,9 +440,15 @@ const config = defineConfig({
           text: 'Releases',
           collapsed: true,
           items: [
-            { text: '2.1.0 — abortable retries · safer refresh · array query', link: '/blog/tanstack-fetch-2-1-0' },
+            {
+              text: '2.1.0 — abortable retries · safer refresh · array query',
+              link: '/blog/tanstack-fetch-2-1-0',
+            },
             { text: '2.0.0 — 3.57KB core · typed live params', link: '/blog/tanstack-fetch-2-0-0' },
-            { text: '1.8.0 — WebSocket · WebTransport · NDJSON', link: '/blog/tanstack-fetch-1-8-0' },
+            {
+              text: '1.8.0 — WebSocket · WebTransport · NDJSON',
+              link: '/blog/tanstack-fetch-1-8-0',
+            },
             { text: '1.7.1 — timeouts · URLs · errors', link: '/blog/tanstack-fetch-1-7-1' },
             { text: '1.7.0 — doctor · Solid · Svelte', link: '/blog/tanstack-fetch-1-7-0' },
             { text: '1.6.3 — migrate CLI', link: '/blog/tanstack-fetch-1-6-3' },
