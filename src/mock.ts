@@ -268,7 +268,7 @@ const applyMocks = (
  * ```
  */
 const createMocks = (mocks: MockOptions): FetchMocks => ({
-  apply: (options, progress) => applyMocks(mocks, options, progress),
+  install: (options, progress) => applyMocks(mocks, options, progress),
 })
 
 export { createMocks }

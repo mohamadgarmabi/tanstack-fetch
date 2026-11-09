@@ -64,7 +64,7 @@ type MockOptions = {
 /** Built by `createMocks()` from `tanstack-fetch/mock`; pass it as `createFetch({ mocks })`. */
 type FetchMocks = {
   /** @internal Swaps the client's transports for the mocked ones. */
-  apply: (
+  install: (
     options: CreateFetchOptions,
     progress?: XhrSender,
   ) => { options: CreateFetchOptions; progress?: XhrSender }
