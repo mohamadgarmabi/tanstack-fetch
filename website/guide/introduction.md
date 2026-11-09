@@ -25,13 +25,14 @@ Use the **Framework** picker to show only your stack.
 
 | Import                    | What you get                            | gzip       |
 | ------------------------- | --------------------------------------- | ---------- |
-| `tanstack-fetch`          | HTTP (`get` / `post` / … / `request`)   | **3.68KB** |
-| `tanstack-fetch/sse`      | + `upload()`, shortcuts, `api.sse()`    | **6.43KB** |
+| `tanstack-fetch`          | HTTP (`get` / `post` / … / `request`)   | **3.71KB** |
+| `tanstack-fetch/sse`      | + `upload()`, shortcuts, `api.sse()`    | **6.46KB** |
 | `tanstack-fetch/full`     | Alias of `/sse`                         | same       |
-| `tanstack-fetch/live`     | + `sse` / `ws` / `transport` / `stream` | **8.84KB** |
+| `tanstack-fetch/live`     | + `sse` / `ws` / `transport` / `stream` | **8.88KB** |
 | `tanstack-fetch/plugins`  | plugin factories                        | **1.22KB** |
 | `tanstack-fetch/trpc`     | tRPC link via `createFetch`             | **3.28KB** |
-| `tanstack-fetch/devtools` | request dock                            | **8.70KB** |
+| `tanstack-fetch/devtools` | request dock                            | **8.85KB** |
+| `tanstack-fetch/mock`     | `createMocks()` API mocks               | **1.82KB** |
 
 ```ts
 import { createFetch } from 'tanstack-fetch' // HTTP only

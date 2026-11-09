@@ -12,6 +12,7 @@ const targets = [
   'vue.js',
   'trpc.js',
   'devtools.js',
+  'mock.js',
   'cli.js',
 ]
 
@@ -35,3 +36,4 @@ console.log('  tanstack-fetch/react     → react.js')
 console.log('  tanstack-fetch/vue       → vue.js')
 console.log('  tanstack-fetch/trpc      → trpc.js')
 console.log('  tanstack-fetch/devtools  → devtools.js')
+console.log('  tanstack-fetch/mock      → mock.js')

@@ -248,6 +248,7 @@ const mountDevtools = (options: MountDevtoolsOptions) => {
     summary.innerHTML = `
       <span><strong>${entry.method}</strong> ${entry.path}</span>
       ${caller}
+      ${entry.mock ? `<span class="tf-dt-mock-badge" title="Answered by a mocks route">mock · ${entry.mock}</span>` : ''}
       <span>${entry.status}${entry.httpStatus != null ? ` · ${entry.httpStatus}` : ''}</span>
       <span>${entry.timingMs != null ? `${Math.round(entry.timingMs)} ms` : '—'}</span>
       <span>${formatBytes(entry.requestBytes)} → ${formatBytes(entry.responseBytes)}</span>
@@ -291,7 +292,7 @@ const mountDevtools = (options: MountDevtoolsOptions) => {
       const pill = isLive ? 'live' : entry.status
       row.innerHTML = `
         <span class="tf-dt-method">${entry.method}</span>
-        <span class="tf-dt-path" title="${entry.url}">${entry.path}${sseHint}</span>
+        <span class="tf-dt-path" title="${entry.url}">${entry.mock ? '<span class="tf-dt-pill mock" title="Mocked">mock</span> ' : ''}${entry.path}${sseHint}</span>
         <span class="tf-dt-caller" title="Called from">${caller}</span>
         <span class="tf-dt-pill ${pill}">${pill}</span>
         <span class="tf-dt-meta">${entry.timingMs != null ? `${Math.round(entry.timingMs)}ms` : '—'}</span>

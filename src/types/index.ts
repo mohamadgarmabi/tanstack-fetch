@@ -81,6 +81,15 @@ import type {
   RefreshTokenBeforeConfig,
   RefreshTokenConfig,
 } from './refresh-token.type'
+import type {
+  FetchMocks,
+  MockHttpRoute,
+  MockOptions,
+  MockRequest,
+  MockRoute,
+  MockWsConnection,
+  MockWsRoute,
+} from './mock.type'
 
 export type {
   CreateFetchOptions,
@@ -151,4 +160,11 @@ export type {
   RefreshTokenAfterConfig,
   RefreshTokenBeforeConfig,
   RefreshTokenConfig,
+  FetchMocks,
+  MockHttpRoute,
+  MockOptions,
+  MockRequest,
+  MockRoute,
+  MockWsConnection,
+  MockWsRoute,
 }

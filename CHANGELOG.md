@@ -1,5 +1,24 @@
 # Changelog
 
+## 2.2.0
+
+### Added
+
+- **`tanstack-fetch/mock`** (1.82KB gzip, new entry): `createFetch({ mocks: createMocks({ routes }) })` answers requests from local handlers instead of the network, for HTTP, `upload()`, `api.sse()`, `api.stream()` (NDJSON), `api.ws()` and `createTRPCFetch`. Works on every entry, including the slim core; apps that never import it ship none of the mock code
+  - `enabled` in `createMocks()` switches every mock; `enabled: false` on a route switches one (read per request, so it can change at runtime)
+  - `path` is relative to `baseUrl` with `:id` / `{id}` params; first match wins; unmatched requests go to the real transport
+  - HTTP handlers return data (JSON 200), a `Response` (as-is) or `undefined` (204); async generators stream as SSE (`sse: true`) or NDJSON
+  - WebSocket routes (`ws: true`) get `send` / `close` / `onMessage` and may return a cleanup function
+  - `delayMs` in `createMocks()` or per route simulates latency
+  - Interceptors (auth, status handlers, retries, DevTools) still run for mocked requests
+  - DevTools tags mocked requests with a **MOCK** badge and the matched route (`DevtoolsEntry.mock`); mocked HTTP / SSE / NDJSON responses carry an `x-tanstack-fetch-mock` header
+  - New types: `FetchMocks`, `MockOptions`, `MockRoute`, `MockHttpRoute`, `MockWsRoute`, `MockRequest`, `MockWsConnection`
+- **Docs**: [Mocking API routes](https://mohamadgarmabi.github.io/tanstack-fetch/guide/mocking) guide and [Mock your API: HTTP, SSE and WebSocket](https://mohamadgarmabi.github.io/tanstack-fetch/blog/mock-api-http-sse-websocket-tanstack-fetch) tutorial
+
+### Changed
+
+- Entry sizes (gzip): core 3.71KB (was 3.68KB), `/sse` 6.46KB (was 6.43KB), `/live` 8.88KB (was 8.84KB), `/devtools` 8.85KB (was 8.70KB)
+
 ## 2.1.0
 
 ### Fixed

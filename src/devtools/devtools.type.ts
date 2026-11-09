@@ -74,6 +74,8 @@ type DevtoolsEntry = {
   callStack: DevtoolsCallSite[]
   /** Where the API was called from — e.g. `profile.hook.ts`. */
   callerFile?: string
+  /** Route path when a `mocks` route answered instead of the network. */
+  mock?: string
 }
 
 type CreateDevtoolsOptions = {

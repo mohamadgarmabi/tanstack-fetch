@@ -29,7 +29,7 @@ No wrapping `if (!res.ok)` — success returns data, failure throws `FetchError`
 
 ## Tiny by default
 
-Import only what you need. The HTTP core is **3.68KB gzip**. SSE, WebSocket / WebTransport / NDJSON (`tanstack-fetch/live`), React, Vue, plugins, and tRPC are separate entries.
+Import only what you need. The HTTP core is **3.71KB gzip**. SSE, WebSocket / WebTransport / NDJSON (`tanstack-fetch/live`), React, Vue, plugins, and tRPC are separate entries.
 
 ## Realtime on the same client
 

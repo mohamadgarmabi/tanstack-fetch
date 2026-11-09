@@ -1,6 +1,6 @@
-# tanstack-fetch v2.1.0
+# tanstack-fetch v2.2.0
 
-> Typed Fetch client designed for TanStack Query. Return data, throw `FetchError`, honor `AbortSignal`. TanStack Start, React, Remix, Vue/Nuxt, Solid, SolidStart, Angular, Svelte/SvelteKit. SSR, SSE, WebSocket, WebTransport, NDJSON streams, upload, tRPC, DevTools.
+> Typed Fetch client designed for TanStack Query. Return data, throw `FetchError`, honor `AbortSignal`. TanStack Start, React, Remix, Vue/Nuxt, Solid, SolidStart, Angular, Svelte/SvelteKit. SSR, SSE, WebSocket, WebTransport, NDJSON streams, upload, tRPC, DevTools, API mocks.
 
 Docs: https://mohamadgarmabi.github.io/tanstack-fetch/docs/
 Repo: https://github.com/mohamadgarmabi/tanstack-fetch
@@ -9,10 +9,13 @@ Changelog: https://github.com/mohamadgarmabi/tanstack-fetch/blob/main/CHANGELOG.
 Sitemap: https://mohamadgarmabi.github.io/tanstack-fetch/sitemap-pages.xml
 Sitemap: https://mohamadgarmabi.github.io/tanstack-fetch/sitemap.xml
 Robots: https://mohamadgarmabi.github.io/tanstack-fetch/robots.txt
+Blog feed: https://mohamadgarmabi.github.io/tanstack-fetch/feed.xml
 
 Not an official TanStack package.
 
 ## Version
+
+**2.2.0** — new `tanstack-fetch/mock` entry (1.82KB gzip): `createFetch({ mocks: createMocks({ enabled, delayMs, routes }) })` answers HTTP, `upload()`, SSE (`sse: true` + async generator), NDJSON (`api.stream`, async generator), WebSocket (`ws: true`, `send` / `close` / `onMessage`) and `createTRPCFetch` routes locally. Works on every entry including the slim core. `enabled: false` per route (read per request) or for all mocks; unmatched requests hit the real API; interceptors still run; DevTools shows a MOCK badge (`entry.mock`). Apps that never import it ship none of the code; load it with a dynamic import behind an env flag to keep fixtures out of production (/guide/mocking, /blog/mock-api-http-sse-websocket-tanstack-fetch).
 
 **2.1.0** — fixes: aborting `signal` during a retry delay rejects immediately; `:name` is a path param only at the start of a segment (`/models/gemini:generateContent` works, runtime + types); refresh-token: a late 401 after another refresh retries with the new token instead of refreshing again, and a 401 after an earlier retry (e.g. 502) still refreshes; `ReadableStream` bodies are never retried. Added: array query values (`{ ids: [1, 2] }` → `?ids=1&ids=2`), `parseAs: 'arrayBuffer' | 'stream'`, `tanstack-fetch/full` (alias of `/sse`), `.d.cts` types for CJS, `meta.state` (per-call object shared across retries). Timeouts / aborts reject with `TimeoutError` / `AbortError`, not `FetchError` — check with `isAbortError` (/blog/tanstack-fetch-2-1-0).
 
@@ -72,18 +75,19 @@ useQuery({
 
 | Import | Role | gzip |
 | --- | --- | ---: |
-| `tanstack-fetch` | Slim HTTP; auth / status / plugins via `interceptors` | 3.68KB |
-| `tanstack-fetch/sse` | Full HTTP (option shortcuts, `upload`) + `api.sse()` | 6.43KB |
+| `tanstack-fetch` | Slim HTTP; auth / status / plugins via `interceptors` | 3.71KB |
+| `tanstack-fetch/sse` | Full HTTP (option shortcuts, `upload`) + `api.sse()` | 6.46KB |
 | `tanstack-fetch/full` | Alias of `/sse` | same |
-| `tanstack-fetch/live` | Full HTTP + `api.sse()` / `ws()` / `transport()` / `stream()` | 8.84KB |
+| `tanstack-fetch/live` | Full HTTP + `api.sse()` / `ws()` / `transport()` / `stream()` | 8.88KB |
 | `tanstack-fetch/plugins` | interceptor factories | 1.22KB |
 | `tanstack-fetch/react` | `FetchProvider` / `useFetch` / `useSse` | 0.99KB |
 | `tanstack-fetch/vue` | `createFetchPlugin` / `useFetch` / `useSse` | 0.94KB |
 | `tanstack-fetch/solid` | `FetchProvider` / `useFetch` / `useSse` | — |
 | `tanstack-fetch/svelte` | `setFetchClient` / `useFetch` / `useSse` | — |
 | `tanstack-fetch/angular` | `provideFetchClient` / `injectFetch` / `useSse` | — |
-| `tanstack-fetch/trpc` | tRPC link via `createFetch` | 3.28KB |
-| `tanstack-fetch/devtools` | `setupDevtools(api)` | 8.70KB |
+| `tanstack-fetch/trpc` | tRPC link via `createFetch` | 3.31KB |
+| `tanstack-fetch/devtools` | `setupDevtools(api)` | 8.85KB |
+| `tanstack-fetch/mock` | `createMocks({ routes })` | 1.82KB |
 
 ```ts
 import { createFetch } from 'tanstack-fetch' // HTTP only
@@ -221,6 +225,27 @@ await api.get('/files/report.pdf', {
 })
 ```
 
+## Mocks
+
+```ts
+import { createMocks } from 'tanstack-fetch/mock'
+
+const api = createFetch({
+  baseUrl,
+  mocks: createMocks({
+    enabled: import.meta.env.VITE_USE_API_MOCK !== 'false',
+    routes: [
+      { path: '/users/:id', handler: ({ params }) => ({ id: params.id }) }, // JSON 200
+      { method: 'POST', path: '/login', handler: () => new Response('{}', { status: 401 }) },
+      { path: '/ticks', sse: true, handler: async function* () { yield { price: 1 } } },
+      { ws: true, path: '/rooms/:id', handler: (conn) => conn.onMessage((m) => conn.send(m)) },
+    ],
+  }),
+})
+```
+
+Scope: mocks cover requests made by this client only (not other HTTP libraries); for app-wide network interception use MSW.
+
 ## tRPC
 
 ```ts
@@ -246,6 +271,7 @@ const trpcClient = createTRPCFetchClient<AppRouter>({ url: '/api/trpc', client: 
 - SSR: /guide/ssr
 - SSE: /guide/sse
 - Upload: /guide/upload
+- Mocking (HTTP, SSE, NDJSON, WebSocket, tRPC): /guide/mocking
 - tRPC (Start / SolidStart / Remix): /guide/trpc
 - tRPC recipe: /recipes/trpc
 - OpenAPI CLI: /guide/openapi
@@ -256,6 +282,8 @@ const trpcClient = createTRPCFetchClient<AppRouter>({ url: '/api/trpc', client: 
 - Blog: /blog/ (filter with ?category=tutorials|frameworks|releases and ?tags=)
 - Tutorial: TanStack Pacer + Query + tanstack-fetch (debounce, throttle, rate-limit, queue, batch): /blog/tanstack-pacer-tanstack-query-tanstack-fetch
 - WebSocket / WebTransport / NDJSON: /guide/websocket
+- Tutorial: mock your API (HTTP, SSE, WebSocket) before the backend ships: /blog/mock-api-http-sse-websocket-tanstack-fetch
+- Release 2.2.0 (API mocks): /guide/mocking
 - Release 2.1.0 (abortable retries · safer refresh · array query): /blog/tanstack-fetch-2-1-0
 - Release 2.0.0 (3.57KB core · typed live params): /blog/tanstack-fetch-2-0-0
 - Release 1.8.0 (WebSocket · WebTransport · NDJSON): /blog/tanstack-fetch-1-8-0

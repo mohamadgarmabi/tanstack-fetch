@@ -26,9 +26,11 @@ const createFetchContext = (
   features: HttpInterceptor[] = [],
   progress?: XhrSender,
 ): FetchContext => {
-  const clientOptions: CreateFetchOptions = { ...options }
+  // `mocks` (from tanstack-fetch/mock) swaps fetch / createWebSocket / progress; code stays in that entry.
+  const mocked = options.mocks?.apply(options, progress) ?? { options, progress }
+  const clientOptions: CreateFetchOptions = { ...mocked.options }
   const interceptors = [...features, ...(clientOptions.interceptors ?? [])]
-  return { clientOptions, interceptors, progress }
+  return { clientOptions, interceptors, progress: mocked.progress }
 }
 
 const createHttpClient = (context: FetchContext): CoreFetchClient => {

@@ -1,6 +1,5 @@
 import type {
   CreateFetchOptions,
-  CreateWebSocket,
   FetchErrorInfo,
   FetchResult,
   HttpInterceptor,
@@ -12,6 +11,7 @@ import type {
 import { createFetchError } from './fetch-error'
 import { resolveInterceptors, runHook } from './interceptors/run-interceptors'
 import { createSseContext } from './sse-context'
+import { defaultCreateWebSocket } from './utils/default-websocket'
 import { createLiveId } from './utils/live-id'
 import { toFetchErrorInfo } from './utils/result'
 import { defaultCreateWebTransport, webTransportAsSocket } from './webtransport'
@@ -22,12 +22,6 @@ type WsBase = {
 }
 
 const MAX_RECONNECT_DELAY_MS = 30_000
-
-const defaultCreateWebSocket: CreateWebSocket = (url, { protocols, headers }) =>
-  Object.keys(headers).length > 0
-    ? // Non-standard init accepted by Node 22+ (undici), Bun and Deno.
-      new WebSocket(url, { protocols, headers } as never)
-    : new WebSocket(url, protocols)
 
 /** Browser windows and workers cannot set WebSocket headers. */
 const isBrowserLike = () =>
@@ -191,6 +185,7 @@ const openWs = <TMessage, TSend>(
         headers,
       })
       socket = next
+      context.meta.mock = (next as { mock?: string }).mock
       live = context
       liveClosed = false
       next.onopen = (event) => {

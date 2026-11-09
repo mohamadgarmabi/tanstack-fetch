@@ -190,3 +190,7 @@ export const api = createFetch({
 ```
 
 Per-connection options (`authIn`, `reconnect`, `protocols`, `transport`, `webTransport`) are in [WebSocket, WebTransport & streams](./websocket#options).
+
+## Mocks
+
+`mocks: createMocks({ routes })` (from `tanstack-fetch/mock`) answers HTTP, SSE, NDJSON and WebSocket requests from local handlers, with an on/off switch for all mocks and for each route. See [Mocking API routes](./mocking).

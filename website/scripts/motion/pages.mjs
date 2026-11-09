@@ -57,6 +57,15 @@ const PAGES = [
   ['guide/migrate/checklist.md', 'Guide · Migrate', 'Migration', 'checklist', ['pre-flight', 'CLI rewrites', 'signal', 'verify'], A.olive],
   ['guide/openapi.md', 'Guide · CLI', 'OpenAPI', 'typed client', ['generate', '--spec', '--out'], A.amber],
   ['guide/skill.md', 'Guide · Agents', 'Agent', 'skill', ['Cursor', 'Agent Skills', 'createFetch patterns'], A.olive],
+  ['guide/mocking.md', 'Guide · Testing', 'Mock', 'your API', ['HTTP', 'SSE', 'NDJSON', 'WebSocket'], A.olive, [
+    "import { createMocks } from 'tanstack-fetch/mock'",
+    '',
+    'mocks: createMocks({ routes: [',
+    "  { path: '/market', handler: () => data },",
+    "  { path: '/ticks', sse: true, handler: ticks },",
+    "  { ws: true, path: '/rooms/:id', handler: chat },",
+    '] }),',
+  ]],
   ['recipes/eventsource-auth-headers.md', 'Recipe', 'EventSource', 'auth headers', ['Authorization', 'tanstack-fetch/sse', 'reconnect'], A.amber],
   ['recipes/rate-limit.md', 'Recipe', 'Rate limit', 'HTTP 429', ['onTooManyRequests', 'parseRetryAfter'], A.amber],
   ['recipes/sse-resume.md', 'Recipe', 'SSE', 'resume', ['Last-Event-ID', 'sse-resume plugin'], A.olive],
@@ -84,6 +93,15 @@ const PAGES = [
   ['blog/sveltekit-fetch-tanstack-fetch.md', 'Blog · Framework guide', 'SvelteKit fetch', 'vs tanstack-fetch', ['setFetchClient', 'stores', 'load()'], A.svelte],
   ['blog/tanstack-start-router-tanstack-fetch.md', 'Blog · TanStack', 'Start & Router', '+ tanstack-fetch', ['queryOptions', 'ensureQueryData', 'router context'], A.amber],
   ['blog/tanstack-start-1-0-tanstack-fetch-6-real-world-patterns.md', 'Blog · TanStack', 'TanStack Start 1.0', '6 real-world patterns', ['loaders', 'SSR auth', 'mutations', 'SSE'], A.amber],
+  ['blog/mock-api-http-sse-websocket-tanstack-fetch.md', 'Blog · Tutorial', 'Mock your API', 'HTTP · SSE · WS', ['REST', 'live feed', 'NDJSON', 'chat'], A.olive, [
+    'async function* ticks() {',
+    "  yield { symbol: 'BTC', price: 67250 }",
+    '}',
+    '',
+    "{ path: '/market/ticks', sse: true, handler: ticks }",
+    "{ ws: true, path: '/rooms/:room', handler: chat }",
+    "{ path: '/orders', enabled: false, handler }",
+  ]],
   ['blog/tanstack-pacer-tanstack-query-tanstack-fetch.md', 'Blog · TanStack', 'TanStack Pacer', '+ Query + fetch', ['debounce', 'throttle', 'rate-limit', 'batch'], A.olive],
 ]
 

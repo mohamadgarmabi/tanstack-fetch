@@ -29,6 +29,7 @@ import type {
   WsSocket,
 } from './ws.type'
 import type { DownloadProgressHandler, UploadOptions, UploadProgressHandler } from './upload.type'
+import type { FetchMocks } from './mock.type'
 
 type RequestInterceptorConfig = {
   use?: HttpInterceptor[]
@@ -66,6 +67,8 @@ type CreateFetchOptions = {
   createWebTransport?: CreateWebTransport
   credentials?: RequestCredentials
   maxRetries?: number
+  /** Mock HTTP, SSE, NDJSON and WebSocket routes: `createMocks({ routes })` from `tanstack-fetch/mock`. */
+  mocks?: FetchMocks
 
   /** Simple auth: attach Bearer token on every request. */
   getToken?: () => MaybePromise<string | null | undefined>
@@ -256,6 +259,7 @@ type CoreFetchOptions = Pick<
   | 'fetch'
   | 'credentials'
   | 'maxRetries'
+  | 'mocks'
 >
 
 /** Client from the slim `tanstack-fetch` core: no `upload()` or progress events (use `tanstack-fetch/sse`). */

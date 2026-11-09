@@ -23,7 +23,7 @@ SSR · SSE · React · Vue/Nuxt · Solid · Angular · Svelte · tRPC · DevTool
 
 **→ [mohamadgarmabi.github.io/tanstack-fetch](https://mohamadgarmabi.github.io/tanstack-fetch/)**
 
-Guides, API, playground, Vue/Nuxt, SSR, SSE, upload, tRPC, DevTools, and comparison live on the site.
+Guides, API, playground, Vue/Nuxt, SSR, SSE, upload, tRPC, DevTools, [API mocking](https://mohamadgarmabi.github.io/tanstack-fetch/guide/mocking), and comparison live on the site.
 
 ## Install
 
@@ -49,10 +49,10 @@ useQuery({
 
 | Import                    | Use                                                      |       gzip |
 | ------------------------- | -------------------------------------------------------- | ---------: |
-| `tanstack-fetch`          | Slim HTTP (add features via `interceptors`)              | **3.68KB** |
-| `tanstack-fetch/sse`      | Full HTTP (shortcuts, `upload()`) + `api.sse()`          | **6.43KB** |
+| `tanstack-fetch`          | Slim HTTP (add features via `interceptors`)              | **3.71KB** |
+| `tanstack-fetch/sse`      | Full HTTP (shortcuts, `upload()`) + `api.sse()`          | **6.46KB** |
 | `tanstack-fetch/full`     | Alias of `/sse` for when you only need the full HTTP API |       same |
-| `tanstack-fetch/live`     | HTTP + `api.sse()` / `ws()` / `transport()` / `stream()` | **8.84KB** |
+| `tanstack-fetch/live`     | HTTP + `api.sse()` / `ws()` / `transport()` / `stream()` | **8.88KB** |
 | `tanstack-fetch/plugins`  | Interceptor factories                                    | **1.22KB** |
 | `tanstack-fetch/react`    | `FetchProvider`, `useFetch`, `useSse`, `useWs`           | **0.99KB** |
 | `tanstack-fetch/vue`      | `createFetchPlugin`, `useFetch`, `useSse`, `useWs`       | **0.94KB** |
@@ -60,7 +60,8 @@ useQuery({
 | `tanstack-fetch/svelte`   | `setFetchClient`, `useFetch`, `useSse`, `useWs`          |   optional |
 | `tanstack-fetch/angular`  | `provideFetchClient`, `injectFetch`, `useSse`, `useWs`   |   optional |
 | `tanstack-fetch/trpc`     | tRPC link                                                | **3.28KB** |
-| `tanstack-fetch/devtools` | Request dock                                             | **8.70KB** |
+| `tanstack-fetch/devtools` | Request dock                                             | **8.85KB** |
+| `tanstack-fetch/mock`     | `createMocks()` for HTTP / SSE / NDJSON / WS mocks       | **1.82KB** |
 
 Minified ESM, `gzip` measured locally after `npm run build` (`npm run size`).
 

@@ -1,6 +1,6 @@
 ---
 title: DevTools preview
-description: Live tanstack-fetch DevTools — HTTP, SSE, SSR, tRPC, WebSocket, WebTransport and NDJSON streams with message logs, call graph, one-line setup.
+description: Live tanstack-fetch DevTools — HTTP, SSE, SSR, tRPC, WebSocket, WebTransport and NDJSON streams with message logs, call graph, mocked-request badges, one-line setup.
 ---
 
 # DevTools
@@ -67,6 +67,19 @@ for await (const chunk of api.stream('/chat', { body })) render(chunk) // → St
 ```
 
 The same events are public interceptor hooks (`onLiveOpen`, `onLiveMessage`, `onLiveClose`) if you want your own logging.
+
+### Mocked requests
+
+Requests answered by [`mocks`](/guide/mocking) show a **MOCK** badge in the list, and the detail view names the route that answered (`mock · /market/ticks`). Requests with no matching route stay unbadged, so you can see which calls already hit the real API. The route path is also on the entry as `entry.mock`.
+
+```ts
+const api = createFetch({
+  baseUrl,
+  plugins: ['trace'],
+  mocks: createMocks({ routes: [{ path: '/market/overview', handler: () => ({ btc: 67250 }) }] }),
+})
+setupDevtools(api) // GET /market/overview → MOCK badge
+```
 
 ### Advanced (share one store across clients)
 

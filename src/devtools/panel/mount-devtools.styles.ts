@@ -147,6 +147,7 @@ const CSS = `
 .tf-dt-pill.live { background: rgba(61,214,140,.18); color: var(--tf-dt-ok); }
 .tf-dt-pill.success { background: rgba(61,214,140,.15); color: var(--tf-dt-ok); }
 .tf-dt-pill.error, .tf-dt-pill.aborted { background: rgba(240,113,120,.15); color: var(--tf-dt-err); }
+.tf-dt-pill.mock { background: rgba(255,179,71,.16); color: #ffb347; }
 .tf-dt-detail {
   overflow: auto;
   padding: 10px 12px;
@@ -168,6 +169,10 @@ const CSS = `
   color: var(--tf-dt-muted);
 }
 .tf-dt-summary strong { color: var(--tf-dt-text); font-weight: 600; }
+.tf-dt-summary .tf-dt-mock-badge {
+  color: #ffb347;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+}
 .tf-dt-summary .tf-dt-caller-badge {
   color: #c4b5fd;
   font-family: ui-monospace, SFMono-Regular, Menlo, monospace;

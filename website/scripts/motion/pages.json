@@ -88,7 +88,7 @@
     "id": "page-docs-index",
     "md": "docs/index.md",
     "cover": "/images/page-docs-index.jpg",
-    "alt": "tanstack-fetch Documentation — Typed Fetch Client API Reference",
+    "alt": "tanstack-fetch docs — guides and API reference",
     "kicker": "Documentation",
     "h1": "tanstack-fetch",
     "h2": "docs",
@@ -357,6 +357,35 @@
         "    '*/.agents/skills/tanstack-fetch'",
         "",
         "cp -R path/to/tanstack-fetch/.agents/skills/tanst…"
+      ]
+    }
+  },
+  {
+    "id": "page-guide-mocking",
+    "md": "guide/mocking.md",
+    "cover": "/images/page-guide-mocking.jpg",
+    "alt": "Mocking API routes",
+    "kicker": "Guide · Testing",
+    "h1": "Mock",
+    "h2": "your API",
+    "chips": [
+      "HTTP",
+      "SSE",
+      "NDJSON",
+      "WebSocket"
+    ],
+    "accent": "#a5b84a",
+    "desc": "Mock HTTP, SSE, NDJSON streams, WebSocket, upload and tRPC routes with createMocks from tanstack-fetch/mock. Each route can be turned on or…",
+    "code": {
+      "lang": "ts",
+      "lines": [
+        "import { createMocks } from 'tanstack-fetch/mock'",
+        "",
+        "mocks: createMocks({ routes: [",
+        "  { path: '/market', handler: () => data },",
+        "  { path: '/ticks', sse: true, handler: ticks },",
+        "  { ws: true, path: '/rooms/:id', handler: chat },",
+        "] }),"
       ]
     }
   },
@@ -651,7 +680,7 @@
       "SSE events"
     ],
     "accent": "#a5b84a",
-    "desc": "Live tanstack-fetch DevTools — HTTP, SSE, SSR, tRPC, WebSocket, WebTransport and NDJSON streams with message logs, call graph, one-line…",
+    "desc": "Live tanstack-fetch DevTools — HTTP, SSE, SSR, tRPC, WebSocket, WebTransport and NDJSON streams with message logs, call graph,…",
     "code": {
       "lang": "ts",
       "lines": [
@@ -694,7 +723,7 @@
     "id": "blog-react-axios-tanstack-fetch-cover",
     "md": "blog/react-axios-tanstack-fetch.md",
     "cover": "/images/blog-react-axios-tanstack-fetch-cover.jpg",
-    "alt": "React axios vs tanstack-fetch: typed fetch for TanStack Query",
+    "alt": "React axios vs tanstack-fetch for TanStack Query",
     "kicker": "Blog · Framework guide",
     "h1": "React axios",
     "h2": "vs tanstack-fetch",
@@ -722,7 +751,7 @@
     "id": "blog-vue-ofetch-tanstack-fetch-cover",
     "md": "blog/vue-ofetch-tanstack-fetch.md",
     "cover": "/images/blog-vue-ofetch-tanstack-fetch-cover.jpg",
-    "alt": "Vue ofetch / axios vs tanstack-fetch: typed fetch for Vue Query",
+    "alt": "Vue ofetch / axios vs tanstack-fetch for Vue Query",
     "kicker": "Blog · Framework guide",
     "h1": "Vue ofetch / axios",
     "h2": "vs tanstack-fetch",
@@ -750,7 +779,7 @@
     "id": "blog-nextjs-fetch-tanstack-fetch-cover",
     "md": "blog/nextjs-fetch-tanstack-fetch.md",
     "cover": "/images/blog-nextjs-fetch-tanstack-fetch-cover.jpg",
-    "alt": "Next.js fetch vs tanstack-fetch: SSR cookies, Query hydrate, App Router",
+    "alt": "Next.js fetch vs tanstack-fetch: SSR cookies and hydration",
     "kicker": "Blog · Framework guide",
     "h1": "Next.js fetch",
     "h2": "vs tanstack-fetch",
@@ -778,7 +807,7 @@
     "id": "blog-nuxt-ofetch-tanstack-fetch-cover",
     "md": "blog/nuxt-ofetch-tanstack-fetch.md",
     "cover": "/images/blog-nuxt-ofetch-tanstack-fetch-cover.jpg",
-    "alt": "Nuxt $fetch / ofetch vs tanstack-fetch: SSR cookies and Vue Query",
+    "alt": "Nuxt $fetch / ofetch vs tanstack-fetch: SSR and Vue Query",
     "kicker": "Blog · Framework guide",
     "h1": "Nuxt $fetch",
     "h2": "vs tanstack-fetch",
@@ -806,7 +835,7 @@
     "id": "blog-solid-fetch-tanstack-fetch-cover",
     "md": "blog/solid-fetch-tanstack-fetch.md",
     "cover": "/images/blog-solid-fetch-tanstack-fetch-cover.jpg",
-    "alt": "Solid fetch / axios vs tanstack-fetch: Solid Query adapters",
+    "alt": "Solid fetch / axios vs tanstack-fetch for Solid Query",
     "kicker": "Blog · Framework guide",
     "h1": "Solid fetch",
     "h2": "vs tanstack-fetch",
@@ -834,7 +863,7 @@
     "id": "blog-angular-http-client-tanstack-fetch-cover",
     "md": "blog/angular-http-client-tanstack-fetch.md",
     "cover": "/images/blog-angular-http-client-tanstack-fetch-cover.jpg",
-    "alt": "Angular HttpClient vs tanstack-fetch: typed fetch for TanStack Angular Query",
+    "alt": "Angular HttpClient vs tanstack-fetch for TanStack Query",
     "kicker": "Blog · Framework guide",
     "h1": "Angular HttpClient",
     "h2": "vs tanstack-fetch",
@@ -862,7 +891,7 @@
     "id": "blog-sveltekit-fetch-tanstack-fetch-cover",
     "md": "blog/sveltekit-fetch-tanstack-fetch.md",
     "cover": "/images/blog-sveltekit-fetch-tanstack-fetch-cover.jpg",
-    "alt": "Svelte / SvelteKit fetch vs tanstack-fetch: stores, SSR, Query",
+    "alt": "SvelteKit fetch vs tanstack-fetch: stores, SSR, Query",
     "kicker": "Blog · Framework guide",
     "h1": "SvelteKit fetch",
     "h2": "vs tanstack-fetch",
@@ -888,7 +917,7 @@
     "id": "blog-tanstack-start-router-tanstack-fetch-cover",
     "md": "blog/tanstack-start-router-tanstack-fetch.md",
     "cover": "/images/blog-tanstack-start-router-tanstack-fetch-cover.jpg",
-    "alt": "TanStack Start / Router + tanstack-fetch: Query on router context",
+    "alt": "TanStack Router + tanstack-fetch: Query on router context",
     "kicker": "Blog · TanStack",
     "h1": "Start & Router",
     "h2": "+ tanstack-fetch",
@@ -916,7 +945,7 @@
     "id": "blog-tanstack-start-1-0-tanstack-fetch-6-real-world-patterns-cover",
     "md": "blog/tanstack-start-1-0-tanstack-fetch-6-real-world-patterns.md",
     "cover": "/images/blog-tanstack-start-1-0-tanstack-fetch-6-real-world-patterns-cover.jpg",
-    "alt": "TanStack Start 1.0 + tanstack-fetch: 6 Real-World Data Fetching Patterns",
+    "alt": "TanStack Start + tanstack-fetch: 6 data fetching patterns",
     "kicker": "Blog · TanStack",
     "h1": "TanStack Start 1.0",
     "h2": "6 real-world patterns",
@@ -940,10 +969,39 @@
     }
   },
   {
+    "id": "blog-mock-api-http-sse-websocket-tanstack-fetch-cover",
+    "md": "blog/mock-api-http-sse-websocket-tanstack-fetch.md",
+    "cover": "/images/blog-mock-api-http-sse-websocket-tanstack-fetch-cover.jpg",
+    "alt": "Mock your API in the client: HTTP, SSE and WebSocket with tanstack-fetch",
+    "kicker": "Blog · Tutorial",
+    "h1": "Mock your API",
+    "h2": "HTTP · SSE · WS",
+    "chips": [
+      "REST",
+      "live feed",
+      "NDJSON",
+      "chat"
+    ],
+    "accent": "#a5b84a",
+    "desc": "Build a frontend before the backend is ready. Step by step, mock a REST endpoint, a live SSE price feed, a streaming NDJSON chat and a…",
+    "code": {
+      "lang": "ts",
+      "lines": [
+        "async function* ticks() {",
+        "  yield { symbol: 'BTC', price: 67250 }",
+        "}",
+        "",
+        "{ path: '/market/ticks', sse: true, handler: ticks }",
+        "{ ws: true, path: '/rooms/:room', handler: chat }",
+        "{ path: '/orders', enabled: false, handler }"
+      ]
+    }
+  },
+  {
     "id": "blog-tanstack-pacer-tanstack-query-tanstack-fetch-cover",
     "md": "blog/tanstack-pacer-tanstack-query-tanstack-fetch.md",
     "cover": "/images/blog-tanstack-pacer-tanstack-query-tanstack-fetch-cover.jpg",
-    "alt": "TanStack Pacer + TanStack Query: debounce, throttle, rate-limit, queue and batch your API calls",
+    "alt": "TanStack Pacer + Query: debounce, throttle, batch API calls",
     "kicker": "Blog · TanStack",
     "h1": "TanStack Pacer",
     "h2": "+ Query + fetch",

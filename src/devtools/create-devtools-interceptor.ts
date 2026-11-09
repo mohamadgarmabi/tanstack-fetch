@@ -1,4 +1,5 @@
 import type { HttpInterceptor, LiveMessageContext, RequestContext, SseEventContext } from '../types'
+import { MOCK_HEADER } from '../constants'
 import { captureCallStack, resolveCallerLabel } from './capture-call-stack'
 import { estimateSize } from './estimate-size'
 import { headersToRecord, parsePathParams, parseQuery } from './parse-url-parts'
@@ -60,6 +61,9 @@ const responseByteSize = (context: RequestContext): number => {
   }
   return estimateSize(context.data ?? context.error)
 }
+
+const mockRoute = (context: RequestContext) =>
+  context.meta.mock ?? context.response?.headers.get(MOCK_HEADER) ?? undefined
 
 const emptySse = (partial?: Partial<DevtoolsSseInfo>): DevtoolsSseInfo => ({
   open: false,
@@ -147,6 +151,7 @@ const createDevtoolsInterceptor = (
         ? headersToRecord(context.response.headers, redact)
         : (existing?.responseHeaders ?? {}),
       responseBytes: responseByteSize(context),
+      mock: mockRoute(context) ?? existing?.mock,
       timingMs,
       endedAt: wallClock(),
       attempt: context.meta.attempt,
@@ -203,6 +208,7 @@ const createDevtoolsInterceptor = (
       store.patch(id, {
         status: 'pending',
         httpStatus: context.response?.status ?? 101,
+        mock: mockRoute(context),
         responseHeaders: context.response
           ? headersToRecord(context.response.headers, redact)
           : existing.responseHeaders,
@@ -265,6 +271,7 @@ const createDevtoolsInterceptor = (
         kind,
         status: 'pending',
         httpStatus: context.response?.status ?? 200,
+        mock: mockRoute(context),
         responseHeaders: context.response ? headersToRecord(context.response.headers, redact) : {},
         callStack,
         callerFile: existing?.callerFile ?? resolveCallerLabel(callStack),

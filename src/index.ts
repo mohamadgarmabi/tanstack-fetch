@@ -68,4 +68,11 @@ export type {
   FetchParamsConstraint,
   WithPathParams,
   QueryParams,
+  FetchMocks,
+  MockHttpRoute,
+  MockOptions,
+  MockRequest,
+  MockRoute,
+  MockWsConnection,
+  MockWsRoute,
 } from './types'

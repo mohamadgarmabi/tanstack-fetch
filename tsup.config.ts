@@ -14,6 +14,7 @@ const config = defineConfig([
       angular: 'src/angular/index.ts',
       trpc: 'src/trpc/index.ts',
       devtools: 'src/devtools/index.ts',
+      mock: 'src/mock.ts',
     },
     format: ['esm', 'cjs'],
     dts: true,

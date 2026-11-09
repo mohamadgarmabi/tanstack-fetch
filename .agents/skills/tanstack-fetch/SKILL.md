@@ -10,13 +10,13 @@ license: MIT
 metadata:
   author: Mohammad Garmabi
   package: tanstack-fetch
-  version: '2.1.0'
+  version: '2.2.0'
   docs: https://mohamadgarmabi.github.io/tanstack-fetch/
   npm: https://www.npmjs.com/package/tanstack-fetch
   llm: https://mohamadgarmabi.github.io/tanstack-fetch/llms.txt
 ---
 
-# tanstack-fetch (v2.1.0)
+# tanstack-fetch (v2.2.0)
 
 Typed Fetch client shaped for TanStack Query. Not an official TanStack package.
 
@@ -46,10 +46,10 @@ npm install tanstack-fetch vue
 
 | Import                    | Use when                                               | gzip   |
 | ------------------------- | ------------------------------------------------------ | ------ |
-| `tanstack-fetch`          | Slim HTTP; features via `interceptors` (no `upload`)   | 3.68KB |
-| `tanstack-fetch/sse`      | Full HTTP (shortcuts, `upload`) + `api.sse()`          | 6.43KB |
+| `tanstack-fetch`          | Slim HTTP; features via `interceptors` (no `upload`)   | 3.71KB |
+| `tanstack-fetch/sse`      | Full HTTP (shortcuts, `upload`) + `api.sse()`          | 6.46KB |
 | `tanstack-fetch/full`     | Alias of `/sse`                                        |   same |
-| `tanstack-fetch/live`     | `sse` + `ws` + `transport` + `stream`                  | 8.84KB |
+| `tanstack-fetch/live`     | `sse` + `ws` + `transport` + `stream`                  | 8.88KB |
 | `tanstack-fetch/plugins`  | Factories (`createRefreshTokenInterceptor`, …)         | 1.22KB |
 | `tanstack-fetch/react`    | `FetchProvider`, `useFetch`, `useSse`, `useWs`         | 0.99KB |
 | `tanstack-fetch/vue`      | `createFetchPlugin`, `useFetch`, `useSse`, `useWs`     | 0.94KB |
@@ -57,7 +57,8 @@ npm install tanstack-fetch vue
 | `tanstack-fetch/svelte`   | `setFetchClient`, `useFetch`, `useSse`, `useWs`        | —      |
 | `tanstack-fetch/angular`  | `provideFetchClient`, `injectFetch`, `useSse`, `useWs` | —      |
 | `tanstack-fetch/trpc`     | tRPC link via the same client                          | 3.28KB |
-| `tanstack-fetch/devtools` | `setupDevtools(api)` request dock                      | 8.70KB |
+| `tanstack-fetch/devtools` | `setupDevtools(api)` request dock                      | 8.85KB |
+| `tanstack-fetch/mock`     | `createMocks()` — HTTP / SSE / NDJSON / WS mocks       | 1.82KB |
 
 ```ts
 import { createFetch } from 'tanstack-fetch' // slim HTTP: interceptors only
@@ -272,6 +273,31 @@ Rules:
 - Path params are typed like `api.get`: inferred from the URL without generics, or pass them — `ws` / `transport` / `useWs<Message, Params, Send>`, `sse` / `stream` / `useSse<Message, Params>` (`NoParams` to skip). With only `<Message>` TypeScript loses the path literal, so add `Params` to keep `params` checked.
 - Interceptor hooks: `onLiveOpen`, `onLiveMessage` (`context.message.direction` `'in' | 'out'`), `onLiveClose` (`context.error` on abnormal end); `context.meta.transport` is `'websocket' | 'webtransport' | 'ndjson'`.
 
+## Mocks (2.2.0)
+
+`mocks: createMocks({ … })` (from `tanstack-fetch/mock`, 1.82KB, works on every entry) answers routes locally. Interceptors still run; unmatched requests hit the network. In apps, load the mocks module with a dynamic import behind an env flag so production drops it.
+
+```ts
+import { createMocks } from 'tanstack-fetch/mock'
+
+const api = createFetch({
+  baseUrl,
+  mocks: createMocks({
+    enabled: import.meta.env.VITE_USE_API_MOCK !== 'false', // all mocks
+    delayMs: 300,
+    routes: [
+      { method: 'GET', path: '/users/:id', handler: ({ params }) => ({ id: params.id }) }, // data → JSON 200
+      { method: 'POST', path: '/login', handler: () => new Response('{}', { status: 401 }) }, // Response as-is
+      { path: '/ticks', sse: true, handler: async function* () { yield { price: 1 } } }, // SSE data
+      { method: 'POST', path: '/chat', handler: async function* () { yield { token: 'hi' } } }, // NDJSON
+      { ws: true, path: '/rooms/:id', enabled: false, handler: (conn) => conn.onMessage((m) => conn.send(m)) },
+    ],
+  }),
+})
+```
+
+Guide: https://mohamadgarmabi.github.io/tanstack-fetch/guide/mocking
+
 ## SSR
 
 Use absolute `baseUrl`. Forward cookies with `ssr-forward` (Next.js `cookies()` / Nuxt `useRequestHeaders`).
@@ -368,6 +394,7 @@ const trpcClient = createTRPCFetchClient<AppRouter>({ url: '/api/trpc', client: 
 
 - Entry points & sizes: [references/entry-points.md](references/entry-points.md)
 - WebSocket / WebTransport / NDJSON: https://mohamadgarmabi.github.io/tanstack-fetch/guide/websocket
+- Mocking: https://mohamadgarmabi.github.io/tanstack-fetch/guide/mocking
 - Cookbook (every feature): https://mohamadgarmabi.github.io/tanstack-fetch/examples/cookbook
 - Status handlers map: [references/status-handlers.md](references/status-handlers.md)
 - Vue guide: https://mohamadgarmabi.github.io/tanstack-fetch/guide/vue

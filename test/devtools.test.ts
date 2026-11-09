@@ -10,6 +10,7 @@ import {
   parsePathParams,
   parseQuery,
 } from '../src/devtools'
+import { createMocks } from '../src/mock'
 
 describe('devtools helpers', () => {
   it('estimates JSON and string sizes', () => {
@@ -304,5 +305,46 @@ describe('devtools — live transports', () => {
     expect(entry.sse?.open).toBe(false)
     expect(entry.sse?.events.map((e) => e.data)).toEqual([{ t: 'a' }, { t: 'b' }])
     expect(store.list('http')).toHaveLength(0)
+  })
+})
+
+describe('devtools — mocks', () => {
+  it('tags entries answered by mocks with the route path', async () => {
+    const { createFetch: createLiveFetch } = await import('../src/live')
+    const { store, interceptor } = createDevtools()
+    const api = createLiveFetch({
+      baseUrl: 'https://demo.test',
+      fetch: async () => Response.json({ real: true }),
+      plugins: ['trace'],
+      interceptors: [interceptor],
+      maxRetries: 0,
+      mocks: createMocks({
+        routes: [
+          { path: '/users/:id', handler: ({ params }) => ({ id: params.id }) },
+          { path: '/ticks', sse: true, handler: () => [{ n: 1 }] },
+          { ws: true, path: '/rooms/:id', handler: (connection) => connection.send('hi') },
+        ],
+      }),
+    })
+
+    await api.get('/users/:id', { params: { id: 1 } })
+    await api.get('/real')
+    for await (const event of api.sse('/ticks')) {
+      expect(event.data).toEqual({ n: 1 })
+      break
+    }
+    const messages: unknown[] = []
+    const socket = api.ws('/rooms/:id', {
+      params: { id: 2 },
+      onMessage: (data) => messages.push(data),
+    })
+    await vi.waitFor(() => expect(messages).toEqual(['hi']))
+    socket.close()
+
+    const mockOf = (path: string) => store.list().find((entry) => entry.path === path)?.mock
+    await vi.waitFor(() => expect(mockOf('/rooms/2')).toBe('/rooms/:id'))
+    expect(mockOf('/users/1')).toBe('/users/:id')
+    expect(mockOf('/real')).toBeUndefined()
+    expect(mockOf('/ticks')).toBe('/ticks')
   })
 })

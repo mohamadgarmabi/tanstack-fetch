@@ -23,6 +23,13 @@ const STACKBLITZ_BASE =
 // Newest first. The hero badge shows releases[0]; add the new release here with its blog post.
 const releases: ReleaseItem[] = [
   {
+    version: '2.2.0',
+    title: 'API mocks · HTTP, SSE, WebSocket',
+    text: 'Mock HTTP, SSE, NDJSON, WebSocket, upload and tRPC routes with one mocks option. Turn every mock or a single route on and off.',
+    date: '2026-11-09',
+    href: '/blog/mock-api-http-sse-websocket-tanstack-fetch',
+  },
+  {
     version: '2.1.0',
     title: 'Abortable retries · Safer refresh',
     text: 'Cancel during a retry delay, one refresh per token rotation, literal colons in paths, array query values, parseAs stream.',
@@ -855,6 +862,50 @@ status → connected
     },
   },
   {
+    id: 'mocks',
+    label: 'Mocks',
+    lead: 'Build the frontend before the backend ships. Mock HTTP, SSE and WebSocket routes on the client you already have, then turn each one off as the real API lands.',
+    files: [
+      {
+        name: 'api.ts',
+        code: `import { createFetch } from 'tanstack-fetch/live'
+import { createMocks } from 'tanstack-fetch/mock'
+
+export const api = createFetch({
+  baseUrl: import.meta.env.VITE_API_URL,
+  mocks: createMocks({
+    enabled: import.meta.env.VITE_USE_API_MOCK !== 'false',
+    delayMs: 300,
+    routes: [
+      { path: '/market/overview', handler: () => ({ btc: 67250 }) },
+      {
+        path: '/market/ticks',
+        sse: true,
+        handler: async function* () {
+          for (let price = 67250; ; price += 10) yield { price }
+        },
+      },
+      {
+        ws: true,
+        path: '/rooms/:id',
+        handler: (conn) => conn.onMessage((msg) => conn.send({ echo: msg })),
+      },
+      { method: 'POST', path: '/orders', enabled: false, handler: () => ({}) },
+    ],
+  }),
+})`,
+      },
+    ],
+    output: {
+      name: 'mocked',
+      code: `GET  /market/overview  → mock  { btc: 67250 }
+SSE  /market/ticks     → mock  { price: 67250 } { price: 67260 } …
+WS   /rooms/7          → mock  { echo: { text: 'hi' } }
+POST /orders           → real API (enabled: false)
+GET  /users            → real API (no route)`,
+    },
+  },
+  {
     id: 'upload',
     label: 'Upload',
     lead: 'Send a file with progress. Fetch has no upload progress, so this path uses XHR.',
@@ -973,12 +1024,12 @@ const features: FeatureItem[] = [
     text: 'setupDevtools(api) shows HTTP, SSE, SSR, and tRPC with attempts, timing, and caller file.',
   },
   {
-    title: '3.68KB HTTP core',
+    title: '3.71KB HTTP core',
     text: 'The HTTP entry is the core. SSE, WebSocket, React, Vue, plugins, and tRPC are separate imports.',
   },
   {
     title: 'Plugins',
-    text: 'Named interceptors for retry, trace, and mocks. Eject one on a single call.',
+    text: 'Named interceptors for retry, trace, and SSR forwarding. Eject one on a single call.',
   },
   {
     title: 'SSR forwarding',
@@ -995,6 +1046,10 @@ const features: FeatureItem[] = [
   {
     title: 'WebTransport & NDJSON',
     text: 'api.transport for HTTP/3 datagrams, api.stream for line-by-line JSON that plugs into streamedQuery.',
+  },
+  {
+    title: 'API mocks',
+    text: 'createMocks({ routes }) answers HTTP, SSE, NDJSON and WebSocket locally. Its own 1.82KB entry; interceptors still run.',
   },
   {
     title: 'Upload progress',
@@ -1023,21 +1078,21 @@ const packages: PackageItem[] = [
     title: 'HTTP core',
     spec: 'tanstack-fetch',
     text: 'get, post, put, patch, delete, and upload — also Solid, Angular, Svelte, SvelteKit.',
-    tags: ['3.68KB'],
+    tags: ['3.71KB'],
     href: '/api/create-fetch',
   },
   {
     title: 'Server-sent events',
     spec: 'tanstack-fetch/sse',
     text: 'fetch-based streams with resume and Authorization.',
-    tags: ['6.43KB'],
+    tags: ['6.46KB'],
     href: '/guide/sse',
   },
   {
     title: 'Live transports',
     spec: 'tanstack-fetch/live',
     text: 'SSE + WebSocket + WebTransport + NDJSON streams on one client.',
-    tags: ['8.84KB', '1.8.0'],
+    tags: ['8.88KB', '1.8.0'],
     href: '/guide/websocket',
   },
   {
@@ -1201,6 +1256,14 @@ const compareRows: CompareRow[] = [
     ofetch: 'no',
   },
   {
+    feature: 'Mocks for HTTP, SSE and WebSocket',
+    href: '/guide/mocking',
+    fetch: 'yes',
+    axios: 'partial',
+    ky: 'no',
+    ofetch: 'no',
+  },
+  {
     feature: 'tRPC link on the same client',
     href: '/guide/trpc',
     fetch: 'yes',
@@ -1349,6 +1412,7 @@ const footerColumns: FooterColumn[] = [
       { label: 'SSE', href: '/guide/sse' },
       { label: 'WebSocket & streams', href: '/guide/websocket' },
       { label: 'Upload', href: '/guide/upload' },
+      { label: 'Mocking', href: '/guide/mocking' },
       { label: 'tRPC', href: '/guide/trpc' },
       { label: 'Refresh token', href: '/recipes/refresh-token' },
       { label: 'OpenAPI', href: '/guide/openapi' },
@@ -1373,6 +1437,7 @@ const footerColumns: FooterColumn[] = [
       { label: 'GitHub', href: GITHUB_URL },
       { label: 'npm', href: NPM_URL },
       { label: 'Blog', href: '/blog/' },
+      { label: '2.2.0 API mocks', href: '/blog/mock-api-http-sse-websocket-tanstack-fetch' },
       { label: '2.1.0 Abortable retries · safer refresh', href: '/blog/tanstack-fetch-2-1-0' },
       { label: '2.0.0 Slim core · typed live params', href: '/blog/tanstack-fetch-2-0-0' },
       { label: '1.8.0 WebSocket · WebTransport', href: '/blog/tanstack-fetch-1-8-0' },

@@ -161,6 +161,19 @@
 
 ---
 
+## Added 2026-11-09 — API mocking cluster (2.2.0)
+
+| Field                  | Value                                                                                                                                                                                                  |
+| ---------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| **Pages**              | `/guide/mocking` (reference), `/blog/mock-api-http-sse-websocket-tanstack-fetch` (tutorial)                                                                                                            |
+| **Primary keyword**    | mock API requests (HTTP, SSE, WebSocket)                                                                                                                                                               |
+| **Secondary**          | MSW alternative; mock SSE stream; mock WebSocket frontend; mock API before backend is ready; mock tRPC                                                                                                 |
+| **Intent**             | informational + commercial_investigation ("MSW alternative" is a trending 2026 query)                                                                                                                  |
+| **Positioning rule**   | Honest scope: mocks cover requests from this client only; recommend MSW for app-wide interception. Never claim MSW lacks a feature.                                                                    |
+| **Internal links**     | guide ↔ tutorial; `/examples/devtools` (MOCK badge); `/guide/configuration`; `/api/create-fetch`; homepage showcase tab + compare row                                                                  |
+| **Technical SEO done** | per-page `og:image` (page covers), `BlogPosting` / `TechArticle` + `BreadcrumbList` JSON-LD, git-based sitemap `lastmod`, `/feed.xml`, AI crawlers listed in `robots.txt`, mocks section in `llms.txt` |
+| **Success metrics**    | GSC impressions for "msw alternative" / "mock websocket" / "mock sse"; AI-answer citations of `/guide/mocking`; `tanstack-fetch/mock` adoption (npm import counts unavailable → GitHub code search)    |
+
 ## Prioritized page plan (one primary keyword each)
 
 | Priority | URL                                 | Action                          | Primary keyword                            |
