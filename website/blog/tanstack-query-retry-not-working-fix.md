@@ -10,6 +10,8 @@ cover: "/images/tanstack-query-retry-not-working-fix.jpg"
 
 # TanStack Query Retry: Why It Stops and How to Fix It
 
+![TanStack Query Retry: Why It Stops and How to Fix It](/images/tanstack-query-retry-not-working-fix.jpg)
+
 > **TL;DR:** If your TanStack Query retry stops, never fires, or fires too often, the cause is almost always something around the query: cache clearing during a fetch, an unfocused tab, an SSR-dehydrated error, or a cancellation. Match your symptom in the table near the end, change that one setting, and keep either internal retries or a manual retry button, not both.
 
 **Prerequisites:** a React Query (TanStack Query) app where a failing query should retry, access to your `QueryClient` setup, and the ability to run a production build. The steps below each end with what you should see.
