@@ -8,6 +8,8 @@ import { motionMedia } from './markdown/motion-media'
 
 const SITE_URL = 'https://mohamadgarmabi.github.io/tanstack-fetch'
 const SITE_NAME = 'tanstack-fetch'
+// Cloudflare serves at root (DOCS_BASE=/); GitHub Pages needs /tanstack-fetch/
+const BASE = process.env.DOCS_BASE ?? '/tanstack-fetch/'
 const AUTHOR_NAME = 'Mohammad Garmabi'
 const AUTHOR_EMAIL = 'mwmdgmb@gmail.com'
 const AUTHOR_URL = `${SITE_URL}/author`
@@ -339,7 +341,7 @@ const config = defineConfig({
   description: DEFAULT_DESCRIPTION,
   lang: 'en-US',
   appearance: 'force-dark',
-  base: '/tanstack-fetch/',
+  base: BASE,
   cleanUrls: true,
   lastUpdated: true,
   ignoreDeadLinks: true,
@@ -363,9 +365,9 @@ const config = defineConfig({
   },
 
   head: [
-    ['link', { rel: 'icon', type: 'image/jpeg', href: '/tanstack-fetch/images/logo.jpg' }],
-    ['link', { rel: 'apple-touch-icon', href: '/tanstack-fetch/images/logo.jpg' }],
-    ['link', { rel: 'author', href: '/tanstack-fetch/author' }],
+    ['link', { rel: 'icon', type: 'image/jpeg', href: `${BASE}images/logo.jpg` }],
+    ['link', { rel: 'apple-touch-icon', href: `${BASE}images/logo.jpg` }],
+    ['link', { rel: 'author', href: `${BASE}author` }],
     [
       'link',
       {
