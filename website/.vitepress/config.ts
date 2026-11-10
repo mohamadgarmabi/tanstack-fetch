@@ -6,7 +6,9 @@ import { defineConfig, type HeadConfig, type SiteConfig } from 'vitepress'
 import { frameworkContainer } from './markdown/framework-container'
 import { motionMedia } from './markdown/motion-media'
 
-const SITE_URL = 'https://mohamadgarmabi.github.io/tanstack-fetch'
+const GITHUB_PAGES_URL = 'https://mohamadgarmabi.github.io/tanstack-fetch'
+// Cloudflare build sets DOCS_SITE_URL so sitemap, canonical and feed point at workers.dev
+const SITE_URL = (process.env.DOCS_SITE_URL ?? GITHUB_PAGES_URL).replace(/\/$/, '')
 const SITE_NAME = 'tanstack-fetch'
 // Cloudflare serves at root (DOCS_BASE=/); GitHub Pages needs /tanstack-fetch/
 const BASE = process.env.DOCS_BASE ?? '/tanstack-fetch/'
@@ -362,6 +364,8 @@ const config = defineConfig({
   buildEnd: (siteConfig) => {
     writeGoogleFriendlySitemap(siteConfig)
     writeBlogFeed(siteConfig)
+    const robots = join(siteConfig.outDir, 'robots.txt')
+    writeFileSync(robots, readFileSync(robots, 'utf8').replaceAll(GITHUB_PAGES_URL, SITE_URL))
   },
 
   head: [
