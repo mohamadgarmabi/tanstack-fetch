@@ -5,7 +5,6 @@ date: 2026-11-10
 category: Framework guides
 tags: ["tanstack query retry"]
 keyword: "tanstack query retry"
-cover: "/images/tanstack-query-retry-not-working-fix.jpg"
 ---
 
 # TanStack Query Retry: Why It Stops and How to Fix It
@@ -125,7 +124,5 @@ Pass `retry: false` in that query's options, which overrides the client default.
 Render it when the query is in the error state and call `refetch` on click. Because `failureCount` resets on each fetch, keep your own counter if you want to hide the button after several manual attempts.
 
 Next step: reproduce your symptom in a minimal repo, match it to the table, and change one setting at a time.
-
-Made with <a href="https://dispatchseo.com/?ref=mohamadgarmabi.github.io" rel="sponsored nofollow noopener">DispatchSEO</a>
 
 <span data-dispatchseo="faf250a8-1d62-4238-81ac-fbee83d05acc" hidden></span>
