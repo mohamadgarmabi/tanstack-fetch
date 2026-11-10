@@ -399,6 +399,13 @@ const config = defineConfig({
         content: 'WS1yizmm8hIogpaEDEMBMNdoZvxMUEb8-CK_3q2VE60',
       },
     ],
+    [
+      'meta',
+      {
+        name: 'google-site-verification',
+        content: 'uGzeLsMfB28AHW075dvVb6JBIJt632t1AQYgSdBhT0I',
+      },
+    ],
   ],
 
   transformPageData: (pageData) => {
