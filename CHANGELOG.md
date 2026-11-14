@@ -1,5 +1,67 @@
 # Changelog
 
+## 2.2.1
+
+Bug-fix release. No new features. See [the release post](https://mohamadgarmabi.github.io/tanstack-fetch/blog/tanstack-fetch-2-2-1).
+
+### Security
+
+- Svelte: `setFetchClient` no longer keeps a module-level fallback client on the server, so one SvelteKit SSR request can't pick up another request's client (token, cookies). On the server the client comes from component context only
+- DevTools: the panel no longer renders request data as HTML. A mock route name from the `x-tanstack-fetch-mock` response header, a URL or a caller file could run script in the page
+
+### Fixed: core
+
+- A relative `baseUrl` (e.g. `'/api'`) or no `baseUrl` resolves against `location.href` in the browser instead of throwing `TypeError: Invalid URL`; on the server it throws a clear error asking for an absolute `baseUrl`
+- `createTRPCFetch(createFetch(...))` no longer throws in the published package: the client-options registry is shared across bundle entries via `globalThis[Symbol.for('tanstack-fetch.clientOptions')]`
+- Errors thrown by `onResponse` / `onResponseError` interceptors (status handlers, validators) reject with the original error instead of `NETWORK_ERROR`, skip `onRequestError` and are never retried
+- `controller.abort(reason)` with a custom reason rejects with that reason instead of being retried as `NETWORK_ERROR`
+- `FormData` bodies drop an inherited `content-type`, so fetch sets `multipart/form-data` with its boundary
+- `onServerError` runs for 5xx other than 500 even when `onStatus: { 500 }` is set
+- `{ action: 'drop' }` from `onRequest` cancels the request (`FetchError`, `code: 'REQUEST_DROPPED'`); from `onResponse` / `onResponseError` it acts like `continue`
+- `Retry-After` values like `-5` or `soon 5` use the fallback delay instead of 0
+- No listener leak on a long-lived `signal` in runtimes without `AbortSignal.any` (HTTP requests)
+
+### Fixed: SSE and WebSocket
+
+- SSE: mid-stream drops and network errors go through `onSseError` → `onSseReconnect` → reconnect, like a failed open; headers set in `onSseReconnect` are sent; the retry count resets when an event arrives
+- `sse-resume` reconnects on its own after network errors, drops and 5xx (1s delay) and sends `Last-Event-ID`; 4xx still fail
+- SSE: `close()` or abort during a retry delay no longer reconnects
+- SSE: `onSseClose` runs exactly once on error, abort and normal end
+- SSE: `body` is sent; the method is `GET` by default and `POST` with a body, and `onRequest` can change it
+- SSE parser: a `\r\n` split across chunks no longer splits an event; `id:`-only blocks update the last event id; bare `data` lines, trailing spaces and data-less blocks follow the spec
+- SSE: `close()` inside `onMessage` stops delivery of already-buffered events
+- WebSocket: `reconnect.retries` runs out for a server that accepts and then drops; the count resets only after 5s open
+- WebSocket: an already-aborted `signal` never connects and calls `onClose` once
+
+### Fixed: adapters
+
+- Vue: `useSse` / `useWs` no longer connect during SSR (they leaked a stream or socket per request)
+- Vue, React: late events from a replaced or unmounted connection no longer overwrite `status`, `data` or `error`
+
+### Fixed: DevTools and tRPC
+
+- DevTools: concurrent requests get unique entry ids (`req#3:0`) instead of all sharing `anon:0`
+- DevTools: call graph parses Firefox / Safari frames and dev-server URLs with a port and query; dev-server files open through Vite's `/__open-in-editor`
+- tRPC: a `baseUrl` with a path (`https://api.x.com/v1`) is kept; a relative URL on the server throws instead of calling `http://localhost`
+- tRPC: the per-attempt timeout timer is cleared when the attempt ends
+
+### Fixed: CLI
+
+- `migrate --write` imports `api` into rewritten files; files where it can't be resolved are left unchanged and reported
+- `migrate`: `ky.get(url).json<T>()` → `api.get<T>(url)`; nested parens and template literals are handled
+- `migrate`: imports go after shebangs and `'use client'` / `'use server'`; multi-line first imports are handled; no duplicate imports with `--from all`
+- `migrate` (axios): `params` → `query` only in the config argument, never inside bodies (same for ky `searchParams`)
+- `migrate` scaffolds (React, Nuxt, generic) no longer throw `ReferenceError` for `process` in the browser; the React scaffold reads `VITE_API_URL` only
+- `generate`: quotes non-identifier keys, de-dupes colliding type names and operationIds, and supports path-level `parameters` and `$ref` parameters
+
+### Docs
+
+- Per-page "last updated" dates (the deploy cloned only the latest commit); fixed the "Raw skill file" link
+
+### Changed
+
+- Entry sizes (gzip): core 3.97KB (was 3.71KB), `/sse` 6.96KB (was 6.46KB), `/live` 9.40KB (was 8.88KB), `/plugins` 1.26KB (was 1.22KB), `/trpc` 3.80KB (was 3.28KB), `/devtools` 9.08KB (was 8.85KB)
+
 ## 2.2.0
 
 ### Added

@@ -1,6 +1,6 @@
 ---
-title: SSR
-description: Forward cookies and auth headers with ssr-forward in Next.js and Nuxt — same createFetch client on server and browser.
+title: 'SSR: forward cookies in Next.js and Nuxt'
+description: 'Forward cookies and auth headers from the incoming request in Next.js, Nuxt, TanStack Start and SvelteKit with ssr-forward. One client for server and browser.'
 ---
 
 # SSR

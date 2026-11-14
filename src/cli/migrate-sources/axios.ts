@@ -2,6 +2,8 @@ import type { MigrateFinding, MigrateSource } from '../migrate.type'
 import {
   collectHttpClientInstanceNames,
   ensureTanstackFetchImport,
+  mergeTanstackFetchImports,
+  renameOptionKey,
   stripJsonChainOnCalls,
 } from './migrate-source.util'
 
@@ -9,6 +11,18 @@ const AXIOS_IMPORT_RE =
   /^(\s*)import\s+(?:axios(\s*,\s*\{([^}]*)\})?|(\{([^}]*)\})\s*)\s*from\s*['"]axios['"]\s*;?\s*$/gm
 
 const HTTP_METHODS = 'get|post|put|patch|delete|request|head|options'
+
+/** Which argument is the axios config (where `params` means query string). */
+const CONFIG_ARG_INDEX: Record<string, number> = {
+  get: 1,
+  delete: 1,
+  head: 1,
+  options: 1,
+  post: 2,
+  put: 2,
+  patch: 2,
+  request: 0,
+}
 
 const detect = (source: string) =>
   /from\s*['"]axios['"]/.test(source) ||
@@ -76,20 +90,14 @@ const applySafeTransforms = (source: string): string => {
     ...new Set([...instancesBefore, ...collectHttpClientInstanceNames(next), 'api']),
   ]
 
-  for (const name of instances) {
-    next = next.replace(
-      new RegExp(`(\\b${name}\\.(?:${HTTP_METHODS})\\([^)]*)\\bparams\\s*:`, 'g'),
-      '$1query:',
-    )
-  }
-
+  next = renameOptionKey(next, instances, CONFIG_ARG_INDEX, 'params', 'query')
   next = stripJsonChainOnCalls(next, instances)
 
   if (new RegExp(`\\bapi\\.(${HTTP_METHODS})\\s*\\(`).test(next)) {
     next = ensureTanstackFetchImport(next)
   }
 
-  return next
+  return mergeTanstackFetchImports(next)
 }
 
 const collectFindings = (file: string, source: string): MigrateFinding[] => {

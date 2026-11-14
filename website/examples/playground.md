@@ -1,6 +1,6 @@
 ---
 title: Live playground
-description: Run real createFetch demos — status handlers, React Query, Next.js SSR, upload, SSE, WebSocket, WebTransport, and NDJSON streams. Filter by framework in the header.
+description: 'Run real createFetch demos in the browser: status handlers, React Query, Next.js SSR, upload, SSE, WebSocket, WebTransport and NDJSON streams.'
 ---
 
 # Live playground

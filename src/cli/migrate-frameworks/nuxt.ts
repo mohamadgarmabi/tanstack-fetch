@@ -14,7 +14,10 @@ import {
 } from 'tanstack-fetch/plugins'
 
 export const api = createFetch({
-  baseUrl: process.env.NUXT_PUBLIC_API_URL ?? 'https://api.example.com',
+  // lib/api.ts also runs in the browser, where process is not defined
+  baseUrl:
+    (typeof process === 'undefined' ? undefined : process.env.NUXT_PUBLIC_API_URL) ??
+    'https://api.example.com',
   interceptors: [
     createTraceInterceptor(),
     createRetryIdempotentInterceptor(),

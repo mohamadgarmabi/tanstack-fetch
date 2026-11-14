@@ -50,5 +50,5 @@ Typed Fetch client for TanStack Query. Start here, then jump to the guide that m
 
 - [API reference](/api/create-fetch)
 - [Examples](/examples/)
-- [Blog](/blog) — latest: [2.1.0 abortable retries · safer refresh · array query](/blog/tanstack-fetch-2-1-0)
+- [Blog](/blog) — latest: [2.2.1 SSE reconnects · relative baseUrl · SSR safety](/blog/tanstack-fetch-2-2-1)
 - [Agent skill](/guide/skill)

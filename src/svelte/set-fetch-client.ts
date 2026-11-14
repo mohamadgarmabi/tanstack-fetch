@@ -26,7 +26,7 @@ const setFetchClient = (options: SetFetchClientOptions = {}): AnyFetchClient => 
   try {
     setContext(FETCH_CONTEXT_KEY, client)
   } catch {
-    // Outside a Svelte component — module client still works for useFetch / useSse.
+    // Outside a Svelte component — module client still works in the browser (not during SSR).
   }
   return client
 }

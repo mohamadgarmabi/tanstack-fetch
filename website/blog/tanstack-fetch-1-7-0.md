@@ -5,7 +5,7 @@ titleTemplate: false
 description: Health-check with tanstack-fetch doctor, real Solid/Angular/Svelte adapters, migrate scaffolds, and a docs Framework picker.
 date: 2026-10-09
 category: Releases
-tags: ["CLI","Solid","Angular","Svelte"]
+tags: ['CLI', 'Solid', 'Angular', 'Svelte']
 cover: /images/blog-1-7-0-cover.jpg
 ---
 
@@ -25,10 +25,10 @@ npm install tanstack-fetch@1.7.0
 
 ## New adapters
 
-| Import | API |
-| --- | --- |
-| `tanstack-fetch/solid` | `FetchProvider`, `useFetch`, `useSse` |
-| `tanstack-fetch/svelte` | `setFetchClient`, `useFetch`, `useSse` |
+| Import                   | API                                                     |
+| ------------------------ | ------------------------------------------------------- |
+| `tanstack-fetch/solid`   | `FetchProvider`, `useFetch`, `useSse`                   |
+| `tanstack-fetch/svelte`  | `setFetchClient`, `useFetch`, `useSse`                  |
 | `tanstack-fetch/angular` | `provideFetchClient`, `injectFetch`, `useSse` (signals) |
 
 Same SSE status model as React/Vue: `connecting` | `connected` | `disconnected` | `error`. Guides: [Solid](/guide/solid) · [Angular](/guide/angular) · [Svelte](/guide/svelte).
@@ -52,12 +52,12 @@ npx tanstack-fetch migrate --from fetch --framework svelte --write
 npx tanstack-fetch migrate --from fetch --framework sveltekit --write
 ```
 
-| Framework | Query adapter | Notes |
-| --- | --- | --- |
-| `solid` | `@tanstack/solid-query` | `api.ts` + query options |
-| `angular` | `@tanstack/angular-query-experimental` | `src/app/api.ts` |
-| `svelte` | `@tanstack/svelte-query` | `src/lib/api.ts` |
-| `sveltekit` | `@tanstack/svelte-query` | + `api.server.ts` with `ssr-forward` |
+| Framework   | Query adapter                          | Notes                                |
+| ----------- | -------------------------------------- | ------------------------------------ |
+| `solid`     | `@tanstack/solid-query`                | `api.ts` + query options             |
+| `angular`   | `@tanstack/angular-query-experimental` | `src/app/api.ts`                     |
+| `svelte`    | `@tanstack/svelte-query`               | `src/lib/api.ts`                     |
+| `sveltekit` | `@tanstack/svelte-query`               | + `api.server.ts` with `ssr-forward` |
 
 ## Docs Framework picker
 

@@ -2,10 +2,10 @@
 noindex: true
 title: 'tanstack-fetch 1.7.1: timeouts, URLs, binary bodies, errors'
 titleTemplate: false
-description: Patch release — ports and query colons no longer break path params, timeouts reject with TimeoutError, timers stop leaking, Uint8Array / ReadableStream bodies send as bytes, and HTML 502s keep their status.
+description: 'Patch release: path params with ports and colons, timeouts reject with TimeoutError, no leaking timers, byte bodies sent as bytes, HTML 502s keep status.'
 date: 2026-10-18
 category: Releases
-tags: ["Core","Errors"]
+tags: ['Core', 'Errors']
 cover: /images/blog-1-7-1-cover.jpg
 ---
 
@@ -25,15 +25,15 @@ npm install tanstack-fetch@1.7.1
 
 ## At a glance
 
-| Area | Before 1.7.1 | 1.7.1 |
-| --- | --- | --- |
-| `http://localhost:8080/users` | throws `missing path param "8080"` | works |
-| `/search?t=10:30` | throws `missing path param "30"` | works |
-| `timeoutMs` elapsed | `FetchError` · `NETWORK_ERROR` | `TimeoutError` · `isAbortError` is `true` |
-| Successful request | timeout timer keeps running | timer cleared |
-| `body: new Uint8Array(…)` | sent as `{"0":1,"1":2}` JSON | sent as raw bytes |
-| `body: ReadableStream` | JSON-encoded | streamed (`duplex: 'half'`) |
-| 502 with an HTML body | `PARSE_ERROR`, interceptors skipped | `HTTP_ERROR` · status 502 · interceptors run |
+| Area                          | Before 1.7.1                        | 1.7.1                                        |
+| ----------------------------- | ----------------------------------- | -------------------------------------------- |
+| `http://localhost:8080/users` | throws `missing path param "8080"`  | works                                        |
+| `/search?t=10:30`             | throws `missing path param "30"`    | works                                        |
+| `timeoutMs` elapsed           | `FetchError` · `NETWORK_ERROR`      | `TimeoutError` · `isAbortError` is `true`    |
+| Successful request            | timeout timer keeps running         | timer cleared                                |
+| `body: new Uint8Array(…)`     | sent as `{"0":1,"1":2}` JSON        | sent as raw bytes                            |
+| `body: ReadableStream`        | JSON-encoded                        | streamed (`duplex: 'half'`)                  |
+| 502 with an HTML body         | `PARSE_ERROR`, interceptors skipped | `HTTP_ERROR` · status 502 · interceptors run |
 
 ## 1. Ports and query colons are not path params
 

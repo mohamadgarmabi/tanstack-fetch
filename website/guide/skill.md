@@ -80,8 +80,9 @@ You should see `tanstack-fetch`. Open **Customize → Skills** in Cursor to conf
 
 - [Getting started](/guide/getting-started)
 - [Vue & Nuxt](/guide/vue)
-- [Raw skill file](/skills/tanstack-fetch/SKILL.md)
+- <a href="https://mohamadgarmabi.github.io/tanstack-fetch/skills/tanstack-fetch/SKILL.md" target="_blank">Raw skill file</a>
 - [LLM context (`llms.txt`)](https://mohamadgarmabi.github.io/tanstack-fetch/llms.txt)
+- [Release 2.2.1 — bug fixes · SSE reconnects · SSR safety](/blog/tanstack-fetch-2-2-1)
 - [Release 2.1.0 — abortable retries · safer refresh · array query](/blog/tanstack-fetch-2-1-0)
 - [Release 2.0.0 — 3.57KB core · typed live params](/blog/tanstack-fetch-2-0-0)
 - [Release 1.8.0 — WebSocket · WebTransport · NDJSON](/blog/tanstack-fetch-1-8-0)

@@ -13,7 +13,7 @@ import { resolveInterceptors, runHook } from './interceptors/run-interceptors'
 import { executeFetch } from './request-execute'
 import { assertAbsoluteUrl, buildUrl } from './utils/build-url'
 import { mergeHeaders, resolveHeaders } from './utils/headers'
-import { combineSignals, createTimeoutSignal, wait } from './utils/signals'
+import { combineSignals, createTimeoutSignal, releaseSignal, wait } from './utils/signals'
 import { createFetchError } from './fetch-error'
 import { toErrResult, toFetchErrorInfo } from './utils/result'
 import type { XhrSender } from './utils/xhr-upload'
@@ -39,7 +39,7 @@ const resolveIncoming = async (
 const createContext = async (
   args: SendRequestArgs,
   attempt: number,
-  timeoutSignal: AbortSignal | undefined,
+  signal: AbortSignal | undefined,
   state: Record<string, unknown>,
 ): Promise<RequestContext> => {
   const { method, path, requestOptions, client } = args
@@ -47,7 +47,6 @@ const createContext = async (
   assertAbsoluteUrl(client.baseUrl, source)
   const url = buildUrl(client.baseUrl, path, requestOptions?.params, requestOptions?.query)
   const headers = mergeHeaders(await resolveHeaders(client.headers), requestOptions?.headers)
-  const signal = combineSignals([requestOptions?.signal, timeoutSignal])
 
   return {
     request: { method, url, headers, body: requestOptions?.body, signal },
@@ -110,18 +109,17 @@ const runAttempt = async <T, E>(input: AttemptInput) => {
   const timeout = createTimeoutSignal(
     requestOptions?.timeoutMs ?? client.timeoutMs ?? DEFAULT_TIMEOUT_MS,
   )
+  const signal = combineSignals([requestOptions?.signal, timeout?.signal])
   try {
-    return await runAttemptWithSignal<T, E>(input, timeout?.signal)
+    return await runAttemptWithSignal<T, E>(input, signal)
   } finally {
     timeout?.clear()
+    releaseSignal(signal)
   }
 }
 
-const runAttemptWithSignal = async <T, E>(
-  input: AttemptInput,
-  timeoutSignal: AbortSignal | undefined,
-) => {
-  let context = await createContext(input.args, input.attempt, timeoutSignal, input.state)
+const runAttemptWithSignal = async <T, E>(input: AttemptInput, signal: AbortSignal | undefined) => {
+  let context = await createContext(input.args, input.attempt, signal, input.state)
   const before = await runHook(input.interceptors, (item) => item.onRequest, context)
   if (before.type === 'short-circuit') {
     return { kind: 'result' as const, result: before.result as FetchResult<T, E> }
@@ -141,6 +139,18 @@ const runAttemptWithSignal = async <T, E>(
       }
     }
     return { kind: 'retry' as const, delayMs: before.delayMs }
+  }
+  if (before.type === 'drop') {
+    throw createFetchError(
+      toErrResult(
+        0,
+        toFetchErrorInfo(0, {
+          code: 'REQUEST_DROPPED',
+          message: 'tanstack-fetch: request dropped by an onRequest interceptor',
+        }),
+        new Headers(),
+      ),
+    )
   }
   if (before.type === 'continue') {
     context = before.context

@@ -1,10 +1,10 @@
 ---
 title: 'Angular HttpClient vs tanstack-fetch for TanStack Query'
 titleTemplate: false
-description: Replace Angular HttpClient glue with tanstack-fetch — provideFetchClient, injectFetch, signals SSE, Angular Query, refresh-token, migrate CLI, and a full side-by-side comparison.
+description: 'Replace Angular HttpClient glue with tanstack-fetch: provideFetchClient, injectFetch, SSE as signals, Angular Query, refresh tokens and the migrate CLI.'
 date: 2026-10-12
 category: Framework guides
-tags: ["Angular","Comparison"]
+tags: ['Angular', 'Comparison']
 cover: /images/blog-angular-http-client-tanstack-fetch-cover.jpg
 ---
 
@@ -24,13 +24,13 @@ That gap shows up as unwrap-`.data` helpers, RxJS subscriptions that fight Query
 
 ## TL;DR
 
-| If you need… | Prefer |
-| --- | --- |
-| Drop into `injectQuery` / `injectMutation` | **tanstack-fetch** |
-| Typed `FetchError` with `status` + body | **tanstack-fetch** |
-| SSE with `Authorization` + resume | **tanstack-fetch/sse** + `useSse` |
-| Classic Angular apps with heavy RxJS pipes | `HttpClient` is fine |
-| One HTTP client shared with React/Vue/Solid | **tanstack-fetch** |
+| If you need…                                | Prefer                            |
+| ------------------------------------------- | --------------------------------- |
+| Drop into `injectQuery` / `injectMutation`  | **tanstack-fetch**                |
+| Typed `FetchError` with `status` + body     | **tanstack-fetch**                |
+| SSE with `Authorization` + resume           | **tanstack-fetch/sse** + `useSse` |
+| Classic Angular apps with heavy RxJS pipes  | `HttpClient` is fine              |
+| One HTTP client shared with React/Vue/Solid | **tanstack-fetch**                |
 
 ```bash
 npm install tanstack-fetch @tanstack/angular-query-experimental
@@ -135,8 +135,7 @@ export class UsersComponent {
 
   readonly users = injectQuery(() => ({
     queryKey: ['users'],
-    queryFn: ({ signal }: { signal: AbortSignal }) =>
-      this.api.get<User[]>('/users', { signal }),
+    queryFn: ({ signal }: { signal: AbortSignal }) => this.api.get<User[]>('/users', { signal }),
   }))
 
   errorLabel = () => {
@@ -226,20 +225,20 @@ Rough relative **boilerplate** for the same features (lower is better). Not a be
 
 ## Feature matrix
 
-| Capability | tanstack-fetch | Angular HttpClient |
-| --- | --- | --- |
-| Returns body for Query `queryFn` | Yes | Adapt (`firstValueFrom` + map) |
-| Throws typed error with status/body | `FetchError` + `isFetchError` | `HttpErrorResponse` |
-| Native `AbortSignal` | First-class | Manual / limited |
-| Status handlers `401`–`429` | `createStatusInterceptor` | Custom interceptor |
-| Refresh token single-flight | Plugin | Custom |
-| Path params typing `:id` | Yes | Manual |
-| Upload + progress | `api.upload()` (`tanstack-fetch/sse`) | Yes |
-| SSE + `Authorization` | `tanstack-fetch/sse` | Not built-in |
-| Angular signals SSE | `useSse` | DIY |
-| tRPC transport | `tanstack-fetch/trpc` | DIY |
-| RxJS operators / `HttpContext` | Via bridge | Native |
-| Bundle (HTTP core) | 3.68KB gzip | Framework-included |
+| Capability                          | tanstack-fetch                        | Angular HttpClient             |
+| ----------------------------------- | ------------------------------------- | ------------------------------ |
+| Returns body for Query `queryFn`    | Yes                                   | Adapt (`firstValueFrom` + map) |
+| Throws typed error with status/body | `FetchError` + `isFetchError`         | `HttpErrorResponse`            |
+| Native `AbortSignal`                | First-class                           | Manual / limited               |
+| Status handlers `401`–`429`         | `createStatusInterceptor`             | Custom interceptor             |
+| Refresh token single-flight         | Plugin                                | Custom                         |
+| Path params typing `:id`            | Yes                                   | Manual                         |
+| Upload + progress                   | `api.upload()` (`tanstack-fetch/sse`) | Yes                            |
+| SSE + `Authorization`               | `tanstack-fetch/sse`                  | Not built-in                   |
+| Angular signals SSE                 | `useSse`                              | DIY                            |
+| tRPC transport                      | `tanstack-fetch/trpc`                 | DIY                            |
+| RxJS operators / `HttpContext`      | Via bridge                            | Native                         |
+| Bundle (HTTP core)                  | 3.68KB gzip                           | Framework-included             |
 
 ## Auth, status handlers, refresh
 
@@ -269,10 +268,9 @@ api.use(
   'refresh-token',
   createRefreshTokenInterceptor({
     refresh: async () => {
-      const body = await api.post<{ accessToken: string; expiresIn: number }>(
-        '/auth/refresh',
-        { interceptors: { eject: ['refresh-token', 'auth'] } },
-      )
+      const body = await api.post<{ accessToken: string; expiresIn: number }>('/auth/refresh', {
+        interceptors: { eject: ['refresh-token', 'auth'] },
+      })
       localStorage.setItem('access_token', body.accessToken)
       expiresAt = Date.now() + body.expiresIn * 1000
     },

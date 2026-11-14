@@ -1,10 +1,10 @@
 ---
 title: 'Solid fetch / axios vs tanstack-fetch for Solid Query'
 titleTemplate: false
-description: "Use tanstack-fetch with Solid — FetchProvider, useFetch, useSse signals, Solid Query, refresh-token, migrate CLI, and comparison graphs."
+description: 'Use tanstack-fetch with Solid — FetchProvider, useFetch, useSse signals, Solid Query, refresh-token, migrate CLI, and comparison graphs.'
 date: 2026-10-12
 category: Framework guides
-tags: ["Solid","Comparison"]
+tags: ['Solid', 'Comparison']
 cover: /images/blog-solid-fetch-tanstack-fetch-cover.jpg
 ---
 
@@ -24,12 +24,12 @@ Solid’s fine-grained reactivity loves small primitives. Raw `fetch` / axios st
 
 ## TL;DR
 
-| If you need… | Prefer |
-| --- | --- |
-| `createQuery` without `.data` unwrap | **tanstack-fetch** |
-| SSE accessors (`status()`, `data()`) | `useSse` |
-| Share client with React monorepo | same `createFetch` |
-| Tiny app, no Query | native fetch is fine |
+| If you need…                         | Prefer               |
+| ------------------------------------ | -------------------- |
+| `createQuery` without `.data` unwrap | **tanstack-fetch**   |
+| SSE accessors (`status()`, `data()`) | `useSse`             |
+| Share client with React monorepo     | same `createFetch`   |
+| Tiny app, no Query                   | native fetch is fine |
 
 ```bash
 npm install tanstack-fetch solid-js @tanstack/solid-query
@@ -117,7 +117,13 @@ const UsersPage = () => {
 
   if (query.isPending) return <p>Loading…</p>
   if (isFetchError(query.error)) return <p>{query.error.status}</p>
-  return <ul>{query.data?.map((u) => <li>{u.name}</li>)}</ul>
+  return (
+    <ul>
+      {query.data?.map((u) => (
+        <li>{u.name}</li>
+      ))}
+    </ul>
+  )
 }
 ```
 
@@ -173,15 +179,15 @@ Rough relative **boilerplate** (lower is better) — a map of where teams spend 
 
 ## Feature matrix
 
-| Capability | tanstack-fetch | axios / fetch |
-| --- | --- | --- |
-| Solid Query fit | Native | Adapt |
-| FetchProvider / useFetch | Yes | DIY |
-| useSse accessors | Yes | DIY |
-| Typed errors | `FetchError` | DIY |
-| Refresh plugin | Yes | DIY |
-| Path params | Yes | Manual |
-| Bundle | 3.68KB gzip | Varies |
+| Capability               | tanstack-fetch | axios / fetch |
+| ------------------------ | -------------- | ------------- |
+| Solid Query fit          | Native         | Adapt         |
+| FetchProvider / useFetch | Yes            | DIY           |
+| useSse accessors         | Yes            | DIY           |
+| Typed errors             | `FetchError`   | DIY           |
+| Refresh plugin           | Yes            | DIY           |
+| Path params              | Yes            | Manual        |
+| Bundle                   | 3.68KB gzip    | Varies        |
 
 ## Auth, status handlers, refresh
 
@@ -255,7 +261,9 @@ const OrdersLive = () => {
     <div>
       <p>{status()}</p>
       <pre>{JSON.stringify(data(), null, 2)}</pre>
-      <button type="button" onClick={close}>Stop</button>
+      <button type="button" onClick={close}>
+        Stop
+      </button>
     </div>
   )
 }

@@ -17,6 +17,8 @@ type OpenApiParameter = {
   schema?: JsonSchema
 }
 
+type OpenApiParameterRef = { $ref: string }
+
 type OpenApiMedia = {
   schema?: JsonSchema
 }
@@ -24,7 +26,7 @@ type OpenApiMedia = {
 type OpenApiOperation = {
   operationId?: string
   tags?: string[]
-  parameters?: OpenApiParameter[]
+  parameters?: Array<OpenApiParameter | OpenApiParameterRef>
   requestBody?: {
     required?: boolean
     content?: Record<string, OpenApiMedia>
@@ -32,12 +34,25 @@ type OpenApiOperation = {
   responses?: Record<string, { content?: Record<string, OpenApiMedia> }>
 }
 
+type OpenApiPathItem = Partial<
+  Record<
+    'get' | 'post' | 'put' | 'patch' | 'delete' | 'head' | 'options' | 'trace',
+    OpenApiOperation
+  >
+> & {
+  /** Shared by every operation under this path; an operation overrides by name + in. */
+  parameters?: Array<OpenApiParameter | OpenApiParameterRef>
+}
+
 type OpenApiSpec = {
   openapi?: string
   swagger?: string
   info?: { title?: string; version?: string }
-  paths?: Record<string, Partial<Record<string, OpenApiOperation>>>
-  components?: { schemas?: Record<string, JsonSchema> }
+  paths?: Record<string, OpenApiPathItem>
+  components?: {
+    schemas?: Record<string, JsonSchema>
+    parameters?: Record<string, OpenApiParameter>
+  }
 }
 
 type CollectedOperation = {
@@ -53,4 +68,12 @@ type CollectedOperation = {
   successSchema?: JsonSchema
 }
 
-export type { JsonSchema, OpenApiParameter, OpenApiOperation, OpenApiSpec, CollectedOperation }
+export type {
+  JsonSchema,
+  OpenApiParameter,
+  OpenApiParameterRef,
+  OpenApiOperation,
+  OpenApiPathItem,
+  OpenApiSpec,
+  CollectedOperation,
+}

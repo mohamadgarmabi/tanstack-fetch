@@ -1,10 +1,10 @@
 ---
 title: 'TanStack Router + tanstack-fetch: Query on router context'
 titleTemplate: false
-description: "Wire tanstack-fetch into TanStack Start and TanStack Router — queryOptions, ensureQueryData loaders, router context, SSR, tRPC, and comparison graphs."
+description: 'Wire tanstack-fetch into TanStack Start and TanStack Router — queryOptions, ensureQueryData loaders, router context, SSR, tRPC, and comparison graphs.'
 date: 2026-10-12
 category: Framework guides
-tags: ["TanStack Start","Router","React"]
+tags: ['TanStack Start', 'Router', 'React']
 cover: /images/blog-tanstack-start-router-tanstack-fetch-cover.jpg
 ---
 
@@ -24,13 +24,13 @@ The missing piece is a fetch client that already speaks Query’s language. **ta
 
 ## TL;DR
 
-| If you need… | Prefer |
-| --- | --- |
-| Loaders + components share `queryOptions` | **tanstack-fetch** |
-| Router context `queryClient` | Start / Router pattern |
-| SSR cookies | `ssr-forward` |
-| SPA-only Router | same pattern, no SSR plugin |
-| tRPC on the same transport | `tanstack-fetch/trpc` |
+| If you need…                              | Prefer                      |
+| ----------------------------------------- | --------------------------- |
+| Loaders + components share `queryOptions` | **tanstack-fetch**          |
+| Router context `queryClient`              | Start / Router pattern      |
+| SSR cookies                               | `ssr-forward`               |
+| SPA-only Router                           | same pattern, no SSR plugin |
+| tRPC on the same transport                | `tanstack-fetch/trpc`       |
 
 ```bash
 npm install tanstack-fetch @tanstack/react-query @tanstack/react-router
@@ -196,15 +196,15 @@ Rough relative **boilerplate** (lower is better) — a map of where teams spend 
 
 ## Feature matrix
 
-| Capability | tanstack-fetch | ad-hoc loader fetch |
-| --- | --- | --- |
-| Router context Query | First-class | DIY |
-| ensureQueryData | Native fit | N/A |
-| Same options in component | Yes | Duplicate |
-| SSR cookies | `ssr-forward` | Manual |
-| Typed errors | `FetchError` | DIY |
-| tRPC transport | Yes | DIY |
-| SSE | `useSse` | DIY |
+| Capability                | tanstack-fetch | ad-hoc loader fetch |
+| ------------------------- | -------------- | ------------------- |
+| Router context Query      | First-class    | DIY                 |
+| ensureQueryData           | Native fit     | N/A                 |
+| Same options in component | Yes            | Duplicate           |
+| SSR cookies               | `ssr-forward`  | Manual              |
+| Typed errors              | `FetchError`   | DIY                 |
+| tRPC transport            | Yes            | DIY                 |
+| SSE                       | `useSse`       | DIY                 |
 
 ## Auth, status handlers, refresh
 

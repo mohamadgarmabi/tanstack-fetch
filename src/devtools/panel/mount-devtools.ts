@@ -38,6 +38,15 @@ const appendSection = (parent: HTMLElement, title: string, content: HTMLElement 
   }
 }
 
+/** Text-only element — entry fields come from the network (headers, URLs), never use innerHTML. */
+const el = (tag: string, className: string, text: string, title?: string) => {
+  const node = document.createElement(tag)
+  if (className) node.className = className
+  node.textContent = text
+  if (title) node.title = title
+  return node
+}
+
 const mountDevtools = (options: MountDevtoolsOptions) => {
   if (typeof document === 'undefined') {
     return { destroy: () => undefined, open: () => undefined, close: () => undefined }
@@ -242,17 +251,22 @@ const mountDevtools = (options: MountDevtoolsOptions) => {
 
     const summary = document.createElement('div')
     summary.className = 'tf-dt-summary'
-    const caller = entry.callerFile
-      ? `<span class="tf-dt-caller-badge" title="Called from">${entry.callerFile}</span>`
-      : ''
-    summary.innerHTML = `
-      <span><strong>${entry.method}</strong> ${entry.path}</span>
-      ${caller}
-      ${entry.mock ? `<span class="tf-dt-mock-badge" title="Answered by a mocks route">mock · ${entry.mock}</span>` : ''}
-      <span>${entry.status}${entry.httpStatus != null ? ` · ${entry.httpStatus}` : ''}</span>
-      <span>${entry.timingMs != null ? `${Math.round(entry.timingMs)} ms` : '—'}</span>
-      <span>${formatBytes(entry.requestBytes)} → ${formatBytes(entry.responseBytes)}</span>
-    `
+    const request = el('span', '', ` ${entry.path}`)
+    request.prepend(el('strong', '', entry.method))
+    summary.append(request)
+    if (entry.callerFile) {
+      summary.append(el('span', 'tf-dt-caller-badge', entry.callerFile, 'Called from'))
+    }
+    if (entry.mock) {
+      summary.append(
+        el('span', 'tf-dt-mock-badge', `mock · ${entry.mock}`, 'Answered by a mocks route'),
+      )
+    }
+    summary.append(
+      el('span', '', `${entry.status}${entry.httpStatus != null ? ` · ${entry.httpStatus}` : ''}`),
+      el('span', '', entry.timingMs != null ? `${Math.round(entry.timingMs)} ms` : '—'),
+      el('span', '', `${formatBytes(entry.requestBytes)} → ${formatBytes(entry.responseBytes)}`),
+    )
     detailEl.appendChild(summary)
 
     appendSection(detailEl, 'Call graph', renderCallGraph(entry))
@@ -290,13 +304,15 @@ const mountDevtools = (options: MountDevtoolsOptions) => {
       const caller = entry.callerFile ?? '—'
       const isLive = entry.status === 'pending' && entry.sse?.open
       const pill = isLive ? 'live' : entry.status
-      row.innerHTML = `
-        <span class="tf-dt-method">${entry.method}</span>
-        <span class="tf-dt-path" title="${entry.url}">${entry.mock ? '<span class="tf-dt-pill mock" title="Mocked">mock</span> ' : ''}${entry.path}${sseHint}</span>
-        <span class="tf-dt-caller" title="Called from">${caller}</span>
-        <span class="tf-dt-pill ${pill}">${pill}</span>
-        <span class="tf-dt-meta">${entry.timingMs != null ? `${Math.round(entry.timingMs)}ms` : '—'}</span>
-      `
+      const path = el('span', 'tf-dt-path', `${entry.path}${sseHint}`, entry.url)
+      if (entry.mock) path.prepend(el('span', 'tf-dt-pill mock', 'mock', 'Mocked'), ' ')
+      row.append(
+        el('span', 'tf-dt-method', entry.method),
+        path,
+        el('span', 'tf-dt-caller', caller, 'Called from'),
+        el('span', `tf-dt-pill ${pill}`, pill),
+        el('span', 'tf-dt-meta', entry.timingMs != null ? `${Math.round(entry.timingMs)}ms` : '—'),
+      )
       row.addEventListener('click', () => store.select(entry.id))
       listEl.appendChild(row)
     })

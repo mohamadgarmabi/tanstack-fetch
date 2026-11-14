@@ -1,7 +1,7 @@
 ---
-title: 'Mock your API in the client: HTTP, SSE and WebSocket with tanstack-fetch'
+title: 'Mock your API: HTTP, SSE and WebSocket in the client'
 titleTemplate: false
-description: 'Build a frontend before the backend is ready. Step by step, mock a REST endpoint, a live SSE price feed, a streaming NDJSON chat and a WebSocket room with the tanstack-fetch mocks option, then turn each mock off as the real API ships.'
+description: 'Build the frontend before the backend ships: mock a REST endpoint, an SSE price feed, an NDJSON chat and a WebSocket room, then switch each mock off.'
 date: 2026-11-09
 category: Tutorials
 tags: ['Mocking', 'SSE', 'WebSocket', 'Testing']

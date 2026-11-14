@@ -2,34 +2,37 @@ import { mkdir, writeFile } from 'node:fs/promises'
 import { join } from 'node:path'
 import type { CollectedOperation, OpenApiSpec } from './openapi.type'
 import { collectOperations } from './collect-operations'
-import { schemaToTs, toPascal } from './schema-to-ts'
+import { propertyKey, schemaToTs, schemaTypeNames, type SchemaNames } from './schema-to-ts'
 
 const generateTypesFile = (spec: OpenApiSpec) => {
   const schemas = Object.entries(spec.components?.schemas ?? {})
-  const types = schemas.map(([name, schema]) => `type ${toPascal(name)} = ${schemaToTs(schema)}`)
-  const exports = schemas.map(([name]) => toPascal(name))
+  const names = schemaTypeNames(spec.components?.schemas)
+  const types = schemas.map(
+    ([name, schema]) => `type ${names.get(name)} = ${schemaToTs(schema, names)}`,
+  )
+  const exports = [...names.values()]
   if (exports.length === 0) {
     return 'export {}\n'
   }
   return `${types.join('\n\n')}\n\nexport type { ${exports.join(', ')} }\n`
 }
 
-const paramsType = (operation: CollectedOperation, kind: 'path' | 'query') => {
+const paramsType = (operation: CollectedOperation, kind: 'path' | 'query', names: SchemaNames) => {
   const params = operation.parameters.filter((item) => item.in === kind)
   if (params.length === 0) {
     return undefined
   }
   const fields = params.map((item) => {
     const optional = item.required ? '' : '?'
-    return `${item.name}${optional}: ${schemaToTs(item.schema)}`
+    return `${propertyKey(item.name)}${optional}: ${schemaToTs(item.schema, names)}`
   })
   return `{ ${fields.join('; ')} }`
 }
 
-const optionsType = (operation: CollectedOperation) => {
+const optionsType = (operation: CollectedOperation, names: SchemaNames) => {
   const fields: string[] = []
-  const pathType = paramsType(operation, 'path')
-  const queryType = paramsType(operation, 'query')
+  const pathType = paramsType(operation, 'path', names)
+  const queryType = paramsType(operation, 'query', names)
   if (pathType) {
     fields.push(`params: ${pathType}`)
   }
@@ -37,7 +40,7 @@ const optionsType = (operation: CollectedOperation) => {
     fields.push(`query?: ${queryType}`)
   }
   if (operation.bodySchema) {
-    fields.push(`body: ${schemaToTs(operation.bodySchema)}`)
+    fields.push(`body: ${schemaToTs(operation.bodySchema, names)}`)
   }
   if (fields.length === 0) {
     return 'RequestOptions | undefined'
@@ -47,11 +50,11 @@ const optionsType = (operation: CollectedOperation) => {
 
 const clientPath = (path: string) => path.replace(/\{([A-Za-z0-9_]+)\}/g, ':$1')
 
-const methodLine = (operation: CollectedOperation) => {
-  const response = schemaToTs(operation.successSchema)
-  const options = optionsType(operation)
+const methodLine = (operation: CollectedOperation, names: SchemaNames) => {
+  const response = schemaToTs(operation.successSchema, names)
+  const options = optionsType(operation, names)
   const optional = options.endsWith('| undefined') ? '?' : ''
-  const pathType = paramsType(operation, 'path')
+  const pathType = paramsType(operation, 'path', names)
   const liveGenerics = pathType ? `<${response}, ${pathType}>` : `<${response}>`
   if (operation.isSse) {
     return `    ${operation.operationId}: (options${optional}: ${options}) => api.sse${liveGenerics}('${clientPath(operation.path)}', options),`
@@ -60,7 +63,7 @@ const methodLine = (operation: CollectedOperation) => {
     return `    ${operation.operationId}: (options${optional}: ${options}) => api.stream${liveGenerics}('${clientPath(operation.path)}', { ...options, method: '${operation.method}' }),`
   }
   const method = operation.method.toLowerCase()
-  const bodyType = operation.bodySchema ? schemaToTs(operation.bodySchema) : undefined
+  const bodyType = operation.bodySchema ? schemaToTs(operation.bodySchema, names) : undefined
   const hasBody = Boolean(bodyType) && method !== 'get' && method !== 'delete'
   const generics =
     pathType && hasBody
@@ -74,12 +77,15 @@ const methodLine = (operation: CollectedOperation) => {
 }
 
 const generateClientFile = (spec: OpenApiSpec, operations: CollectedOperation[]) => {
+  const names = schemaTypeNames(spec.components?.schemas)
   const tags = [...new Set(operations.map((item) => item.tag))]
   const groups = tags.map((tag) => {
-    const lines = operations.filter((item) => item.tag === tag).map(methodLine)
+    const lines = operations
+      .filter((item) => item.tag === tag)
+      .map((item) => methodLine(item, names))
     return `    ${tag}: {\n${lines.join('\n')}\n    },`
   })
-  const schemaNames = Object.keys(spec.components?.schemas ?? {}).map((name) => toPascal(name))
+  const schemaNames = [...names.values()]
   const typesImport =
     schemaNames.length > 0 ? `import type { ${schemaNames.join(', ')} } from './types'\n` : ''
   const hasSse = operations.some((item) => item.isSse)
@@ -92,7 +98,7 @@ const generateClientFile = (spec: OpenApiSpec, operations: CollectedOperation[])
     if (method === 'get' || method === 'delete') {
       return false
     }
-    return !paramsType(item, 'path')
+    return !paramsType(item, 'path', names)
   })
   const typeImports = ['CreateFetchOptions', 'RequestOptions']
   if (needsNoParams) {

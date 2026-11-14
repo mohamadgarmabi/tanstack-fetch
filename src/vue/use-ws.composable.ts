@@ -1,4 +1,4 @@
-import { inject, onScopeDispose, ref, shallowRef, watch, type Ref } from 'vue'
+import { getCurrentScope, inject, onScopeDispose, ref, shallowRef, watch, type Ref } from 'vue'
 import type {
   LiveFetchClient,
   FetchMethodPath,
@@ -53,8 +53,11 @@ const useWs = <
   const error = shallowRef<unknown>(undefined)
   const status = ref<WsStatus>('disconnected')
   let socket: WsSocket<TSend> | null = null
+  // Bumped on every stop so callbacks from a replaced socket are ignored.
+  let generation = 0
 
   const stop = () => {
+    generation += 1
     socket?.close()
     socket = null
   }
@@ -78,24 +81,31 @@ const useWs = <
 
     error.value = undefined
     status.value = 'connecting'
+    const current = generation
+    const live = () => current === generation
     socket = api.ws<T, NoParams, TSend>(path, {
       ...(options as object),
       onOpen: () => {
+        if (!live()) return
         status.value = 'connected'
       },
       onMessage: (message: T, event: MessageEvent) => {
+        if (!live()) return
         data.value = message
         options.onMessage?.(message, event)
       },
       onError: (nextError: unknown) => {
+        if (!live()) return
         status.value = 'error'
         error.value = nextError
         options.onError?.(nextError)
       },
       onReconnect: () => {
+        if (!live()) return
         status.value = 'connecting'
       },
       onClose: () => {
+        if (!live()) return
         status.value = 'disconnected'
       },
     } as never)
@@ -109,14 +119,19 @@ const useWs = <
       JSON.stringify('params' in options ? options.params : null),
       JSON.stringify(options.query ?? null),
     ],
-    connect,
+    () => {
+      // SSR: onScopeDispose never runs on the server, so a connection opened here would leak.
+      if (typeof window !== 'undefined') connect()
+    },
     { immediate: true },
   )
 
-  onScopeDispose(() => {
-    stop()
-    status.value = 'disconnected'
-  })
+  // No effect scope during SSR setup; nothing was connected there.
+  if (getCurrentScope())
+    onScopeDispose(() => {
+      stop()
+      status.value = 'disconnected'
+    })
 
   return {
     data,

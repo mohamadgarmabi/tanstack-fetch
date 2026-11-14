@@ -1,4 +1,4 @@
-import { inject, onScopeDispose, ref, shallowRef, watch, type Ref } from 'vue'
+import { getCurrentScope, inject, onScopeDispose, ref, shallowRef, watch, type Ref } from 'vue'
 import { isFetchError } from 'tanstack-fetch'
 import type {
   FetchClient,
@@ -54,8 +54,11 @@ const useSse = <T, TParams extends FetchParamsConstraint = NoParams, TPath exten
   const error = shallowRef<FetchError | Error | undefined>(undefined)
   const status = ref<SseStatus>('disconnected')
   let closeFn: (() => void) | null = null
+  // Bumped on every stop so callbacks from a replaced subscription are ignored.
+  let generation = 0
 
   const stop = () => {
+    generation += 1
     closeFn?.()
     closeFn = null
   }
@@ -79,22 +82,28 @@ const useSse = <T, TParams extends FetchParamsConstraint = NoParams, TPath exten
 
     error.value = undefined
     status.value = 'connecting'
+    const current = generation
+    const live = () => current === generation
 
     const subscription = api.sse<T>(path, {
       ...(options as object),
       lastEventId: options.lastEventId,
       onOpen: () => {
+        if (!live()) return
         status.value = 'connected'
       },
       onMessage: (message: T, nextEvent: SseEvent<T>) => {
+        if (!live()) return
         data.value = message
         event.value = nextEvent
         options.onMessage?.(message, nextEvent)
       },
       onEvent: (nextEvent: SseEvent<T>) => {
+        if (!live()) return
         options.onEvent?.(nextEvent)
       },
       onError: (nextError: unknown) => {
+        if (!live()) return
         status.value = 'error'
         const normalized =
           nextError instanceof Error ? nextError : new Error('SSE connection failed')
@@ -102,6 +111,7 @@ const useSse = <T, TParams extends FetchParamsConstraint = NoParams, TPath exten
         options.onError?.(nextError)
       },
       onClose: () => {
+        if (!live()) return
         status.value = 'disconnected'
       },
     } as never)
@@ -118,14 +128,19 @@ const useSse = <T, TParams extends FetchParamsConstraint = NoParams, TPath exten
       JSON.stringify('params' in options ? options.params : null),
       JSON.stringify(options.query ?? null),
     ],
-    connect,
+    () => {
+      // SSR: onScopeDispose never runs on the server, so a connection opened here would leak.
+      if (typeof window !== 'undefined') connect()
+    },
     { immediate: true },
   )
 
-  onScopeDispose(() => {
-    stop()
-    status.value = 'disconnected'
-  })
+  // No effect scope during SSR setup; nothing was connected there.
+  if (getCurrentScope())
+    onScopeDispose(() => {
+      stop()
+      status.value = 'disconnected'
+    })
 
   return {
     data,

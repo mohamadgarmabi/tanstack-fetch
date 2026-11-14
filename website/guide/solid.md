@@ -1,6 +1,6 @@
 ---
-title: Solid
-description: Solid helpers for tanstack-fetch — FetchProvider, useFetch, and useSse with TanStack Solid Query.
+title: 'Solid Query fetch client: useFetch, useSse'
+description: 'Use tanstack-fetch with TanStack Solid Query and SolidStart: FetchProvider, useFetch, useSse and useWs, a typed queryFn with AbortSignal, and SSR cookies.'
 ---
 
 # Solid

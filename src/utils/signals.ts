@@ -24,14 +24,25 @@ const combineSignals = (signals: Array<AbortSignal | undefined>) => {
     return AbortSignal.any(active)
   }
   const controller = new AbortController()
-  active.forEach((signal) => {
+  const listeners = active.map((signal) => () => controller.abort(signal.reason))
+  const release = () =>
+    active.forEach((signal, index) => signal.removeEventListener('abort', listeners[index]))
+  active.forEach((signal, index) => {
     if (signal.aborted) {
       controller.abort(signal.reason)
       return
     }
-    signal.addEventListener('abort', () => controller.abort(signal.reason), { once: true })
+    signal.addEventListener('abort', listeners[index], { once: true })
   })
+  controller.signal.addEventListener('abort', release, { once: true })
+  fallbackReleases.set(controller.signal, release)
   return controller.signal
+}
+
+// Fallback path only: long-lived user signals would otherwise keep one listener per request.
+const fallbackReleases = new WeakMap<AbortSignal, () => void>()
+const releaseSignal = (signal: AbortSignal | undefined) => {
+  if (signal) fallbackReleases.get(signal)?.()
 }
 
 type TimeoutSignal = {
@@ -62,5 +73,5 @@ const createTimeoutSignal = (timeoutMs: number | undefined): TimeoutSignal | und
   return { signal: controller.signal, clear }
 }
 
-export { wait, combineSignals, createTimeoutSignal }
+export { wait, combineSignals, createTimeoutSignal, releaseSignal }
 export type { TimeoutSignal }

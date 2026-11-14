@@ -1,6 +1,6 @@
 ---
-title: Angular
-description: Angular helpers for tanstack-fetch — provideFetchClient, injectFetch, and useSse signals with TanStack Angular Query.
+title: 'Angular Query fetch client and SSE signals'
+description: 'Use tanstack-fetch with TanStack Angular Query: provideFetchClient, injectFetch, useSse and useWs as signals, typed errors, and an HttpClient-free setup.'
 ---
 
 # Angular

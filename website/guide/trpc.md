@@ -1,6 +1,6 @@
 ---
-title: tRPC
-description: Wire createFetch into tRPC — TanStack Start + Query first, Router context, SolidStart, Remix, React, Vue, Solid, Angular, Svelte.
+title: 'tRPC fetch link with auth and retries'
+description: 'Use createFetch as the tRPC fetch link: auth headers, refresh tokens, retries and DevTools for tRPC in TanStack Start, Next.js, Remix, Vue, Solid and Svelte.'
 ---
 
 # tRPC
@@ -175,7 +175,7 @@ Create a per-request server client with `ssr-forward` + request cookies, then `l
 **React** · Next.js App Router
 :::
 
-Same React setup. Relative `/api/trpc` in the browser, absolute origin on the server. Forward cookies with `ssr-forward` when needed.
+Same React setup. Relative `/api/trpc` in the browser, absolute origin on the server. Forward cookies with `ssr-forward` when needed. A relative URL on the server throws a clear error (since 2.2.1; before, it silently called `http://localhost`).
 
 ::::
 

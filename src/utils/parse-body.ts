@@ -78,6 +78,10 @@ const encodeBody = (body: unknown, headers: Headers) => {
   if (body === undefined || body === null) {
     return undefined
   }
+  if (body instanceof FormData) {
+    // fetch must set `multipart/form-data; boundary=...` itself.
+    headers.delete('content-type')
+  }
   if (
     typeof body === 'string' ||
     body instanceof FormData ||

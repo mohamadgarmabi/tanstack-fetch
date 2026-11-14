@@ -1,6 +1,6 @@
 ---
 title: DevTools preview
-description: Live tanstack-fetch DevTools — HTTP, SSE, SSR, tRPC, WebSocket, WebTransport and NDJSON streams with message logs, call graph, mocked-request badges, one-line setup.
+description: 'Live tanstack-fetch DevTools: inspect HTTP, SSE, SSR, tRPC, WebSocket and NDJSON requests with message logs, a call graph and mock badges. One-line setup.'
 ---
 
 # DevTools
@@ -13,7 +13,7 @@ description: Live tanstack-fetch DevTools — HTTP, SSE, SSR, tRPC, WebSocket, W
 
 Bottom dock with request list, **SSE event list**, **WebSocket / WebTransport / NDJSON message log** (`↑ out` / `↓ in`), **caller file** (e.g. `profile.hook.ts`), and a **call graph**.
 
-Click a graph node → pick **Cursor / Zed / VS Code** → opens via deep link (last choice remembered).
+Click a graph node → pick **Cursor / Zed / VS Code** → opens via deep link (last choice remembered). Under a dev server, where frames are project-relative URLs like `src/api/user.ts`, the file opens through Vite's `/__open-in-editor` in Vite's configured editor.
 
 **Toggle:** **Alt+Shift+F** (macOS: **⌥⇧F**)
 

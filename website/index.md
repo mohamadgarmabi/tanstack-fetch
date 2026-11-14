@@ -1,8 +1,8 @@
 ---
 layout: page
-title: tanstack-fetch — the fetch client that speaks queryFn
+title: 'tanstack-fetch: typed fetch client for TanStack Query'
 titleTemplate: false
-description: 'The fetch client that speaks queryFn: returns data, throws typed errors, respects AbortSignal. Tiny core; SSR, SSE, WebSocket and framework adapters are optional.'
+description: 'Typed fetch client for TanStack Query: returns data, throws typed errors, respects AbortSignal. 3.97KB core; SSR, SSE, WebSocket and adapters are optional.'
 outline: false
 aside: false
 ---

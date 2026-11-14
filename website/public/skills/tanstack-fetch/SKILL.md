@@ -10,13 +10,13 @@ license: MIT
 metadata:
   author: Mohammad Garmabi
   package: tanstack-fetch
-  version: '2.2.0'
+  version: '2.2.1'
   docs: https://mohamadgarmabi.github.io/tanstack-fetch/
   npm: https://www.npmjs.com/package/tanstack-fetch
   llm: https://mohamadgarmabi.github.io/tanstack-fetch/llms.txt
 ---
 
-# tanstack-fetch (v2.2.0)
+# tanstack-fetch (v2.2.1)
 
 Typed Fetch client shaped for TanStack Query. Not an official TanStack package.
 
@@ -46,18 +46,18 @@ npm install tanstack-fetch vue
 
 | Import                    | Use when                                               | gzip   |
 | ------------------------- | ------------------------------------------------------ | ------ |
-| `tanstack-fetch`          | Slim HTTP; features via `interceptors` (no `upload`)   | 3.71KB |
-| `tanstack-fetch/sse`      | Full HTTP (shortcuts, `upload`) + `api.sse()`          | 6.46KB |
+| `tanstack-fetch`          | Slim HTTP; features via `interceptors` (no `upload`)   | 3.97KB |
+| `tanstack-fetch/sse`      | Full HTTP (shortcuts, `upload`) + `api.sse()`          | 6.96KB |
 | `tanstack-fetch/full`     | Alias of `/sse`                                        |   same |
-| `tanstack-fetch/live`     | `sse` + `ws` + `transport` + `stream`                  | 8.88KB |
-| `tanstack-fetch/plugins`  | Factories (`createRefreshTokenInterceptor`, …)         | 1.22KB |
-| `tanstack-fetch/react`    | `FetchProvider`, `useFetch`, `useSse`, `useWs`         | 0.99KB |
-| `tanstack-fetch/vue`      | `createFetchPlugin`, `useFetch`, `useSse`, `useWs`     | 0.94KB |
+| `tanstack-fetch/live`     | `sse` + `ws` + `transport` + `stream`                  | 9.40KB |
+| `tanstack-fetch/plugins`  | Factories (`createRefreshTokenInterceptor`, …)         | 1.26KB |
+| `tanstack-fetch/react`    | `FetchProvider`, `useFetch`, `useSse`, `useWs`         | 1.02KB |
+| `tanstack-fetch/vue`      | `createFetchPlugin`, `useFetch`, `useSse`, `useWs`     | 1.04KB |
 | `tanstack-fetch/solid`    | `FetchProvider`, `useFetch`, `useSse`, `useWs`         | —      |
 | `tanstack-fetch/svelte`   | `setFetchClient`, `useFetch`, `useSse`, `useWs`        | —      |
 | `tanstack-fetch/angular`  | `provideFetchClient`, `injectFetch`, `useSse`, `useWs` | —      |
-| `tanstack-fetch/trpc`     | tRPC link via the same client                          | 3.28KB |
-| `tanstack-fetch/devtools` | `setupDevtools(api)` request dock                      | 8.85KB |
+| `tanstack-fetch/trpc`     | tRPC link via the same client                          | 3.80KB |
+| `tanstack-fetch/devtools` | `setupDevtools(api)` request dock                      | 9.08KB |
 | `tanstack-fetch/mock`     | `createMocks()` — HTTP / SSE / NDJSON / WS mocks       | 1.82KB |
 
 ```ts

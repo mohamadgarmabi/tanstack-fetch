@@ -1,3 +1,8 @@
+---
+title: 'Axios to fetch migration checklist'
+description: 'Checklist to finish migrating from axios to tanstack-fetch after the CLI scan: query params, interceptors, errors, SSR cookies, SSE reconnect and rollback.'
+---
+
 # Migrate from axios to tanstack-fetch – checklist
 
 ![Migrate from axios to tanstack-fetch – checklist](/images/page-guide-migrate-checklist.jpg)
@@ -56,14 +61,14 @@ If the CLI wrote scaffold files (e.g., `src/lib/api.ts`, `src/queries/users.ts`)
 
 ## 5. Test verification
 
-| Test                     | How to run                                                                         |
-| ------------------------ | ---------------------------------------------------------------------------------- |
-| No duplicate 401 refresh | Open network tab → trigger parallel requests → expect **one** `/auth/refresh` call |
-| Signal cancellation      | Rapid unmount + abort; ensure inflight requests abort                              |
-| Error shape              | Query error `isFetchError` should expose `status`, `code`, `body`                  |
-| Type safety              | tsc passes; check generic `T` in `api.get<T>`                                      |
-| ssr cookies (Next/Nuxt)  | Prefetch on server → confirm cookie forwarding (`ssr-forward`)                     |
-| SSE reconnect            | Stream -> network offline -> resume; `Last-Event-ID` handling                      |
+| Test                     | How to run                                                                                                     |
+| ------------------------ | -------------------------------------------------------------------------------------------------------------- |
+| No duplicate 401 refresh | Open network tab → trigger parallel requests → expect **one** `/auth/refresh` call                             |
+| Signal cancellation      | Rapid unmount + abort; ensure inflight requests abort                                                          |
+| Error shape              | Query error `isFetchError` should expose `status`, `code`, `body`                                              |
+| Type safety              | tsc passes; check generic `T` in `api.get<T>`                                                                  |
+| ssr cookies (Next/Nuxt)  | Prefetch on server → confirm cookie forwarding (`ssr-forward`)                                                 |
+| SSE reconnect            | Needs `sse-resume` (or your own `onSseError` retry). Stream -> network offline -> resume; `Last-Event-ID` sent |
 
 ## 6. Rollback strategy
 

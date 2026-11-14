@@ -1,10 +1,10 @@
 ---
 title: 'Nuxt $fetch / ofetch vs tanstack-fetch: SSR and Vue Query'
 titleTemplate: false
-description: "Replace Nuxt $fetch glue with tanstack-fetch — createFetchPlugin, ssr-forward, useFetchClient naming, Vue Query hydrate, SSE, and comparison graphs."
+description: 'Replace Nuxt $fetch glue with tanstack-fetch — createFetchPlugin, ssr-forward, useFetchClient naming, Vue Query hydrate, SSE, and comparison graphs.'
 date: 2026-10-12
 category: Framework guides
-tags: ["Nuxt","Vue","SSR"]
+tags: ['Nuxt', 'Vue', 'SSR']
 cover: /images/blog-nuxt-ofetch-tanstack-fetch-cover.jpg
 ---
 
@@ -24,13 +24,13 @@ Nuxt’s `$fetch` (ofetch) is ergonomic for Nitro and pages. It still leaves you
 
 ## TL;DR
 
-| If you need… | Prefer |
-| --- | --- |
-| SSR cookies + same client in browser | **tanstack-fetch** |
-| Vue Query without `$fetch` unwrap glue | **tanstack-fetch** |
-| Name clash with Nuxt `useFetch` | import as `useFetchClient` |
-| One-off Nitro utility | `$fetch` is fine |
-| SSE + Authorization | `useSse` |
+| If you need…                           | Prefer                     |
+| -------------------------------------- | -------------------------- |
+| SSR cookies + same client in browser   | **tanstack-fetch**         |
+| Vue Query without `$fetch` unwrap glue | **tanstack-fetch**         |
+| Name clash with Nuxt `useFetch`        | import as `useFetchClient` |
+| One-off Nitro utility                  | `$fetch` is fine           |
+| SSE + Authorization                    | `useSse`                   |
 
 ```bash
 npm install tanstack-fetch @tanstack/vue-query
@@ -192,15 +192,15 @@ Rough relative **boilerplate** (lower is better) — a map of where teams spend 
 
 ## Feature matrix
 
-| Capability | tanstack-fetch | $fetch / ofetch |
-| --- | --- | --- |
-| SSR cookie forward | `ssr-forward` | Manual |
-| Vue Query fit | Native | Adapt |
-| Name-safe composable | `useFetchClient` | Nuxt `useFetch` |
-| Typed errors | `FetchError` | ofetch errors |
-| Refresh single-flight | Plugin | DIY |
-| SSE + Authorization | Yes | No |
-| Nitro-only calls | Use either | Native `$fetch` |
+| Capability            | tanstack-fetch   | $fetch / ofetch |
+| --------------------- | ---------------- | --------------- |
+| SSR cookie forward    | `ssr-forward`    | Manual          |
+| Vue Query fit         | Native           | Adapt           |
+| Name-safe composable  | `useFetchClient` | Nuxt `useFetch` |
+| Typed errors          | `FetchError`     | ofetch errors   |
+| Refresh single-flight | Plugin           | DIY             |
+| SSE + Authorization   | Yes              | No              |
+| Nitro-only calls      | Use either       | Native `$fetch` |
 
 ## Auth, status handlers, refresh
 

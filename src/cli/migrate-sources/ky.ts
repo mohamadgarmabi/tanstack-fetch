@@ -2,6 +2,8 @@ import type { MigrateFinding, MigrateSource } from '../migrate.type'
 import {
   collectHttpClientInstanceNames,
   ensureTanstackFetchImport,
+  mergeTanstackFetchImports,
+  renameOptionKey,
   stripJsonChainOnCalls,
 } from './migrate-source.util'
 
@@ -9,6 +11,9 @@ const detect = (source: string) =>
   /from\s*['"]ky['"]/.test(source) ||
   /\brequire\s*\(\s*['"]ky['"]\s*\)/.test(source) ||
   /\bky\.(create|get|post|put|patch|delete|extend|head)\s*\(/.test(source)
+
+/** ky options are always the 2nd argument: ky.post(url, { json, searchParams }). */
+const KY_OPTIONS_ARG_INDEX = { get: 1, post: 1, put: 1, patch: 1, delete: 1, head: 1 }
 
 const applySafeTransforms = (source: string): string => {
   const instancesBefore = collectHttpClientInstanceNames(source)
@@ -29,23 +34,14 @@ const applySafeTransforms = (source: string): string => {
     ...new Set([...instancesBefore, ...collectHttpClientInstanceNames(next), 'api']),
   ]
 
-  for (const name of instances) {
-    next = next.replace(
-      new RegExp(
-        `(\\b${name}\\.(?:get|post|put|patch|delete|head)\\([^)]*)\\bsearchParams\\s*:`,
-        'g',
-      ),
-      '$1query:',
-    )
-  }
-
+  next = renameOptionKey(next, instances, KY_OPTIONS_ARG_INDEX, 'searchParams', 'query')
   next = stripJsonChainOnCalls(next, instances)
 
   if (/\bapi\.(get|post|put|patch|delete|head)\s*\(/.test(next)) {
     next = ensureTanstackFetchImport(next)
   }
 
-  return next
+  return mergeTanstackFetchImports(next)
 }
 
 const collectFindings = (file: string, source: string): MigrateFinding[] => {

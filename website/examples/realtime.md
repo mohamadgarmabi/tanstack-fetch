@@ -1,6 +1,6 @@
 ---
-title: WebSocket, WebTransport & NDJSON live demos
-description: Live demos of api.ws (auth, send queue, reconnect with a fresh token), api.transport (WebTransport datagrams) and api.stream (NDJSON / LLM tokens) — real tanstack-fetch/live code against mock servers.
+title: 'WebSocket and NDJSON streaming demos'
+description: 'Live demos of api.ws with auth, send queue and reconnect, api.transport with WebTransport datagrams, and api.stream for NDJSON and LLM token streams.'
 ---
 
 # WebSocket, WebTransport & NDJSON

@@ -4,6 +4,7 @@ import { listSourceFiles, toRelativePath } from './list-source-files'
 import { resolveFrameworkScaffold } from './migrate-frameworks'
 import type { MigrateArgs, MigrateFinding, MigrateResult } from './migrate.type'
 import { resolveMigrateSources } from './migrate-sources'
+import { addNamedImport } from './migrate-sources/migrate-source.util'
 import { promptReactProvider } from './prompt-react-provider'
 
 const isPathInsideRoot = (rootDirectory: string, absolutePath: string) => {
@@ -30,7 +31,10 @@ import {
  * Returns data, throws FetchError, honors AbortSignal — no response.data unwrap.
  */
 export const api = createFetch({
-  baseUrl: process.env.API_URL ?? process.env.VITE_API_URL ?? 'https://api.example.com',
+  baseUrl:
+    (typeof process === 'undefined'
+      ? undefined
+      : (process.env.API_URL ?? process.env.VITE_API_URL)) ?? 'https://api.example.com',
   interceptors: [
     createAuthInterceptor({
       getToken: () =>
@@ -98,6 +102,68 @@ const writeScaffoldFile = (rootDirectory: string, relativePath: string, contents
   return toRelativePath(rootDirectory, absolutePath)
 }
 
+/** Strip strings and comments so identifier checks do not match `'/api/users'`. */
+const stripLiterals = (source: string) =>
+  source
+    .replace(/\/\*[\s\S]*?\*\//g, ' ')
+    .replace(/\/\/[^\n]*/g, ' ')
+    .replace(/(['"`])(?:\\.|(?!\1)[^\\\n])*\1/g, "''")
+
+const declaresApi = (code: string) =>
+  /\b(?:const|let|var|function|class)\s+api\b/.test(code) ||
+  /\bimport\s+api\b/.test(code) ||
+  [...code.matchAll(/\bimport\s*\{([^}]*)\}/g)].some((match) =>
+    match[1].split(',').some(
+      (part) =>
+        part
+          .trim()
+          .split(/\s+as\s+/)
+          .pop() === 'api',
+    ),
+  )
+
+const usesApiCall = (code: string) => /(?<![.\w$])api\s*\.\s*\w+\s*\(/.test(code)
+
+/** Project-relative path of the module that exports the shared `api` (scaffolded or already present). */
+const resolveApiModulePath = (args: MigrateArgs, rootDirectory: string): string | null => {
+  const frameworkPath = args.framework
+    ? resolveFrameworkScaffold(args.framework).files.find(
+        (file) => !file.path.includes('.server.') && file.contents.includes('export const api'),
+      )?.path
+    : undefined
+  const candidate =
+    frameworkPath ?? (typeof args.scaffold === 'string' ? args.scaffold : DEFAULT_SCAFFOLD)
+  if (args.write && args.scaffold !== null) return candidate
+  return existsSync(resolve(rootDirectory, candidate)) ? candidate : null
+}
+
+const stripExtension = (path: string) => path.replace(/\.[cm]?[jt]sx?$/, '')
+
+const toImportSpecifier = (fromFile: string, modulePath: string) => {
+  const specifier = relative(dirname(fromFile), stripExtension(modulePath)).split('\\').join('/')
+  return specifier.startsWith('.') ? specifier : `./${specifier}`
+}
+
+/**
+ * Safe transforms rewrite `axios.get(…)` / `ky.get(…)` / `$fetch(…)` to `api.get(…)`. Make sure `api`
+ * is in scope by importing it from the shared api module; when that is impossible, keep the file as-is.
+ */
+const bindApi = (
+  original: string,
+  next: string,
+  absolutePath: string,
+  apiModule: string | null,
+): string | null => {
+  const before = stripLiterals(original)
+  if (declaresApi(before) || !usesApiCall(stripLiterals(next))) return next
+  if (!apiModule || stripExtension(apiModule) === stripExtension(absolutePath)) return null
+  // CommonJS file: an ESM import would break it.
+  if (/\brequire\s*\(/.test(before) && !/^\s*import\s/m.test(before)) return null
+  // A bare `api` identifier we cannot classify (param, destructure, global) — do not guess.
+  if (/(?<![.\w$])api\b(?!\s*:)/.test(before)) return null
+  return addNamedImport(next, ['api'], toImportSpecifier(absolutePath, apiModule))
+}
+
 const migrate = (args: MigrateArgs): MigrateResult => {
   const rootDirectory = resolve(args.dir)
   if (!existsSync(rootDirectory)) {
@@ -108,6 +174,8 @@ const migrate = (args: MigrateArgs): MigrateResult => {
   const findings: MigrateFinding[] = []
   let filesChanged = 0
   const files = listSourceFiles(rootDirectory)
+  const apiModulePath = resolveApiModulePath(args, rootDirectory)
+  const apiModule = apiModulePath ? resolve(rootDirectory, apiModulePath) : null
 
   for (const absolutePath of files) {
     if (isMigrateSelfPath(absolutePath)) continue
@@ -122,9 +190,21 @@ const migrate = (args: MigrateArgs): MigrateResult => {
 
     if (!args.write) continue
 
-    let next = sourceText
+    let transformed = sourceText
     for (const item of matched) {
-      next = item.applySafeTransforms(next)
+      transformed = item.applySafeTransforms(transformed)
+    }
+    const next = bindApi(sourceText, transformed, absolutePath, apiModule)
+    if (next === null) {
+      findings.push({
+        file: relativeFile,
+        line: 1,
+        source: matched[0].id,
+        kind: 'manual',
+        snippet: '(file left unchanged)',
+        note: `Not rewritten: calls would become api.* but no shared api module is in scope. Re-run with --write (without --no-scaffold) or create ${apiModulePath ?? DEFAULT_SCAFFOLD} exporting \`api\`.`,
+      })
+      continue
     }
     if (next !== sourceText) {
       writeFileSync(absolutePath, next, 'utf8')

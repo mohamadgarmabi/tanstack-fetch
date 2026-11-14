@@ -5,7 +5,7 @@ titleTemplate: false
 description: CLI that scans axios, ky, ofetch, $fetch, and fetch call sites, applies safe rewrites for TanStack Query, and scaffolds React, Vue, Nuxt, or Next.js.
 date: 2026-10-07
 category: Releases
-tags: ["CLI","Migration"]
+tags: ['CLI', 'Migration']
 cover: /images/blog-1-6-3-cover.jpg
 ---
 
@@ -41,8 +41,7 @@ queryFn: async ({ signal }) => {
 }
 
 // after
-queryFn: ({ signal }) =>
-  api.get<User[]>('/users', { signal, query: { page: 1 } })
+queryFn: ({ signal }) => api.get<User[]>('/users', { signal, query: { page: 1 } })
 ```
 
 ```ts
@@ -70,13 +69,13 @@ npx tanstack-fetch migrate --from ofetch --framework nuxt --write
 npx tanstack-fetch migrate --from fetch --framework nextjs --write
 ```
 
-| Flag | Meaning |
-| --- | --- |
-| `--from` | `axios` \| `ky` \| `ofetch` \| `fetch` \| `all` |
-| `--framework` | `react` \| `vue` \| `nuxt` \| `nextjs` |
+| Flag                           | Meaning                                                             |
+| ------------------------------ | ------------------------------------------------------------------- |
+| `--from`                       | `axios` \| `ky` \| `ofetch` \| `fetch` \| `all`                     |
+| `--framework`                  | `react` \| `vue` \| `nuxt` \| `nextjs`                              |
 | `--provider` / `--no-provider` | React: include / skip `FetchProvider` (interactive default: **no**) |
-| `--write` | Apply safe transforms + write scaffold |
-| `--no-scaffold` | Skip scaffold files (honored with `--framework` too) |
+| `--write`                      | Apply safe transforms + write scaffold                              |
+| `--no-scaffold`                | Skip scaffold files (honored with `--framework` too)                |
 
 `--write` is conservative: safe patterns rewrite; interceptors and odd edge cases stay in the report.
 
@@ -84,25 +83,25 @@ Alias: `npx tanstack-fetch migrate-axios` → `--from axios`.
 
 ## What it rewrites
 
-| From | To |
-| --- | --- |
-| `axios.create({ baseURL })` | `createFetch({ baseUrl })` |
-| `axios('/users')` / `axios.get` | `api.get` |
-| axios `params` / ky `searchParams` | `query` |
-| `(await axios.get(…)).data` / `.json()` | data returned directly |
-| `$fetch(url)` / `ofetch(url, { method })` | `api.get` / `api.post` / … |
-| `isAxiosError` / ofetch `FetchError` | `isFetchError` / `FetchError` |
+| From                                      | To                            |
+| ----------------------------------------- | ----------------------------- |
+| `axios.create({ baseURL })`               | `createFetch({ baseUrl })`    |
+| `axios('/users')` / `axios.get`           | `api.get`                     |
+| axios `params` / ky `searchParams`        | `query`                       |
+| `(await axios.get(…)).data` / `.json()`   | data returned directly        |
+| `$fetch(url)` / `ofetch(url, { method })` | `api.get` / `api.post` / …    |
+| `isAxiosError` / ofetch `FetchError`      | `isFetchError` / `FetchError` |
 
 Also covered: `import * as axios`, `require('axios')`, instance clients after `create` / `ky.create`, `void fetch` / `.then` chains (report-first for raw fetch), `axios.defaults` (manual finding).
 
 ## Framework scaffolds
 
-| Framework | Files |
-| --- | --- |
-| `react` | `src/lib/api.ts`, `src/queries/users.ts` (+ optional provider) |
-| `vue` | `api.ts` + plugin |
-| `nuxt` | `lib/api.ts`, plugin, `composables/useApi.ts` |
-| `nextjs` | client `api.ts` + `api.server.ts` (`ssr-forward` + cookies) |
+| Framework | Files                                                          |
+| --------- | -------------------------------------------------------------- |
+| `react`   | `src/lib/api.ts`, `src/queries/users.ts` (+ optional provider) |
+| `vue`     | `api.ts` + plugin                                              |
+| `nuxt`    | `lib/api.ts`, plugin, `composables/useApi.ts`                  |
+| `nextjs`  | client `api.ts` + `api.server.ts` (`ssr-forward` + cookies)    |
 
 For React, `--write` asks whether to include `FetchProvider` (default **no**). Prefer `{ client: api }` for `useSse`. Skip the prompt with `--no-provider` or `--provider`.
 

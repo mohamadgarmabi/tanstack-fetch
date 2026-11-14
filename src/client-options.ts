@@ -2,7 +2,10 @@ import type { CoreFetchClient, CreateFetchOptions, FetchClient } from './types'
 
 type FetchClientLike = Omit<FetchClient, 'sse'> | FetchClient | CoreFetchClient
 
-const clientOptionsRegistry = new WeakMap<object, CreateFetchOptions>()
+// Shared on globalThis: each bundled entry (dist/index.js, dist/trpc.js) has its own module copy.
+const registryKey = Symbol.for('tanstack-fetch.clientOptions')
+const registryHost = globalThis as { [registryKey]?: WeakMap<object, CreateFetchOptions> }
+const clientOptionsRegistry = (registryHost[registryKey] ??= new WeakMap())
 
 const registerClientOptions = (client: object, options: CreateFetchOptions) => {
   clientOptionsRegistry.set(client, options)

@@ -1,10 +1,10 @@
 ---
 title: 'Next.js fetch vs tanstack-fetch: SSR cookies and hydration'
 titleTemplate: false
-description: "Use tanstack-fetch in Next.js App Router — ssr-forward cookies, absolute baseUrl on the server, React Query dehydrate/hydrate, SSE, and migrate path."
+description: 'Use tanstack-fetch in Next.js App Router — ssr-forward cookies, absolute baseUrl on the server, React Query dehydrate/hydrate, SSE, and migrate path.'
 date: 2026-10-12
 category: Framework guides
-tags: ["Next.js","React","SSR"]
+tags: ['Next.js', 'React', 'SSR']
 cover: /images/blog-nextjs-fetch-tanstack-fetch-cover.jpg
 ---
 
@@ -24,13 +24,13 @@ Next’s native `fetch` caches aggressively and does not give you a shared typed
 
 ## TL;DR
 
-| If you need… | Prefer |
-| --- | --- |
-| Same client in RSC + browser | **tanstack-fetch** + `ssr-forward` |
-| Prefetch + `HydrationBoundary` | **tanstack-fetch** + React Query |
-| Cookie / auth header forward | `incoming` + `ssr-forward` |
-| Simple static `fetch` in one RSC | native fetch is fine |
-| SSE with Authorization | `tanstack-fetch/sse` |
+| If you need…                     | Prefer                             |
+| -------------------------------- | ---------------------------------- |
+| Same client in RSC + browser     | **tanstack-fetch** + `ssr-forward` |
+| Prefetch + `HydrationBoundary`   | **tanstack-fetch** + React Query   |
+| Cookie / auth header forward     | `incoming` + `ssr-forward`         |
+| Simple static `fetch` in one RSC | native fetch is fine               |
+| SSE with Authorization           | `tanstack-fetch/sse`               |
 
 ```bash
 npm install tanstack-fetch @tanstack/react-query
@@ -194,15 +194,15 @@ Rough relative **boilerplate** (lower is better) — a map of where teams spend 
 
 ## Feature matrix
 
-| Capability | tanstack-fetch | native fetch helpers |
-| --- | --- | --- |
-| SSR cookie forward | `ssr-forward` | Manual |
-| Absolute server baseUrl | Built-in pattern | Manual |
-| Query dehydrate/hydrate | Native fit | Glue |
-| Typed errors | `FetchError` | DIY |
-| Refresh token | Plugin | DIY |
-| RSC + client same options | `queryOptions` | Duplicate |
-| SSE + Authorization | Yes | Hard |
+| Capability                | tanstack-fetch   | native fetch helpers |
+| ------------------------- | ---------------- | -------------------- |
+| SSR cookie forward        | `ssr-forward`    | Manual               |
+| Absolute server baseUrl   | Built-in pattern | Manual               |
+| Query dehydrate/hydrate   | Native fit       | Glue                 |
+| Typed errors              | `FetchError`     | DIY                  |
+| Refresh token             | Plugin           | DIY                  |
+| RSC + client same options | `queryOptions`   | Duplicate            |
+| SSE + Authorization       | Yes              | Hard                 |
 
 ## Auth, status handlers, refresh
 

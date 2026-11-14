@@ -1,6 +1,6 @@
 ---
-title: React
-description: React helpers for tanstack-fetch — FetchProvider, useFetch, and useSse with TanStack React Query.
+title: 'React Query fetch client: useFetch, useSse'
+description: 'Use tanstack-fetch with TanStack React Query: FetchProvider, useFetch, useSse and useWs hooks, typed queryFn with AbortSignal, and typed FetchError in onError.'
 ---
 
 # React

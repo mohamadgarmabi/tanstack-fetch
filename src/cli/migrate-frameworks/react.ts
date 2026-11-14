@@ -11,7 +11,7 @@ import {
 
 /** Shared browser/client API for React + TanStack Query. */
 export const api = createFetch({
-  baseUrl: import.meta.env.VITE_API_URL ?? process.env.NEXT_PUBLIC_API_URL ?? 'https://api.example.com',
+  baseUrl: import.meta.env.VITE_API_URL ?? 'https://api.example.com',
   interceptors: [
     createAuthInterceptor({
       getToken: () =>

@@ -4,7 +4,7 @@ title: 'tanstack-fetch 1.5.0: Vue and Nuxt'
 description: createFetchPlugin, useFetch, and useSse for Vue 3 and Nuxt — same client as React.
 date: 2026-10-01
 category: Releases
-tags: ["Vue","Nuxt"]
+tags: ['Vue', 'Nuxt']
 cover: /images/blog-1-5-cover.jpg
 ---
 

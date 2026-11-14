@@ -50,6 +50,8 @@ npx tanstack-fetch migrate-axios --framework react --write
 
 `--write` never fully rewrites every edge case. Always review **query params**, **interceptors**, and **manual `res.ok` / `.json()`** findings.
 
+Rewritten files get `import { api } from '…/lib/api'` (the scaffold path, relative to the file). With `--no-scaffold`, a file that would need `api` is left unchanged and reported, unless the api module already exists. New imports go after any shebang and `'use client'` / `'use server'` directive.
+
 ---
 
 ## From axios
@@ -59,7 +61,7 @@ npx tanstack-fetch migrate-axios --framework react --write
 | `axios.create({ baseURL })`                 | `createFetch({ baseUrl })`    |
 | `await axios.get(url)` → `response.data`    | `await api.get(url)`          |
 | `axios(url)` shorthand                      | `api.get(url)`                |
-| `params: { page }` (query string)           | `query: { page }`             |
+| `params: { page }` in the config argument   | `query: { page }`             |
 | `isAxiosError` / `AxiosError`               | `isFetchError` / `FetchError` |
 | `axios.defaults` / `axios({ url, method })` | reported for manual wiring    |
 
@@ -82,6 +84,7 @@ queryFn: ({ signal }) => api.get<User[]>('/users', { signal, query: { page: 1 } 
 | -------------------------- | ----------------------------- |
 | `ky.create({ prefixUrl })` | `createFetch({ baseUrl })`    |
 | `await ky.get(url).json()` | `await api.get(url)`          |
+| `ky.get(url).json<T>()`    | `api.get<T>(url)`             |
 | `searchParams`             | `query`                       |
 | `HTTPError`                | `FetchError` / `isFetchError` |
 

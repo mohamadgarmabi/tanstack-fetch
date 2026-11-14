@@ -109,6 +109,8 @@ Create the client from **`tanstack-fetch/sse`**, then pass `{ client: api }`. **
 
 `status`: `'connecting' | 'connected' | 'disconnected' | 'error'`
 
+It connects only in the browser. During SSR (Nuxt) `status` stays `'disconnected'` and the stream opens after hydration (since 2.2.1).
+
 Refs unwrap in the template.
 
 ```vue
@@ -145,7 +147,7 @@ If the app already has `createFetchPlugin({ client: api })` with an SSE client, 
 
 ## `useWs`
 
-Create the client from **`tanstack-fetch/live`** and pass `{ client: api }`. Same result shape as `useSse`, plus `send`. In the browser, set `authIn` (`'query'` or `'protocol'`) when you have a token. Add `transport: 'webtransport'` for WebTransport. See [WebSocket, WebTransport & streams](./websocket).
+Create the client from **`tanstack-fetch/live`** and pass `{ client: api }`. Same result shape as `useSse`, plus `send`. In the browser, set `authIn` (`'query'` or `'protocol'`) when you have a token. Add `transport: 'webtransport'` for WebTransport. See [WebSocket, WebTransport & streams](./websocket). Like `useSse`, it opens the socket only in the browser, never during SSR.
 
 ```vue
 <script setup lang="ts">

@@ -1,5 +1,5 @@
 import type { MigrateFinding, MigrateSource } from '../migrate.type'
-import { ensureTanstackFetchImport } from './migrate-source.util'
+import { ensureTanstackFetchImport, mergeTanstackFetchImports } from './migrate-source.util'
 
 /** `$` is not a word char — do not use `\b` before `$fetch`. */
 const DOLLAR_FETCH_RE = /(?<![\w$])\$fetch\b/
@@ -73,7 +73,7 @@ const applySafeTransforms = (source: string): string => {
     next = ensureTanstackFetchImport(next)
   }
 
-  return next
+  return mergeTanstackFetchImports(next)
 }
 
 const collectFindings = (file: string, source: string): MigrateFinding[] => {

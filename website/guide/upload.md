@@ -33,7 +33,7 @@ Or build FormData yourself:
 ```ts
 import { createFormData } from 'tanstack-fetch'
 
-const body = createFormData({ file, fields: { albumId: '1' } })
+const body = createFormData({ file, albumId: '1' })
 await api.post('/files', { body, onUploadProgress: … })
 ```
 

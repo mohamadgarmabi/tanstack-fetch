@@ -68,7 +68,13 @@ const buildUrl = (
   const absolutePath = /^https?:\/\//i.test(filledPath)
     ? filledPath
     : `${(baseUrl ?? '').replace(/\/$/, '')}/${filledPath.replace(/^\//, '')}`
-  const url = new URL(absolutePath)
+  const base = globalThis.location?.href
+  if (!/^https?:\/\//i.test(absolutePath) && !base) {
+    throw new Error(
+      `tanstack-fetch: cannot resolve "${absolutePath}" without a browser location; set an absolute baseUrl`,
+    )
+  }
+  const url = new URL(absolutePath, base)
   appendQuery(url, query)
   return url
 }

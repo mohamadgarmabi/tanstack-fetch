@@ -71,25 +71,13 @@ const toErrorResult = <T, E>(status: number, error: E, headers: Headers): Attemp
 
 const executeFetch = async <T, E>(input: ExecuteArgs): Promise<AttemptOutcome<T, E>> => {
   const { context, interceptors, requestOptions } = input
+  let response: Response
   try {
-    const response = await sendHttp(
-      input,
-      encodeBody(context.request.body, context.request.headers),
-    )
-    return await handleResponse<T, E>({ interceptors, context, response, requestOptions })
+    response = await sendHttp(input, encodeBody(context.request.body, context.request.headers))
   } catch (error) {
-    if (isAbortError(error)) {
+    // `abort(new Error())` rejects with a plain Error, so trust the signal too.
+    if (isAbortError(error) || context.request.signal?.aborted) {
       throw error
-    }
-    if (isBodyParseError(error)) {
-      const info = toFetchErrorInfo(error.status, {
-        code: 'PARSE_ERROR',
-        message: error.message,
-        body: error.bodyText,
-      })
-      throw createFetchError(
-        toErrResult(error.status, info, error.headers) as FetchResult<never, typeof info>,
-      )
     }
     context.error = toFetchErrorInfo(0, {
       code: 'NETWORK_ERROR',
@@ -108,6 +96,22 @@ const executeFetch = async <T, E>(input: ExecuteArgs): Promise<AttemptOutcome<T,
     throw createFetchError(
       toErrResult(0, context.error, new Headers()) as FetchResult<never, typeof context.error>,
     )
+  }
+  // Outside the try: interceptor errors after a response must not look like network failures.
+  try {
+    return await handleResponse<T, E>({ interceptors, context, response, requestOptions })
+  } catch (error) {
+    if (isBodyParseError(error)) {
+      const info = toFetchErrorInfo(error.status, {
+        code: 'PARSE_ERROR',
+        message: error.message,
+        body: error.bodyText,
+      })
+      throw createFetchError(
+        toErrResult(error.status, info, error.headers) as FetchResult<never, typeof info>,
+      )
+    }
+    throw error
   }
 }
 
@@ -153,6 +157,7 @@ const handleResponse = async <T, E>(input: {
   if (after.type === 'short-circuit') {
     return { kind: 'result', result: after.result as FetchResult<T, E> }
   }
+  // `drop` on a response keeps the response as-is (nothing to discard once it has arrived).
   const nextContext = after.type === 'continue' ? after.context : context
   const result = response.ok
     ? toOkResult(response.status, nextContext.data as T, response.headers)

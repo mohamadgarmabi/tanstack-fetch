@@ -5,7 +5,7 @@ titleTemplate: false
 description: 'Pass a params map as the second type argument — api.get<User, { id: number }>(…) — and optional body typing on post/put/patch.'
 date: 2026-10-01
 category: Releases
-tags: ["TypeScript"]
+tags: ['TypeScript']
 cover: /images/blog-1-6-1-cover.jpg
 ---
 
@@ -57,10 +57,10 @@ TypeScript cannot partially infer generics. Writing only `api.get<User>(path)` t
 
 ## From 1.6.0
 
-| Before (1.6.0) | After (1.6.1) |
-| -------------- | ------------- |
-| `createFetch<Routes>()` route map | dropped — use path + params map |
-| untyped / loose `params` | `api.get<User, { id: number }>('/users/:id', …)` |
+| Before (1.6.0)                    | After (1.6.1)                                    |
+| --------------------------------- | ------------------------------------------------ |
+| `createFetch<Routes>()` route map | dropped — use path + params map                  |
+| untyped / loose `params`          | `api.get<User, { id: number }>('/users/:id', …)` |
 
 ## Upgrade
 

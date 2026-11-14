@@ -1,10 +1,10 @@
 ---
 title: 'TanStack Start + tanstack-fetch: 6 data fetching patterns'
 titleTemplate: false
-description: 'TanStack Start 1.0 is here. Six production-ready patterns: direct fetching, shared loaders, SSR auth, mutations, centralized error handling, and live SSE updates with tanstack-fetch.'
+description: 'Six TanStack Start 1.0 data fetching patterns: direct fetching, shared loaders, SSR auth, mutations, central error handling and live SSE updates.'
 date: 2026-10-12
 category: Tutorials
-tags: ["TanStack Start","Router","React","SSR","SSE"]
+tags: ['TanStack Start', 'Router', 'React', 'SSR', 'SSE']
 cover: /images/blog-tanstack-start-1-0-tanstack-fetch-6-real-world-patterns-cover.jpg
 ---
 
@@ -66,8 +66,7 @@ type User = {
 export function Users() {
   const usersQuery = useQuery({
     queryKey: ['users'],
-    queryFn: ({ signal }) =>
-      api.get<User[]>('/users', { signal }),
+    queryFn: ({ signal }) => api.get<User[]>('/users', { signal }),
   })
 
   if (usersQuery.isPending) {
@@ -125,8 +124,7 @@ import { useQuery } from '@tanstack/react-query'
 import { usersQueryOptions } from '~/queries/users'
 
 export const Route = createFileRoute('/users')({
-  loader: ({ context }) =>
-    context.queryClient.ensureQueryData(usersQueryOptions),
+  loader: ({ context }) => context.queryClient.ensureQueryData(usersQueryOptions),
   component: UsersPage,
 })
 
@@ -146,6 +144,7 @@ function UsersPage() {
 The router must expose the appropriate `queryClient` through its typed context, and the application must configure the Query provider and, when using SSR, the appropriate Router–Query integration.
 
 The result is a shared contract:
+
 - The loader can ensure that data is available before the route renders.
 - The component reads from the same Query cache.
 - Other components can reuse the same query options.
@@ -165,10 +164,7 @@ If an upstream API requires the incoming request's cookies or authorization head
 import { createFetch } from 'tanstack-fetch'
 import { createSsrForwardInterceptor } from 'tanstack-fetch/plugins'
 
-export const createServerApi = (
-  apiOrigin: string,
-  cookie: string | undefined,
-) =>
+export const createServerApi = (apiOrigin: string, cookie: string | undefined) =>
   createFetch({
     baseUrl: `${apiOrigin}/api`,
     source: 'ssr',
@@ -180,6 +176,7 @@ export const createServerApi = (
 This example illustrates the configuration pattern. Obtain the cookie from the actual incoming request using the relevant TanStack Start server API, and create the client in the request's server-side execution context.
 
 For a real application:
+
 - Use an absolute API origin on the server.
 - Read credentials from the incoming request, not from a global variable.
 - Never expose private environment variables or server-only credentials to the browser.
@@ -211,8 +208,7 @@ export function CreateUserButton() {
   const queryClient = useQueryClient()
 
   const createUser = useMutation({
-    mutationFn: (input: CreateUserInput) =>
-      api.post<User>('/users', { body: input }),
+    mutationFn: (input: CreateUserInput) => api.post<User>('/users', { body: input }),
 
     onSuccess: () =>
       queryClient.invalidateQueries({
@@ -221,10 +217,7 @@ export function CreateUserButton() {
   })
 
   return (
-    <button
-      disabled={createUser.isPending}
-      onClick={() => createUser.mutate({ name: 'New user' })}
-    >
+    <button disabled={createUser.isPending} onClick={() => createUser.mutate({ name: 'New user' })}>
       {createUser.isPending ? 'Creating...' : 'Create user'}
     </button>
   )
@@ -274,6 +267,7 @@ api.use(
 The refresh implementation is application-specific. It must actually obtain and persist or update the new credential before a retry can succeed.
 
 A production implementation should also consider:
+
 - Concurrent requests that fail while a refresh is in progress.
 - Refresh failure and session expiry.
 - Avoiding recursive refresh requests.
@@ -301,10 +295,7 @@ tanstack-fetch provides SSE support through its `tanstack-fetch/sse` integration
 The exact event handling depends on the shape of your API. For a complete entity update, you may be able to update the cache directly:
 
 ```ts
-queryClient.setQueryData(
-  ['order', orderId],
-  updatedOrder,
-)
+queryClient.setQueryData(['order', orderId], updatedOrder)
 ```
 
 If the event only tells you that an order changed, invalidating the query is usually safer:
@@ -382,6 +373,7 @@ The important part is choosing clear boundaries: Router coordinates navigation, 
 That's the problem space tanstack-fetch is designed to address. It is not a replacement for TanStack Query or TanStack Start; it is an option for standardizing HTTP behavior alongside them.
 
 **Explore the project:**
+
 - [tanstack-fetch documentation](https://mohamadgarmabi.github.io/tanstack-fetch/)
 - [TanStack Start documentation](https://tanstack.com/start/latest/docs/framework/react/overview)
 - [tanstack-fetch documentation](https://mohamadgarmabi.github.io/tanstack-fetch/)

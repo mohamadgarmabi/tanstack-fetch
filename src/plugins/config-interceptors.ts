@@ -36,7 +36,7 @@ const mergeStatusHandlers = (options: CreateFetchOptions): StatusHandlers | unde
   assignStatusHandler(handlers, 451, options.onUnavailableForLegalReasons)
   assignStatusHandler(handlers, '4xx', options.onClientError)
 
-  if (options.onServerError && handlers['5xx'] === undefined && handlers[500] === undefined) {
+  if (options.onServerError && handlers['5xx'] === undefined) {
     handlers['5xx'] = options.onServerError
   }
 

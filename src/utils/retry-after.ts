@@ -12,12 +12,15 @@ const parseRetryAfter = (headers: Headers | undefined, fallbackMs?: number): num
     return fallbackMs
   }
 
-  const asSeconds = Number(raw)
-  if (Number.isFinite(asSeconds) && asSeconds >= 0) {
-    return Math.round(asSeconds * 1000)
+  if (/^\s*-?\d+(\.\d+)?\s*$/.test(raw)) {
+    const asSeconds = Number(raw)
+    return asSeconds >= 0 ? Math.round(asSeconds * 1000) : fallbackMs
   }
 
-  const asDate = Date.parse(raw)
+  // HTTP-dates start with a weekday; Date.parse alone accepts junk like `soon 5`.
+  const asDate = /^\s*(Mon|Tue|Wed|Thu|Fri|Sat|Sun)[a-z]*,? /i.test(raw)
+    ? Date.parse(raw)
+    : Number.NaN
   if (Number.isFinite(asDate)) {
     return Math.max(0, asDate - Date.now())
   }

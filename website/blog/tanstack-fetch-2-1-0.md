@@ -1,7 +1,7 @@
 ---
 title: 'tanstack-fetch 2.1.0: abortable retries, safer token refresh'
 titleTemplate: false
-description: tanstack-fetch 2.1.0 fixes cancelling during a retry delay, literal colons in paths like gemini:generateContent, a refresh-token race that could rotate a session out, and retries of stream bodies. It adds array query values, parseAs arrayBuffer / stream and a tanstack-fetch/full entry.
+description: 'tanstack-fetch 2.1.0: abort during a retry delay, literal colons in paths, a safer refresh-token race, no stream-body retries, plus array query values.'
 date: 2026-11-07
 category: Releases
 tags: ['Core', 'Auth', 'Errors']

@@ -22,6 +22,12 @@ type WsBase = {
 }
 
 const MAX_RECONNECT_DELAY_MS = 30_000
+/**
+ * A socket must stay open this long before the retry budget resets. Resetting on `open` alone
+ * lets a server that accepts then drops loop forever; 5s is well above a handshake + immediate
+ * drop, yet short enough that a healthy long-lived socket gets its full budget back.
+ */
+const STABLE_OPEN_MS = 5_000
 
 /** Browser windows and workers cannot set WebSocket headers. */
 const isBrowserLike = () =>
@@ -86,6 +92,7 @@ const openWs = <TMessage, TSend>(
   let attempt = 0
   let stopped = false
   let timer: ReturnType<typeof setTimeout> | undefined
+  let stableTimer: ReturnType<typeof setTimeout> | undefined
   // Interceptor context of the current connection, for the onLive* hooks (DevTools, logging).
   const liveId = createLiveId()
   let live: RequestContext | undefined
@@ -114,6 +121,7 @@ const openWs = <TMessage, TSend>(
     if (stopped) return
     stopped = true
     clearTimeout(timer)
+    clearTimeout(stableTimer)
     requestOptions.signal?.removeEventListener('abort', abort)
     queue.length = 0
     if (socket) detach(socket)
@@ -189,7 +197,7 @@ const openWs = <TMessage, TSend>(
       live = context
       liveClosed = false
       next.onopen = (event) => {
-        attempt = 0
+        stableTimer = setTimeout(() => (attempt = 0), STABLE_OPEN_MS)
         void runHook(interceptors, (item) => item.onLiveOpen, context).catch(() => undefined)
         queue.splice(0).forEach((frame) => transmit(next, frame))
         onOpen?.(event)
@@ -202,6 +210,7 @@ const openWs = <TMessage, TSend>(
       next.onerror = (event) => onError?.(event)
       next.onclose = (event) => {
         detach(next)
+        clearTimeout(stableTimer)
         socket = undefined
         closeLive(
           event.code === 1000
@@ -231,7 +240,8 @@ const openWs = <TMessage, TSend>(
   const abort = () => close()
 
   if (requestOptions.signal?.aborted) {
-    stopped = true
+    // Same outcome as aborting after open: onClose runs once (after ws() returns), nothing connects.
+    queueMicrotask(() => finish())
   } else {
     requestOptions.signal?.addEventListener('abort', abort, { once: true })
     void connect()

@@ -1,6 +1,6 @@
 ---
 title: Cookbook — an example for every feature
-description: Copy-paste tanstack-fetch examples for every feature — typed HTTP, errors, status handlers, refresh token, interceptors, upload / download progress, SSE, WebSocket, WebTransport, NDJSON streams, framework hooks, tRPC, DevTools, and the CLI.
+description: 'Copy-paste tanstack-fetch examples for every feature: typed HTTP, errors, refresh token, interceptors, upload progress, SSE, WebSocket, tRPC and the CLI.'
 ---
 
 # Cookbook

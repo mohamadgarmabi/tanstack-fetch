@@ -117,6 +117,8 @@ Create the client from **`tanstack-fetch/live`** and pass `{ client: api }`. Sam
 
 Use `src/lib/api.server.ts` from the migrate scaffold (`ssr-forward` + cookies) for load functions. Browser code stays on `setFetchClient` / `$lib/api.ts`.
 
+On the server, `setFetchClient` works only through component context (since 2.2.1). It no longer keeps a module-level fallback there, because that fallback is shared by every request and could hand one user's token or cookies to another request. In `load` functions, import the client from `api.server.ts` instead of calling `useFetch()`.
+
 ```bash
 npx tanstack-fetch migrate --from fetch --framework sveltekit --write
 ```

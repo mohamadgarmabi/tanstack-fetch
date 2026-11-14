@@ -78,31 +78,37 @@ const useSse = <T, TParams extends FetchParamsConstraint = NoParams, TPath exten
 
     setError(undefined)
     setStatus('connecting')
+    // Flipped in cleanup so late callbacks from a replaced connection don't overwrite state.
+    let active = true
     const subscription = api.sse<T>(path, {
       ...(optionsRef.current as object),
       lastEventId: optionsRef.current.lastEventId,
-      onOpen: () => setStatus('connected'),
+      onOpen: () => active && setStatus('connected'),
       onMessage: (message: T, nextEvent: SseEvent<T>) => {
+        if (!active) return
         setData(message)
         setEvent(nextEvent)
         optionsRef.current.onMessage?.(message, nextEvent)
       },
       onEvent: (nextEvent: SseEvent<T>) => {
+        if (!active) return
         optionsRef.current.onEvent?.(nextEvent)
       },
       onError: (nextError: unknown) => {
+        if (!active) return
         setStatus('error')
         const normalized =
           nextError instanceof Error ? nextError : new Error('SSE connection failed')
         setError(isFetchError(nextError) ? nextError : normalized)
         optionsRef.current.onError?.(nextError)
       },
-      onClose: () => setStatus('disconnected'),
+      onClose: () => active && setStatus('disconnected'),
     } as never)
 
     closeRef.current = subscription.close
 
     return () => {
+      active = false
       subscription.close()
       closeRef.current = null
       setStatus('disconnected')

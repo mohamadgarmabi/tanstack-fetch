@@ -9,7 +9,7 @@ const toHref = (href: string) => (href.startsWith('http') ? href : withBase(href
 // Downloads live in the hero; the band covers footprint and reach.
 const stats: { value: string; label: string; href: string; icon: HomeIconName }[] = [
   {
-    value: '3.71KB',
+    value: '3.97KB',
     label: 'gzip HTTP core',
     href: 'https://bundlephobia.com/package/tanstack-fetch',
     icon: 'feather',

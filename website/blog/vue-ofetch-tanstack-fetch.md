@@ -1,10 +1,10 @@
 ---
 title: 'Vue ofetch / axios vs tanstack-fetch for Vue Query'
 titleTemplate: false
-description: "Replace ofetch and axios glue in Vue 3 with tanstack-fetch — createFetchPlugin, useFetch, useSse, Vue Query, refresh-token, and a full comparison."
+description: 'Replace ofetch and axios glue in Vue 3 with tanstack-fetch — createFetchPlugin, useFetch, useSse, Vue Query, refresh-token, and a full comparison.'
 date: 2026-10-12
 category: Framework guides
-tags: ["Vue","Comparison"]
+tags: ['Vue', 'Comparison']
 cover: /images/blog-vue-ofetch-tanstack-fetch-cover.jpg
 ---
 
@@ -24,13 +24,13 @@ In a Vue 3 app, `ofetch` or axios usually hides behind a hand-written composable
 
 ## TL;DR
 
-| If you need… | Prefer |
-| --- | --- |
-| Drop into `useQuery` / `useMutation` | **tanstack-fetch** |
-| Typed `FetchError` | **tanstack-fetch** |
-| SSE + `Authorization` | `useSse` from `tanstack-fetch/vue` |
-| Simple script without Query | ofetch is fine |
-| Share client with React/Nuxt | **tanstack-fetch** |
+| If you need…                         | Prefer                             |
+| ------------------------------------ | ---------------------------------- |
+| Drop into `useQuery` / `useMutation` | **tanstack-fetch**                 |
+| Typed `FetchError`                   | **tanstack-fetch**                 |
+| SSE + `Authorization`                | `useSse` from `tanstack-fetch/vue` |
+| Simple script without Query          | ofetch is fine                     |
+| Share client with React/Nuxt         | **tanstack-fetch**                 |
 
 ```bash
 npm install tanstack-fetch vue @tanstack/vue-query
@@ -190,17 +190,17 @@ Rough relative **boilerplate** (lower is better) — a map of where teams spend 
 
 ## Feature matrix
 
-| Capability | tanstack-fetch | ofetch / axios |
-| --- | --- | --- |
-| Returns body for Query | Yes | Adapt |
-| Typed error + status | `FetchError` | Partial |
-| AbortSignal | First-class | Yes / vary |
-| Status handlers | `createStatusInterceptor` | Custom |
-| Refresh single-flight | Plugin | Custom |
-| Path params `:id` | Yes | Manual |
-| SSE + Authorization | Yes | No |
-| Vue composables | `useFetch` / `useSse` | DIY |
-| Bundle | 3.68KB gzip | Small–medium |
+| Capability             | tanstack-fetch            | ofetch / axios |
+| ---------------------- | ------------------------- | -------------- |
+| Returns body for Query | Yes                       | Adapt          |
+| Typed error + status   | `FetchError`              | Partial        |
+| AbortSignal            | First-class               | Yes / vary     |
+| Status handlers        | `createStatusInterceptor` | Custom         |
+| Refresh single-flight  | Plugin                    | Custom         |
+| Path params `:id`      | Yes                       | Manual         |
+| SSE + Authorization    | Yes                       | No             |
+| Vue composables        | `useFetch` / `useSse`     | DIY            |
+| Bundle                 | 3.68KB gzip               | Small–medium   |
 
 ## Auth, status handlers, refresh
 

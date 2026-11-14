@@ -60,12 +60,15 @@ const listenSse = <T>(args: SendSseArgs, handlers: SseHandlers<T>): SseSubscript
         requestOptions: { ...args.requestOptions, signal },
         onStreamOpen: () => handlers.onOpen?.(),
       })) {
+        // close() from a handler must stop events already parsed from the same chunk.
+        if (signal?.aborted) break
         handlers.onEvent?.(event)
+        if (signal?.aborted) break
         handlers.onMessage?.(event.data, event)
       }
       handlers.onClose?.()
     } catch (error) {
-      if (isAbortError(error) || controller.signal.aborted) {
+      if (isAbortError(error) || signal?.aborted) {
         handlers.onClose?.()
         return
       }

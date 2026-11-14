@@ -1,6 +1,6 @@
 ---
-title: WebSocket, WebTransport & NDJSON streams
-description: Authenticated WebSocket (api.ws + useWs) with reconnect and send queue, WebTransport over HTTP/3 (api.transport), and NDJSON streaming over fetch (api.stream).
+title: 'WebSocket, WebTransport and NDJSON'
+description: 'Authenticated WebSocket with reconnect and a send queue (api.ws, useWs), WebTransport over HTTP/3 (api.transport) and NDJSON streaming over fetch (api.stream).'
 ---
 
 # WebSocket, WebTransport & NDJSON streams
@@ -89,13 +89,13 @@ createFetch({
 
 ### Options
 
-| Option      | Default                         |                                                                                              |
-| ----------- | ------------------------------- | -------------------------------------------------------------------------------------------- |
-| `reconnect` | `{ retries: 5, delayMs: 1000 }` | Exponential backoff (max 30s). `false` disables it. Failed token refreshes count as attempts |
-| `protocols` | —                               | Subprotocols                                                                                 |
-| `parseAs`   | JSON when possible              | `'text'` keeps raw strings. Binary frames are passed as-is                                   |
-| `signal`    | —                               | Aborting closes the socket                                                                   |
-| `transport` | `'websocket'`                   | `'webtransport'`, see below                                                                  |
+| Option      | Default                         |                                                                                                                                                                                                              |
+| ----------- | ------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `reconnect` | `{ retries: 5, delayMs: 1000 }` | Exponential backoff (max 30s). `false` disables it. Failed token refreshes count as attempts. The count resets only after a socket stays open for 5s, so a server that accepts and drops runs out of retries |
+| `protocols` | —                               | Subprotocols                                                                                                                                                                                                 |
+| `parseAs`   | JSON when possible              | `'text'` keeps raw strings. Binary frames are passed as-is                                                                                                                                                   |
+| `signal`    | —                               | Aborting closes the socket. An already-aborted signal never connects and calls `onClose` once                                                                                                                |
+| `transport` | `'websocket'`                   | `'webtransport'`, see below                                                                                                                                                                                  |
 
 ## WebTransport: `api.transport`
 

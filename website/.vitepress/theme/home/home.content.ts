@@ -23,6 +23,13 @@ const STACKBLITZ_BASE =
 // Newest first. The hero badge shows releases[0]; add the new release here with its blog post.
 const releases: ReleaseItem[] = [
   {
+    version: '2.2.1',
+    title: 'Bug-fix release · 31 fixes',
+    text: 'Relative baseUrl works again, createTRPCFetch(api) works from npm, SSE reconnects after drops, no SSR client leaks in Svelte, and a DevTools XSS fix.',
+    date: '2026-11-14',
+    href: '/blog/tanstack-fetch-2-2-1',
+  },
+  {
     version: '2.2.0',
     title: 'API mocks · HTTP, SSE, WebSocket',
     text: 'Mock HTTP, SSE, NDJSON, WebSocket, upload and tRPC routes with one mocks option. Turn every mock or a single route on and off.',
@@ -1024,7 +1031,7 @@ const features: FeatureItem[] = [
     text: 'setupDevtools(api) shows HTTP, SSE, SSR, and tRPC with attempts, timing, and caller file.',
   },
   {
-    title: '3.71KB HTTP core',
+    title: '3.97KB HTTP core',
     text: 'The HTTP entry is the core. SSE, WebSocket, React, Vue, plugins, and tRPC are separate imports.',
   },
   {
@@ -1078,28 +1085,28 @@ const packages: PackageItem[] = [
     title: 'HTTP core',
     spec: 'tanstack-fetch',
     text: 'get, post, put, patch, delete, and upload — also Solid, Angular, Svelte, SvelteKit.',
-    tags: ['3.71KB'],
+    tags: ['3.97KB'],
     href: '/api/create-fetch',
   },
   {
     title: 'Server-sent events',
     spec: 'tanstack-fetch/sse',
     text: 'fetch-based streams with resume and Authorization.',
-    tags: ['6.46KB'],
+    tags: ['6.96KB'],
     href: '/guide/sse',
   },
   {
     title: 'Live transports',
     spec: 'tanstack-fetch/live',
     text: 'SSE + WebSocket + WebTransport + NDJSON streams on one client.',
-    tags: ['8.88KB', '1.8.0'],
+    tags: ['9.40KB', '1.8.0'],
     href: '/guide/websocket',
   },
   {
     title: 'Plugins',
     spec: 'tanstack-fetch/plugins',
     text: 'Retry, trace, SSR forward, and status helpers.',
-    tags: ['1.22KB'],
+    tags: ['1.26KB'],
     href: '/api/plugins',
   },
   {
@@ -1113,7 +1120,7 @@ const packages: PackageItem[] = [
     title: 'Vue & Nuxt',
     spec: 'tanstack-fetch/vue',
     text: 'Plugin, useFetch, useSse, and useWs for Vue 3 and Nuxt.',
-    tags: ['0.94KB'],
+    tags: ['1.04KB'],
     href: '/guide/vue',
   },
   {
@@ -1141,7 +1148,7 @@ const packages: PackageItem[] = [
     title: 'tRPC',
     spec: 'tanstack-fetch/trpc',
     text: 'A tRPC link that reuses createFetch.',
-    tags: ['3.28KB'],
+    tags: ['3.80KB'],
     href: '/guide/trpc',
   },
   {
@@ -1437,6 +1444,7 @@ const footerColumns: FooterColumn[] = [
       { label: 'GitHub', href: GITHUB_URL },
       { label: 'npm', href: NPM_URL },
       { label: 'Blog', href: '/blog/' },
+      { label: '2.2.1 Bug-fix release', href: '/blog/tanstack-fetch-2-2-1' },
       { label: '2.2.0 API mocks', href: '/blog/mock-api-http-sse-websocket-tanstack-fetch' },
       { label: '2.1.0 Abortable retries · safer refresh', href: '/blog/tanstack-fetch-2-1-0' },
       { label: '2.0.0 Slim core · typed live params', href: '/blog/tanstack-fetch-2-0-0' },

@@ -78,24 +78,29 @@ const useWs = <
 
     setError(undefined)
     setStatus('connecting')
+    // Flipped in cleanup so late callbacks from a replaced connection don't overwrite state.
+    let active = true
     const socket = api.ws<T, NoParams, TSend>(path, {
       ...(optionsRef.current as object),
-      onOpen: () => setStatus('connected'),
+      onOpen: () => active && setStatus('connected'),
       onMessage: (message: T, event: MessageEvent) => {
+        if (!active) return
         setData(message)
         optionsRef.current.onMessage?.(message, event)
       },
       onError: (nextError: unknown) => {
+        if (!active) return
         setStatus('error')
         setError(nextError)
         optionsRef.current.onError?.(nextError)
       },
-      onReconnect: () => setStatus('connecting'),
-      onClose: () => setStatus('disconnected'),
+      onReconnect: () => active && setStatus('connecting'),
+      onClose: () => active && setStatus('disconnected'),
     } as never)
     socketRef.current = socket
 
     return () => {
+      active = false
       socket.close()
       socketRef.current = null
       setStatus('disconnected')

@@ -1,6 +1,6 @@
 {
   "name": "tanstack-fetch",
-  "version": "2.2.0",
+  "version": "2.2.1",
   "description": "The fetch client that speaks queryFn: returns data, throws typed errors, respects AbortSignal. SSR, SSE, WebSocket, upload and React / Vue / Solid / Angular / Svelte adapters. Independent project, not affiliated with TanStack.",
   "license": "MIT",
   "author": {
@@ -33,7 +33,6 @@
     "abortsignal",
     "trpc"
   ],
-  "packageManager": "pnpm@11.22.0",
   "type": "module",
   "sideEffects": false,
   "main": "./dist/index.cjs",

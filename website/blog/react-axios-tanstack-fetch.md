@@ -1,10 +1,10 @@
 ---
 title: 'React axios vs tanstack-fetch for TanStack Query'
 titleTemplate: false
-description: "Replace axios unwrap glue with tanstack-fetch — FetchProvider, useFetch, useSse, React Query, refresh-token, migrate CLI, and a full side-by-side comparison."
+description: 'Replace axios unwrap glue with tanstack-fetch — FetchProvider, useFetch, useSse, React Query, refresh-token, migrate CLI, and a full side-by-side comparison.'
 date: 2026-10-12
 category: Framework guides
-tags: ["React","Comparison"]
+tags: ['React', 'Comparison']
 cover: /images/blog-react-axios-tanstack-fetch-cover.jpg
 ---
 
@@ -24,13 +24,13 @@ That gap shows up as `.data` unwraps, custom error mappers, and refresh-token ra
 
 ## TL;DR
 
-| If you need… | Prefer |
-| --- | --- |
-| Drop into `useQuery` / `useMutation` | **tanstack-fetch** |
-| Typed `FetchError` with status + body | **tanstack-fetch** |
-| SSE with `Authorization` + resume | **tanstack-fetch/sse** + `useSse` |
-| Huge axios interceptor stack, no Query | axios can stay |
-| Share one client with Vue/Solid/Angular | **tanstack-fetch** |
+| If you need…                            | Prefer                            |
+| --------------------------------------- | --------------------------------- |
+| Drop into `useQuery` / `useMutation`    | **tanstack-fetch**                |
+| Typed `FetchError` with status + body   | **tanstack-fetch**                |
+| SSE with `Authorization` + resume       | **tanstack-fetch/sse** + `useSse` |
+| Huge axios interceptor stack, no Query  | axios can stay                    |
+| Share one client with Vue/Solid/Angular | **tanstack-fetch**                |
 
 ```bash
 npm install tanstack-fetch @tanstack/react-query
@@ -120,8 +120,19 @@ const UsersPage = () => {
   })
 
   if (isPending) return <p>Loading…</p>
-  if (isFetchError(error)) return <p>{error.status}: {error.message}</p>
-  return <ul>{data.map((u) => <li key={u.id}>{u.name}</li>)}</ul>
+  if (isFetchError(error))
+    return (
+      <p>
+        {error.status}: {error.message}
+      </p>
+    )
+  return (
+    <ul>
+      {data.map((u) => (
+        <li key={u.id}>{u.name}</li>
+      ))}
+    </ul>
+  )
 }
 ```
 
@@ -199,18 +210,18 @@ Rough relative **boilerplate** (lower is better) — a map of where teams spend 
 
 ## Feature matrix
 
-| Capability | tanstack-fetch | axios |
-| --- | --- | --- |
-| Returns body for Query `queryFn` | Yes | Adapt (`.data`) |
-| Throws typed error with status/body | `FetchError` | Partial |
-| Native `AbortSignal` | First-class | Yes (adapt) |
-| Status handlers `401`–`429` | `createStatusInterceptor` | Custom |
-| Refresh token single-flight | Plugin | Custom |
-| Path params typing `:id` | Yes | Manual |
-| Upload + progress | `api.upload()` (`tanstack-fetch/sse`) | Yes |
-| SSE + `Authorization` | `tanstack-fetch/sse` | No |
-| tRPC transport | `tanstack-fetch/trpc` | DIY |
-| Bundle (HTTP core) | 3.68KB gzip | Larger |
+| Capability                          | tanstack-fetch                        | axios           |
+| ----------------------------------- | ------------------------------------- | --------------- |
+| Returns body for Query `queryFn`    | Yes                                   | Adapt (`.data`) |
+| Throws typed error with status/body | `FetchError`                          | Partial         |
+| Native `AbortSignal`                | First-class                           | Yes (adapt)     |
+| Status handlers `401`–`429`         | `createStatusInterceptor`             | Custom          |
+| Refresh token single-flight         | Plugin                                | Custom          |
+| Path params typing `:id`            | Yes                                   | Manual          |
+| Upload + progress                   | `api.upload()` (`tanstack-fetch/sse`) | Yes             |
+| SSE + `Authorization`               | `tanstack-fetch/sse`                  | No              |
+| tRPC transport                      | `tanstack-fetch/trpc`                 | DIY             |
+| Bundle (HTTP core)                  | 3.68KB gzip                           | Larger          |
 
 ## Auth, status handlers, refresh
 
@@ -287,7 +298,9 @@ const OrdersLive = () => {
     <div>
       <p>{status}</p>
       <pre>{JSON.stringify(data, null, 2)}</pre>
-      <button type="button" onClick={close}>Stop</button>
+      <button type="button" onClick={close}>
+        Stop
+      </button>
     </div>
   )
 }

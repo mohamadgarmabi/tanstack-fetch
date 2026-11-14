@@ -1,6 +1,6 @@
 ---
-title: SSE
-description: Server-Sent Events over fetch with Authorization — api.sse plus useSse for React, Vue, Solid, Angular, and Svelte.
+title: 'SSE with TanStack Query and auth headers'
+description: 'Server-Sent Events over fetch with an Authorization header, Last-Event-ID resume and reconnects. api.sse plus useSse for React, Vue, Solid, Angular and Svelte.'
 ---
 
 # SSE
@@ -54,6 +54,19 @@ for await (const event of api.sse<OrderEvent>('/orders/stream', { signal })) {
   console.log(event.data)
 }
 ```
+
+### Reconnects
+
+With `plugins: ['sse-resume']`, a dropped stream, a network error or a 5xx at open reconnects after 1s and sends `Last-Event-ID` from the last event the server tagged with `id:`. A 4xx (auth, not found) fails without retrying. The retry budget is `maxRetries` (default 2) and resets every time an event arrives, so a long-lived stream can survive many drops. Without the plugin, return `{ action: 'retry', delayMs }` from your own `onSseError` interceptor.
+
+### POST with a body
+
+```ts
+// LLM-style streaming: a body switches the request to POST and sends JSON
+const stream = api.sse<Token>('/chat', { body: { prompt }, onMessage: append })
+```
+
+The method is `GET` by default and `POST` when `body` is set; an `onRequest` interceptor can change it.
 
 ::::
 

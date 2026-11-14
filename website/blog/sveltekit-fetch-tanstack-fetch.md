@@ -1,10 +1,10 @@
 ---
 title: 'SvelteKit fetch vs tanstack-fetch: stores, SSR, Query'
 titleTemplate: false
-description: "Use tanstack-fetch with Svelte and SvelteKit — setFetchClient, useFetch, useSse stores, Svelte Query, ssr-forward load functions, and comparison graphs."
+description: 'Use tanstack-fetch with Svelte and SvelteKit — setFetchClient, useFetch, useSse stores, Svelte Query, ssr-forward load functions, and comparison graphs.'
 date: 2026-10-12
 category: Framework guides
-tags: ["Svelte","SSR"]
+tags: ['Svelte', 'SSR']
 cover: /images/blog-sveltekit-fetch-tanstack-fetch-cover.jpg
 ---
 
@@ -24,13 +24,13 @@ SvelteKit’s `event.fetch` is perfect inside `load`. The browser still needs a 
 
 ## TL;DR
 
-| If you need… | Prefer |
-| --- | --- |
-| Browser Query + stores | **tanstack-fetch/svelte** |
-| Kit `load` with cookies | `api.server.ts` + `ssr-forward` |
-| SSE stores | `useSse` |
-| `load`-only pages, no client cache | `event.fetch` is fine |
-| Share client with React monorepo | same `createFetch` |
+| If you need…                       | Prefer                          |
+| ---------------------------------- | ------------------------------- |
+| Browser Query + stores             | **tanstack-fetch/svelte**       |
+| Kit `load` with cookies            | `api.server.ts` + `ssr-forward` |
+| SSE stores                         | `useSse`                        |
+| `load`-only pages, no client cache | `event.fetch` is fine           |
+| Share client with React monorepo   | same `createFetch`              |
 
 ```bash
 npm install tanstack-fetch svelte @tanstack/svelte-query
@@ -193,15 +193,15 @@ Rough relative **boilerplate** (lower is better) — a map of where teams spend 
 
 ## Feature matrix
 
-| Capability | tanstack-fetch | event.fetch / raw fetch |
-| --- | --- | --- |
-| setFetchClient / useFetch | Yes | DIY |
-| useSse stores | Yes | DIY |
-| Kit SSR helper | migrate `api.server` | Manual |
-| Svelte Query fit | Native | Adapt |
-| Typed errors | `FetchError` | DIY |
-| Refresh plugin | Yes | DIY |
-| SSE in `+page.server` | No — browser only | N/A |
+| Capability                | tanstack-fetch       | event.fetch / raw fetch |
+| ------------------------- | -------------------- | ----------------------- |
+| setFetchClient / useFetch | Yes                  | DIY                     |
+| useSse stores             | Yes                  | DIY                     |
+| Kit SSR helper            | migrate `api.server` | Manual                  |
+| Svelte Query fit          | Native               | Adapt                   |
+| Typed errors              | `FetchError`         | DIY                     |
+| Refresh plugin            | Yes                  | DIY                     |
+| SSE in `+page.server`     | No — browser only    | N/A                     |
 
 ## Auth, status handlers, refresh
 

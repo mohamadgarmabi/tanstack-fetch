@@ -59,104 +59,113 @@ const createTRPCFetch = (source?: CreateTRPCFetchSource): typeof fetch => {
     const parts = resolveRequestParts(input, init, clientOptions.baseUrl)
     const maxRetries = clientOptions.maxRetries ?? DEFAULT_MAX_RETRIES
     let attempt = 0
+    // Shared by every retry attempt of this call, like core `sendRequest`.
+    const state: Record<string, unknown> = {}
 
     while (attempt <= maxRetries) {
       const timeoutMs = clientOptions.timeoutMs ?? DEFAULT_TIMEOUT_MS
-      let context: RequestContext = {
-        request: {
-          method: parts.method,
-          url: parts.url,
-          headers: mergeHeaders(await resolveHeaders(clientOptions.headers), parts.headers),
-          body: parts.body,
-          signal: combineSignals([parts.signal, createTimeoutSignal(timeoutMs)?.signal]),
-        },
-        incoming: await resolveIncomingHeaders(clientOptions),
-        meta: {
-          attempt,
-          maxRetries,
-          source: clientOptions.source ?? 'browser',
-          operation: 'trpc',
-        },
-      }
-
-      const before = await runHook(interceptors, (item) => item.onRequest, context)
-      if (before.type === 'short-circuit') {
-        throw createFetchError(before.result as never)
-      }
-      if (before.type === 'retry') {
-        if (attempt >= maxRetries) {
-          throw new Error('tanstack-fetch: exceeded retry budget')
-        }
-        attempt += 1
-        if (before.delayMs) {
-          await wait(before.delayMs)
-        }
-        continue
-      }
-      if (before.type === 'continue') {
-        context = before.context
-      }
-
-      let response: Response
+      const timeout = createTimeoutSignal(timeoutMs)
       try {
-        response = await fetchImpl(context.request.url, {
-          method: context.request.method,
-          headers: context.request.headers,
-          body: encodeBody(context.request.body, context.request.headers) as BodyInit | undefined,
-          signal: context.request.signal,
-          credentials: clientOptions.credentials,
-        })
-      } catch (error) {
-        if (isAbortError(error)) {
+        let context: RequestContext = {
+          request: {
+            method: parts.method,
+            url: parts.url,
+            headers: mergeHeaders(await resolveHeaders(clientOptions.headers), parts.headers),
+            body: parts.body,
+            signal: combineSignals([parts.signal, timeout?.signal]),
+          },
+          incoming: await resolveIncomingHeaders(clientOptions),
+          meta: {
+            attempt,
+            maxRetries,
+            source: clientOptions.source ?? 'browser',
+            operation: 'trpc',
+            state,
+          },
+        }
+
+        const before = await runHook(interceptors, (item) => item.onRequest, context)
+        if (before.type === 'short-circuit') {
+          throw createFetchError(before.result as never)
+        }
+        if (before.type === 'retry') {
+          if (attempt >= maxRetries) {
+            throw new Error('tanstack-fetch: exceeded retry budget')
+          }
+          attempt += 1
+          if (before.delayMs) {
+            await wait(before.delayMs)
+          }
+          continue
+        }
+        if (before.type === 'continue') {
+          context = before.context
+        }
+
+        let response: Response
+        try {
+          response = await fetchImpl(context.request.url, {
+            method: context.request.method,
+            headers: context.request.headers,
+            body: encodeBody(context.request.body, context.request.headers) as BodyInit | undefined,
+            signal: context.request.signal,
+            credentials: clientOptions.credentials,
+          })
+        } catch (error) {
+          if (isAbortError(error)) {
+            throw error
+          }
+          context.error = toFetchErrorInfo(0, {
+            code: 'NETWORK_ERROR',
+            message: error instanceof Error ? error.message : 'Network error',
+          })
+          const failed = await runHook(interceptors, (item) => item.onRequestError, context)
+          if (failed.type === 'retry' && attempt < maxRetries) {
+            attempt += 1
+            if (failed.delayMs) {
+              await wait(failed.delayMs)
+            }
+            continue
+          }
           throw error
         }
-        context.error = toFetchErrorInfo(0, {
-          code: 'NETWORK_ERROR',
-          message: error instanceof Error ? error.message : 'Network error',
-        })
-        const failed = await runHook(interceptors, (item) => item.onRequestError, context)
-        if (failed.type === 'retry' && attempt < maxRetries) {
-          attempt += 1
-          if (failed.delayMs) {
-            await wait(failed.delayMs)
-          }
-          continue
-        }
-        throw error
-      }
 
-      if (!response.ok) {
-        const data = await parseBody(response.clone())
-        context = {
-          ...context,
-          response,
-          data,
-          error: toFetchErrorInfo(response.status, data),
+        if (!response.ok) {
+          const data = await parseBody(response.clone())
+          context = {
+            ...context,
+            response,
+            data,
+            error: toFetchErrorInfo(response.status, data),
+          }
+          const after = await runHook(interceptors, (item) => item.onResponseError, context)
+          if (after.type === 'retry' && attempt < maxRetries) {
+            attempt += 1
+            if (after.delayMs) {
+              await wait(after.delayMs)
+            }
+            continue
+          }
+          return response
         }
-        const after = await runHook(interceptors, (item) => item.onResponseError, context)
-        if (after.type === 'retry' && attempt < maxRetries) {
+
+        // Success — run onResponse so DevTools / logging interceptors see timing + status.
+        // Body stays unread so tRPC can parse the Response.
+        context = { ...context, response }
+        const afterOk = await runHook(interceptors, (item) => item.onResponse, context)
+        if (afterOk.type === 'retry' && attempt < maxRetries) {
           attempt += 1
-          if (after.delayMs) {
-            await wait(after.delayMs)
+          if (afterOk.delayMs) {
+            await wait(afterOk.delayMs)
           }
           continue
         }
+
         return response
+      } finally {
+        // Clears once tRPC has the Response; body reads are bounded by the caller's signal.
+        timeout?.clear()
       }
-
-      // Success — run onResponse so DevTools / logging interceptors see timing + status.
-      // Body stays unread so tRPC can parse the Response.
-      context = { ...context, response }
-      const afterOk = await runHook(interceptors, (item) => item.onResponse, context)
-      if (afterOk.type === 'retry' && attempt < maxRetries) {
-        attempt += 1
-        if (afterOk.delayMs) {
-          await wait(afterOk.delayMs)
-        }
-        continue
-      }
-
-      return response
     }
 
     throw new Error('tanstack-fetch: exceeded retry budget')

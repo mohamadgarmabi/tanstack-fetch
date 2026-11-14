@@ -1,10 +1,10 @@
 ---
 title: 'TanStack Pacer + Query: debounce, throttle, batch API calls'
 titleTemplate: false
-description: 'A hands-on TanStack Pacer tutorial — debounced search, autosave with abortable requests, throttled infinite scroll, client-side rate limits, upload queues and event batching, wired to TanStack Query and tanstack-fetch.'
+description: 'TanStack Pacer tutorial: debounced search, abortable autosave, throttled infinite scroll, rate limits, upload queues and batching with TanStack Query.'
 date: 2026-10-28
 category: Tutorials
-tags: ["TanStack Pacer", "TanStack Query", "React", "Performance"]
+tags: ['TanStack Pacer', 'TanStack Query', 'React', 'Performance']
 cover: /images/blog-tanstack-pacer-tanstack-query-tanstack-fetch-cover.jpg
 ---
 
@@ -39,10 +39,10 @@ Pacer is still pre-1.0. Examples use `@tanstack/pacer@0.23` / `@tanstack/react-p
 
 These three tools do different jobs, and they fit together because none of them overlaps with the others:
 
-| Layer     | Library           | Answers the question                                  |
-| --------- | ----------------- | ----------------------------------------------------- |
-| Timing    | **TanStack Pacer** | _When_ (and how often) should this function run?     |
-| Cache     | **TanStack Query** | _Do we already have this data_, is it fresh, who needs it? |
+| Layer     | Library            | Answers the question                                           |
+| --------- | ------------------ | -------------------------------------------------------------- |
+| Timing    | **TanStack Pacer** | _When_ (and how often) should this function run?               |
+| Cache     | **TanStack Query** | _Do we already have this data_, is it fresh, who needs it?     |
 | Transport | **tanstack-fetch** | _How_ does the request go over the wire, and how does it fail? |
 
 <div class="blog-flow" aria-hidden="true">
@@ -102,8 +102,7 @@ export function SearchUsers() {
 
   const { data, isFetching, error } = useQuery({
     queryKey: ['users', 'search', debouncedSearch],
-    queryFn: ({ signal }) =>
-      api.get<User[]>('/users', { query: { q: debouncedSearch }, signal }),
+    queryFn: ({ signal }) => api.get<User[]>('/users', { query: { q: debouncedSearch }, signal }),
     enabled: debouncedSearch.trim().length >= 2,
     placeholderData: keepPreviousData,
     staleTime: 30_000,
@@ -114,7 +113,11 @@ export function SearchUsers() {
       <input value={search} onChange={(event) => setSearch(event.target.value)} />
       {isFetching && <span>Searching…</span>}
       {error && <p role="alert">{error.message}</p>}
-      <ul>{data?.map((user) => <li key={user.id}>{user.name}</li>)}</ul>
+      <ul>
+        {data?.map((user) => (
+          <li key={user.id}>{user.name}</li>
+        ))}
+      </ul>
     </>
   )
 }
@@ -201,7 +204,9 @@ function NoteEditor({ note }: { note: Note }) {
           save(next)
         }}
       />
-      <small aria-live="polite">{status === 'saving' ? 'Saving…' : status === 'pending' ? 'Unsaved changes' : 'Saved'}</small>
+      <small aria-live="polite">
+        {status === 'saving' ? 'Saving…' : status === 'pending' ? 'Unsaved changes' : 'Saved'}
+      </small>
     </form>
   )
 }
@@ -235,8 +240,7 @@ export function Feed() {
 
   const onScroll = useThrottledCallback(
     (element: HTMLElement) => {
-      const nearBottom =
-        element.scrollTop + element.clientHeight > element.scrollHeight - 600
+      const nearBottom = element.scrollTop + element.clientHeight > element.scrollHeight - 600
       if (nearBottom && feed.hasNextPage && !feed.isFetchingNextPage) {
         feed.fetchNextPage()
       }
@@ -246,9 +250,11 @@ export function Feed() {
 
   return (
     <div className="feed" onScroll={(event) => onScroll(event.currentTarget)}>
-      {feed.data?.pages.flatMap((page) => page.items).map((post) => (
-        <PostCard key={post.id} post={post} />
-      ))}
+      {feed.data?.pages
+        .flatMap((page) => page.items)
+        .map((post) => (
+          <PostCard key={post.id} post={post} />
+        ))}
     </div>
   )
 }
@@ -396,11 +402,11 @@ Call `batcher.flush()` from a `visibilitychange` listener when the page is hidde
 
 This is the most common mistake when combining these libraries. Each layer **can** retry:
 
-| Layer          | Setting                    | Default                    |
-| -------------- | -------------------------- | -------------------------- |
-| TanStack Query | `retry`                    | 3 for queries, 0 for mutations |
-| Pacer (async)  | `asyncRetryerOptions.maxAttempts` | `1` (no retry) for async debouncer / queuer / batcher |
-| tanstack-fetch | `maxRetries` + status interceptors | Only when an interceptor asks for `retry` |
+| Layer          | Setting                            | Default                                               |
+| -------------- | ---------------------------------- | ----------------------------------------------------- |
+| TanStack Query | `retry`                            | 3 for queries, 0 for mutations                        |
+| Pacer (async)  | `asyncRetryerOptions.maxAttempts`  | `1` (no retry) for async debouncer / queuer / batcher |
+| tanstack-fetch | `maxRetries` + status interceptors | Only when an interceptor asks for `retry`             |
 
 If all three retry, one bad request can turn into `3 × 3 × 3 = 27` attempts. A sane split:
 
@@ -417,14 +423,14 @@ If all three retry, one bad request can turn into `3 × 3 × 3 = 27` attempts. A
 
 ## 10. Which Pacer utility should I use?
 
-| You want to…                                         | Use                          | Example                |
-| ---------------------------------------------------- | ---------------------------- | ---------------------- |
-| Wait until input settles, then fetch                 | `useDebouncedValue`          | Search, filters        |
-| Run one async call after a pause, with abort + state | `useAsyncDebouncer`          | Autosave, validation   |
-| Run at most once per interval, during activity       | `useThrottledCallback`       | Scroll, resize, drag   |
-| Stay under an external quota                         | `useAsyncRateLimiter`        | Geocoding, LLM APIs    |
-| Process many jobs with limited concurrency           | `useAsyncQueuer`             | Uploads, bulk actions  |
-| Merge many small calls into one request              | `useAsyncBatcher`            | Analytics, read receipts |
+| You want to…                                         | Use                    | Example                  |
+| ---------------------------------------------------- | ---------------------- | ------------------------ |
+| Wait until input settles, then fetch                 | `useDebouncedValue`    | Search, filters          |
+| Run one async call after a pause, with abort + state | `useAsyncDebouncer`    | Autosave, validation     |
+| Run at most once per interval, during activity       | `useThrottledCallback` | Scroll, resize, drag     |
+| Stay under an external quota                         | `useAsyncRateLimiter`  | Geocoding, LLM APIs      |
+| Process many jobs with limited concurrency           | `useAsyncQueuer`       | Uploads, bulk actions    |
+| Merge many small calls into one request              | `useAsyncBatcher`      | Analytics, read receipts |
 
 ## Wrap-up
 

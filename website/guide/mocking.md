@@ -1,6 +1,6 @@
 ---
-title: 'Mock API requests: HTTP, SSE, WebSocket and tRPC'
-description: Mock HTTP, SSE, NDJSON streams, WebSocket, upload and tRPC routes with createMocks from tanstack-fetch/mock. Each route can be turned on or off, and requests without a mock go to the real API.
+title: 'Mock API requests: HTTP, SSE, WebSocket'
+description: 'Mock HTTP, SSE, NDJSON, WebSocket, upload and tRPC routes with createMocks. Turn each route on or off; requests without a mock go to the real API.'
 ---
 
 # Mocking API routes

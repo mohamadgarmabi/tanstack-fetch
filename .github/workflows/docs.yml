@@ -27,6 +27,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v5
+        with:
+          fetch-depth: 0 # full history so each page gets its own git last-modified date
 
       - uses: actions/setup-node@v5
         with:

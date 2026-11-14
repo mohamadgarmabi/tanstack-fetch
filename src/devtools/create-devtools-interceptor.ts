@@ -48,9 +48,21 @@ const METHOD_LABEL = { websocket: 'WS', webtransport: 'WT', ndjson: undefined } 
 const methodLabel = (context: RequestContext) =>
   (context.meta.transport && METHOD_LABEL[context.meta.transport]) ?? context.request.method
 
+const ENTRY_KEY = 'devtoolsEntryId'
+let entrySeq = 0
+
+/** Tag a call with a unique id in `meta.state` (shared by its retries) so concurrent calls never collide. */
+const assignEntryId = (context: RequestContext) => {
+  const state = context.meta.state
+  if (state && typeof state[ENTRY_KEY] !== 'string') {
+    entrySeq += 1
+    state[ENTRY_KEY] = `${context.meta.requestId ?? 'req'}#${entrySeq}`
+  }
+}
+
 const entryId = (context: RequestContext) => {
-  const requestId = context.meta.requestId ?? 'anon'
-  return `${requestId}:${context.meta.attempt}`
+  const base = context.meta.state?.[ENTRY_KEY] ?? context.meta.requestId ?? 'anon'
+  return `${String(base)}:${context.meta.attempt}`
 }
 
 const responseByteSize = (context: RequestContext): number => {
@@ -167,6 +179,7 @@ const createDevtoolsInterceptor = (
     name: 'devtools',
     order: 200,
     onRequest: (context) => {
+      assignEntryId(context)
       const kind = resolveKind(context)
       if (!store.isKindEnabled(kind)) return { action: 'continue' }
       const id = entryId(context)

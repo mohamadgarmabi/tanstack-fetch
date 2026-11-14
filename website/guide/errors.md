@@ -1,6 +1,6 @@
 ---
-title: Errors
-description: FetchError shape in tanstack-fetch — status, code, message, body — and how to narrow with isFetchError.
+title: 'TypeScript fetch error handling'
+description: 'Typed HTTP errors for fetch in TypeScript: FetchError with status, code and body, isFetchError narrowing, and how timeouts and aborts differ in TanStack Query.'
 ---
 
 # Errors
@@ -72,7 +72,7 @@ createFetch({
       403: () => toast.error('Forbidden'),
       404: () => toast.error('Missing'),
       429: ({ context }) => {
-        const waitMs = parseRetryAfter(context.response?.headers, 1000)
+        const waitMs = parseRetryAfter(context.response?.headers, 1000) ?? 1000
         toast.error(`Rate limited — retry in ${Math.ceil(waitMs / 1000)}s`)
       },
       '4xx': ({ status }) => console.warn('4xx', status),
@@ -114,5 +114,5 @@ if (isFetchError(error) && error.status === 429) {
 
 - [Configuration](./configuration) · status handlers and interceptors
 - [Plugins](./plugins) · `refresh-token`, `sse-resume`, custom interceptors
-- [Refresh token](./refresh-token) · single-flight 401 refresh
-- [Rate limit (429)](./rate-limit) · `parseRetryAfter` in practice
+- [Refresh token](/recipes/refresh-token) · single-flight 401 refresh
+- [Rate limit (429)](/recipes/rate-limit) · `parseRetryAfter` in practice

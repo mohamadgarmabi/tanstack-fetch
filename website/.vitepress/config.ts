@@ -6,12 +6,8 @@ import { defineConfig, type HeadConfig, type SiteConfig } from 'vitepress'
 import { frameworkContainer } from './markdown/framework-container'
 import { motionMedia } from './markdown/motion-media'
 
-const GITHUB_PAGES_URL = 'https://mohamadgarmabi.github.io/tanstack-fetch'
-// Cloudflare build sets DOCS_SITE_URL so sitemap, canonical and feed point at workers.dev
-const SITE_URL = (process.env.DOCS_SITE_URL ?? GITHUB_PAGES_URL).replace(/\/$/, '')
+const SITE_URL = 'https://mohamadgarmabi.github.io/tanstack-fetch'
 const SITE_NAME = 'tanstack-fetch'
-// Cloudflare serves at root (DOCS_BASE=/); GitHub Pages needs /tanstack-fetch/
-const BASE = process.env.DOCS_BASE ?? '/tanstack-fetch/'
 const AUTHOR_NAME = 'Mohammad Garmabi'
 const AUTHOR_EMAIL = 'mwmdgmb@gmail.com'
 const AUTHOR_URL = `${SITE_URL}/author`
@@ -56,7 +52,7 @@ const gitModifiedDay = (file: string) => {
 const escapeXml = (value: string) => value.replace(/[<>&'"]/g, (char) => `&#${char.charCodeAt(0)};`)
 const DEFAULT_DESCRIPTION =
   'The fetch client that speaks queryFn: returns data, throws typed errors, respects AbortSignal. Tiny core; SSR, SSE, WebSocket and React, Vue, Solid, Angular, Svelte adapters are optional.'
-const HOME_TITLE = 'tanstack-fetch — the fetch client that speaks queryFn'
+const HOME_TITLE = 'tanstack-fetch: typed fetch client for TanStack Query'
 
 const KEYWORDS = [
   'tanstack-fetch',
@@ -343,7 +339,7 @@ const config = defineConfig({
   description: DEFAULT_DESCRIPTION,
   lang: 'en-US',
   appearance: 'force-dark',
-  base: BASE,
+  base: '/tanstack-fetch/',
   cleanUrls: true,
   lastUpdated: true,
   ignoreDeadLinks: true,
@@ -364,14 +360,12 @@ const config = defineConfig({
   buildEnd: (siteConfig) => {
     writeGoogleFriendlySitemap(siteConfig)
     writeBlogFeed(siteConfig)
-    const robots = join(siteConfig.outDir, 'robots.txt')
-    writeFileSync(robots, readFileSync(robots, 'utf8').replaceAll(GITHUB_PAGES_URL, SITE_URL))
   },
 
   head: [
-    ['link', { rel: 'icon', type: 'image/jpeg', href: `${BASE}images/logo.jpg` }],
-    ['link', { rel: 'apple-touch-icon', href: `${BASE}images/logo.jpg` }],
-    ['link', { rel: 'author', href: `${BASE}author` }],
+    ['link', { rel: 'icon', type: 'image/jpeg', href: '/tanstack-fetch/images/logo.jpg' }],
+    ['link', { rel: 'apple-touch-icon', href: '/tanstack-fetch/images/logo.jpg' }],
+    ['link', { rel: 'author', href: '/tanstack-fetch/author' }],
     [
       'link',
       {
@@ -465,12 +459,13 @@ const config = defineConfig({
       ['meta', { property: 'og:image:alt', content: title }],
       ['meta', { name: 'twitter:image', content: image }],
       ['meta', { name: 'twitter:image:alt', content: title }],
-      ...(cover
-        ? []
-        : ([
-            ['meta', { property: 'og:image:width', content: '1456' }],
-            ['meta', { property: 'og:image:height', content: '816' }],
-          ] as HeadConfig[])),
+      // Every cover and the default banner are 1280×720 (scripts/motion/render.mjs).
+      ['meta', { property: 'og:image:width', content: '1280' }],
+      ['meta', { property: 'og:image:height', content: '720' }],
+      [
+        'meta',
+        { property: 'og:image:type', content: image.endsWith('.png') ? 'image/png' : 'image/jpeg' },
+      ],
       ...(published
         ? ([
             ['meta', { property: 'article:published_time', content: published }],
@@ -680,6 +675,10 @@ const config = defineConfig({
           text: 'Releases',
           collapsed: true,
           items: [
+            {
+              text: '2.2.1 — SSE reconnects · relative baseUrl · SSR safety',
+              link: '/blog/tanstack-fetch-2-2-1',
+            },
             {
               text: '2.1.0 — abortable retries · safer refresh · array query',
               link: '/blog/tanstack-fetch-2-1-0',

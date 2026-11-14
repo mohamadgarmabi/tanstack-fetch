@@ -25,13 +25,13 @@ Use the **Framework** picker to show only your stack.
 
 | Import                    | What you get                            | gzip       |
 | ------------------------- | --------------------------------------- | ---------- |
-| `tanstack-fetch`          | HTTP (`get` / `post` / … / `request`)   | **3.71KB** |
-| `tanstack-fetch/sse`      | + `upload()`, shortcuts, `api.sse()`    | **6.46KB** |
+| `tanstack-fetch`          | HTTP (`get` / `post` / … / `request`)   | **3.97KB** |
+| `tanstack-fetch/sse`      | + `upload()`, shortcuts, `api.sse()`    | **6.96KB** |
 | `tanstack-fetch/full`     | Alias of `/sse`                         | same       |
-| `tanstack-fetch/live`     | + `sse` / `ws` / `transport` / `stream` | **8.88KB** |
-| `tanstack-fetch/plugins`  | plugin factories                        | **1.22KB** |
-| `tanstack-fetch/trpc`     | tRPC link via `createFetch`             | **3.28KB** |
-| `tanstack-fetch/devtools` | request dock                            | **8.85KB** |
+| `tanstack-fetch/live`     | + `sse` / `ws` / `transport` / `stream` | **9.40KB** |
+| `tanstack-fetch/plugins`  | plugin factories                        | **1.26KB** |
+| `tanstack-fetch/trpc`     | tRPC link via `createFetch`             | **3.80KB** |
+| `tanstack-fetch/devtools` | request dock                            | **9.08KB** |
 | `tanstack-fetch/mock`     | `createMocks()` API mocks               | **1.82KB** |
 
 ```ts
@@ -63,7 +63,7 @@ import { createFetch } from 'tanstack-fetch/live' // + SSE, WebSocket, WebTransp
 
 | Import                 | What you get                                      | gzip       |
 | ---------------------- | ------------------------------------------------- | ---------- |
-| `tanstack-fetch/react` | `FetchProvider` / `useFetch` / `useSse` / `useWs` | **0.99KB** |
+| `tanstack-fetch/react` | `FetchProvider` / `useFetch` / `useSse` / `useWs` | **1.02KB** |
 
 - [React guide](./react)
 - [TanStack Query](./tanstack-query)
@@ -120,7 +120,7 @@ import { createFetch } from 'tanstack-fetch/live' // + SSE, WebSocket, WebTransp
 
 | Import               | What you get                        | gzip       |
 | -------------------- | ----------------------------------- | ---------- |
-| `tanstack-fetch/vue` | plugin / composables (Vue 3 / Nuxt) | **0.94KB** |
+| `tanstack-fetch/vue` | plugin / composables (Vue 3 / Nuxt) | **1.04KB** |
 
 - [Vue & Nuxt guide](./vue)
 - [SSR · Nuxt](./ssr#nuxt)

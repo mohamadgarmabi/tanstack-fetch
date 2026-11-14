@@ -11,10 +11,13 @@ type EditorChoice = {
 const IGNORE_PATH =
   /node_modules|tanstack-fetch\/(?:dist|src)\/(?:devtools|create-fetch|request|interceptors|sse|plugins|utils)|\/vite\/|\/@fs\//i
 
-const FRAME_RE =
-  /^\s*at\s+(?:(?<fn>.+?)\s+\()?(?<file>(?:file:\/\/|https?:\/\/|\/)[^):]+?)(?::(?<line>\d+))?(?::(?<col>\d+))?\)?$/
-
-const FRAME_RE_ALT = /^\s*at\s+(?<file>[^:]+):(?<line>\d+):(?<col>\d+)\s*$/
+// V8: `at fn (loc)` / `at loc`. Firefox / Safari: `fn@loc` / `@loc`.
+const V8_FRAME_RE = /^at\s+(?:(?<fn>.+?)\s+\((?<loc>.+)\)|(?<bare>.+))$/
+const AT_FRAME_RE = /^(?<fn>.*?)@(?<loc>(?:[a-z][\w+.-]*:\/\/|\/).+)$/i
+// `:line:col` is parsed from the right so `host:port` in a URL stays in the file part.
+const LOCATION_RE = /^(?<file>.+?)(?::(?<line>\d+))?(?::(?<col>\d+))?$/
+// Only http(s) / file URLs and plain paths are source files (not `node:internal`, `<anonymous>`, `native`).
+const SOURCE_FILE_RE = /^(?:https?:\/\/|file:\/\/|\/|[A-Za-z]:[\\/])/i
 
 const EDITOR_STORAGE_KEY = 'tf-devtools-editor'
 
@@ -36,13 +39,20 @@ const EDITORS: EditorChoice[] = [
   },
 ]
 
+/**
+ * `file:///abs/x.ts` → `/abs/x.ts`; Vite `/@fs/abs/x.ts` → `/abs/x.ts`;
+ * dev-server `http://localhost:5173/src/x.ts?t=1` → `src/x.ts` (relative to the project root).
+ */
 const cleanFile = (file: string) => {
+  const noQuery = file.replace(/[?#].*$/, '')
+  if (noQuery.startsWith('file://')) return decodeURIComponent(noQuery.replace(/^file:\/\//, ''))
+  if (!/^https?:\/\//i.test(noQuery)) return noQuery
   try {
-    if (file.startsWith('file://')) return decodeURIComponent(file.replace(/^file:\/\//, ''))
-    const url = new URL(file)
-    return url.pathname.replace(/^\/@fs/, '') || file
+    const pathname = decodeURIComponent(new URL(noQuery).pathname)
+    if (pathname.startsWith('/@fs/')) return pathname.slice('/@fs'.length)
+    return pathname.replace(/^\/+/, '') || noQuery
   } catch {
-    return file.replace(/\?.*$/, '')
+    return noQuery
   }
 }
 
@@ -71,16 +81,20 @@ const resolveCallerLabel = (stack: DevtoolsCallSite[]): string | undefined => {
 }
 
 const parseFrame = (line: string): DevtoolsCallSite | null => {
-  const match = line.match(FRAME_RE) ?? line.match(FRAME_RE_ALT)
-  if (!match?.groups) return null
-  const fileName = cleanFile(match.groups.file ?? '')
+  const text = line.trim()
+  const groups = text.match(V8_FRAME_RE)?.groups ?? text.match(AT_FRAME_RE)?.groups
+  const loc = groups?.loc ?? groups?.bare
+  if (!groups || !loc) return null
+  const parts = loc.trim().match(LOCATION_RE)?.groups
+  if (!parts?.file || !SOURCE_FILE_RE.test(parts.file)) return null
+  const fileName = cleanFile(parts.file)
   if (!fileName || IGNORE_PATH.test(fileName)) return null
   return {
-    functionName: (match.groups.fn ?? '<anonymous>').trim(),
+    functionName: groups.fn?.trim() || '<anonymous>',
     fileName,
-    line: match.groups.line ? Number(match.groups.line) : undefined,
-    column: match.groups.col ? Number(match.groups.col) : undefined,
-    raw: line.trim(),
+    line: parts.line ? Number(parts.line) : undefined,
+    column: parts.col ? Number(parts.col) : undefined,
+    raw: text,
   }
 }
 
@@ -125,20 +139,26 @@ const openWithEditor = (site: DevtoolsCallSite, editorId: EditorId) => {
   const line = site.line ?? 1
   const column = site.column ?? 1
   const path = site.fileName
-  const absolute = path.startsWith('/') ? path : `/${path}`
-  const href = editor.buildHref(absolute, line, column)
   const detail = { ...site, path, line, column, editor: editorId }
 
   if (typeof window !== 'undefined') {
     window.dispatchEvent(new CustomEvent('tf-devtools:open-source', { detail }))
   }
 
-  const anchor = document.createElement('a')
-  anchor.href = href
-  anchor.style.display = 'none'
-  document.body.appendChild(anchor)
-  anchor.click()
-  anchor.remove()
+  if (SOURCE_FILE_RE.test(path)) {
+    const anchor = document.createElement('a')
+    anchor.href = editor.buildHref(path.startsWith('/') ? path : `/${path}`, line, column)
+    anchor.style.display = 'none'
+    document.body.appendChild(anchor)
+    anchor.click()
+    anchor.remove()
+  } else if (typeof fetch === 'function') {
+    // Project-relative path from a dev-server URL: only the dev server knows the root, so let
+    // Vite's built-in `/__open-in-editor` (launch-editor) resolve it. Other servers just 404.
+    void fetch(`/__open-in-editor?file=${encodeURIComponent(`${path}:${line}:${column}`)}`).catch(
+      () => undefined,
+    )
+  }
 
   if (typeof navigator !== 'undefined' && navigator.clipboard?.writeText) {
     void navigator.clipboard.writeText(`${path}:${line}:${column}`)
