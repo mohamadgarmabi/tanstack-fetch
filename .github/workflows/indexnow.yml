@@ -1,0 +1,65 @@
+name: IndexNow
+
+# After a successful docs deploy triggered by a push, tell Bing/Yandex (via IndexNow)
+# which pages changed. Only URLs whose sitemap <lastmod> is from the last 2 days are sent,
+# so the daily scheduled rebuild doesn't re-submit unchanged pages.
+# Key file lives at the domain root: https://mohamadgarmabi.github.io/<key>.txt
+# (repo: mohamadgarmabi/mohamadgarmabi.github.io)
+
+on:
+  workflow_run:
+    workflows: ['Deploy Docs']
+    types: [completed]
+  workflow_dispatch:
+    inputs:
+      all:
+        description: 'Submit every sitemap URL, not just recently changed ones'
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
+
+jobs:
+  ping:
+    if: >-
+      github.event_name == 'workflow_dispatch' ||
+      (github.event.workflow_run.conclusion == 'success' && github.event.workflow_run.event == 'push')
+    runs-on: ubuntu-latest
+    steps:
+      - name: Submit changed URLs to IndexNow
+        env:
+          INDEXNOW_KEY: 492d249443864eac84a7622cbcfedf60
+          SITEMAP_URL: https://mohamadgarmabi.github.io/tanstack-fetch/sitemap.xml
+          SUBMIT_ALL: ${{ inputs.all || 'false' }}
+        run: |
+          sleep 60  # give Pages a moment to serve the new build
+          python3 - <<'PY'
+          import datetime, json, os, re, urllib.request
+
+          key = os.environ["INDEXNOW_KEY"]
+          xml = urllib.request.urlopen(os.environ["SITEMAP_URL"]).read().decode()
+          entries = re.findall(r"<loc>([^<]+)</loc>\s*(?:<lastmod>([^<]+)</lastmod>)?", xml)
+          cutoff = (datetime.date.today() - datetime.timedelta(days=2)).isoformat()
+          submit_all = os.environ.get("SUBMIT_ALL") == "true"
+          urls = [loc for loc, mod in entries if submit_all or (mod or "")[:10] >= cutoff]
+
+          if not urls:
+              print("No recently changed URLs; nothing to submit.")
+              raise SystemExit(0)
+
+          body = json.dumps({
+              "host": "mohamadgarmabi.github.io",
+              "key": key,
+              "keyLocation": f"https://mohamadgarmabi.github.io/{key}.txt",
+              "urlList": urls[:10000],
+          }).encode()
+          req = urllib.request.Request(
+              "https://api.indexnow.org/indexnow",
+              data=body,
+              headers={"Content-Type": "application/json; charset=utf-8"},
+          )
+          with urllib.request.urlopen(req) as r:
+              print(f"IndexNow responded {r.status} for {len(urls)} URLs:")
+          print("\n".join(urls))
+          PY
