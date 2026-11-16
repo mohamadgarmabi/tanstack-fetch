@@ -116,3 +116,5 @@ if (isFetchError(error) && error.status === 429) {
 - [Plugins](./plugins) · `refresh-token`, `sse-resume`, custom interceptors
 - [Refresh token](/recipes/refresh-token) · single-flight 401 refresh
 - [Rate limit (429)](/recipes/rate-limit) · `parseRetryAfter` in practice
+- [TanStack Query error handling with fetch](/blog/tanstack-query-error-handling-fetch) · toasts, error boundaries, form errors and retry rules
+- [TanStack Query retry troubleshooting](/blog/tanstack-query-retry-not-working-fix) · why retries stop or double up

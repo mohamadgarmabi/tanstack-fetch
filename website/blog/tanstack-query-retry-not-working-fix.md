@@ -91,26 +91,10 @@ On the last row: 3 internal retries plus 3 user retries gives 9 requests ([githu
 
 ## Can the HTTP client layer make retries easier to control?
 
-You can also put retry in the HTTP client and set `retry: false` in Query, so one layer owns it. tanstack-fetch is an independent open-source project, not an official TanStack product, and its [2.1.0 release notes](/tanstack-fetch/blog/tanstack-fetch-2-1-0) cover abortable retries. The [cookbook](/tanstack-fetch/examples/cookbook) shows status handlers and refresh tokens. Its v2.2.0 mocks still pass through retry logic, interceptors and status handlers, so you can simulate failures and watch retries without a broken backend. If your retries already behave, stay with Query's own option.
+You can also put retry in the HTTP client and set `retry: false` in Query, so one layer owns it. tanstack-fetch is an independent open-source project, not an official TanStack product, and its [2.1.0 release notes](/blog/tanstack-fetch-2-1-0) cover abortable retries. The [cookbook](/examples/cookbook) shows status handlers and refresh tokens. Its v2.2.0 mocks still pass through retry logic, interceptors and status handlers, so you can simulate failures and watch retries without a broken backend. If your retries already behave, stay with Query's own option.
 
 
 [**tanstack-fetch**](/): tanstack-fetch is a type-safe HTTP client for TypeScript, built for TanStack Query.
-
-## Frequently asked questions
-
-**How many times does TanStack Query retry by default?**
-
-Check the docs for your installed version, since defaults differ between environments and releases. Whatever the number, set `retry` explicitly in your `QueryClient` defaults so the behavior is visible in code.
-
-**How do I disable retries for a single query?**
-
-Pass `retry: false` in that query's options, which overrides the client default. Do this for queries behind a manual retry button, so attempts are not multiplied.
-
-**How do I show a retry button after the retries fail?**
-
-Render it when the query is in the error state and call `refetch` on click. Because `failureCount` resets on each fetch, keep your own counter if you want to hide the button after several manual attempts.
-
-Next step: reproduce your symptom in a minimal repo, match it to the table, and change one setting at a time.
 
 ## Frequently asked questions
 

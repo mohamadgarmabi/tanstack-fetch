@@ -174,6 +174,17 @@
 | **Technical SEO done** | per-page `og:image` (page covers), `BlogPosting` / `TechArticle` + `BreadcrumbList` JSON-LD, git-based sitemap `lastmod`, `/feed.xml`, AI crawlers listed in `robots.txt`, mocks section in `llms.txt` |
 | **Success metrics**    | GSC impressions for "msw alternative" / "mock websocket" / "mock sse"; AI-answer citations of `/guide/mocking`; `tanstack-fetch/mock` adoption (npm import counts unavailable → GitHub code search)    |
 
+## Added 2026-11-16 — TanStack Query error handling (done)
+
+| Field               | Value                                                                                                                       |
+| ------------------- | --------------------------------------------------------------------------------------------------------------------------- |
+| **Status**          | ✅ Done — `/blog/tanstack-query-error-handling-fetch`                                                                       |
+| **Primary keyword** | tanstack query error handling                                                                                               |
+| **Secondary**       | TanStack Query error handling fetch (P0); TypeScript fetch error handling; fetch client typed HTTP errors                   |
+| **Why**             | SERPs for "tanstack query fetch instead of axios" are dominated by the "fetch does not throw on 4xx/5xx" pain point         |
+| **Internal links**  | ↔ `/guide/errors` (Related), → `/api/errors`, `/recipes/refresh-token`, `/recipes/rate-limit`, retry post, comparison       |
+| **Note**            | Blog = problem-first tutorial; `/guide/errors` stays the reference page for "TypeScript fetch error handling"               |
+
 ## Prioritized page plan (one primary keyword each)
 
 | Priority | URL                                 | Action                          | Primary keyword                            |
