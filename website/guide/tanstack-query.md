@@ -339,3 +339,10 @@ queryFn: ({ signal }) => api.get('/users', { signal })
 Cancel / unmount / query-key changes abort the request cleanly without treating abort as a failed HTTP response.
 
 ::::
+
+## Related
+
+- [Errors](/guide/errors): typed `FetchError` and status handlers
+- [TanStack Query error handling with fetch](/blog/tanstack-query-error-handling-fetch): toasts, error boundaries, form errors and retry rules
+- [TanStack Query retry troubleshooting](/blog/tanstack-query-retry-not-working-fix): why retries stop or double up
+- [TanStack Pacer + TanStack Query](/blog/tanstack-pacer-tanstack-query-tanstack-fetch): debounce, throttle and batch query requests

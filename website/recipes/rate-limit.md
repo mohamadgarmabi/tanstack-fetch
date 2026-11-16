@@ -142,3 +142,5 @@ Open the [live playground](/examples/playground) and click **429**.
 - [Error API](/api/errors): `status`, `headers` and error codes
 - [Configuration](/guide/configuration): `maxRetries`, `timeoutMs` and option shortcuts
 - [Plugin API](/api/plugins): `createStatusInterceptor` and `retry-idempotent`
+- [TanStack Pacer + TanStack Query](/blog/tanstack-pacer-tanstack-query-tanstack-fetch): debounce and throttle requests so you hit 429 less often
+- [TanStack Query retry troubleshooting](/blog/tanstack-query-retry-not-working-fix): avoid stacking Query retries on top of client retries

@@ -258,7 +258,11 @@ A static `import { createMocks } from 'tanstack-fetch/mock'` puts the mock code 
 ```ts
 // src/mocks/index.ts
 import { createMocks } from 'tanstack-fetch/mock'
-export const mocks = createMocks({ routes: [/* … */] })
+export const mocks = createMocks({
+  routes: [
+    /* … */
+  ],
+})
 ```
 
 ```ts
@@ -300,3 +304,9 @@ const api = createFetch({
 
 expect(await api.get('/users/:id', { params: { id: 1 } })).toEqual({ id: '1' })
 ```
+
+## Related
+
+- [Mock HTTP, SSE and WebSocket APIs with tanstack-fetch](/blog/mock-api-http-sse-websocket-tanstack-fetch): a full walkthrough with realistic handlers
+- [Errors](/guide/errors): mock 4xx/5xx responses and assert on `FetchError`
+- [TanStack Query error handling with fetch](/blog/tanstack-query-error-handling-fetch): test toasts, error boundaries and retry rules against mocked failures
