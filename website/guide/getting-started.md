@@ -132,17 +132,17 @@ try {
 
 ## Next steps
 
-| Goal                    | Page                                                           |
-| ----------------------- | -------------------------------------------------------------- |
-| Typed URL params / body | (see Quick taste above)                                        |
-| Cursor / agent skill    | [Agent skill](./skill)                                         |
-| Token + 401 / 403 / 404 | [Configuration](./configuration)                               |
-| Refresh token           | [Refresh token](./refresh-token)                               |
-| React / Vue Query       | [TanStack Query](./tanstack-query)                             |
-| React helpers           | [React](./react)                                               |
-| Vue / Nuxt helpers      | [Vue & Nuxt](./vue)                                            |
-| Next.js / Nuxt cookies  | [SSR](./ssr)                                                   |
-| Streams                 | [SSE](./sse)                                                   |
-| WebSocket / NDJSON      | [WebSocket, WebTransport & streams](./websocket)               |
-| SSE auth                | [EventSource auth headers](./recipes/eventsource-auth-headers) |
-| tRPC                    | [tRPC](./trpc)                                                 |
+| Goal                    | Page                                                          |
+| ----------------------- | ------------------------------------------------------------- |
+| Typed URL params / body | (see Quick taste above)                                       |
+| Cursor / agent skill    | [Agent skill](./skill)                                        |
+| Token + 401 / 403 / 404 | [Configuration](./configuration)                              |
+| Refresh token           | [Refresh token](/recipes/refresh-token)                       |
+| React / Vue Query       | [TanStack Query](./tanstack-query)                            |
+| React helpers           | [React](./react)                                              |
+| Vue / Nuxt helpers      | [Vue & Nuxt](./vue)                                           |
+| Next.js / Nuxt cookies  | [SSR](./ssr)                                                  |
+| Streams                 | [SSE](./sse)                                                  |
+| WebSocket / NDJSON      | [WebSocket, WebTransport & streams](./websocket)              |
+| SSE auth                | [EventSource auth headers](/recipes/eventsource-auth-headers) |
+| tRPC                    | [tRPC](./trpc)                                                |
