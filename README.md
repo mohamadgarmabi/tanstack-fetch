@@ -12,6 +12,7 @@ SSR · SSE · React · Vue/Nuxt · Solid · Angular · Svelte · tRPC · DevTool
 [![license](https://img.shields.io/npm/l/tanstack-fetch.svg)](./LICENSE)
 [![CI](https://img.shields.io/github/actions/workflow/status/mohamadgarmabi/tanstack-fetch/ci.yml?branch=main&label=CI)](https://github.com/mohamadgarmabi/tanstack-fetch/actions/workflows/ci.yml)
 [![GitHub stars](https://img.shields.io/github/stars/mohamadgarmabi/tanstack-fetch?style=social)](https://github.com/mohamadgarmabi/tanstack-fetch)
+[![OpenRepos](https://img.shields.io/endpoint?url=https://openrepos.org/status/tanstack-fetch.openrepos.org.json&style=flat-square)](https://tanstack-fetch.openrepos.org/)
 
 <p align="center">
   <img src="https://raw.githubusercontent.com/mohamadgarmabi/tanstack-fetch/main/.github/assets/tanstack-fetch-demo.gif" alt="tanstack-fetch: typed status handlers firing for 200, 401, 404, 429 and 503" width="690">
