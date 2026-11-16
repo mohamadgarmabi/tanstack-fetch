@@ -632,6 +632,14 @@ const config = defineConfig({
           collapsed: false,
           items: [
             {
+              text: 'TanStack Query error handling with fetch',
+              link: '/blog/tanstack-query-error-handling-fetch',
+            },
+            {
+              text: 'TanStack Query retry: why it stops',
+              link: '/blog/tanstack-query-retry-not-working-fix',
+            },
+            {
               text: 'Mock your API: HTTP, SSE & WebSocket',
               link: '/blog/mock-api-http-sse-websocket-tanstack-fetch',
             },
