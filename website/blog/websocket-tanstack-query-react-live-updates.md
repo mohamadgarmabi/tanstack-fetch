@@ -1,13 +1,13 @@
 ---
-title: 'WebSocket with TanStack Query: typed real-time updates in React'
+title: 'TanStack Query WebSocket in React: typed live updates'
 titleTemplate: false
-description: 'Build a typed React WebSocket client with TanStack Query: sync live events into the Query cache, handle reconnects, send messages and authenticate browser connections.'
+description: 'Build typed React WebSocket updates with TanStack Query: load HTTP snapshots, sync events into the Query cache, reconnect safely, and authenticate browser sockets.'
 date: 2026-11-26
 category: Tutorials
 tags: ['WebSocket', 'TanStack Query', 'React', 'Real-time']
 ---
 
-# WebSocket with TanStack Query: typed real-time updates in React
+# TanStack Query WebSocket in React: typed live updates
 
 <p class="blog-meta">November 26, 2026 · WebSocket · React · TanStack Query</p>
 
@@ -256,3 +256,5 @@ Explore the implementation details in the [WebSocket, WebTransport and NDJSON gu
 ---
 
 **One final rule:** treat the socket as a delivery channel, not as your database. Let the server own the truth, let Query own the client cache, and make reconnect recovery an explicit part of the protocol.
+
+**Try it:** [Install tanstack-fetch from npm](https://www.npmjs.com/package/tanstack-fetch), [read the live transport guide](/guide/websocket), or [explore the source on GitHub](https://github.com/mohamadgarmabi/tanstack-fetch).
