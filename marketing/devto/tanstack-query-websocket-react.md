@@ -85,7 +85,7 @@ type RoomEvent =
 
 type SendMessage = { text: string }
 
-function useRoomSocket(roomId: string) {
+function useRoomSocketConnection(roomId: string) {
   return useWs<RoomEvent, { roomId: string }, SendMessage>(
     '/rooms/:roomId',
     {
