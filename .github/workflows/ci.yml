@@ -32,3 +32,20 @@ jobs:
       - run: npm run size
       - run: npx --yes publint --pack npm
       - run: npx --yes @arethetypeswrong/cli --pack . --profile node16
+
+  docs-build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: actions/setup-node@v5
+        with:
+          node-version: '24'
+          cache: npm
+          cache-dependency-path: website/package-lock.json
+
+      - name: Install and build documentation
+        working-directory: website
+        run: |
+          npm ci
+          npm run build
