@@ -1,14 +1,14 @@
 ---
-title: 'SvelteKit fetch vs tanstack-fetch: stores, SSR, Query'
+title: 'SvelteKit event.fetch vs tanstack-fetch: SSR, Query & SSE'
 titleTemplate: false
-description: 'Use tanstack-fetch with Svelte and SvelteKit — setFetchClient, useFetch, useSse stores, Svelte Query, ssr-forward load functions, and comparison graphs.'
+description: 'Compare SvelteKit event.fetch with tanstack-fetch for TanStack Query, SSR cookie forwarding, typed errors and authenticated SSE. Includes practical Svelte examples.'
 date: 2026-10-12
 category: Framework guides
 tags: ['Svelte', 'SSR']
 cover: /images/blog-sveltekit-fetch-tanstack-fetch-cover.jpg
 ---
 
-# Svelte / SvelteKit fetch vs tanstack-fetch
+# SvelteKit event.fetch vs tanstack-fetch: SSR, TanStack Query and SSE
 
 <p class="blog-meta">October 12, 2026 · Svelte · SvelteKit · HTTP</p>
 
