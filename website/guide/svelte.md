@@ -126,6 +126,7 @@ npx tanstack-fetch migrate --from fetch --framework sveltekit --write
 ## Related
 
 - [Blog · Svelte / SvelteKit fetch vs tanstack-fetch](/blog/sveltekit-fetch-tanstack-fetch)
+- [Blog · SvelteKit SSR request-scoped API clients](/blog/sveltekit-ssr-request-scoped-api-client)
 - [SSE · Svelte](/guide/sse#svelte--sveltekit)
 - [tRPC · Svelte](/guide/trpc#svelte--sveltekit)
 - [Migrate](/guide/migrate)
