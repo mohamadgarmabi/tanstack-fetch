@@ -1,7 +1,7 @@
 ---
 title: "TanStack Query WebSocket in React: Typed Live Updates"
 published: false
-description: "Build typed WebSocket updates in React with TanStack Query: load an HTTP snapshot, sync events into the cache, recover after reconnects, and authenticate browser sockets."
+description: "Build typed React WebSocket updates with TanStack Query: load snapshots, update the cache, reconnect safely, and authenticate browser sockets."
 tags: react, typescript, webdev, tanstackquery
 canonical_url: https://mohamadgarmabi.github.io/tanstack-fetch/blog/websocket-tanstack-query-react-live-updates
 ---
