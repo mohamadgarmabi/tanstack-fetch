@@ -1,14 +1,14 @@
 ---
-title: 'TanStack Pacer + Query: debounce, throttle, batch API calls'
+title: 'TanStack Pacer + Query: Debounce, Throttle & Batch Requests'
 titleTemplate: false
-description: 'TanStack Pacer tutorial: debounced search, abortable autosave, throttled infinite scroll, rate limits, upload queues and batching with TanStack Query.'
+description: 'Learn to debounce TanStack Query searches, throttle infinite scroll, rate-limit API calls, queue uploads and batch requests with TanStack Pacer.'
 date: 2026-10-28
 category: Tutorials
 tags: ['TanStack Pacer', 'TanStack Query', 'React', 'Performance']
 cover: /images/blog-tanstack-pacer-tanstack-query-tanstack-fetch-cover.jpg
 ---
 
-# TanStack Pacer + TanStack Query: control _when_ your requests run
+# TanStack Pacer + TanStack Query: debounce, throttle and batch requests
 
 <p class="blog-meta">October 28, 2026 · TanStack Pacer · TanStack Query · React</p>
 
@@ -441,6 +441,14 @@ Each library has one job:
 - **tanstack-fetch** makes the request, honors `AbortSignal`, and fails with typed errors that both of the others can read.
 
 Keep them in those roles and each pattern stays a few lines long: debounce the key, abort the superseded save, throttle the scroll math, rate-limit the quota, queue the uploads, batch the events.
+
+## Does TanStack Query batch API requests?
+
+Not by combining unrelated queries into one HTTP request. TanStack Query caches results by `queryKey` and can share an in-flight request when components ask for the same key, but separate query keys still make separate network calls.
+
+If your API exposes a batch endpoint, use Pacer's `useAsyncBatcher` to collect several items and send them together. The analytics example above does exactly that: it collects events, then posts one `{ events }` payload when the batch reaches its size or wait limit. The server must implement the matching batch endpoint; the client cannot turn an arbitrary API into a batch API on its own.
+
+For the division of responsibilities, see the [TanStack Query guide](/guide/tanstack-query): Query owns cache and request deduplication, Pacer controls when work runs, and tanstack-fetch handles HTTP transport.
 
 ## Related
 
