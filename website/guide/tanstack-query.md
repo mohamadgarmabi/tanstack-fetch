@@ -346,3 +346,4 @@ Cancel / unmount / query-key changes abort the request cleanly without treating 
 - [TanStack Query error handling with fetch](/blog/tanstack-query-error-handling-fetch): toasts, error boundaries, form errors and retry rules
 - [TanStack Query retry troubleshooting](/blog/tanstack-query-retry-not-working-fix): why retries stop or double up
 - [TanStack Pacer + TanStack Query](/blog/tanstack-pacer-tanstack-query-tanstack-fetch): debounce, throttle and batch query requests
+- [TanStack Query streamedQuery with NDJSON](/blog/tanstack-query-streamedquery-ndjson-react): stream typed chunks into the Query cache with `api.stream()`
