@@ -154,7 +154,7 @@ There are a few boundaries to understand:
 
 1. **The request timeout is not a stream-duration limit.** `timeoutMs` covers waiting for response headers. Once the response body is streaming, use an application-level deadline or an `AbortController` if the operation must have a maximum duration.
 2. **HTTP errors happen before the stream is consumed.** A non-2xx response is surfaced as a `FetchError`, so status-aware handling can use the normal [error utilities](/guide/errors).
-3. **A mid-stream disconnect is not an automatic replay protocol.** `api.stream()` yields the chunks it receives; it does not add event IDs or resume from a cursor. If every event matters, design a server-side cursor and replay contract, or choose an SSE flow with the [resume plugin](/guide/sse#resuming-a-stream).
+3. **A mid-stream disconnect is not an automatic replay protocol.** `api.stream()` yields the chunks it receives; it does not add event IDs or resume from a cursor. If every event matters, design a server-side cursor and replay contract, or choose an SSE flow with the [resume plugin](/guide/sse#reconnects).
 4. **Validate network data.** `api.stream<ChatChunk>()` is a TypeScript assertion, not a runtime schema check. Validate each value with your schema library before using it in business logic, especially when the stream can contain user-controlled or externally generated data.
 5. **Keep cache growth intentional.** The default `streamedQuery` result is an array of all chunks. A reducer avoids retaining every token object, but the accumulated text still occupies memory. For very large streams, store bounded summaries or persist completed output outside the query cache.
 
