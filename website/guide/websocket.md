@@ -171,3 +171,5 @@ queryOptions({
 ## React + TanStack Query walkthrough
 
 For a complete React example that combines an HTTP snapshot, typed WebSocket events, Query-cache updates, duplicate-event protection, reconnect recovery, and browser authentication, read the [TanStack Query WebSocket in React tutorial](/blog/websocket-tanstack-query-react-live-updates).
+
+For a one-way NDJSON response accumulated in the Query cache, see [TanStack Query streamedQuery with NDJSON](/blog/tanstack-query-streamedquery-ndjson-react).
