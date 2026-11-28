@@ -1,7 +1,7 @@
 ---
 title: 'TanStack Query streamedQuery: NDJSON Streaming in React'
 titleTemplate: false
-description: 'Stream typed NDJSON responses into the TanStack Query cache with experimental_streamedQuery and tanstack-fetch. Covers cancellation, refetch behavior, and reliability trade-offs.'
+description: 'Stream NDJSON responses into TanStack Query with experimental_streamedQuery and tanstack-fetch. Learn cancellation, refetch behavior, and reliability trade-offs.'
 date: 2026-11-28
 category: Tutorials
 tags: ['TanStack Query', 'NDJSON', 'Streaming', 'React', 'TypeScript']
@@ -108,7 +108,7 @@ A few choices here are deliberate:
 
 - `requestId` distinguishes one generation from another without copying the prompt into the query key. Generate a new ID for each user action.
 - `Idempotency-Key` is an application-level contract. The server must store and enforce it; sending the header alone does not make a POST idempotent.
-- `retry: false` avoids silently starting the same generation again after a transient stream failure. If your server supports safe replay or resume, define that policy explicitly.
+- `retry: false` disables Query-level retries, which avoids silently starting the same generation again after a transient stream failure. Transport interceptors can still retry failed HTTP handshakes, so configure those deliberately too.
 - `staleTime: Infinity` prevents the completed generation from becoming immediately stale. A manual refetch still starts the query function again.
 - `initialValue` and `reducer` are both required when you want a non-array result. Here, each chunk extends the accumulated text.
 - `refetchMode: 'reset'` clears the previous result when a refetch begins. `append` can duplicate content if the server replays a stream; `replace` waits until the new stream ends before writing its accumulated result.
